@@ -74,9 +74,25 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Detects vulnerabilities like prompt injection, secret leakage, and system instruction exposure
 - Best for: testing AI-powered features before reporting findings
 
+**Strix (Autonomous AI Pentesters):**
+- Open-source autonomous AI agents that behave like real attackers — run code, explore apps, find vulns, validate with working PoCs
+- HTTP proxy for request/response manipulation, browser automation for client-side testing (XSS, CSRF), terminal sessions for command tests
+- Bug bounty automation: generates PoCs for faster reporting; integrates into CI/CD pipelines
+- Used by Fortune 500 security engineers and top 1% HackerOne hunters
+- ~2,000 GitHub stars and ~8,000 downloads since launch
+- GitHub: `usestrix/strix`
+
+**NeuroSploit v2/v3:**
+- AI-powered pentest framework with multi-LLM support (Claude, GPT, Gemini, Ollama)
+- 9 specialized agent personas: bug bounty hunter, red team operator, malware analyst, OWASP expert, etc.
+- v3 transforms from scanner to autonomous agent: real-time strategy adaptation, exploit chaining, anti-hallucination safeguards
+- Executes tools inside isolated Kali Linux containers; integrates Nmap, Metasploit, Subfinder, Nuclei, SQLMap via JSON config
+- Open-source (MIT); GitHub: `CyberSecurityUP/NeuroSploit`
+
 **Pentagi:**
 - Fully autonomous AI-powered agent system designed for penetration testing
-- Emerging tool in the autonomous offensive security space
+- Sandboxed Docker environment with 20+ tools (Nmap, Metasploit, SQLMap)
+- Long-term memory for research findings; integrated browser and external search APIs
 
 **Reaper (Ghost Security):**
 - Open-source agentic web app security testing and tampering tool
@@ -97,7 +113,7 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 
 ### The XBOW/Autonomous Agent Reality Check
 
-**XBOW reached #1 on the US HackerOne leaderboard in mid-2025**, surpassing every human researcher within nine months of active operation:
+**XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
 - Submitted **~1,060 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
 - 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
 - Last 90 days severity breakdown: 54 critical, 242 high, 524 medium
@@ -105,6 +121,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG) — indicating strong investor confidence in autonomous offensive security
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
+- **XBOW Pentest On-Demand** launched late 2025 — a fully automated pentest service delivering results within 5 business days
+- HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
 
 **Wiz Research AI Agent Benchmarks (2025-2026):**
 - Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
@@ -124,7 +142,54 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Social engineering vectors and creative attack paths
 - 72% of hackers find more critical vulnerabilities when working in teams (Bugcrowd 2026)
 
-**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" will be the dominant model in offensive security. Security leaders are already moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
+**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
+
+**The 2026 Tool Landscape:**
+- **Strix** for autonomous web app testing with browser + proxy + terminal
+- **NeuroSploit v3** for autonomous pentesting with exploit chaining and anti-hallucination
+- **CAI** for CTF-level challenges and structured offensive tasks
+- **Hound** for deep source code audits with knowledge-graph reasoning
+- **HexStrike AI** for MCP-native tool orchestration across 150+ security tools
+- **XBOW Pentest On-Demand** for commercial automated pentesting
+
+### MCP (Model Context Protocol) as Attack Surface
+
+MCP is rapidly being adopted to connect AI agents to enterprise tools and data. This creates a **new attack surface** for bug bounty hunters:
+
+**Key Vulnerability Classes:**
+
+| MCP Vuln Type | Description | Severity |
+|---|---|---|
+| **Tool Poisoning** | Malicious instructions embedded in MCP tool descriptions; invisible to users but interpreted by the AI model. Compromised descriptions manipulate the model into executing unintended tool calls | High-Critical |
+| **Indirect Prompt Injection via MCP** | Attacker plants instructions in content the MCP server retrieves (GitHub issues, documents, emails). The LLM processes this as trusted context and follows injected instructions | Critical |
+| **Over-Privileged Tokens** | MCP servers often connect with broad PATs or API keys. A single prompt injection can chain actions across multiple systems using the server's credentials | Critical |
+| **Cross-System Data Exfiltration** | Once an agent can call tools via MCP, a single prompt can trigger actions across multiple systems — reading private repos, accessing databases, sending emails | Critical |
+| **Tool Shadowing** | A malicious MCP server registers tools with names similar to legitimate ones, intercepting calls intended for trusted tools | High |
+
+**Real-World Example (GitHub MCP Server Breach):**
+```
+1. Attacker creates a public GitHub issue with hidden prompt injection
+2. Victim's AI assistant (connected via GitHub MCP server) processes the issue
+3. Injected prompt instructs the agent to read private repos
+4. Over-privileged PAT allows access to private repos, internal projects, personal financial data
+5. Data exfiltrated through the agent's normal output channel
+```
+
+**Testing MCP Deployments:**
+1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
+2. Test if tool descriptions can be poisoned by upstream content
+3. Inject prompts into content the MCP server retrieves (documents, issues, messages)
+4. Check if the agent validates tool call parameters before execution
+5. Test cross-system chaining: can a prompt in System A trigger actions in System B?
+6. Check for tool shadowing: register a tool with a similar name to a legitimate one
+
+**Where to Hunt:**
+- Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
+- Enterprise AI agent platforms connecting to internal tools
+- Open-source MCP server implementations (check GitHub for `mcp-server-*` repos)
+- huntr platform specifically accepts AI/ML vulnerability reports
+
+---
 
 ### Critical Warning: "AI Slop" Reports
 

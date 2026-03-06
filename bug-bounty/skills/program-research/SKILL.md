@@ -348,6 +348,13 @@ Notable new programs (2025-2026):
 - huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
 - Immunefi: undisputed leader in Web3/blockchain bounties, with some of the largest single payouts in the industry
 
+Notable disclosed vulnerabilities (2025-2026):
+- CVE-2026-27825: Critical unauthenticated RCE and SSRF in mcp-atlassian (MCP server vulnerability)
+- CVE-2025-55182: Critical RCE in React Server Components via insecure deserialization in Flight protocol (disclosed via Meta Bug Bounty)
+- GitHub MCP server prompt injection breach: public GitHub issues used to hijack AI assistants and exfiltrate private repos
+- SSRF protection bypass in AutoGPT reported through huntr platform
+- Multiple Salesforce Tableau Server vulns including unrestricted file upload → RCE (CVE-2025-52449)
+
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
 - 20% identify as neurodivergent
@@ -356,12 +363,17 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 - Continuous assurance testing is replacing annual pentests as the industry standard
 
 Competition awareness:
-- XBOW reached #1 on HackerOne US leaderboard with ~1,060 submissions, running 80x faster than manual teams; raised $75M in funding
+- XBOW reached #1 on both US and global HackerOne leaderboards with ~1,060 submissions, running 80x faster than manual teams; raised $75M in funding
+- HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
+- XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days
 - 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
+- **Strix** emerged as leading open-source autonomous AI pentest tool (~2K GitHub stars, used by Fortune 500 security teams and top 1% HackerOne hunters)
+- **NeuroSploit v3** introduced autonomous pentesting with exploit chaining and anti-hallucination safeguards
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
 - 75% of hackers say hacking is becoming more about money than curiosity (Bugcrowd 2026)
 - Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
 - HexStrike AI MCP server enables AI agents to autonomously run 150+ security tools — increasing automation of recon and scanning
+- **MCP security is a new attack surface** — CVE-2026-27825 (RCE in mcp-atlassian) and GitHub MCP server breach demonstrate real-world risk
 - Web3 losses exceeded $3 billion in H1 2025 alone; Immunefi dominates blockchain bug bounties
 - FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws

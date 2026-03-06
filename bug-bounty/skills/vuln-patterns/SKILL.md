@@ -337,10 +337,38 @@ When you know the target's technology, focus your testing:
 | **WordPress** | Plugin vulns, SQLi, file upload | Plugin ecosystem, legacy code |
 | **AWS-hosted** | SSRF → metadata, S3 misconfig, IAM issues | Cloud-specific attack surface |
 | **AI/LLM features** | Prompt injection, system prompt leak, output injection, excessive agency | OWASP LLM Top 10, new attack surface, 540% increase in reports |
+| **MCP integrations** | Tool poisoning, indirect prompt injection via retrieved content, over-privileged tokens, cross-system data exfiltration | Rapidly adopted for AI agent tooling; GitHub MCP server breach demonstrated real-world impact |
 | **GraphQL** | SQLi via complex queries, IDOR via node queries, DoS via nested queries | Standardized input sanitization gaps, complex query surfaces |
 | **Web3/Blockchain** | Reentrancy, access control, oracle manipulation, flash loan attacks | $3B+ in Web3 losses H1 2025; access control flaws caused $953.2M; OWASP Smart Contract Top 10 ranks access control #1 |
 | **Hardware/IoT** | Firmware extraction, JTAG/UART access, BLE attacks, default credentials | 88% increase in hardware vulns (Bugcrowd 2025), Samsung paying up to $1M |
 | **Identity/Access** | BOLA, BFLA, privilege escalation, session management, OAuth flows | Fastest growing vuln class (HackerOne 2025); organizations shifting rewards here as XSS/SQLi decline |
+
+---
+
+### MCP (Model Context Protocol) Vulnerabilities
+
+**What it is:** Exploiting AI agent integrations that use MCP to connect LLMs to external tools, databases, and services.
+
+**Where to look:**
+- Products integrating MCP servers (AI coding assistants, enterprise agent platforms)
+- Open-source MCP server implementations on GitHub (`mcp-server-*`)
+- Any AI agent with tool-calling capabilities connected to external services
+- MCP marketplace/registry listings
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Tool poisoning | Inject instructions into content that populates MCP tool descriptions | AI model follows injected instructions instead of legitimate tool behavior |
+| 2 | Indirect injection via retrieved content | Plant prompt injection in data the MCP server retrieves (issues, docs, emails) | Agent follows attacker instructions from retrieved content |
+| 3 | Over-privileged credentials | Check what scopes/permissions the MCP server's PAT or API key has | Credentials grant access far beyond what the tool needs |
+| 4 | Cross-system chaining | Inject prompt in System A content, check if agent takes action in System B | Single injection triggers actions across multiple integrated systems |
+| 5 | Tool shadowing | Register a tool with a name similar to a legitimate one | Agent calls attacker's tool instead of the intended one |
+| 6 | Credential exfiltration | Prompt the agent to reveal its MCP server configuration | Agent discloses API keys, tokens, or connection strings |
+| 7 | Scope escalation | Ask agent to use tools beyond its intended purpose | Agent calls tools it shouldn't have access to or with unexpected parameters |
+| 8 | Data exfiltration via tool output | Craft prompts that cause the agent to read private data through its tools | Private repos, internal docs, or PII returned through agent responses |
+
+**Real-world reference:** GitHub MCP server breach — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT.
 
 ---
 
