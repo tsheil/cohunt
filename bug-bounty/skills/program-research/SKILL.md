@@ -340,19 +340,31 @@ Key data points for program evaluation:
 Notable new programs (2025-2026):
 - Samsung: up to $1M for critical mobile vulns (Knox Vault, TEEGRIS OS bypasses)
 - Crypto.com: up to $2M for critical security vulns
-- Microsoft Zero Day Quest: $1.6M+ paid in inaugural event; spring 2026 event announced (Azure, Copilot, Identity, M365)
+- Microsoft Zero Day Quest: $1.6M+ paid in inaugural event; spring 2026 event announced (Azure, Copilot, Identity, M365). Microsoft paid $17M total to 344 researchers in 2025
 - Nvidia + Intigriti: Bug bounty covering core AI assets + public VDP for all Nvidia properties
 - OpenAI on Bugcrowd: increased critical payouts from $20K to $100K (ChatGPT, APIs in scope)
 - Anthropic on HackerOne: up to $15K for universal jailbreaks on Constitutional Classifiers; 405 participants, 3,000+ hours of red teaming
 - Czech Republic government: Public sector bug bounty via Hackrate
 - huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
+- Immunefi: undisputed leader in Web3/blockchain bounties, with some of the largest single payouts in the industry
+
+Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
+- 92% of hackers are 34 or younger; 69% hold a college degree or higher
+- 20% identify as neurodivergent
+- 74% are motivated by financial gain, but 85% say reporting a critical vulnerability matters more than money
+- 65% have chosen NOT to disclose a vulnerability because the company lacked a clear, safe reporting pathway
+- Continuous assurance testing is replacing annual pentests as the industry standard
 
 Competition awareness:
-- XBOW reached #1 on HackerOne global leaderboard with 1,400+ zero-days, running 80x faster than manual teams
+- XBOW reached #1 on HackerOne US leaderboard with ~1,060 submissions, running 80x faster than manual teams; raised $75M in funding
 - 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
 - 75% of hackers say hacking is becoming more about money than curiosity (Bugcrowd 2026)
 - Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
+- HexStrike AI MCP server enables AI agents to autonomously run 150+ security tools — increasing automation of recon and scanning
+- Web3 losses exceeded $3 billion in H1 2025 alone; Immunefi dominates blockchain bug bounties
+- FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
+- As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
 
 ---
 

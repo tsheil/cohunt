@@ -13,6 +13,8 @@ The 2025-2026 landscape confirms the "bionic hacker" model: 82% of hackers now u
 
 **Core Principle:** AI is fastest at pattern matching and code analysis; humans are better at chaining bugs, understanding business logic, and verifying findings are real exploits, not false positives. Bugcrowd's 2026 predictions note that AI can increasingly detect common vulns like trivial misconfigurations, but "crown jewel compromise paths" requiring deep understanding of business operations still rely on humans. The talent that can deliver such findings is in short supply, so bounty rewards are increasing.
 
+**Collaboration Matters:** 72% of hackers believe working in teams yields better results, and 61% report finding more critical vulnerabilities when collaborating (Bugcrowd 2026). 40% of hackers currently work in a team, and another 44% want to but haven't found the right partners. Consider pairing AI-augmented workflows with team-based hunting for maximum impact.
+
 ### AI-Assisted Recon Workflows
 
 | Phase | AI Task | Tool/Approach | Output for Verification |
@@ -53,6 +55,33 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - HackerOne's top engineers leverage CAI to explore agentic AI architectures; CAI's Retester agent inspired HackerOne's AI-powered Deduplication Agent, now in production
 - GitHub: `aliasrobotics/cai`
 
+**HexStrike AI (MCP-Based Security Automation):**
+- Open-source MCP server bridging LLMs (Claude, GPT, Copilot) with 150+ professional security tools
+- v6.0 features multi-agent architecture with autonomous AI agents and intelligent decision-making
+- Integrates tools like Nmap, Burp Suite, Ghidra, and Metasploit via Model Context Protocol
+- Claims 98.7% detection rates and 24x speed improvements over manual workflows
+- **Dual-use warning:** threat actors have been observed abusing HexStrike to exploit Citrix NetScaler ADC zero-days — stay ethical
+- Best for: automated recon pipelines, tool orchestration, MCP-native security workflows
+- GitHub: `0x4m4/hexstrike-ai`
+
+**PentestAgent:**
+- AI penetration testing tool with prebuilt attack playbooks and HexStrike integration
+- Combines structured testing methodologies with LLM-driven decision-making
+- Useful for automated exploitation chains in structured environments
+
+**AgentFence (AI Agent Security Testing):**
+- Open-source platform for automatically testing AI agent security
+- Detects vulnerabilities like prompt injection, secret leakage, and system instruction exposure
+- Best for: testing AI-powered features before reporting findings
+
+**Pentagi:**
+- Fully autonomous AI-powered agent system designed for penetration testing
+- Emerging tool in the autonomous offensive security space
+
+**Reaper (Ghost Security):**
+- Open-source agentic web app security testing and tampering tool
+- Designed for AI-driven web application testing workflows
+
 **Google Big Sleep (DeepMind + Project Zero):**
 - Google's AI-based bug hunter found 20 security vulnerabilities in open-source software using Big Sleep
 - Can spot complex chaining issues that single-tool SAST misses
@@ -68,12 +97,14 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 
 ### The XBOW/Autonomous Agent Reality Check
 
-**XBOW reached #1 on the global HackerOne leaderboard in August 2025**, surpassing every human researcher within nine months of active operation:
-- Identified **1,400+ zero-day vulnerabilities** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+**XBOW reached #1 on the US HackerOne leaderboard in mid-2025**, surpassing every human researcher within nine months of active operation:
+- Submitted **~1,060 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
 - 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
+- Last 90 days severity breakdown: 54 critical, 242 high, 524 medium
 - Runs up to **80x faster** than manual teams
+- **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG) — indicating strong investor confidence in autonomous offensive security
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings
-- XBOW is fully autonomous but still requires human involvement to select targets and validate findings (HackerOne requirement for AI bug reports)
+- XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
 
 **Wiz Research AI Agent Benchmarks (2025-2026):**
 - Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
@@ -93,7 +124,7 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Social engineering vectors and creative attack paths
 - 72% of hackers find more critical vulnerabilities when working in teams (Bugcrowd 2026)
 
-**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" will be the dominant model in offensive security.
+**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" will be the dominant model in offensive security. Security leaders are already moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
 
 ### Critical Warning: "AI Slop" Reports
 
