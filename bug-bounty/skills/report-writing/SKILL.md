@@ -304,6 +304,8 @@ For previously fixed vulns that reappeared — reference the original report if 
 4. **Include a working PoC** — a curl command beats a paragraph of explanation
 5. **Check scope first** — don't waste your time or theirs on out-of-scope findings
 6. **One vulnerability per report** — unless you're reporting a chain
+7. **Disclose AI assistance** — if you used AI tools for discovery, note it in the methodology section; transparency builds trust and avoids "AI slop" suspicion
+8. **For AI/LLM vulns** — clearly distinguish between prompt injection that stays in-session (often not reportable) vs injection that escapes context or affects other users (reportable)
 
 ---
 

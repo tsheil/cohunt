@@ -315,28 +315,44 @@ Key data points for program evaluation:
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| HackerOne total annual payouts | $81M (13% YoY increase) | HackerOne 9th Annual Report |
+| HackerOne total annual payouts | $81M (13% YoY increase) | HackerOne 9th Annual Report (Oct 2025) |
 | Top 10 programs paid | $21.6M combined | HackerOne 2025 |
+| Top 100 programs paid | $51M (Jul 2024 - Jun 2025) | HackerOne 2025 |
+| Top 100 all-time earners | $31.8M total | HackerOne 2025 |
+| HackerOne validated vulns | 580,000+ across 1,950 enterprise programs | HackerOne 2025 |
+| HackerOne all-time payouts | $300M+ (30 hackers earned $1M+) | HackerOne 2023 milestone |
 | AI vulnerability reports | 210% increase YoY | HackerOne 2025 |
 | Prompt injection reports | 540% increase YoY | HackerOne 2025 |
 | Programs with AI in scope | 1,121 (270% YoY increase) | HackerOne 2025 |
+| Autonomous AI valid reports | 560+ submitted on HackerOne | HackerOne 2025 |
 | Avg pentest findings | 12 vulns, 16% high/critical | HackerOne 2025 |
 | Bug bounty high/critical rate | 25% of submissions | HackerOne 2025 |
 | Top vulnerability type (bounty) | XSS (but declining) | HackerOne 2025 |
 | Fastest growing vuln class | Authorization flaws (IDOR, BOLA) | HackerOne 2025 |
 | Declining vuln classes | XSS, SQLi | HackerOne 2025 |
+| Hacker AI adoption | 82% (up from 64% in 2023) | Bugcrowd 2026 Report |
+| Hacker team collaboration | 72% say teams yield better results | Bugcrowd 2026 |
+| Hardware vulns | 88% increase | Bugcrowd CISO Report 2025 |
+| Network vulns | 2x spike | Bugcrowd CISO Report 2025 |
+| Microsoft annual bounty payouts | $17M to 344 researchers | Microsoft 2025 |
+| Smart contract damages (H1 2025) | $263M across Web3 | CoinLaw 2026 |
 
 Notable new programs (2025-2026):
-- Samsung: up to $1M for critical mobile vulns
+- Samsung: up to $1M for critical mobile vulns (Knox Vault, TEEGRIS OS bypasses)
 - Crypto.com: up to $2M for critical security vulns
-- Microsoft Zero Day Quest: $1.6M+ paid in inaugural event (Azure, Copilot, M365)
-- Nvidia + Intigriti: Bug bounty covering core AI assets
+- Microsoft Zero Day Quest: $1.6M+ paid in inaugural event; spring 2026 event announced (Azure, Copilot, Identity, M365)
+- Nvidia + Intigriti: Bug bounty covering core AI assets + public VDP for all Nvidia properties
+- OpenAI on Bugcrowd: increased critical payouts from $20K to $100K (ChatGPT, APIs in scope)
+- Anthropic on HackerOne: up to $15K for universal jailbreaks on Constitutional Classifiers; 405 participants, 3,000+ hours of red teaming
 - Czech Republic government: Public sector bug bounty via Hackrate
+- huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
 
 Competition awareness:
-- XBOW reached #1 on HackerOne US leaderboard with 1,000+ automated reports
-- 70% of researchers now use AI tools in hunting
+- XBOW reached #1 on HackerOne global leaderboard with 1,400+ zero-days, running 80x faster than manual teams
+- 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
+- 75% of hackers say hacking is becoming more about money than curiosity (Bugcrowd 2026)
+- Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
 
 ---
 

@@ -337,6 +337,9 @@ When you know the target's technology, focus your testing:
 | **WordPress** | Plugin vulns, SQLi, file upload | Plugin ecosystem, legacy code |
 | **AWS-hosted** | SSRF → metadata, S3 misconfig, IAM issues | Cloud-specific attack surface |
 | **AI/LLM features** | Prompt injection, system prompt leak, output injection, excessive agency | OWASP LLM Top 10, new attack surface, 540% increase in reports |
+| **GraphQL** | SQLi via complex queries, IDOR via node queries, DoS via nested queries | Standardized input sanitization gaps, complex query surfaces |
+| **Web3/Blockchain** | Reentrancy, access control, oracle manipulation, flash loan attacks | $263M in smart contract damages H1 2025, bounties scaling to funds at risk |
+| **Hardware/IoT** | Firmware extraction, JTAG/UART access, BLE attacks, default credentials | 88% increase in hardware vulns (Bugcrowd 2025), Samsung paying up to $1M |
 
 ---
 

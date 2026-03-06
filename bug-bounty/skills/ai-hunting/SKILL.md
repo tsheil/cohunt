@@ -9,9 +9,9 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 ### The Bionic Hacker Approach
 
-The 2025-2026 landscape shows 70% of security researchers now integrate AI tools into their workflows. The key is **AI amplification, not replacement**—using LLMs to handle tedious tasks while you focus on logic, context, and manual verification.
+The 2025-2026 landscape confirms the "bionic hacker" model: 82% of hackers now use AI in their workflows (Bugcrowd 2026 report, up from 64% in 2023), and HackerOne's 9th Annual Report found 70% of researchers surveyed use AI tools to enhance hunting. The key is **AI amplification, not replacement**—using LLMs to handle tedious tasks while you focus on logic, context, and manual verification.
 
-**Core Principle:** AI is fastest at pattern matching and code analysis; humans are better at chaining bugs, understanding business logic, and verifying findings are real exploits, not false positives.
+**Core Principle:** AI is fastest at pattern matching and code analysis; humans are better at chaining bugs, understanding business logic, and verifying findings are real exploits, not false positives. Bugcrowd's 2026 predictions note that AI can increasingly detect common vulns like trivial misconfigurations, but "crown jewel compromise paths" requiring deep understanding of business operations still rely on humans. The talent that can deliver such findings is in short supply, so bounty rewards are increasing.
 
 ### AI-Assisted Recon Workflows
 
@@ -32,14 +32,30 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 ### AI-Assisted Code Review
 
 **Vulnhalla Pattern** (CodeQL + LLM-guided questioning):
-- Feed code + CodeQL results into Vulnhalla or similar (CAI, open-source cybersecurity AI framework)
+- Feed code + CodeQL results into Vulnhalla or similar (CAI, Hound)
 - AI asks you clarifying questions: "Is this user input validated here? What's the database query?"
 - Result: **96% false positive reduction** vs raw CodeQL alerts
 - Only investigate high-confidence findings → faster audits, fewer rabbit holes
 
-**CAI & Open-Source Frameworks:**
-- CAI (Cybersecurity AI) workflows: feed source code snapshots, get vulnerability-by-vulnerability analysis
-- Models like Big Sleep (Google DeepMind + Project Zero) can spot complex chaining issues that single-tool SAST misses
+**Hound (Knowledge-Graph-Based Code Auditor):**
+- Open-source agent that models the cognitive processes of expert auditors
+- Builds **adaptive knowledge graphs** of the target system — components, relationships, data flows
+- Observations, assumptions, and hypotheses evolve with confidence scores, enabling long-horizon reasoning
+- Uses **dynamic model switching**: lightweight "scout" models for exploration, heavyweight "strategist" models for deep reasoning
+- Language-agnostic: works on any codebase, not just specific languages
+- Best for: deep logic bugs, complex multi-file vulnerability chains, cumulative audits
+- GitHub: `muellerberndt/hound`
+
+**CAI (Cybersecurity AI Framework):**
+- Open-source framework used by thousands of individual users and hundreds of organizations
+- CAI achieved **Top-10 ranking in the Dragos OT CTF 2025** (Rank 1 during hours 7-8), completing 32 of 34 challenges with a 37% velocity advantage over top human teams
+- The leading LLM for cybersecurity in CAI benchmarks: Claude 3.7 Sonnet
+- HackerOne's top engineers leverage CAI to explore agentic AI architectures; CAI's Retester agent inspired HackerOne's AI-powered Deduplication Agent, now in production
+- GitHub: `aliasrobotics/cai`
+
+**Google Big Sleep (DeepMind + Project Zero):**
+- Google's AI-based bug hunter found 20 security vulnerabilities in open-source software using Big Sleep
+- Can spot complex chaining issues that single-tool SAST misses
 - Always verify: AI may hallucinate; always confirm any finding with manual proof-of-concept
 
 ### AI-Assisted Fuzzing & Payload Generation
@@ -52,27 +68,49 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 
 ### The XBOW/Autonomous Agent Reality Check
 
-**Autonomous tools (XBOW, RunSybil) reached #1 on HackerOne with 1000+ reports**, but:
-- 58% of researchers still identify **business logic and chained exploits** that autonomous tools miss
-- Autonomous agents excel at: mass SSRF scanning, subdomain enumeration, simple SQLi
-- Autonomous agents struggle with: context-dependent bugs, multi-step flows, social engineering vectors
+**XBOW reached #1 on the global HackerOne leaderboard in August 2025**, surpassing every human researcher within nine months of active operation:
+- Identified **1,400+ zero-day vulnerabilities** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+- 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
+- Runs up to **80x faster** than manual teams
+- However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings
+- XBOW is fully autonomous but still requires human involvement to select targets and validate findings (HackerOne requirement for AI bug reports)
 
-**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits.
+**Wiz Research AI Agent Benchmarks (2025-2026):**
+- Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
+- Agents were proficient in **directed tasks** (clear target, well-documented surface), but less effective in realistic, unstructured environments
+- Without clear success indicators, AI agents **produce false positives, exaggerate severity, and struggle to distinguish meaningful access from noise**
+- Best result: Gemini 2.5 Pro discovered developer documentation → found app creation endpoint → used session token → accessed protected endpoint, all in 23 steps
+
+**Where Autonomous Agents Excel:**
+- Mass SSRF scanning, subdomain enumeration, simple SQLi/XSS
+- Structured exploitation tasks with well-documented attack surfaces
+- Code analysis and pattern matching at scale
+
+**Where Humans Still Win:**
+- Context-dependent bugs, multi-step business logic flows
+- Authentication-gated scenarios requiring human context
+- Chaining bugs across different application components
+- Social engineering vectors and creative attack paths
+- 72% of hackers find more critical vulnerabilities when working in teams (Bugcrowd 2026)
+
+**Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" will be the dominant model in offensive security.
 
 ### Critical Warning: "AI Slop" Reports
 
-Submissions with fabricated or AI-hallucinated findings will be rejected or result in bounty clawback:
+AI slop reports are now a **major industry problem**. Maintainers of open-source projects and bug bounty programs have publicly complained about hallucinated vulnerability reports flooding their queues. Submissions with fabricated or AI-hallucinated findings will be rejected, result in bounty clawback, or damage your reputation:
 
 **Red Flags (Don't Report):**
 - Finding with no proof-of-concept attachment or reproduction steps
 - AI output claiming a vulnerability but your manual test doesn't confirm it
 - Overly generic descriptions copied from AI without specific endpoint/payload details
+- AI acting as "an echo chamber and amplifier" — luring you into confirmation bias about a non-existent finding (Intigriti chief hacker officer warning)
 
 **Quality Check Before Submitting:**
 1. Reproduce the finding yourself (manually, with tools like Burp or curl)
 2. Include specific payloads and steps in the report
 3. Screenshot or video proof if visual impact (XSS, IDOR data)
 4. Call out any AI-assisted analysis in the "Discovery Method" section (transparency builds trust)
+5. Verify the AI's output against reality — don't trust AI confidence levels alone
 
 ---
 
@@ -475,6 +513,11 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **210% increase** in AI vulnerability reports
 - **540% jump** in prompt injection reports specifically
 - **339% increase** in bounties for AI vulnerabilities YoY
+- **HackerOne total annual payouts**: $81M (13% YoY increase), top 10 programs paid $21.6M
+- **82% of hackers** now use AI in their workflows (Bugcrowd 2026, up from 64% in 2023)
+- **Nearly 10% of researchers** now specialize in AI/LLM security testing
+- **XBOW** (autonomous agent) reached #1 on HackerOne leaderboard with 1,400+ zero-days
+- **560+ valid reports** submitted by autonomous AI agents on HackerOne
 
 ### How to Scope AI Vulnerabilities with Programs
 
