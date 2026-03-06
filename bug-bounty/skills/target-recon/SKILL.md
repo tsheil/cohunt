@@ -10,22 +10,22 @@ Get a complete external view of any web target before hunting. This skill always
 ## How It Works
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      TARGET RECON                                │
-├─────────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone via curl, dig, web search)             │
-│  ✓ HTTP fingerprinting: headers, cookies, error pages           │
-│  ✓ Technology detection: server, framework, CMS, libraries      │
-│  ✓ Subdomain enumeration: crt.sh, DNS resolution, status check  │
-│  ✓ Security headers: CSP, CORS, HSTS, X-Frame-Options          │
-│  ✓ Common paths: robots.txt, sitemap.xml, /.well-known/         │
-│  ✓ WAF/CDN detection: signatures, behavior analysis             │
-├─────────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                      │
-│  + Asset discovery: full subdomain inventory, port scanning      │
-│  + DNS intelligence: historical records, zone transfers          │
-│  + Vulnerability database: known CVEs for detected stack         │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                       TARGET RECON                           │
+├──────────────────────────────────────────────────────────────┤
+│  ALWAYS (works standalone via curl, dig, web search)         │
+│  ✓ HTTP fingerprinting: headers, cookies, error pages        │
+│  ✓ Technology detection: server, framework, CMS, libraries   │
+│  ✓ Subdomain enumeration: crt.sh, DNS, status check         │
+│  ✓ Security headers: CSP, CORS, HSTS, X-Frame-Options       │
+│  ✓ Common paths: robots.txt, sitemap.xml, /.well-known/     │
+│  ✓ WAF/CDN detection: signatures, behavior analysis          │
+├──────────────────────────────────────────────────────────────┤
+│  SUPERCHARGED (when you connect your tools)                  │
+│  + Asset discovery: full subdomain inventory, port scanning  │
+│  + DNS intelligence: historical records, zone transfers      │
+│  + Vulnerability database: known CVEs for detected stack     │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---

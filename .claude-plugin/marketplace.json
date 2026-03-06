@@ -7,7 +7,7 @@
     {
       "name": "bug-bounty",
       "source": "./bug-bounty",
-      "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities."
+      "description": "Full bug bounty hunting lifecycle. Recon targets, research programs, audit source code, get vulnerability testing patterns, write reports that get paid, and build prioritized hunt plans."
     }
   ]
 }

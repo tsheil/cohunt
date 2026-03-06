@@ -1,8 +1,10 @@
 {
   "name": "bug-bounty",
-  "version": "0.1.0",
-  "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities.",
+  "version": "0.10.0",
+  "description": "Full bug bounty hunting lifecycle. Recon targets, research programs, audit source code, test APIs and authentication, get vulnerability testing patterns, chain findings for maximum impact, write reports that get paid, and build prioritized hunt plans.",
   "author": {
     "name": "Thomas Sheil"
-  }
+  },
+  "repository": "https://github.com/tsheil/cohunt",
+  "tags": ["security", "bug-bounty", "reconnaissance", "vulnerability", "pentest"]
 }

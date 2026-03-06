@@ -10,9 +10,34 @@ Plugins are **tool-agnostic** — they describe workflows in terms of categories
 
 | Category | Placeholder | Included servers | Other options |
 |----------|-------------|-----------------|---------------|
-| Bug bounty platform | `~~bug bounty platform` | — | HackerOne, Bugcrowd, Intigriti, YesWeHack |
+| Bug bounty platform | `~~bug bounty platform` | bug-bounty-mcp (disabled) | HackerOne, Bugcrowd, Intigriti, YesWeHack |
 | Vulnerability database | `~~vulnerability database` | — | NVD, CVE.org, VulnDB, Snyk |
-| Asset discovery | `~~asset discovery` | — | Shodan, Censys, SecurityTrails, FullHunt |
+| Asset discovery | `~~asset discovery` | Shodan (disabled), Censys (disabled) | SecurityTrails, FullHunt |
 | DNS intelligence | `~~dns intelligence` | — | SecurityTrails, PassiveTotal, VirusTotal |
-| Code search | `~~code search` | — | GitHub, GitLab, Sourcegraph |
+| Code search | `~~code search` | GitHub (disabled) | GitLab, Sourcegraph |
 | Web application scanner | `~~web scanner` | — | Burp Suite, Nuclei, OWASP ZAP |
+
+## Enabling a connector
+
+Each connector in `.mcp.json` is disabled by default. To enable one:
+
+1. Add your API key to the relevant environment variable
+2. Set `"disabled": false` for that server
+3. Restart your session
+
+For example, to enable Shodan:
+
+```json
+{
+  "shodan": {
+    "command": "uvx",
+    "args": ["mcp-shodan"],
+    "env": {
+      "SHODAN_API_KEY": "your-key-here"
+    },
+    "disabled": false
+  }
+}
+```
+
+In Cowork, connectors can also be enabled through the plugin settings UI.

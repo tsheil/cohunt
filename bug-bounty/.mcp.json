@@ -1,3 +1,38 @@
 {
-  "mcpServers": {}
+  "mcpServers": {
+    "shodan": {
+      "command": "uvx",
+      "args": ["mcp-shodan"],
+      "env": {
+        "SHODAN_API_KEY": ""
+      },
+      "disabled": true
+    },
+    "censys": {
+      "command": "uvx",
+      "args": ["mcp-censys"],
+      "env": {
+        "CENSYS_API_ID": "",
+        "CENSYS_API_SECRET": ""
+      },
+      "disabled": true
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      },
+      "disabled": true
+    },
+    "bug-bounty-platforms": {
+      "command": "npx",
+      "args": ["-y", "bug-bounty-mcp"],
+      "env": {
+        "HACKERONE_API_TOKEN": "",
+        "BUGCROWD_API_TOKEN": ""
+      },
+      "disabled": true
+    }
+  }
 }

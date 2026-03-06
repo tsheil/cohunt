@@ -6,7 +6,7 @@ A plugin marketplace for security research and bug bounty hunting. Built for [Cl
 
 | Plugin | How it helps | Connectors |
 |--------|-------------|------------|
-| **[bug-bounty](./bug-bounty)** | Recon targets, research bug bounty programs, and build prioritized hunting plans. Works standalone with curl/dig and web search, supercharged with platform and asset discovery connectors. | HackerOne, Bugcrowd, Shodan, Censys, SecurityTrails |
+| **[bug-bounty](./bug-bounty)** | Full hunting lifecycle — recon targets, research programs, audit source code, test for vulns, write reports, and plan engagements. Works standalone with curl/dig and web search, supercharged with platform and asset discovery connectors. | HackerOne, Bugcrowd, Shodan, Censys, SecurityTrails, GitHub |
 
 Complements [breach-marketplace](https://github.com/tsheil/breach-marketplace) for source code analysis workflows.
 
@@ -36,10 +36,12 @@ Every plugin follows the same structure:
 plugin-name/
 ├── .claude-plugin/plugin.json   # Manifest
 ├── .mcp.json                    # Tool connections
+├── agents/                      # Autonomous multi-step workflows
 ├── commands/                    # Slash commands you invoke explicitly
 └── skills/                      # Domain knowledge Claude draws on automatically
 ```
 
+- **Agents** are autonomous workflows that orchestrate multiple skills and commands for complex, multi-step tasks (e.g., a full hunt session).
 - **Skills** encode the domain expertise, workflows, and methodology Claude needs to give you useful help. Claude draws on them automatically when relevant.
 - **Commands** are explicit actions you trigger (e.g., `/bug-bounty:hunt-plan`).
 - **Connectors** wire Claude to the external tools your workflow depends on — bug bounty platforms, asset discovery, vulnerability databases, and more — via [MCP servers](https://modelcontextprotocol.io/).

@@ -22,22 +22,22 @@ Build a hunting plan for: $ARGUMENTS
 ## How It Works
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                       HUNT PLAN                                  │
-├─────────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                       │
-│  ✓ Gather or reuse target recon data                            │
-│  ✓ Gather or reuse program research data                        │
-│  ✓ Map scope boundaries (in/out)                                │
-│  ✓ Prioritize hunt targets by reward × likelihood ÷ competition │
-│  ✓ Generate specific test cases to run first                    │
-│  ✓ Allocate time budget across targets                          │
-├─────────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                      │
-│  + Platform: live scope and reward data                          │
-│  + Asset discovery: comprehensive attack surface                 │
-│  + Vulnerability DB: CVE-informed test prioritization            │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                        HUNT PLAN                             │
+├──────────────────────────────────────────────────────────────┤
+│  STANDALONE (always works)                                   │
+│  ✓ Gather or reuse target recon data                         │
+│  ✓ Gather or reuse program research data                     │
+│  ✓ Map scope boundaries (in/out)                             │
+│  ✓ Prioritize by reward × likelihood ÷ competition           │
+│  ✓ Generate specific test cases to run first                 │
+│  ✓ Allocate time budget across targets                       │
+├──────────────────────────────────────────────────────────────┤
+│  SUPERCHARGED (when you connect your tools)                  │
+│  + Platform: live scope and reward data                      │
+│  + Asset discovery: comprehensive attack surface             │
+│  + Vulnerability DB: CVE-informed test prioritization        │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---

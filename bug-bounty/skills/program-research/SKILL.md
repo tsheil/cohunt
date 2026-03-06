@@ -10,22 +10,22 @@ Get complete intelligence on any bug bounty program before you start hunting. Th
 ## How It Works
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PROGRAM RESEARCH                               │
-├─────────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone via web search)                        │
-│  ✓ Program profile: platform, scope, policy, safe harbor        │
-│  ✓ Reward structure: bounty table, bonus programs, swag         │
-│  ✓ Scope analysis: in-scope domains/apps, out-of-scope items    │
-│  ✓ Disclosed reports: top paid vulns, common CWEs, N/A patterns │
-│  ✓ Response metrics: time to first response, triage, bounty     │
-│  ✓ Hunt readiness: go/no-go recommendation with rationale       │
-├─────────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                      │
-│  + Platform API: live scope, real-time stats, report history     │
-│  + Vulnerability DB: CVE mapping for in-scope technologies       │
-│  + Asset discovery: pre-mapped attack surface for scope items    │
-└─────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                     PROGRAM RESEARCH                         │
+├──────────────────────────────────────────────────────────────┤
+│  ALWAYS (works standalone via web search)                    │
+│  ✓ Program profile: platform, scope, policy, safe harbor    │
+│  ✓ Reward structure: bounty table, bonus programs, swag     │
+│  ✓ Scope analysis: in-scope domains/apps, out-of-scope      │
+│  ✓ Disclosed reports: top paid vulns, CWEs, N/A patterns    │
+│  ✓ Response metrics: time to first response, triage, bounty │
+│  ✓ Hunt readiness: go/no-go recommendation with rationale   │
+├──────────────────────────────────────────────────────────────┤
+│  SUPERCHARGED (when you connect your tools)                  │
+│  + Platform API: live scope, real-time stats, report history │
+│  + Vulnerability DB: CVE mapping for in-scope technologies   │
+│  + Asset discovery: pre-mapped attack surface for scope      │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ---
