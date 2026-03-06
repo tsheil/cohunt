@@ -10,22 +10,22 @@ Get complete intelligence on any bug bounty program before you start hunting. Th
 ## How It Works
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                     PROGRAM RESEARCH                         │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone via web search)                    │
-│  ✓ Program profile: platform, scope, policy, safe harbor    │
-│  ✓ Reward structure: bounty table, bonus programs, swag     │
-│  ✓ Scope analysis: in-scope domains/apps, out-of-scope      │
-│  ✓ Disclosed reports: top paid vulns, CWEs, N/A patterns    │
-│  ✓ Response metrics: time to first response, triage, bounty │
-│  ✓ Hunt readiness: go/no-go recommendation with rationale   │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: live scope, real-time stats, report history │
-│  + Vulnerability DB: CVE mapping for in-scope technologies   │
-│  + Asset discovery: pre-mapped attack surface for scope      │
-└──────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    PROGRAM RESEARCH                               │
+├─────────────────────────────────────────────────────────────────┤
+│  ALWAYS (works standalone via web search)                        │
+│  ✓ Program profile: platform, scope, policy, safe harbor        │
+│  ✓ Reward structure: bounty table, bonus programs, swag         │
+│  ✓ Scope analysis: in-scope domains/apps, out-of-scope items    │
+│  ✓ Disclosed reports: top paid vulns, common CWEs, N/A patterns │
+│  ✓ Response metrics: time to first response, triage, bounty     │
+│  ✓ Hunt readiness: go/no-go recommendation with rationale       │
+├─────────────────────────────────────────────────────────────────┤
+│  SUPERCHARGED (when you connect your tools)                      │
+│  + Platform API: live scope, real-time stats, report history     │
+│  + Vulnerability DB: CVE mapping for in-scope technologies       │
+│  + Asset discovery: pre-mapped attack surface for scope items    │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -142,6 +142,24 @@ Connect your tools to supercharge this skill:
 
 ---
 
+## Disclosed Reports
+
+[Overview of disclosed reports accessible through program, including counts by category, notable high-impact findings, and any public write-ups]
+
+---
+
+## AI & Automation Landscape
+
+| Field | Value |
+|-------|-------|
+| **AI in Scope** | [Yes/No — specific AI features?] |
+| **Prompt Injection Reports** | [Any disclosed? Accepted/rejected?] |
+| **AI-Specific Bounty Table** | [Different payouts for AI vulns?] |
+| **XBOW/Bot Activity** | [Signs of automated hunting? Duplicate risk from AI tools?] |
+| **OWASP LLM Scope** | [Does program reference OWASP LLM Top 10?] |
+
+---
+
 ## Response Metrics
 
 | Metric | Value |
@@ -250,6 +268,18 @@ If vulnerability database connected:
 3. Identify unpatched or commonly misconfigured components
 ```
 
+### Step 5b: Assess AI & Automation Landscape
+
+Check for AI-specific program features:
+1. Search for "AI" or "LLM" in program scope and policy
+2. Check if program has specific AI vulnerability categories
+3. Search for disclosed AI/prompt injection reports on the program
+4. Assess XBOW/automation duplicate risk — look for high volume of recent reports
+5. Note if program uses HackerOne's AI Bug Bounty framework
+6. Check for different bounty tables for AI vs traditional vulns
+
+Context: As of 2025, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%.
+
 ### Step 6: Synthesize
 
 ```
@@ -276,6 +306,37 @@ Focus on: What pays, what doesn't, ROI estimate
 
 ### Go/No-Go Decision
 Focus on: Should I invest time here? Quick assessment with recommendation
+
+---
+
+## Market Context (2025-2026)
+
+Key data points for program evaluation:
+
+| Metric | Value | Source |
+|--------|-------|--------|
+| HackerOne total annual payouts | $81M (13% YoY increase) | HackerOne 9th Annual Report |
+| Top 10 programs paid | $21.6M combined | HackerOne 2025 |
+| AI vulnerability reports | 210% increase YoY | HackerOne 2025 |
+| Prompt injection reports | 540% increase YoY | HackerOne 2025 |
+| Programs with AI in scope | 1,121 (270% YoY increase) | HackerOne 2025 |
+| Avg pentest findings | 12 vulns, 16% high/critical | HackerOne 2025 |
+| Bug bounty high/critical rate | 25% of submissions | HackerOne 2025 |
+| Top vulnerability type (bounty) | XSS (but declining) | HackerOne 2025 |
+| Fastest growing vuln class | Authorization flaws (IDOR, BOLA) | HackerOne 2025 |
+| Declining vuln classes | XSS, SQLi | HackerOne 2025 |
+
+Notable new programs (2025-2026):
+- Samsung: up to $1M for critical mobile vulns
+- Crypto.com: up to $2M for critical security vulns
+- Microsoft Zero Day Quest: $1.6M+ paid in inaugural event (Azure, Copilot, M365)
+- Nvidia + Intigriti: Bug bounty covering core AI assets
+- Czech Republic government: Public sector bug bounty via Hackrate
+
+Competition awareness:
+- XBOW reached #1 on HackerOne US leaderboard with 1,000+ automated reports
+- 70% of researchers now use AI tools in hunting
+- Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
 
 ---
 
