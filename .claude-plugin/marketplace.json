@@ -1,0 +1,13 @@
+{
+  "name": "cohunt",
+  "owner": {
+    "name": "Thomas Sheil"
+  },
+  "plugins": [
+    {
+      "name": "bug-bounty",
+      "source": "./bug-bounty",
+      "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities."
+    }
+  ]
+}

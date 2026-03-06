@@ -1,0 +1,8 @@
+{
+  "name": "bug-bounty",
+  "version": "0.1.0",
+  "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities.",
+  "author": {
+    "name": "Thomas Sheil"
+  }
+}
