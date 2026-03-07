@@ -43,7 +43,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 
 3. **Analyze scope** — Cross-reference recon findings against program scope. Flag any gray areas or out-of-scope assets discovered during recon.
 
-4. **Assess competition & duplicate risk** — Evaluate what autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil) and other hunters have likely already tested. Factor in disclosed reports, program age, and hunter activity. XBOW reached #1 on HackerOne with 1,400+ zero-days; Big Sleep found 20+ OSS flaws; CAI won 5 major CTFs — these tools define the competitive baseline.
+4. **Assess competition & duplicate risk** — Evaluate what autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent) and other hunters have likely already tested. Factor in disclosed reports, program age, and hunter activity. XBOW reached #1 on HackerOne with 1,400+ zero-days; Big Sleep found 20+ OSS flaws; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs — these tools define the competitive baseline.
 
 5. **Build a hunt plan** — Synthesize program research and recon data into a prioritized hunting plan with specific test cases, time budget, and recommended tools. Prioritize areas where human hunters have an edge over autonomous tools.
 
@@ -57,7 +57,7 @@ Step 2: Run program research (web search + platform API if connected)
 Step 3: Run target recon (curl, dig, web search + asset discovery if connected)
 Step 4: Cross-reference findings with scope
 Step 5: Assess competition — what have autonomous agents and other hunters likely already found?
-Step 6: Map OWASP frameworks — apply LLM Top 10, Agentic Top 10 (ASI01-ASI10), or standard Top 10 based on target type
+Step 6: Map OWASP frameworks — apply LLM Top 10, Agentic Top 10 (ASI01-ASI10), MCP Top 10 (MCP01-MCP10), or standard Top 10 based on target type
 Step 7: Prioritize targets by (reward × likelihood) / (competition + duplicate risk)
 Step 8: Select testing approach — match vuln classes to hunter strengths
 Step 9: Generate specific first test cases with expected payloads
@@ -94,6 +94,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Supply chain analysis** | Reviewing repo configs, hooks, MCP configs for backdoors | Claude Code CVEs (hooks injection, env var exfiltration) |
 | **Agentic browser exploitation** | Zero-click hijacking of autonomous browsing agents | PleaseFix/PerplexedBrowser: calendar invites → file system exfiltration |
 | **Promptware kill chains** | Multi-stage prompt injection traversing 4+ kill chain stages | Injection → persistence → lateral movement → exfiltration chains |
+| **Documentation supply chain** | Poisoned library docs/custom rules served via MCP to AI agents | ContextCrush: trusted docs → env file theft, file deletion |
+| **Exposed agent infrastructure** | Scanning for unsecured MCP gateways, admin panels, agent configs | Clawdbot: 2,000+ exposed gateways with API keys, OAuth tokens, conversation histories |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -151,6 +153,7 @@ Avoid competing directly with autonomous tools on:
 ## OWASP Framework Mapping
 [Which OWASP framework(s) apply to this target and key risk IDs to test]
 - Agentic Top 10 (ASI01-ASI10): [if target has autonomous agent features]
+- MCP Top 10 (MCP01-MCP10): [if target uses MCP integrations — tool poisoning, supply chain, shadow servers, auth gaps]
 - LLM Top 10 2025: [if target has LLM features — note LLM07 System Prompt Leakage, LLM08 Vector/Embedding Weaknesses]
 - Standard Top 10: [for traditional web components]
 - AIVSS scoring: [use OWASP AIVSS v0.5+ for AI-specific severity scoring in reports]
@@ -177,7 +180,7 @@ Avoid competing directly with autonomous tools on:
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
 - Time estimates must be realistic
 - Duplicate risk assessment must reference actual disclosed reports when available
-- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil) — simple vulns they'd catch should be deprioritized
+- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security) — simple vulns they'd catch should be deprioritized
 - Chain opportunities must reference specific findings from recon, not hypotheticals
 - The session brief must be actionable — a hunter should be able to start testing immediately after reading it
 - Session should complete in 15-30 minutes — if recon is slow, report partial findings and note gaps

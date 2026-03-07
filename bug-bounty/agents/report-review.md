@@ -131,6 +131,11 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Agentic browser exploitation (PleaseFix pattern) demonstrates zero-click trigger mechanism — attacker content → autonomous agent processes → impact without user interaction
 □ Docker/container AI supply chain finding (DockerDash pattern) demonstrates metadata label → MCP Gateway → compromise path
 □ Shadow Escape pattern: confirms exfiltration operates within authorized identity boundaries (not just external network exfil)
+□ Documentation supply chain (ContextCrush pattern): if finding involves MCP-served docs/custom rules, demonstrates injection → agent execution path with no sanitization
+□ LLM framework serialization (LangGrinch pattern): if finding involves LangChain/LlamaIndex/Haystack, demonstrates prompt cascading through serialization/deserialization paths
+□ Exposed agent infrastructure (Clawdbot pattern): if finding involves exposed MCP gateways/admin panels, quantifies what data is accessible (API keys, tokens, conversation histories)
+□ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings
+□ MCP installation flow abuse (Cursor MCPoison pattern): demonstrates trust assumption bypass during MCP server installation or setup
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -228,7 +233,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 **0din (Mozilla):** GenAI-specific platform covering GPT-4, Gemini, LLaMa, Claude. Bounties $500–$15K. Specialized in prompt injection, jailbreaking, and LLM safety testing. Different expectations than general bug bounty — focus on reproducibility across model versions.
 
-**huntr (Protect AI):** AI/ML-specific platform for open-source repos. 50.5% fix rate — expect slower resolution. Focus on demonstrating real-world impact beyond lab conditions.
+**huntr (Protect AI):** AI/ML-specific platform for open-source repos. Bounties up to $50,000. 50.5% fix rate — expect slower resolution. Reports get CVEs assigned and go public on day 90. Focus on demonstrating real-world impact beyond lab conditions. LangChain awarded its maximum-ever $4,000 bounty through huntr (LangGrinch, CVE-2025-68664).
 
 ## Chain Assessment (if applicable)
 
@@ -263,7 +268,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs. The bar is rising.
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs. The bar is rising.
 11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
 

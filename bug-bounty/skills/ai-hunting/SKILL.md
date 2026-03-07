@@ -95,10 +95,13 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Executes tools inside isolated Kali Linux containers; integrates Nmap, Metasploit, Subfinder, Nuclei, SQLMap via JSON config
 - Open-source (MIT); GitHub: `CyberSecurityUP/NeuroSploit`
 
-**Pentagi:**
-- Fully autonomous AI-powered agent system designed for penetration testing
-- Sandboxed Docker environment with 20+ tools (Nmap, Metasploit, SQLMap)
-- Long-term memory for research findings; integrated browser and external search APIs
+**PentAGI:**
+- Fully autonomous multi-agent AI pentesting platform coordinating researcher, developer, and executor agent roles (Go-based, open-source)
+- Sandboxed Docker environment with 20+ tools (Nmap, Metasploit, SQLMap); isolated execution for safety
+- Graphiti-powered knowledge graph using Neo4j for long-term memory of research findings
+- Integrated browser and external search APIs for dynamic reconnaissance
+- Best for: autonomous pentesting workflows requiring cross-tool coordination and persistent memory
+- GitHub: `vxcontrol/pentagi`
 
 **Reaper (Ghost Security):**
 - Open-source agentic web app security testing and tampering tool
@@ -166,9 +169,11 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - GitHub: emerging open-source project
 
 **Zen-AI-Pentest:**
-- Open-source penetration testing framework combining autonomous agents with standard security utilities (February 2026)
-- Integrates with common security tools while adding AI-driven decision-making
-- GitHub: emerging open-source project
+- Python-based open-source framework wrapping 20+ established security tools (Nmap, SQLMap, Metasploit, Burp Suite, Gobuster, Nuclei, BloodHound) under an AI-driven orchestration layer (February 2026)
+- Uses LLMs to make strategic decisions and adjust testing approaches based on discovered information
+- CI/CD integration with GitHub Actions, GitLab CI, and Jenkins
+- Best for: automated pentest pipelines combining traditional tools with AI-driven strategy
+- GitHub: `SHAdd0WTAka/Zen-Ai-Pentest`
 
 **Penligent (Autonomous Security Agent):**
 - Fully autonomous Security Agent with its own runtime environment — unlike PentestGPT (AI copilot for human), Penligent executes commands, analyzes return traffic, and plans next moves autonomously
@@ -350,6 +355,8 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **mcp-remote OAuth RCE** | CVE-2025-6514 (CVSS 10.0): OS command injection via malicious authorization_endpoint in mcp-remote npm package (437K+ downloads) | Critical |
 | **DockerDash MCP Gateway** | Malicious Docker image labels compromise environments via Ask Gordon AI MCP Gateway — data exfil of container details, network topology | High-Critical |
 | **Shadow Escape (Zero-Click MCP)** | Hidden instructions in documents cause MCP-enabled AI to exfiltrate PII from connected databases and CRM systems within authorized identity boundaries | Critical |
+| **ContextCrush (Documentation Supply Chain)** | Malicious instructions injected into trusted documentation served via MCP servers (e.g., Context7's "Custom Rules"). AI coding assistants consume poisoned library docs as trusted context, executing attacker instructions (env file theft, file deletion) | Critical |
+| **LLM Framework Serialization** | Untrusted LLM-influenced metadata deserialized as objects (LangGrinch/CVE-2025-68664 pattern). Single prompt cascades through serialization in streaming operations to exfiltrate secrets | Critical |
 
 **Real-World Examples:**
 
@@ -366,6 +373,12 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 
 3. **mcp-remote Supply Chain (CVE-2025-6514):** Critical command injection in the widely-used mcp-remote package allowed malicious MCP servers to achieve RCE via crafted authorization_endpoint URLs. With 437K+ downloads and adoption in major companies, unpatched installs became supply-chain backdoors.
 
+4. **Clawdbot/Moltbot Incident (January 2026):** Open-source AI agent framework went viral over the weekend of Jan 24-25. Within 72 hours: exposed admin panels, critical RCE vulnerabilities, and active infostealer campaigns (RedLine, Lumma, Vidar) targeting its configuration directories. 2,000+ exposed gateways visible on Shodan. Exposed MCP endpoints revealed API keys, OAuth tokens, bot credentials, and conversation histories. During the rushed rebranding to Moltbot, scammers hijacked original X and GitHub handles to promote fake $CLAWD token. Demonstrates cascading risks of viral AI agent adoption without security review.
+
+5. **ContextCrush (February 2026):** Noma Labs discovered supply chain vulnerability in Context7 (operated by Upstash) — a popular MCP server providing library documentation to AI coding assistants. Attackers could inject malicious instructions through Context7's "Custom Rules" feature; rules served verbatim through the MCP server with no sanitization. PoC showed a poisoned library entry prompting the AI to search for .env files, exfiltrate them, and delete files under the pretext of a "Cleanup" task. Patched February 23, 2026. Pattern: trusted documentation → MCP delivery → agent execution.
+
+6. **LangGrinch (CVE-2025-68664, CVSS 9.3):** Critical serialization injection in LangChain Core where untrusted LLM-influenced metadata could be rehydrated as objects, enabling secret exfiltration and unsafe instantiation. A single text prompt cascading through serialization/deserialization in streaming operations. Impacts ~847M total downloads. LangChain awarded $4,000 — maximum ever for the project. Patched in versions 1.2.5 and 0.3.81. Demonstrates that AI frameworks themselves are high-value targets.
+
 **Implementation Vulnerability Stats:**
 - **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
 - **43% of tested MCP server implementations** contained command injection flaws (March 2025)
@@ -381,7 +394,8 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **11 MCP vulnerability classes** systematically cataloged, including supply chain typosquatting and cross-server context abuse
 - **MCP Security Bench (MSB)** accepted at ICLR 2026 as academic benchmark for MCP attacks
 - VulnerableMCP.info tracks MCP-specific vulnerability database
-- **MCP Security Tools:** MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+- **MCP Security Tools:** mcp-scan v0.4.2 (Invariant Labs, acquired by Snyk Feb 2026 — standard MCP scanner for tool poisoning, rug pulls, cross-origin escalation; static + proxy modes), MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+- **OWASP MCP Top 10** (2026): dedicated security framework for MCP-specific risks — token mismanagement, privilege escalation, command injection, supply chain, tool poisoning, shadow servers
 - **CoSAI MCP Security Whitepaper** (January 27, 2026): Coalition for Secure AI released comprehensive taxonomy identifying **12 core threat categories** and **~40 distinct threats** — tool poisoning, shadow servers, confused deputy problem, identity spoofing via weak authentication, malicious tool metadata manipulation; recommended controls include strong identity chains, zero-trust for AI agents, and sandboxing
 - **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series documenting real attacks (WhatsApp exfiltration, GitHub prompt injection, localhost breach, supply chain attack); MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
@@ -416,6 +430,9 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 7. Test "rug pull" scenarios: can tool definitions change between sessions without re-approval?
 8. Check for command injection in MCP server configuration parameters (especially OAuth/auth endpoints)
 9. Test sandbox/containment escape via symlinks, path traversal, or filesystem operations
+10. Map findings to **OWASP MCP Top 10** risk IDs (MCP01-MCP10) for stronger reports
+11. Test documentation supply chain (ContextCrush pattern): can "custom rules" or contributed docs inject instructions?
+12. Scan for shadow MCP servers (MCP07): unauthorized servers running on enterprise networks without security awareness
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -425,6 +442,25 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - VulnerableMCP.info for known MCP-specific vulnerabilities and affected implementations
 
 ---
+
+### OWASP MCP Top 10 (2026)
+
+A dedicated security framework specifically for Model Context Protocol risks, published by OWASP in early 2026. Complements the Agentic Top 10 by focusing on the protocol layer:
+
+| Risk | Name | Description |
+|------|------|-------------|
+| MCP01 | Token Mismanagement & Secret Exposure | Hardcoded credentials, plaintext token storage, overly broad OAuth scopes in MCP server configurations |
+| MCP02 | Privilege Escalation | MCP tools operating with elevated privileges beyond what tasks require; confused deputy attacks |
+| MCP03 | Command Injection | OS command injection via unsanitized tool parameters, config values, or OAuth endpoints |
+| MCP04 | Software Supply Chain Attacks | Malicious MCP packages, tool definition poisoning in registries, typosquatting on package names |
+| MCP05 | Insufficient Authentication & Authorization | Missing auth on MCP endpoints (38% lack auth entirely), weak session management, no mutual TLS |
+| MCP06 | Tool Poisoning | Hidden malicious instructions in tool descriptions/metadata that manipulate the AI model's behavior |
+| MCP07 | Shadow MCP Servers | Unauthorized or rogue MCP servers operating within enterprise networks without security team awareness |
+| MCP08 | Insecure Data Handling | Sensitive data exposed through MCP tool responses, logging, or inter-tool communication |
+| MCP09 | Lack of Input Validation | Missing validation of tool call parameters, allowing path traversal, SSRF, and injection attacks |
+| MCP10 | Insufficient Logging & Monitoring | No audit trail for MCP tool invocations, making detection and forensics of compromises impossible |
+
+**Testing against OWASP MCP Top 10:** When a target uses MCP integrations, map your findings to these risk IDs (MCP01-MCP10). The framework is especially useful for framing MCP supply chain (MCP04), tool poisoning (MCP06), and shadow server (MCP07) findings in reports.
 
 ### OWASP Top 10 for Agentic Applications (December 2025)
 
@@ -1075,7 +1111,12 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely
 - **Cisco State of AI Security 2026** report confirms expanding threat landscape for AI agent deployments
 - **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity as a driving factor; AI-induced job scarcity driving new influx into freelancing and bug bounty hunting
-- **CrowdStrike 2026 Global Threat Report**: 89% YoY increase in AI-enabled attacks; average eCrime breakout time now **29 minutes**; 90+ organizations already compromised via AI prompt injection in 2025
+- **CrowdStrike 2026 Global Threat Report**: 89% YoY increase in AI-enabled attacks; average eCrime breakout time now **29 minutes** (fastest: 27 seconds); 90+ organizations already compromised via AI prompt injection in 2025; ChatGPT mentioned in criminal forums 550% more than any other model; cloud intrusions up 37% (266% from state-nexus actors)
+- **IBM X-Force 2026 Threat Index**: 44% increase in attacks via public-facing applications; vulnerability exploitation became leading attack cause (40% of incidents); 300,000+ ChatGPT credentials found for sale on dark web; 49% increase in active ransomware groups; ~4x increase in supply chain compromises since 2020
+- **Cisco State of AI Security 2026**: 83% of organizations plan to deploy agentic AI but only 29% report being ready to secure those deployments — massive readiness gap; agentic systems operating in OODA loops interacting via standardized protocols create risk of compromised agents executing unauthorized commands, exfiltrating data, and moving laterally
+- **Bug bounty market**: projected **$2.06B in 2026**, growing at **16.3% CAGR** to $3.98B by 2032; 63% of Fortune 500 run bug bounty programs; for every $1 spent on bounties, companies save $15 ($3B in mitigated losses)
+- **48% of cybersecurity professionals** identify agentic AI as the #1 attack vector heading into 2026, outranking deepfakes, ransomware, and supply chain compromise (Dark Reading poll)
+- **Clawdbot/Moltbot incident** (Jan 2026): viral AI agent framework exposed 2,000+ gateways on Shodan within 72 hours; RedLine/Lumma/Vidar infostealers added it to target lists before most security teams knew it was running
 - **Multi-turn prompt injection** achieves up to **92% success rates** across 8 open-weight models — single-turn defenses are insufficient
 - **LPCI** (Logic-Layer Prompt Control Injection): novel vulnerability class targeting agent logic layers with persistent, conditionally-triggered payloads (CSA Feb 2026, arXiv:2507.10457)
 - **Endor Labs analysis** of 2,614 MCP implementations: 82% use file system operations prone to Path Traversal, 67% use sensitive APIs related to Code Injection, 34% related to Command Injection
