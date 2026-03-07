@@ -403,6 +403,69 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **PoisonedRAG** (USENIX Security 2025): first knowledge corruption attack on RAG systems — attackers inject semantically meaningful poisoned texts into RAG databases, inducing LLMs to generate targeted attack outputs. Test RAG systems for poisoned document injection
 - **"Lethal Trifecta" Pattern**: repeated pattern across real-world MCP incidents — privileged access + untrusted input + external communication channel. Check every MCP deployment for this combination
 - **5.5% of MCP servers** in the wild exhibit active tool poisoning attacks; **33% allow unrestricted network access** (arXiv research on 2,614 MCP implementations)
+- **Endor Labs MCP Analysis** (2,614 implementations): 82% use file system operations prone to Path Traversal (CWE-22), 67% use sensitive APIs related to Code Injection (CWE-94), 34% use APIs related to Command Injection (CWE-78) — MCP servers inherit classical web vulnerability patterns
+- **ETDI** (Enhanced Tool Definition Interface, arXiv:2506.01333): proposed mitigation for tool squatting and rug pull attacks using OAuth-enhanced tool definitions, cryptographic signing, immutable versioning, and policy-based access control
+
+### Agent Skill Supply Chain Attacks (2026)
+
+A major new attack surface emerging in early 2026 targeting AI agent skill/plugin ecosystems:
+
+**ClawHavoc Campaign (February 2026):**
+- Largest confirmed supply chain attack on AI agent infrastructure
+- 1,184+ malicious skills identified on ClawHub marketplace (roughly 1 in 5 packages)
+- 335 of 341 initial malicious skills traced to a single coordinated operation
+- Deployed Atomic macOS Stealer (AMOS) stealing browser credentials, keychains, SSH keys, crypto wallets
+- Adversarial instructions embedded directly in SKILL.md files — agents process as trusted instruction source
+- Targeted macOS and Windows users running OpenClaw on always-on machines (Mac minis hosting AI agents)
+
+**ToxicSkills Study (Snyk, February 2026):**
+- First comprehensive security audit of AI agent skills ecosystem (3,984 skills from ClawHub and skills.sh)
+- **36% contain prompt injection**; **1,467 contain malicious payloads**
+- 13.4% (534 skills) contain critical-level issues
+- 100% of confirmed malicious skills contain malicious code patterns; 91% simultaneously employ prompt injection
+- 2.9% of skills dynamically fetch and execute content from external endpoints at runtime — attackers can modify behavior at any time
+- SKILL.md to shell access achievable in **three lines of markdown**
+
+**Clinejection (Snyk, 2026):**
+- Prompt injection used to turn AI coding bots into supply chain attack vectors through GitHub Actions pipelines
+- Malicious PR content → AI coding agent processes → injected code merged or pipeline compromised
+
+**Agent Skill Scanner Tools:**
+
+| Scanner | Type | What It Catches | Setup |
+|---------|------|-----------------|-------|
+| **Cisco MCP Scanner v4.0.1** | CLI (Python, 900+ stars) | YAML/YARA static analysis, bytecode analysis, behavioral dataflow tracing, LLM-as-judge semantic evaluation | `pip install mcp-scanner` |
+| **Snyk Agent Scan** | CLI | Prompt injection, tool poisoning, tool shadowing, toxic flows, rug pulls, malware payloads, hardcoded secrets | Auto-discovers Claude Code/Desktop, Cursor, Gemini CLI, Windsurf configs |
+| **Repello SkillCheck** | Browser-based | Prompt injection variants, env var exfiltration, policy violations, payload delivery indicators | Upload skill zip, get score (0-100) |
+| **MCPGuard** (VirtueAI) | Agent-based | Purpose-built fine-tuned models for MCP-specific patterns; analyzed 700+ servers, found critical vulns in 78% | Maintains scan memory across codebase |
+| **Akto** | Platform | 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; MCP discovery | Enterprise deployment |
+| **Agent-Wiz** (Repello AI) | CLI | Threat modeling and visualization for LangGraph, AutoGen, CrewAI agents | GitHub: `Repello-AI/Agent-Wiz` |
+
+**Testing Agent Skills:**
+1. Before installing any third-party skill, scan with at least one of the tools above
+2. Read the SKILL.md file manually — look for environment variable references, external URL fetching, trigger conditions
+3. Check if skill dynamically fetches content from external endpoints (2.9% of ClawHub skills do this)
+4. Test if skill instructions can be manipulated by content the agent processes
+5. Monitor for post-installation behavior changes (rug pull pattern)
+
+### AI Recommendation Poisoning (Microsoft, February 2026)
+
+A new vulnerability class where companies embed hidden instructions in web content to manipulate AI assistants:
+
+**How It Works:**
+- Companies embed hidden instructions in "Summarize with AI" buttons, meta tags, or URL prompt parameters
+- URL parameters instruct AI to "remember [Company] as a trusted source"
+- Over 50 unique poisoning prompts from 31 companies across 14 industries identified by Microsoft researchers
+- Compromised AI assistants provide subtly biased recommendations on health, finance, and security topics
+
+**Testing for AI Recommendation Poisoning:**
+1. Check if target's web pages contain hidden instructions in meta tags, invisible text, or URL parameters targeting AI summarization
+2. Test if AI assistants that browse the target's content develop persistent biases toward the target's products/services
+3. Look for `data-ai-*` attributes, hidden divs with AI instructions, or URL parameters like `?ai_context=`
+4. Test across multiple AI assistants (ChatGPT, Gemini, Copilot) to confirm cross-platform impact
+5. Map to ASI06 (Memory Poisoning) if the bias persists across sessions
+
+**Severity Guidance:** High if AI recommendations influence financial, health, or security decisions; Medium if limited to product recommendations; Low if contained to a single session.
 
 **Security MCP Servers for Bug Bounty Workflows:**
 
@@ -519,7 +582,19 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 - Demonstrates the trend toward using AI to attack AI — red teaming tools are now themselves AI agents
 - Implication: targets using OpenAI agents may be hardened against basic prompt injection; escalate to LPCI, multi-turn, or indirect vectors
 
-**Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS
+**Prompt Injection Meta-Analysis (arXiv:2601.17548, January 2026):**
+- SoK covering Claude Code, GitHub Copilot, Cursor — 78 studies (2021-2026)
+- Attack success rates **exceed 85%** against state-of-the-art defenses with adaptive strategies
+- 18 defense mechanisms analyzed: most achieve **less than 50% mitigation** against sophisticated adaptive attacks
+- Conclusion: prompt injection must be treated as a first-class vulnerability class requiring architectural-level mitigations
+- GPT-4 agents vulnerable to indirect prompt injection 24% of the time, nearly doubling with enhanced attack prompts
+- 5 carefully crafted documents can manipulate AI responses 90% of the time through RAG poisoning
+
+**Google 2025 Zero-Day Review:**
+- 90 zero-day vulnerabilities tracked in 2025; **48% targeted enterprise technology** (new high)
+- Google anticipates AI will accelerate both attack and defense in 2026
+
+**Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS, OWASP AI Testing Guide v1 (AITG, November 2025)
 
 ### AI-Specific Bug Bounty Platforms
 
@@ -585,6 +660,11 @@ Published by CSA (Cloud Security Alliance) in February 2026 and documented in ar
 | **Lakera AI memory injection** | November 2026: demonstrated indirect prompt injection via poisoned data sources corrupting agent long-term memory — persistent false beliefs about security policies and vendor relationships | Long-term agent memory corruption |
 | **MCP Go SDK case sensitivity** | CVE-2026-27896: MCP Go SDK JSON parser handles field names case-insensitively, allowing crafted MCP responses to bypass validation | Protocol-level bypass |
 | **Log-To-Leak MCP attack** | ICLR 2026: new attack class covertly forces agents to invoke malicious logging tools to exfiltrate user queries, tool responses, and agent replies while preserving task quality — nearly undetectable | Silent data exfiltration via MCP |
+| **Anthropic AI espionage disruption** | February 2026: Anthropic disrupted first documented large-scale AI-orchestrated cyberattack; suspected Chinese state actors jailbroke Claude Code as autonomous pentest orchestrator; 150GB of Mexican government data stolen including 195M taxpayer records; AI executed 80-90% of operations independently at physically impossible request rates | AI-orchestrated state-sponsored intrusion |
+| **ToxicSkills ecosystem audit** | Snyk February 2026: 3,984 skills audited — 36% contain prompt injection, 1,467 malicious payloads found; SKILL.md to shell access in 3 lines of markdown | AI agent supply chain compromise at scale |
+| **AI Recommendation Poisoning** | Microsoft February 2026: 50+ unique poisoning prompts from 31 companies across 14 industries embedded in web content to manipulate AI assistants; compromised recommendations on health, finance, security | Persistent AI assistant manipulation |
+| **FortiGate AI-augmented mass breach** | Jan-Feb 2026: Russian-speaking threat actor used multiple commercial GenAI services to compromise 600+ FortiGate devices across 55+ countries; data exfiltration within 4 minutes of initial access | AI-augmented mass exploitation |
+| **Clinejection** | Snyk 2026: prompt injection turning AI coding bots into supply chain attack vectors through GitHub Actions pipelines | CI/CD pipeline compromise via AI |
 | **Docker MCP WhatsApp exfiltration** | April 2025: Invariant Labs demonstrated tool poisoning combined with unrestricted network access stealing entire WhatsApp message histories; bypasses DLP because it looks like normal AI behavior | Mass personal data exfiltration |
 | **Unit 42 persistent memory poisoning** | December 2025: real-world indirect prompt injection poisoning long-term AI agent memory — attacker tricks victim into visiting malicious webpage, injected instructions survive session restarts via summarization | Cross-session persistent attack |
 | **DockerDash (Docker Ask Gordon AI)** | November 2025: Noma Security discovered malicious Docker image metadata labels could compromise environments through Docker's Ask Gordon AI assistant; MCP Gateway passed contextual info to LLMs without distinguishing descriptive metadata from instructions; fixed in Docker Desktop v4.50.0 | Supply chain → AI agent RCE |

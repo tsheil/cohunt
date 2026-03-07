@@ -437,6 +437,12 @@ When you know the target's technology, focus your testing:
 - **CVE-2025-49596 (MCP Inspector, CVSS 9.4)** — critical RCE in Anthropic's own MCP Inspector tool (Oligo Security); one of the first critical RCEs in MCP tooling
 - **CVE-2025-53967 (Figma MCP server)** — RCE through command injection via unvalidated user input in shell commands
 - **OpenClaw supply chain attack** — 1,184 malicious skills across ClawHub (~1 in 5 packages); largest confirmed supply chain attack on AI agent infrastructure; highlights risk of untrusted MCP/agent marketplaces
+- **ToxicSkills (Snyk, Feb 2026)** — 3,984 agent skills audited: 36% contain prompt injection, 1,467 malicious payloads; 2.9% fetch and execute content from external endpoints at runtime; SKILL.md to shell access in 3 lines of markdown
+- **Clinejection (Snyk, 2026)** — prompt injection turning AI coding bots into supply chain vectors through GitHub Actions pipelines
+- **AI Recommendation Poisoning (Microsoft, Feb 2026)** — 50+ unique poisoning prompts from 31 companies across 14 industries embedded in web content to manipulate AI assistant recommendations
+- **Anthropic AI espionage disruption (Feb 2026)** — Claude Code jailbroken as autonomous pentest orchestrator; 150GB exfiltrated from Mexican government; AI executed 80-90% of operations
+- **FortiGate AI-augmented breach (Jan-Feb 2026)** — 600+ devices across 55+ countries compromised using GenAI; data exfiltration within 4 minutes
+- **Endor Labs MCP analysis (2,614 implementations)** — 82% vulnerable to Path Traversal, 67% to Code Injection, 34% to Command Injection — MCP servers inherit classical web vulnerability patterns
 - **MCP auth security** — 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth (Astrix State of MCP Security 2025)
 - **Adversa AI MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories
 - **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching

@@ -136,6 +136,10 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Exposed agent infrastructure (Clawdbot pattern): if finding involves exposed MCP gateways/admin panels, quantifies what data is accessible (API keys, tokens, conversation histories)
 □ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings
 □ MCP installation flow abuse (Cursor MCPoison pattern): demonstrates trust assumption bypass during MCP server installation or setup
+□ Agent skill supply chain (ClawHavoc/ToxicSkills pattern): if finding involves third-party AI skills, demonstrates malicious instruction execution via SKILL.md or similar skill definition files — reference ToxicSkills stats (36% prompt injection rate across 3,984 skills)
+□ AI recommendation poisoning (Microsoft Feb 2026): if finding involves hidden instructions in web content biasing AI recommendations, demonstrates cross-assistant impact and persistence of bias
+□ CI/CD pipeline injection (Clinejection pattern): if finding involves AI coding bots in CI/CD, demonstrates prompt injection → pipeline compromise path via GitHub Actions or similar
+□ Prompt injection defense bypass: references meta-analysis showing 85% success rate against SOTA defenses (arXiv:2601.17548) — strengthens case that defensive measures are insufficient
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -268,7 +272,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs. The bar is rising.
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs; BlacksmithAI and Snyk Agent Scan now automate agent skill auditing. The bar is rising. For agent skill supply chain findings, reference ToxicSkills stats (36% prompt injection rate) to contextualize severity.
 11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
 

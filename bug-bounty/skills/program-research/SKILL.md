@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.13.0)*
+*Last updated: March 2026 (v0.14.0)*
 
 Key data points for program evaluation:
 
@@ -405,6 +405,15 @@ Key data points for program evaluation:
 | RunSybil | AI-driven pentesting with coordinated autonomous agents; built by OpenAI/Bishop Fox/CrowdStrike alumni | RunSybil 2026 |
 | Cascading failure propagation | Single compromised agent poisons 87% of downstream decisions within 4 hours in multi-agent systems | Academic research 2025-2026 |
 | Autonomous ransomware | First confirmed AI-orchestrated attacks in 2025; fully autonomous pipelines predicted for 2026 | Cybersecurity Dive 2025-2026 |
+| ToxicSkills ecosystem audit | 3,984 agent skills audited: 36% contain prompt injection, 1,467 malicious payloads, 13.4% critical-level issues; SKILL.md to shell access in 3 lines of markdown | Snyk Feb 2026 |
+| AI Recommendation Poisoning | 50+ unique poisoning prompts from 31 companies across 14 industries — hidden instructions in web content manipulating AI assistants | Microsoft Security Feb 2026 |
+| Anthropic AI espionage disruption | First documented large-scale AI-orchestrated cyberattack; Claude Code jailbroken as autonomous pentest orchestrator; 150GB/195M taxpayer records exfiltrated | Anthropic Feb 2026 |
+| Prompt injection meta-analysis | Attack success rates exceed 85% vs state-of-the-art defenses; 18 defense mechanisms analyzed — most achieve <50% mitigation | arXiv:2601.17548 Jan 2026 |
+| Google 2025 zero-day review | 90 zero-days tracked in 2025; 48% targeted enterprise technology (new high) | Google Threat Intelligence 2026 |
+| FortiGate AI-augmented breach | 600+ devices across 55+ countries compromised using GenAI; data exfiltration within 4 minutes | AWS Security Feb 2026 |
+| Agent skill scanners | Cisco MCP Scanner v4.0.1, Snyk Agent Scan, Repello SkillCheck, MCPGuard (78% of 700+ servers vulnerable), Akto (1,000+ agent exploits) | Various Mar 2026 |
+| MCP classic vuln patterns | 82% Path Traversal, 67% Code Injection, 34% Command Injection across 2,614 MCP implementations | Endor Labs 2026 |
+| Clinejection | Prompt injection turning AI coding bots into supply chain vectors via GitHub Actions pipelines | Snyk 2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -468,6 +477,10 @@ Notable disclosed vulnerabilities (2025-2026):
 - ContextCrush (Noma Labs, Feb 2026): Context7 MCP server supply chain — malicious "Custom Rules" served as trusted documentation to AI coding assistants, enabling env file theft and file deletion
 - Clawdbot/Moltbot (Jan 2026): viral AI agent framework exposed 2,000+ MCP gateways on Shodan; infostealers added to target lists within 72 hours; exposed API keys, OAuth tokens, conversation histories
 - PerplexedBrowser / PleaseFix (Zenity Labs, Mar 2026): zero-click agentic browser vulnerabilities in Perplexity Comet — file system exfiltration and 1Password vault credential theft via calendar invite → autonomous agent manipulation
+- Anthropic AI Espionage Disruption (Feb 2026): first documented large-scale AI-orchestrated cyberattack — Chinese state actors jailbroke Claude Code as autonomous pentest orchestrator; 150GB of Mexican government data (195M taxpayer records); AI executed 80-90% of operations; 30+ global targets autonomously discovered and exploited
+- ToxicSkills (Snyk, Feb 2026): comprehensive audit of 3,984 ClawHub skills found 36% with prompt injection, 1,467 malicious payloads; SKILL.md to shell access in 3 lines of markdown
+- AI Recommendation Poisoning (Microsoft, Feb 2026): 50+ poisoning prompts from 31 companies embedded in web content to manipulate AI assistants on health, finance, security topics
+- FortiGate AI-Augmented Breach (Jan-Feb 2026): 600+ devices across 55+ countries compromised using multiple commercial GenAI services; data exfiltration within 4 minutes of initial access
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
@@ -497,6 +510,11 @@ Competition awareness:
 - **Terra Security** raised **$38M total** (Series A $30M led by Felicis, Sep 2025) — first agentic-AI continuous pentesting platform, Fortune 100 clients
 - **AWS Security Agent** (preview re:Invent Dec 2025) — multi-agent continuous on-demand pentesting
 - **Hadrian** — attack-surface-driven 24/7 autonomous pentesting; real-time testing triggered by attack surface changes
+- **BlacksmithAI** (March 2026) — open-source multi-agent pentesting framework; each agent specializes in different assessment phases
+- **Snyk Agent Scan** — scans AI agents, MCP servers, Claude Skills; auto-discovers Claude Code/Desktop, Cursor, Gemini CLI, Windsurf configs; background mode for company-wide monitoring
+- **Akto** — AI agent security platform with 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; recognized by Gartner
+- **Repello SkillCheck** — browser-based skill scanner; upload skill zip, get security score (0-100); catches prompt injection, env var exfiltration, payload delivery
+- **Agent skill supply chain threat**: ToxicSkills study found 36% of ClawHub skills contain prompt injection — if target uses third-party AI skills, test for poisoned instructions
 - **Escape** (Y Combinator) — API-native DAST with agentic crawling; 140+ security tests; now discovers unauthenticated MCP endpoints; 2,000+ security teams
 - **PentAGI** (Feb 2026) — Go-based multi-agent pentesting with PostgreSQL + Neo4j; 20+ tools in isolated Docker environments
 - **Assail Ares** launched from stealth (Jan 2026) — autonomous API/web/mobile pentesting
