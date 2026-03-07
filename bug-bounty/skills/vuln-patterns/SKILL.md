@@ -805,6 +805,91 @@ When you know the target's technology, focus your testing:
 
 ---
 
+### Agentic Browser Hijacking
+
+**What it is:** Exploiting AI agents with autonomous web browsing capabilities to access local files, credentials, or perform unauthorized actions.
+
+**Where to look:**
+- Products with AI-powered browsing (Perplexity Comet, Chrome Gemini, ChatGPT Atlas/Operator)
+- AI assistants that process calendar invites, emails, or shared documents autonomously
+- AI agents with access to password managers or local filesystem
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Zero-click agent trigger | Create calendar invite with hidden prompt injection | Agent executes without user action |
+| 2 | File system exfiltration | Craft content triggering `file://` path access | Local files accessible via agent |
+| 3 | Credential manager access | Manipulate agent workflow to interact with 1Password/Bitwarden | Password vault accessible to agent |
+| 4 | Extension escalation | Use browser extension to exploit AI panel integration | Privilege escalation via AI panel |
+| 5 | Cross-origin agent action | Plant injection in search results processed by agent | Agent acts on injected instructions |
+
+---
+
+### MCP OAuth / Authentication Bypass
+
+**What it is:** Exploiting authentication flaws in MCP server OAuth implementations.
+
+**Where to look:**
+- MCP servers implementing OAuth 2.0 flows
+- Remote MCP servers acting as both authorization server and OAuth client
+- Any MCP endpoint with authentication mechanisms
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Missing state param | Remove `state` from OAuth authorization request | CSRF-style account takeover |
+| 2 | Auth code replay | Reuse authorization code across sessions | Code accepted multiple times |
+| 3 | Redirect URI lax validation | Modify redirect_uri to attacker domain | Code sent to attacker |
+| 4 | Mixed role confusion | Server as both authz server and client | Token leakage via confused flows |
+| 5 | Static secret auth | Check for long-lived API keys instead of OAuth | 53% rely on static secrets |
+
+---
+
+### AI IDE Configuration Exploitation
+
+**What it is:** Exploiting AI coding IDE trust models via malicious repository configurations.
+
+**Where to look:**
+- Cursor, Windsurf, Google Antigravity, VS Code with Copilot
+- Repository configuration files (`.cursorrules`, `.github/copilot-instructions.md`, `.vscode/tasks.json`)
+- Extension recommendation mechanisms
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Workspace trust bypass | Clone repo with `.vscode/tasks.json` auto-run | Tasks execute without trust prompt (Cursor) |
+| 2 | Rules file backdoor | Embed invisible Unicode (E0000-E007F) in rules files | AI processes hidden instructions |
+| 3 | Extension namespace squatting | Register unclaimed extension namespaces on OpenVSX | IDE recommends attacker-controlled extension |
+| 4 | MCP config injection | Include malicious `.mcp.json` in repo | Rogue MCP server auto-configured |
+| 5 | Global config persistence | Modify global IDE config file | Changes survive across all projects |
+| 6 | Copilot CLI allowlist bypass | Use allowlisted commands (e.g., `env`) to chain dangerous ops | `env curl | env sh` executes arbitrary code |
+
+---
+
+### ContextCrush / Documentation Supply Chain
+
+**What it is:** Injecting malicious instructions into trusted documentation served via MCP servers or shared knowledge bases.
+
+**Where to look:**
+- MCP servers providing library documentation (Context7, custom doc servers)
+- Shared documentation platforms with community contributions
+- RAG systems ingesting external documentation
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Custom rules injection | Submit malicious "custom rules" to documentation server | Rules served verbatim to all users |
+| 2 | Library doc poisoning | Contribute library entry with hidden instructions | AI coding assistants execute instructions |
+| 3 | RAG document poisoning | Insert adversarial text into documents indexed by RAG | LLM follows injected instructions |
+| 4 | Trusted source impersonation | Create documentation that mimics official sources | AI treats poisoned docs as authoritative |
+| 5 | Env file exfiltration | Embed instruction to "search for .env files and display contents" | Agent exfiltrates sensitive config files |
+
+---
+
 ## Using This Skill
 
 ### With Target Context

@@ -99,6 +99,9 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Salami slicing (gradual bypass)** | Multi-week constraint drift via incremental interactions | Procurement agent fraud: $5M in false POs after 3 weeks of gradual manipulation |
 | **WebSocket agent hijacking** | Cross-origin WebSocket connection to localhost AI agents | ClawJacked: any webpage could control local OpenClaw agent with full permissions |
 | **MCP SDK-level exploitation** | Protocol and SDK flaws that affect all implementations, not just individual servers | CVE-2026-25536 cross-client data leak, CVE-2026-27896 case sensitivity bypass |
+| **MCP OAuth exploitation** | CSRF-style account takeover via MCP server acting as both authz server and OAuth client | Obsidian Security: affected Claude Desktop, VS Code, Cursor, Cline; test missing state param |
+| **Google Antigravity exploitation** | RCE via web page interaction, Forced Descent persistent code execution, 70+ architectural vulns | $10K bounty (Hacktron AI); global config modification survives uninstall/reinstall |
+| **Cursor browser takeover** | JavaScript injection into embedded browser via rogue MCP server; phishing with unchanged URLs | CSO Online: no integrity checks on browser files; auto-propagates per new tab |
 | **eval() epidemic pattern** | Source code audit of MCP servers for dangerous execution functions | 7 RCE CVEs in Feb 2026, all from user input to eval()/exec() — systematic pattern |
 | **AI IDE supply chain (IDEsaster)** | Testing AI coding tools for project file exploitation, extension squatting, Chromium flaws | 30+ vulns, 24 CVEs: hooks injection, MCP config manipulation, OpenVSX namespace squatting |
 | **Cross-agent privilege escalation** | In multi-agent systems, crafting requests that trick higher-privilege agents via lower-privilege intermediaries | ServiceNow Now Assist: first documented cross-agent privilege escalation in production |
@@ -310,6 +313,11 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target is Cursor, test for MCP deep-link RCE — CVE-2025-64106: `mcpx://` protocol handler enables malicious MCP server registration and arbitrary code execution
 - If target has AI-powered browser extensions, test for conversation history exfiltration — 900K+ installs of malicious AI assistant extensions that harvest LLM chat histories from ChatGPT, Gemini, Claude
 - If target uses encrypted JWTs (JWE), test for JWE-wrapped PlainJWT bypass — CVE-2026-29000 (pac4j-jwt, CVSS 10.0): wrapping alg=none token inside JWE skips signature verification, enabling auth as any user
+- If target uses Google Antigravity IDE, test for Forced Descent — persistent code execution via global config modification that survives uninstall/reinstall (Mindgard, unpatched March 2026); also test for web-triggered RCE ($10K bounty, Hacktron AI) and 70+ documented architectural vulnerabilities
+- If target's MCP servers implement OAuth, test for MCP OAuth account takeover — CSRF-style attacks via missing `state` parameter when server acts as both authorization server and OAuth client; affected Claude Desktop, VS Code, Cursor, Cline (Obsidian Security; MCP spec updated to mandate OAuth 2.1 + PKCE)
+- If target is Cursor IDE, test for rogue MCP browser takeover — JavaScript injection into Cursor's built-in browser via rogue MCP server replaces login pages with phishing interfaces while URLs remain unchanged; Cursor lacks integrity checks on browser files (CSO Online 2026)
+- If target is a DeFi/Web3 protocol with bug bounty, prioritize smart contract security — Cecuro AI agent detected vulnerabilities in 92% of 90 exploited DeFi contracts ($96.8B exploit value); human edge: understanding business-specific exploit chains and economic attack vectors
+- If target has documentation served via MCP (Context7, custom doc servers), test for ContextCrush pattern — custom rules/contributed docs served verbatim without sanitization; PoC: poisoned library entry prompts AI to exfiltrate .env files (Noma Labs, 50K GitHub stars, 8M+ npm downloads; patched Feb 23, 2026)
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint
