@@ -371,6 +371,12 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
 - **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; 55 automated audit/hardening checks mapped to OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
 - **AgentGuard** — runtime guard for AI agents blocking malicious skills, data leaks, and secret exposure; sub-millisecond latency local PolicyEngine with tamper-evident audit logs; compliance evidence for EU AI Act and SOC 2
+- **Novee Security** ($51.5M funded, January 2026) — AI penetration testing platform with proprietary offensive AI model; founded by Unit 8200/Talpiot veterans; transitions red teaming from scheduled events to continuous operational pressure
+- **Maze** ($31M funded) — AI agents for vulnerability management modeling analyst workflows; deploys thousands of agents to investigate cloud data, proving 80-90% of findings are false positives and identifying exploitable ones
+- **Enkrypt AI MCP Scan + Secure MCP Gateway** — automated MCP scanner with CVSS severity scores and line-level references; open-source Secure MCP Gateway provides real-time AI safety filters between MCP client and servers; GitHub: `enkryptai/secure-mcp-gateway`
+- **MCPScan.ai** — platform with advanced Tool Metadata Scanner using specialized LLM classifier to detect poisoning attempts across MCP tool definitions
+- **MCPTox Benchmark** — first benchmark for evaluating LLM agent vulnerability to tool poisoning on real-world MCP servers; 45 live MCP servers, 353 tools, 1,312 malicious test cases across 10 risk categories; attack success rates exceed 60% on GPT-4o-mini, o1-mini, DeepSeek-R1, Phi-4; GitHub: `zhiqiangwang4/MCPTox-Benchmark`
+- **Palo Alto Networks Cortex AgentiX** — embeds agentic AI across the security platform from code to cloud to SOC; redefines SOC operations with agentic response
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -411,6 +417,20 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Shadow Escape (Zero-Click MCP)** | Hidden instructions in documents cause MCP-enabled AI to exfiltrate PII from connected databases and CRM systems within authorized identity boundaries | Critical |
 | **ContextCrush (Documentation Supply Chain)** | Malicious instructions injected into trusted documentation served via MCP servers (e.g., Context7's "Custom Rules"). AI coding assistants consume poisoned library docs as trusted context, executing attacker instructions (env file theft, file deletion) | Critical |
 | **LLM Framework Serialization** | Untrusted LLM-influenced metadata deserialized as objects (LangGrinch/CVE-2025-68664 pattern). Single prompt cascades through serialization in streaming operations to exfiltrate secrets | Critical |
+| **MCP TypeScript SDK ReDoS** | CVE-2026-0621 (CVSS 8.7): `partToRegExp()` generates regex with nested quantifiers for exploded template variables (e.g., `{/id*}`), causing catastrophic backtracking and 100% CPU utilization via crafted URI in `resources/read` request | High |
+| **Pydantic-AI MCP SSRF** | CVE-2026-25904: overly permissive Deno sandbox settings allow network access to localhost, enabling SSRF against internal services from "sandboxed" MCP Python execution. Project **archived** — will NOT receive a patch | Medium-High |
+| **Copilot CLI Shell Expansion RCE** | CVE-2026-29783: `env` command on Copilot CLI's allowlist used to bypass read-only assessment — `env curl | env sh` downloads and executes malware with zero approval. Exploitable via poisoned README prompt injection (PromptArmor, March 2026) | Critical |
+| **OpenClaw Query String RCE** | CVE-2026-25253 (CVSS 8.8): `gatewayUrl` query parameter auto-establishes WebSocket connection transmitting user auth credentials to attacker-controlled server — 1-click RCE even on localhost-only instances | Critical |
+| **OpenClaw TAR Path Traversal** | CVE-2026-28453: TAR archive extraction fails to validate entry paths, allowing `../../` traversal to write files outside intended directories | High |
+| **OpenClaw SHA-1 Cache Poisoning** | CVE-2026-28479: deprecated SHA-1 used for sandbox identifier cache keys, vulnerable to collision attacks enabling unsafe sandbox state reuse | Medium |
+| **OpenClaw Git Pre-Commit Injection** | CVE-2026-28484: maliciously-named files beginning with dashes inject git flags, leaking `.env` and sensitive files to git history | High |
+| **GlicJack Chrome Gemini Hijack** | CVE-2026-0628 (CVSS 8.8, Palo Alto Unit 42): insufficient policy enforcement in Chrome WebView tag allows malicious extensions to hijack Gemini Live panel — camera/microphone access, screenshots of any website, local file access. Patched in Chrome 143.0.7499.192 | High-Critical |
+| **Copilot JetBrains RCE** | CVE-2026-21516: remote code execution via command injection in GitHub Copilot for JetBrains IDEs | Critical |
+| **ChainLeak (Chainlit)** | CVE-2026-22218 + CVE-2026-22219: arbitrary file read + SSRF via SQLAlchemy data layer in Chainlit AI framework — chained for full cloud environment compromise with no user interaction (Zafran Labs). Fixed in Chainlit 2.9.4 | Critical |
+| **LangChain SSRF via Redirect** | CVE-2026-27795: `RecursiveUrlLoader` fails to handle HTTP redirects manually — attacker supplies benign URL that passes validation, then redirects to internal resources (e.g., AWS metadata at 169.254.169.254). Fixed in @langchain/community >= 1.1.18 | High |
+| **Agentgateway Input Sanitization** | CVE-2026-29791: missing parameter sanitization in MCP-to-OpenAPI conversion — path, query, and header values from MCP tools/call requests sent unsanitized as OpenAPI requests. Fixed in 0.12.0 | Medium-High |
+| **SANDWORM_MODE MCP Injection** | npm supply chain worm (Socket, Feb 2026): 19 typosquatting packages with "McpInject" module deploys malicious MCP server into AI coding assistant configs (Claude Code, Cursor, Windsurf). Rogue MCP tools embed prompt injections to steal SSH keys, AWS credentials, .env files. 48-hour delayed activation with per-machine jitter | Critical |
+| **Pydantic AI SSRF** | CVE-2026-25580: SSRF in URL download functionality (versions 0.0.26 to <1.56.0) — when apps accept message history from untrusted sources, attackers include malicious URLs targeting internal resources. Fixed in 1.56.0 | High |
 
 **Real-World Examples:**
 
@@ -437,6 +457,22 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 
 8. **LangGrinch (CVE-2025-68664, CVSS 9.3):** Critical serialization injection in LangChain Core where untrusted LLM-influenced metadata could be rehydrated as objects, enabling secret exfiltration and unsafe instantiation. A single text prompt cascading through serialization/deserialization in streaming operations. Impacts ~847M total downloads. LangChain awarded $4,000 — maximum ever for the project. Patched in versions 1.2.5 and 0.3.81. Demonstrates that AI frameworks themselves are high-value targets.
 
+9. **SANDWORM_MODE Supply Chain Worm (February 2026):** Socket discovered a self-propagating npm worm using 19 typosquatting packages. Key MCP-specific capability: an "McpInject" module deploys a malicious MCP server and injects it into AI coding assistant configs (Claude Code, Claude Desktop, Cursor, VS Code Continue, Windsurf). The rogue MCP server registers seemingly-harmless tools embedding prompt injections to steal `~/.ssh/id_rsa`, `~/.aws/credentials`, `~/.npmrc`, and `.env` files. Also harvests API keys for 9 LLM providers (Anthropic, Cohere, OpenAI, etc.). Uses 48-hour delayed activation with per-machine jitter. Pattern: npm install → MCP injection → credential theft.
+
+10. **DockerDash Meta-Context Injection (February 2026):** Noma Security disclosed that a single malicious metadata label in a Docker image could compromise the entire Docker environment through Docker's Ask Gordon AI assistant. Three-stage chain: Gordon AI reads malicious instruction → forwards to MCP Gateway → MCP tools execute with zero validation. Noma coined "Meta-Context Injection" for this class where MCP gateways cannot distinguish descriptive metadata from pre-authorized instructions. Fixed in Docker Desktop 4.50.0.
+
+11. **Copilot CLI Malware Download (March 2026):** Two days after GitHub Copilot CLI hit general availability, PromptArmor demonstrated `env curl | env sh` bypasses all protections — downloading and executing malware with zero human approval. The `env` command was on Copilot's read-only allowlist. Works against any cloned repo with a poisoned README containing prompt injection. CVE-2026-29783 assigned for the underlying shell expansion bypass.
+
+12. **PleaseFix/PerplexedBrowser Zero-Click Agent Hijack (March 2026):** Zenity Labs disclosed critical vulnerabilities in agentic browsers including Perplexity Comet. Two exploit paths: (1) zero-click file system exfiltration via attacker-controlled calendar invites triggering autonomous agent execution; (2) credential theft via 1Password takeover without exploiting the password manager itself. Perplexity classified as critical and patched before disclosure. Demonstrates that agentic browsers create fundamentally new attack surfaces.
+
+13. **ForcedLeak Salesforce Agentforce (March 2026):** Varonis disclosed ForcedLeak (CVSS 9.4) — a vulnerability chain in Salesforce's Agentforce platform enabling CRM data exfiltration through indirect prompt injection via Web-to-Lead forms. Attackers embed malicious instructions in the "Description" field, leveraging prompt injection + agent overreach + misconfigured CSP.
+
+14. **Operation Bizarre Bazaar — LLMjacking at Scale (January 2026):** Pillar Security documented the first publicly attributed campaign systematically targeting exposed LLM and MCP endpoints with commercial monetization. 35,000 attack sessions (972/day) targeting 175,000+ exposed Ollama instances across 130 countries. By late January, 60% of observed attack traffic shifted from compute theft to MCP reconnaissance. Operator ran "silver.inc" as a commercial marketplace reselling unauthorized access to 30+ LLM providers.
+
+15. **Notion AI Data Exfiltration (January 2026):** PromptArmor demonstrated hidden white text in Notion documents with prompt injection causes Notion AI to exfiltrate salary data, candidate feedback, and internal role details via invisible image requests. Notion initially closed as N/A on HackerOne before remediating after public disclosure.
+
+16. **ChainLeak — Chainlit Cloud Compromise (March 2026):** Zafran Labs chained CVE-2026-22218 (arbitrary file read) + CVE-2026-22219 (SSRF via SQLAlchemy data layer) in Chainlit AI framework for full cloud environment compromise with no user interaction. Demonstrates that AI framework vulnerabilities can cascade into infrastructure-level access.
+
 **Implementation Vulnerability Stats:**
 - **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
 - **43% of tested MCP server implementations** contained command injection flaws (March 2025)
@@ -456,6 +492,10 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **OWASP MCP Top 10** (2026): dedicated security framework for MCP-specific risks — token mismanagement, privilege escalation, command injection, supply chain, tool poisoning, shadow servers
 - **CoSAI MCP Security Whitepaper** (January 27, 2026): Coalition for Secure AI released comprehensive taxonomy identifying **12 core threat categories** and **~40 distinct threats** — tool poisoning, shadow servers, confused deputy problem, identity spoofing via weak authentication, malicious tool metadata manipulation; recommended controls include strong identity chains, zero-trust for AI agents, and sandboxing
 - **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
+- **Enkrypt AI scan of top 1,000 MCP servers**: 33% had critical vulnerabilities, averaging **5.2 vulnerabilities per server** — systemic quality crisis
+- **MCPTox benchmark results**: tool poisoning attack success rates exceed **60%** on models like GPT-4o-mini, o1-mini, DeepSeek-R1, and Phi-4 across 1,312 malicious test cases
+- **CyberArk advanced tool poisoning variants**: malicious instructions embedded not just in descriptions but in function names, parameter types, required fields arrays, and default values — bypass description-only scanning
+- **MCP protocol now mandates OAuth 2.1 + PKCE** for authentication; Protected Resource Metadata (PRM) mandatory; Resource Indicators required in authorization and token requests (2025-11-25 spec update)
 - **BlueRock MCP Trust Registry** (March 2026): analyzed **7,000+ MCP servers** — **36.7% exposed to SSRF** vulnerabilities; launched MCP Trust Registry (mcp-trust.com) providing security analysis across security rules and tool analysis; disclosed "MCP fURI" SSRF in Microsoft MarkItDown MCP server enabling cloud credential theft via instance metadata
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series documenting real attacks (WhatsApp exfiltration, GitHub prompt injection, localhost breach, supply chain attack); MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
 - **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate user queries, tool responses, and agent replies. Evaluated across 5 real-world MCP servers and 4 LLM agents (GPT-4o, GPT-5, Claude-Sonnet-4, GPT-OSS). Preserves task quality while exfiltrating data — extremely hard to detect
@@ -582,6 +622,18 @@ A new vulnerability class where companies embed hidden instructions in web conte
 29. Test for MCP server SSRF via unrestricted URI handling: does the MCP server accept arbitrary URIs without validation? In cloud deployments, can instance metadata (169.254.169.254) be queried to steal credentials? (BlueRock "MCP fURI" — 36.7% of 7,000+ MCP servers exposed; Microsoft MarkItDown MCP SSRF → AWS credential theft)
 30. Test for AI agent voice/audio extension RCE: if target has voice-call or audio processing extensions, test inbound allowlist bypass via empty caller IDs, suffix matching, or malformed SIP/VoIP headers (CVE-2026-28446, OpenClaw voice-call extension, CVSS 9.8 — pre-auth RCE affecting 42,000+ instances)
 31. Test for JWT alg=none authentication bypass in AI platforms: if target uses JWT-based authentication (especially with encrypted JWTs/JWE), test for PlainJWT wrapping that skips signature verification (CVE-2026-29000, pac4j-jwt, CVSS 10.0 — RSA public key + JWE-wrapped PlainJWT = full auth bypass as any user including admin)
+32. Test for AI CLI tool allowlist bypass: if target AI CLI has a "safe commands" allowlist, can dangerous commands be wrapped via allowed utilities? (CVE-2026-29783, Copilot CLI — `env curl | env sh` bypasses read-only assessment via allowlisted `env` command)
+33. Test for query parameter credential relay: does the AI agent accept connection URLs via query string parameters? Can an attacker-controlled URL steal auth tokens by auto-establishing WebSocket connections? (CVE-2026-25253, OpenClaw — `gatewayUrl` param = 1-click RCE)
+34. Test for MCP SDK ReDoS: does the MCP SDK's URI template processing use regex with nested quantifiers? Can crafted URIs cause catastrophic backtracking and 100% CPU utilization? (CVE-2026-0621, MCP TypeScript SDK — exploded template variables like `{/id*}`)
+35. Test for npm supply chain MCP injection (SANDWORM_MODE pattern): can a malicious npm package inject MCP server configs into AI coding assistant configuration files and register rogue tools with embedded prompt injections? (Socket, Feb 2026 — 19 typosquatting packages, 48-hour delayed activation)
+36. Test for Docker image label injection (DockerDash/Meta-Context Injection pattern): can malicious metadata labels in Docker images trigger AI assistant MCP tools to exfiltrate container details and network topology? (Noma Security — Docker Ask Gordon AI, fixed Desktop 4.50.0)
+37. Test for agentic browser file system access: if target uses an AI-powered browser agent, can attacker-controlled content (calendar invites, documents) trigger autonomous file system exfiltration or credential theft via password manager interaction? (PleaseFix/PerplexedBrowser — Zenity Labs, March 2026)
+38. Test for CRM agent prompt injection via web forms: if target uses AI agents processing Web-to-Lead or contact forms, can injected instructions in form fields trigger CRM data exfiltration? (ForcedLeak, Salesforce Agentforce, CVSS 9.4 — Varonis)
+39. Test for multi-agent cascade injection (OMNI-LEAK pattern): in multi-agent systems, can a single injection in one agent's data source cascade through orchestrator to exfiltrate data via notification/communication agents? (arXiv:2602.13477 — all frontier models except claude-sonnet-4 vulnerable)
+40. Test for semantic chaining jailbreak: can a series of individually benign instructions be chained to produce a forbidden output that no single prompt would trigger? (NeuralTrust, Feb 2026 — effective against Grok 4, Gemini, Seedance)
+41. Test for chain-of-thought hijacking: if target uses reasoning models with visible thinking, can the intermediate reasoning be redirected to bypass safety refusals? (H-CoT, arXiv:2502.12893 — o1 rejection rate drops from 99% to <2%)
+42. Test for AI framework SSRF via redirect: does the AI framework's URL loader follow HTTP redirects to internal resources? Supply a benign URL that passes validation, then redirects to cloud metadata (169.254.169.254). (CVE-2026-27795, LangChain — RecursiveUrlLoader redirect bypass)
+43. Test for identity file poisoning (SOUL.md pattern): can processed documents instruct the AI agent to modify its own configuration/personality files, creating persistent compromise across all future sessions?
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -1121,6 +1173,85 @@ NIST's Center for AI Standards and Innovation (CAISI) launched a formal initiati
 
 ---
 
+### Semantic Chaining Jailbreak (NeuralTrust, February 2026)
+
+A new multimodal jailbreak technique where attackers chain semantically "safe" individual instructions that converge on a forbidden result:
+
+**How It Works:**
+- Unlike traditional jailbreaks using a single harmful prompt, semantic chaining exploits models' compositional reasoning
+- Each individual instruction appears benign and passes content filters
+- The sequence of instructions converges on a forbidden output that no single prompt would produce
+- Notably simple — requires no technical expertise
+
+**Affected Models:** Grok 4, Gemini Nano Banana Pro, Seedance 4.5
+
+**Testing Approach:**
+1. Decompose a forbidden request into multiple benign-sounding sub-tasks
+2. Chain them in sequence within a single conversation
+3. Test if the model produces the forbidden output through composition
+4. Particularly effective against multimodal models processing text + images
+
+**Severity Guidance:** High if semantic chaining bypasses content moderation to produce harmful outputs; Medium if limited to edge cases. Critical differentiator: this bypasses both input filtering and output filtering.
+
+---
+
+### H-CoT: Hijacking Chain-of-Thought (February 2026)
+
+Reasoning models that display intermediate thinking can have their chain-of-thought hijacked to bypass safety:
+
+**Key Findings:**
+- OpenAI o1 typically rejects 99%+ of child abuse/terrorism prompts — under H-CoT attack, rejection rate drops **below 2%**
+- Affects OpenAI o1/o3, DeepSeek-R1, Gemini 2.0 Flash Thinking
+- Exploits the displayed intermediate reasoning as an attack surface
+- arXiv:2502.12893 (Duke University/Accenture)
+
+**Testing Approach:**
+1. Identify if target uses reasoning models with visible chain-of-thought
+2. Craft prompts that redirect the reasoning chain mid-stream
+3. Test if safety refusals can be circumvented by manipulating the reasoning trace
+
+---
+
+### Multi-Agent System Privacy Attacks (ICLR/arXiv 2026)
+
+Three new research papers reveal systemic privacy vulnerabilities in multi-agent systems:
+
+**AgentLeak (arXiv:2602.11510):** First full-stack benchmark for privacy leakage in multi-agent LLM systems. Key finding: multi-agent configs reduce per-channel output leakage (27.2% vs 43.2% single-agent) but introduce **unmonitored internal channels** — inter-agent messages and shared memory. 7-channel taxonomy, 32-class attack taxonomy across 4,979 execution traces.
+
+**OMNI-LEAK (arXiv:2602.13477):** A single indirect prompt injection in a public database can cascade through orchestrator multi-agent patterns — SQL agent → orchestrator → notification agent → data exfiltration. Even a 1/500 success rate in a 100-person company could leak sensitive data within five days. All tested frontier models except claude-sonnet-4 were vulnerable.
+
+**CORBA (arXiv:2502.14529):** Contagious Recursive Blocking Attacks force multi-agent systems into recursive blocking states. 79-100% of AutoGen agents blocked within 1.6-1.9 dialogue turns. Blocking messages appear benign, making detection extremely difficult.
+
+**Inter-Agent Trust Exploitation (ICLR 2026):** 82.4% of tested LLMs can be compromised through inter-agent trust — models that resist direct malicious commands will execute identical payloads when requested by peer agents.
+
+**Testing Approach:**
+1. If target uses multi-agent systems, test inter-agent communication channels for injection
+2. Test if compromising one agent cascades to others via shared state or orchestrator
+3. Test for contagious blocking/DoS attacks across agent networks
+4. Test if agents blindly trust instructions from peer agents
+
+**Severity Guidance:** Critical for multi-agent enterprise deployments; High for dual-agent systems. A single compromised agent can poison 87% of downstream decision-making within 4 hours.
+
+---
+
+### SOUL.md Identity File Poisoning (2026)
+
+Attackers trick AI agents into writing malicious instructions into their identity/personality files (SOUL.md, .cursorrules, etc.) via indirect prompt injection:
+
+**Attack Chain:**
+1. Attacker creates a document with hidden prompt injection
+2. AI agent processes the document and is instructed to modify its own identity file
+3. Malicious instructions persist in the identity file across all future sessions
+4. Every conversation and action the agent takes is now influenced by attacker-controlled instructions
+
+**Testing Approach:**
+1. Check if agent has writable identity/personality files
+2. Test if processed documents can instruct the agent to modify its own configuration
+3. Verify if configuration changes persist across sessions
+4. Test the full chain: document → identity file modification → persistent compromise
+
+---
+
 ### Critical Warning: "AI Slop" Reports
 
 AI slop reports are now a **major industry problem** that has caused the first program shutdowns. In January 2026, **curl ended its bug bounty program** after AI-generated submissions overwhelmed the security team — by July 2025 submission volume spiked to 8x the normal rate, with only 5% of 2025 submissions being genuine vulnerabilities. In six years, not a single AI-only-generated submission discovered a genuine vulnerability. Daniel Stenberg's goal was to "remove the incentive for people to submit crap." The program had paid out $90K+ for 81 genuine vulnerabilities before closing.
@@ -1186,9 +1317,12 @@ These occur when an attacker poisons *input data* that the LLM later processes:
 **Real-World Prompt Injection Incidents (2025-2026):**
 - **Devin AI ($500 test):** A researcher found Devin completely defenseless against prompt injection — manipulated to expose ports, leak access tokens, and install C2 malware
 - **GitHub Copilot RCE (CVE-2025-53773):** Prompt injection allowed remote code execution, potentially compromising millions of developer machines (CVSS 9.6)
-- **First in-the-wild malicious IDPI (Dec 2025):** Palo Alto Unit 42 detected real-world indirect prompt injection designed to bypass an AI-based product ad review system
+- **First in-the-wild malicious IDPI (Dec 2025):** Palo Alto Unit 42 detected real-world indirect prompt injection designed to bypass an AI-based product ad review system; Unit42 later cataloged **22 distinct attacker payload techniques** including visual concealment, obfuscation, and dynamic execution
 - **Cursor IDE (CVSS 9.8):** Prompt injection vulnerabilities in popular AI coding assistant
 - **Microsoft Copilot (CVSS 9.3):** EchoLeak (CVE-2025-32711) demonstrated prompt injection in enterprise AI
+- **GitHub Copilot CLI (CVE-2026-29783):** `env` command allowlist bypass downloads and executes malware with zero approval via poisoned README (PromptArmor, March 2026)
+- **Notion AI data exfil (January 2026):** Hidden white text prompt injection causes Notion AI to exfiltrate salary data via invisible image requests (PromptArmor)
+- **ForcedLeak Agentforce (March 2026):** Web-to-Lead form injection exfiltrates Salesforce CRM data via agent overreach (Varonis, CVSS 9.4)
 
 **Scoping Note:** Not all prompt injections are reportable. If the injected output stays within the user's own session and doesn't change app behavior or access control, it's often "by design" (user sees what LLM outputs, but no harm done).
 

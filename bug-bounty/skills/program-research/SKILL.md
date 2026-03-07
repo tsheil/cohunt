@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.20.0)*
+*Last updated: March 2026 (v0.23.0)*
 
 Key data points for program evaluation:
 
@@ -472,6 +472,36 @@ Key data points for program evaluation:
 | Ransomware AI involvement | ~80% of ransomware attacks now involve AI | MIT Sloan 2026 |
 | Intigriti retesting feature | New submission retesting for validating fixes across all program types with one click | Intigriti 2026 |
 | Microsoft Copilot bounty | $250-$30,000 for AI-specific vulnerabilities | Microsoft 2026 |
+| Microsoft "In Scope by Default" expansion | All online services now in scope; new services auto-included on launch; $17M+ paid to 344 researchers in 2025 | Microsoft Dec 2025 |
+| Apple Security Bounty max payout | Doubled to **$2M** base; with Lockdown Mode + beta bonuses, max exceeds **$5M** — largest in the industry; $35M+ total to 800+ researchers | Apple 2025 |
+| Bugcrowd FedRAMP Authorization | FedRAMP Moderate Authorization sponsored by CISA — federal agencies can now deploy Bugcrowd at scale | Bugcrowd Mar 2026 |
+| Novee Security funding | **$51.5M** Seed + Series A; AI penetration testing platform from Unit 8200/Talpiot veterans | SecurityWeek Jan 2026 |
+| Maze vulnerability management | **$31M** funded; AI agents model analyst workflows; proves 80-90% of findings are false positives | SecurityWeek 2026 |
+| IBM X-Force 2026 vuln exploitation stats | Vulnerability exploitation now **#1 cause of attacks at 40%**; 44% increase in public-facing app exploitation; 56% of disclosed flaws require no auth | IBM Feb 2026 |
+| Supply chain compromise growth | Nearly **quadrupled** since 2020 | IBM X-Force 2026 |
+| Ransomware group surge | **49% YoY increase** | IBM X-Force 2026 |
+| HackerOne AI Policy update | Researcher submissions NOT used to train AI models — addresses community concerns about data usage | HackerOne Feb 2026 |
+| Copilot CLI CVE-2026-29783 | Shell expansion RCE via allowlisted `env` command; malware download with zero approval via poisoned README injection | GitHub Mar 2026 |
+| SANDWORM_MODE supply chain worm | 19 npm typosquatting packages with MCP injection module; steals creds for 9 LLM providers; 48-hour delayed activation | Socket Feb 2026 |
+| Operation Bizarre Bazaar | First attributed LLMjacking campaign; 35,000 attack sessions; commercial marketplace reselling unauthorized LLM access; 60% shifted to MCP recon | Pillar Security Jan 2026 |
+| ForcedLeak Salesforce Agentforce | CVSS 9.4: CRM data exfiltration via Web-to-Lead form prompt injection; agent overreach + misconfigured CSP | Varonis Mar 2026 |
+| Notion AI data exfiltration | Hidden white text prompt injection → salary data, candidate feedback exfiltrated via invisible image requests; initially closed as N/A on HackerOne | PromptArmor Jan 2026 |
+| ChainLeak (Chainlit) | CVE-2026-22218 + CVE-2026-22219: arbitrary file read + SSRF → full cloud compromise; no user interaction | Zafran Labs Mar 2026 |
+| LangChain SSRF via redirect | CVE-2026-27795: RecursiveUrlLoader redirect bypass → AWS metadata theft; CVE-2026-26019: additional SSRF | LangChain Mar 2026 |
+| Pydantic-AI MCP SSRF | CVE-2026-25904: overly permissive Deno sandbox; project **archived**, will NOT be patched | SentinelOne 2026 |
+| MCP TypeScript SDK ReDoS | CVE-2026-0621 (CVSS 8.7): catastrophic regex backtracking via crafted URI templates | MCP SDK Mar 2026 |
+| Enkrypt AI MCP scan results | Top 1,000 MCP servers: **33% critical vulns**, averaging **5.2 vulns per server** | Enkrypt AI 2026 |
+| MCPTox benchmark | Tool poisoning attack success rates exceed **60%** across 1,312 malicious test cases on GPT-4o-mini, o1-mini, DeepSeek-R1, Phi-4 | arXiv 2026 |
+| Semantic chaining jailbreak | Individually benign instructions chained to produce forbidden output; bypasses input AND output filtering; effective against Grok 4, Gemini | NeuralTrust Feb 2026 |
+| H-CoT chain-of-thought hijacking | OpenAI o1 rejection drops from 99% to <2%; affects o1/o3, DeepSeek-R1, Gemini 2.0 Flash Thinking | arXiv:2502.12893 |
+| AgentLeak multi-agent privacy | Multi-agent systems introduce unmonitored inter-agent channels; 27.2% vs 43.2% output leakage but new internal channel risk | arXiv:2602.11510 |
+| OMNI-LEAK cascade injection | Single injection cascades through multi-agent orchestrator pattern; 1/500 success rate leaks data in 5 days | arXiv:2602.13477 |
+| Inter-agent trust exploitation | **82.4%** of LLMs execute malicious payloads from peer agents they'd refuse from users | ICLR 2026 |
+| DockerDash Meta-Context Injection | Malicious Docker image labels → Ask Gordon AI → MCP Gateway → zero-validation execution; new vuln class | Noma Security Feb 2026 |
+| CrewAI token leak (Uncrew) | CVSS 9.2: leaked GitHub token with full admin privileges across entire CrewAI GitHub infrastructure during provisioning | Noma Security 2026 |
+| GlicJack Chrome Gemini hijack | CVE-2026-0628 (CVSS 8.8): malicious extensions hijack Gemini Live panel for camera/microphone/file access | Palo Alto Unit42 2026 |
+| OpenClaw additional CVEs | CVE-2026-25253 (1-click RCE), CVE-2026-28453 (TAR traversal), CVE-2026-28479 (SHA-1 cache poisoning), CVE-2026-28484 (Git pre-commit injection) | NVD 2026 |
+| Copilot JetBrains RCE | CVE-2026-21516: command injection in GitHub Copilot for JetBrains IDEs | CVE Details 2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -551,6 +581,19 @@ Notable disclosed vulnerabilities (2025-2026):
 - IDEsaster campaign: 30+ vulnerabilities across 10+ AI coding tools (Claude Code, Cursor, Kiro, Windsurf), 24 CVEs by researcher Ari Marzouk
 - CVE-2025-7656 (Chromium in Cursor/Windsurf): 94+ Chromium vulnerabilities in AI IDEs due to legacy Chromium builds, affecting 1.8M developers
 - Extension Recommendation Attacks: AI coding IDEs (Cursor, Windsurf, Trae, Google Antigravity) recommend non-existent extensions from OpenVSX — threat actors claim namespaces and serve malware
+- CVE-2026-29783 (Copilot CLI, March 2026): shell expansion RCE via `env` allowlist bypass — malware download with zero approval via poisoned README prompt injection (PromptArmor)
+- CVE-2026-0628 (GlicJack, Unit42): Chrome Gemini Live panel hijack — malicious extensions gain camera/microphone/file access (CVSS 8.8)
+- CVE-2026-22218/22219 (ChainLeak, Zafran Labs): Chainlit file read + SSRF → full cloud compromise with no user interaction
+- CVE-2026-27795 (LangChain): RecursiveUrlLoader SSRF via HTTP redirect to AWS metadata (169.254.169.254)
+- CVE-2026-25253 (OpenClaw): 1-click RCE via `gatewayUrl` query parameter WebSocket credential relay (CVSS 8.8)
+- CVE-2026-0621 (MCP TypeScript SDK): ReDoS via URI template regex catastrophic backtracking (CVSS 8.7)
+- SANDWORM_MODE (Socket, Feb 2026): npm supply chain worm with McpInject module — deploys rogue MCP servers into AI coding assistant configs; steals credentials for 9 LLM providers
+- ForcedLeak (Varonis, March 2026): Salesforce Agentforce CRM data exfiltration via Web-to-Lead form prompt injection (CVSS 9.4)
+- DockerDash (Noma Security, Feb 2026): Docker image label injection → Ask Gordon AI → MCP Gateway compromise; new "Meta-Context Injection" vulnerability class
+- PleaseFix/PerplexedBrowser (Zenity Labs, March 2026): zero-click agentic browser hijack — file system exfil + 1Password credential theft via calendar invite
+- Notion AI Data Exfiltration (PromptArmor, Jan 2026): white text prompt injection exfiltrates salary data via invisible image requests; initially closed as N/A
+- Uncrew (Noma Security): CrewAI CVSS 9.2 — leaked GitHub token with full admin privileges across entire GitHub org during provisioning failure
+- Operation Bizarre Bazaar (Pillar Security, Jan 2026): first attributed LLMjacking campaign; 35,000 sessions; commercial marketplace monetizing unauthorized LLM/MCP access
 - Shai-Hulud supply chain worm: multi-wave npm campaign; 454,648 malicious npm packages in 2025; s1ngularity campaign harvested 2,349 credentials from 1,079 dev systems
 - AWS CodeBuild vulnerability (Wiz): critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
 - ServiceNow Now Assist second-order prompt injection: first documented cross-agent privilege escalation in production multi-agent system
@@ -576,6 +619,12 @@ Competition awareness:
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
 - 75% of hackers say hacking is becoming more about money than curiosity (Bugcrowd 2026)
 - Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
+- **Novee Security** emerged from stealth ($51.5M, Jan 2026) — proprietary offensive AI model for continuous pentesting; Unit 8200/Talpiot founders
+- **Maze** ($31M funded) — AI agents for vuln management proving 80-90% of cloud findings are false positives
+- **Bugcrowd achieved FedRAMP** — federal agencies now deploying crowdsourced security at scale
+- **Apple doubled max bounty to $2M+** (with bonuses exceeding $5M) — highest in the industry; $35M total paid
+- **Microsoft "In Scope by Default"** — all products/services eligible even without formal bounty program
+- **IBM X-Force**: vulnerability exploitation now #1 cause of attacks (40%); supply chain compromises quadrupled since 2020
 - HexStrike AI MCP server enables AI agents to autonomously run 150+ security tools — increasing automation of recon and scanning
 - **AISLE** found all 12 OpenSSL zero-days (Jan 2026), 100+ CVEs across 30+ projects — sets new bar for AI-discovered bugs
 - **Codex Security** (OpenAI, formerly Aardvark) — launched publicly **March 6, 2026**; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium; available to ChatGPT Enterprise/Business/Edu via Codex web
