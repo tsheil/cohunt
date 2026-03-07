@@ -114,9 +114,12 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - GitHub: `KeygraphHQ/shannon`
 
 **AISLE (AI-Driven Vulnerability Discovery):**
-- Landmark achievement in January 2026: discovered **13 of 14 OpenSSL CVEs** assigned in 2025 (15 total across both releases), including CVE-2025-15467 (HIGH severity, stack buffer overflow in CMS message parsing, potentially remotely exploitable)
+- Landmark achievement in January 2026: discovered **12 of 12 OpenSSL zero-days** in the January 2026 coordinated release, plus 13 of 14 CVEs assigned in 2025 — **15 total** across both releases
+- CVE-2025-15467 (HIGH severity, stack buffer overflow in CMS message parsing, potentially remotely exploitable); vulnerability types include heap overflows, type confusions, NULL dereferences, and a cryptographic bug in OCB mode
 - Three of the OpenSSL bugs dated back to 1998-2000, lurking undetected for 25-27 years
+- In 5 cases, AISLE's AI directly proposed patches that were accepted into the official OpenSSL release
 - Has been assigned **100+ externally validated CVEs** across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, and NASA CryptoLib
+- Started hunting in August 2025 — reached these results in under 6 months
 - curl cancelled its bug bounty the same week AISLE's OpenSSL results were published — a stark contrast between AI-discovered quality and AI-generated slop
 - Demonstrates AI's ability to find deeply buried C/C++ memory safety bugs at scale
 
@@ -299,7 +302,7 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **Assail Ares** for continuous API/web/mobile pentesting with co-evolutionary AI agents
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
-- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring
+- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched publicly March 6, 2026**; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium
 - **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding (Feb 2026 launch)
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
@@ -311,6 +314,7 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **DeepKeep** for AI agent attack surface discovery across multi-framework environments (March 2026)
 - **NVIDIA Garak** for systematic LLM vulnerability scanning (~100 attack vectors)
 - **Augustus** (Praetorian) for broad adversarial LLM testing (210+ attacks, 28 providers)
+- **Semgrep AI-Powered Detection** (2026) — multimodal AppSec engine combining deterministic SAST analysis with LLM reasoning; detects business logic flaws (IDORs, broken authorization) beyond traditional pattern matching; AI noise filtering removes 1 in 5 false positives at 95% user alignment; "AI-Powered Memories" re-analyzes backlogs when new patterns are added
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -370,6 +374,11 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - VulnerableMCP.info tracks MCP-specific vulnerability database
 - **MCP Security Tools:** MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
 - **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
+- **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series documenting real attacks (WhatsApp exfiltration, GitHub prompt injection, localhost breach, supply chain attack); MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
+- **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate user queries, tool responses, and agent replies. Evaluated across 5 real-world MCP servers and 4 LLM agents (GPT-4o, GPT-5, Claude-Sonnet-4, GPT-OSS). Preserves task quality while exfiltrating data — extremely hard to detect
+- **PoisonedRAG** (USENIX Security 2025): first knowledge corruption attack on RAG systems — attackers inject semantically meaningful poisoned texts into RAG databases, inducing LLMs to generate targeted attack outputs. Test RAG systems for poisoned document injection
+- **"Lethal Trifecta" Pattern**: repeated pattern across real-world MCP incidents — privileged access + untrusted input + external communication channel. Check every MCP deployment for this combination
+- **5.5% of MCP servers** in the wild exhibit active tool poisoning attacks; **33% allow unrestricted network access** (arXiv research on 2,614 MCP implementations)
 
 **Security MCP Servers for Bug Bounty Workflows:**
 
@@ -459,7 +468,21 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 - **NVIDIA Garak**: ~100 attack vectors; AVID integration for community vulnerability sharing; 20+ AI platform support
 - **Promptfoo**: CLI/library for LLM evaluation and red-teaming; 50+ vulnerability types; CI/CD integration; next-gen agent with deep reconnaissance, strategic planning, adaptive execution, persistent memory
 
+**OpenAI Atlas Hardening (2026):**
+- OpenAI built an **LLM-based automated attacker** trained with reinforcement learning to hunt for prompt injection attacks against its browser agent (ChatGPT Atlas/Operator)
+- Demonstrates the trend toward using AI to attack AI — red teaming tools are now themselves AI agents
+- Implication: targets using OpenAI agents may be hardened against basic prompt injection; escalate to LPCI, multi-turn, or indirect vectors
+
 **Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS
+
+### AI-Specific Bug Bounty Platforms
+
+| Platform | Focus | Bounty Range | Notes |
+|----------|-------|-------------|-------|
+| **huntr** (Protect AI) | AI/ML vulnerabilities in open-source repos | Varies by project | First bug bounty platform specifically for AI/ML |
+| **0din** (Mozilla) | GenAI vulnerabilities — GPT-4, Gemini, LLaMa, Claude | $500–$15,000 | Launched **Agent 0DIN** — gamified CTF for prompt injection/jailbreaking training |
+| **HackerOne** | General + 1,121 programs with AI in scope | $100–$100K+ | Largest platform; AI reports up 210% YoY |
+| **Bugcrowd** | General + AI triage | $100–$50K+ | CrowdMatch AI-powered researcher-to-program matching |
 
 ### AI Bug Bounty Competitions & CTFs (2025-2026)
 
@@ -472,10 +495,32 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 | **OpenAI Bio Bug Bounty** (GPT-5) | $25K for universal jailbreak of bio/chem safety filters; $10K for multiple prompts | Novel model-safety bounty |
 | **huntr** (Protect AI) | World's first bug bounty platform for AI/ML repos; 50.5% of findings fixed, 49.5% remain unpatched | Dedicated AI/ML vulnerability platform |
 
+### Logic-Layer Prompt Control Injection (LPCI) — Novel Vulnerability Class
+
+Published by CSA (Cloud Security Alliance) in February 2026 and documented in arXiv:2507.10457. Unlike traditional prompt injection, LPCI targets the **fundamental logic execution layer** of AI agents:
+
+**How LPCI Differs from Traditional Prompt Injection:**
+- Embeds **persistent, encoded, conditionally-triggered payloads** in LLM memory stores or vector databases
+- Payloads **survive across multiple sessions** — not just in-context manipulation
+- Activates based on specific conditions (event-based or time-based triggers)
+- Much harder to detect than traditional prompt injection because payloads are dormant until activated
+
+**Testing for LPCI:**
+1. Identify agent memory/RAG stores that persist across sessions
+2. Inject encoded payloads with conditional triggers (e.g., "when user asks about X, execute Y")
+3. End the session, start a new one, and test if the payload activates
+4. Check if payloads survive memory summarization/compression
+5. Test event-based triggers (specific dates, user roles, query patterns)
+
+**Defense Benchmark:** The Qorvex Security AI Framework (QSAF) reduces LPCI attack success from 43% to 5.3% — use this as a severity benchmark when reporting.
+
+**Why This Matters for Hunters:** LPCI represents the next evolution of prompt injection. If a target has persistent agent memory (RAG, conversation history, knowledge bases), test for LPCI. Multi-turn attacks achieve up to **92% success rates** across 8 open-weight models.
+
 ### Real-World LLM Exploitation Incidents (2025-2026)
 
 | Incident | Details | Impact |
 |----------|---------|--------|
+| **OmniGPT breach** | February 2026: threat actor breached OmniGPT (aggregator for ChatGPT-4, Claude 3.5, Gemini), exposing **34 million lines of conversations**, 30,000 user credentials, and uploaded business documents | Massive PII exposure from AI aggregator |
 | **Claude jailbreak for government hacking** | Dec 2025-Jan 2026: hacker used Claude to hunt vulns, craft exploits, and exfiltrate data from Mexican government agencies by claiming bug bounty authorization | Data exfiltration from government systems |
 | **LLMjacking** | Stolen credentials for accessing LLMs via official APIs (Amazon Bedrock etc.); Microsoft filed civil lawsuit | Credential theft, unauthorized compute |
 | **HONESTCUE malware** | September 2025: malware using Gemini API to generate C# source code at runtime | Runtime-generated malware |
@@ -493,6 +538,9 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 | **Persistent procurement agent manipulation** | Palo Alto Unit42 (2026): manufacturing company's procurement agent manipulated over 3 weeks through "clarification" messages about purchase authorization limits; agent eventually approved $5M in false purchase orders across 10 transactions | Multi-week agent memory poisoning |
 | **Lakera AI memory injection** | November 2026: demonstrated indirect prompt injection via poisoned data sources corrupting agent long-term memory — persistent false beliefs about security policies and vendor relationships | Long-term agent memory corruption |
 | **MCP Go SDK case sensitivity** | CVE-2026-27896: MCP Go SDK JSON parser handles field names case-insensitively, allowing crafted MCP responses to bypass validation | Protocol-level bypass |
+| **Log-To-Leak MCP attack** | ICLR 2026: new attack class covertly forces agents to invoke malicious logging tools to exfiltrate user queries, tool responses, and agent replies while preserving task quality — nearly undetectable | Silent data exfiltration via MCP |
+| **Docker MCP WhatsApp exfiltration** | April 2025: Invariant Labs demonstrated tool poisoning combined with unrestricted network access stealing entire WhatsApp message histories; bypasses DLP because it looks like normal AI behavior | Mass personal data exfiltration |
+| **Unit 42 persistent memory poisoning** | December 2025: real-world indirect prompt injection poisoning long-term AI agent memory — attacker tricks victim into visiting malicious webpage, injected instructions survive session restarts via summarization | Cross-session persistent attack |
 
 ---
 
@@ -938,7 +986,9 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **OpenAI raised max bounty to $100K** for critical infrastructure flaws; added specialized Bio Bug Bounty Programs ($25K for universal jailbreaks)
 - **Google launched dedicated AI VRP** (October 2025) covering Search, Gemini Apps, Workspace — up to $30K per finding
 - **curl shut down its bug bounty** (January 2026) due to AI-generated submission flood — first major program shutdown attributed to AI slop
-- **Bug bounty market valued at $1.19B** (2024), projected to reach $3.98B by 2032 (16.3% CAGR)
+- **Bug bounty market valued at $1.76B** (2025), projected $2.06B in 2026, reaching **$5.74B by 2034** (CAGR 15.94%)
+- **Q4 2025 AI security startup funding**: $2.17B across 28 deals — **8x growth** over two years
+- **Enterprise AI readiness gap**: only 34% have AI-specific security controls; less than 40% conduct regular security testing on AI models or agent workflows
 - **32.1% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck State of Exploitation 2026)
 - **AISLE discovered all 12 OpenSSL zero-days** in January 2026, including bugs dating back 25-27 years
 - **Claude Opus 4.6 found 500+ vulnerabilities** in production open-source codebases (Anthropic Claude Code Security)
@@ -968,6 +1018,11 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely
 - **Cisco State of AI Security 2026** report confirms expanding threat landscape for AI agent deployments
 - **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity as a driving factor; AI-induced job scarcity driving new influx into freelancing and bug bounty hunting
+- **CrowdStrike 2026 Global Threat Report**: 89% YoY increase in AI-enabled attacks; average eCrime breakout time now **29 minutes**; 90+ organizations already compromised via AI prompt injection in 2025
+- **Multi-turn prompt injection** achieves up to **92% success rates** across 8 open-weight models — single-turn defenses are insufficient
+- **LPCI** (Logic-Layer Prompt Control Injection): novel vulnerability class targeting agent logic layers with persistent, conditionally-triggered payloads (CSA Feb 2026, arXiv:2507.10457)
+- **Endor Labs analysis** of 2,614 MCP implementations: 82% use file system operations prone to Path Traversal, 67% use sensitive APIs related to Code Injection, 34% related to Command Injection
+- **NIST AI RMF and ISO 42001** do not yet address technical controls for agentic deployments (tool call validation, prompt injection logging, containment testing)
 
 ### How to Scope AI Vulnerabilities with Programs
 

@@ -104,6 +104,45 @@ COMMON DOWNGRADE TRIGGERS (flag if present)
 □ Attack Complexity set to Low when conditions are required
 □ Chained vulnerabilities scored as single high-severity finding
 □ Theoretical RCE without actual code execution proof
+
+AI/LLM VULNERABILITY REPORTS (check if applicable)
+□ Prompt injection is reproducible across sessions (not a one-time fluke)
+□ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant"
+□ Jailbreak is explicitly in scope for this program (many programs exclude jailbreaks)
+□ Impact goes beyond the user's own chat session (affects other users, triggers actions, accesses data)
+□ AI agent action has real-world consequences (not just "LLM said something weird")
+□ Indirect injection has a realistic delivery mechanism (not just "paste this into the chatbot yourself")
+□ MCP-related finding identifies the specific MCP server, version, and affected tool
+□ Memory poisoning demonstrates persistence across sessions (not just in-context manipulation)
+□ CVSS accounts for "Attack Requirements" (CVSS 4.0) — many AI vulns need specific conditions
+□ Report distinguishes between model-level and application-level vulnerabilities
+□ Output injection (XSS/SQLi via LLM) proves the app executes/renders the output (not just displays it)
+□ LPCI findings demonstrate conditional trigger activation (not just static injection)
+□ Multi-turn injection documents the full conversation sequence, not just the final payload
+□ OWASP Agentic Top 10 risk ID cited if targeting agent-specific behavior (ASI01-ASI10)
+
+CHAIN ASSESSMENT (check if report chains findings)
+□ Each link in the chain is independently verified
+□ Chain severity reflects combined impact, not just the strongest link
+□ Prerequisites for the chain are documented and realistic
+□ Chain doesn't artificially inflate severity (Low + Low ≠ Critical unless impact genuinely compounds)
+□ If single-link severity is Low/Medium, chain justification explains why combined impact is higher
+
+DUPLICATE RISK ASSESSMENT
+□ Check if finding matches common disclosed report patterns for this program
+□ Search for similar findings on the platform (HackerOne hacktivity, Bugcrowd VRT)
+□ Assess if this vulnerability class is heavily tested (prompt injection on chatbots = high duplicate risk)
+□ Note if XBOW/autonomous agents likely already scanned for this pattern (simple XSS, SSRF, SQLi)
+□ Flag if the program has high hunter activity (avg 97+ researchers) — duplicate risk is elevated
+
+AI SLOP DETECTION (flag if report may be AI-generated low quality)
+□ Report uses vague, generic descriptions without specific endpoint/payload details
+□ Finding has no working proof-of-concept or reproduction steps are non-functional
+□ Report claims severity without demonstrating actual impact
+□ Report reads like an AI-generated template with placeholders not filled in
+□ Multiple reports from same hunter follow identical formatting patterns
+□ Finding was not manually verified — "AI says this is vulnerable" without confirmation
+□ WARNING: curl shut down its entire bug bounty due to AI slop; platforms actively penalize this
 ```
 
 **Review Output Format:**
@@ -165,7 +204,32 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 ## Platform-Specific Notes
 
-[Tips for the specific platform if known — HackerOne, Bugcrowd, Intigriti]
+[Tips for the specific platform — apply the relevant platform's conventions]
+
+**HackerOne:** Use their severity taxonomy (Critical/High/Medium/Low maps to CVSS ranges). Hai Triage (90% adoption) uses AI to process reports — well-structured reports with clear CWE IDs, CVSS breakdown, and reproduction steps get faster triage. Note leaderboard split separates human researchers from XBOW/agents — adjust duplicate risk accordingly. HackerOne Agentic PTaaS combines autonomous agents with human expertise; reports competing against agent-discovered findings need stronger chain/logic components. AI submissions are NOT used for training (Feb 2026 policy).
+
+**Bugcrowd:** Map findings to Bugcrowd VRT (Vulnerability Rating Taxonomy). AI Triage Assistant has 98% P1 accuracy and 98% duplicate detection confidence — ensure critical findings are unambiguously framed. CrowdMatch AI matches researchers to programs; check if this program favors specific vuln classes. Check if program uses managed triage vs. self-managed.
+
+**Intigriti:** Follow their severity guidelines. Note if program is private/public. Check for program-specific rules on AI vulnerability reporting. Won Security Innovation of the Year 2025 — growing platform with expanding program portfolio.
+
+**Self-hosted programs:** Check their VDP for specific formatting requirements. Response times vary widely — note if program has SLA commitments. No AI triage — reports reviewed by internal teams who may be less experienced with newer vuln classes (LPCI, MCP attacks). Provide extra context and references.
+
+**0din (Mozilla):** GenAI-specific platform covering GPT-4, Gemini, LLaMa, Claude. Bounties $500–$15K. Specialized in prompt injection, jailbreaking, and LLM safety testing. Different expectations than general bug bounty — focus on reproducibility across model versions.
+
+**huntr (Protect AI):** AI/ML-specific platform for open-source repos. 50.5% fix rate — expect slower resolution. Focus on demonstrating real-world impact beyond lab conditions.
+
+## Chain Assessment (if applicable)
+
+[If report chains multiple findings:]
+- Chain links: [A → B → C]
+- Each link verified: [Yes/No per link]
+- Combined severity justified: [Yes/No — explain]
+
+## AI Slop Check
+
+[Assessment of report quality indicators:]
+- **Verdict:** [Genuine / Suspect / AI Slop]
+- **Indicators:** [Specific signs of AI-generated low quality, or confirmation of manual verification]
 
 ## Recommended Changes
 
@@ -179,12 +243,15 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 **Review Principles:**
 
 1. **Be honest, not nice.** A harsh review now is better than an N/A later.
-2. **Triagers are busy.** If they have to think hard about whether it's valid, they'll lean toward closing it.
+2. **Triagers are busy.** If they have to think hard about whether it's valid, they'll lean toward closing it. AI triage (Hai/Bugcrowd) amplifies this — unclear reports get deprioritized by algorithms.
 3. **Specificity wins.** "This could affect users" loses to "This exposes the email, name, and address of any user given their numeric ID."
 4. **Reproduction steps are everything.** If a triager can't reproduce in 5 minutes, priority drops.
 5. **CVSS is not a negotiation tool.** Score what the finding actually demonstrates, not what you hope the impact could be.
 6. **Self-XSS is not XSS.** Unless there's a delivery mechanism, don't submit it.
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
+8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
+9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique.
 
 **Edge Cases:**
 

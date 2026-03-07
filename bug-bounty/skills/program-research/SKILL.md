@@ -268,7 +268,7 @@ If vulnerability database connected:
 3. Identify unpatched or commonly misconfigured components
 ```
 
-### Step 5b: Assess AI & Automation Landscape
+### Step 6: Assess AI & Automation Landscape
 
 Check for AI-specific program features:
 1. Search for "AI" or "LLM" in program scope and policy
@@ -280,7 +280,7 @@ Check for AI-specific program features:
 
 Context: As of 2025, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%. HackerOne Hai Triage adopted by 90% of customers. Bugcrowd AI Triage Assistant (Dec 2025) achieves 98% P1 accuracy. HackerOne clarified (Feb 2026) that researcher submissions are NOT used to train AI models. OWASP Top 10 for Agentic Applications released December 2025.
 
-### Step 6: Synthesize
+### Step 7: Synthesize
 
 ```
 1. Combine all sources
@@ -310,6 +310,8 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 ---
 
 ## Market Context (2025-2026)
+
+*Last updated: March 2026 (v0.10.0)*
 
 Key data points for program evaluation:
 
@@ -345,7 +347,13 @@ Key data points for program evaluation:
 | GTG-1002 incident | First documented state-sponsored espionage primarily orchestrated by AI agent; autonomous Claude Code executed 80-90% of intrusion lifecycle | Security research Sep 2025 |
 | MCP auth security | 88% of MCP servers require credentials; 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth | Astrix State of MCP Security 2025 |
 | huntr AI/ML fix rate | 50.5% of AI/ML OSS vulnerabilities found through huntr have been fixed; 49.5% remain unpatched | huntr 2025 |
-| Bug bounty market valuation | $1.19B (2024), projected $3.98B by 2032 (16.3% CAGR) | Market research 2025 |
+| Bug bounty market valuation | $1.76B (2025), projected $2.06B in 2026, **$5.74B by 2034** (CAGR 15.94%) | Verified Market Research 2026 |
+| AI security startup funding Q4 2025 | $2.17B across 28 deals — **8x growth** over two years | Industry analysis 2026 |
+| Enterprise AI readiness | Only 34% have AI-specific security controls; <40% conduct regular AI testing | Help Net Security 2026 |
+| CrowdStrike AI-enabled attacks | 89% YoY surge; avg eCrime breakout time now 29 minutes; 90+ orgs compromised via prompt injection in 2025 | CrowdStrike 2026 Global Threat Report |
+| Multi-turn prompt injection success | Up to 92% success rates across 8 open-weight models | Academic research 2026 |
+| LPCI (novel vuln class) | Logic-Layer Prompt Control Injection — persistent, conditionally-triggered payloads in agent memory; QSAF reduces success from 43% to 5.3% | CSA Feb 2026, arXiv:2507.10457 |
+| NIST/ISO AI gaps | AI RMF and ISO 42001 do not yet address technical controls for agentic deployments | Standards analysis 2026 |
 | Critical vuln payout increase | 32% average increase for critical findings | Bugcrowd CISO Report 2025 |
 | Exploitation speed | 32.1% exploited on/before CVE disclosure day | VulnCheck State of Exploitation 2026 |
 | CISA KEV catalog additions | 245 vulnerabilities in 2025 (30%+ increase over 2023-2024) | CISA 2025 |
@@ -370,6 +378,13 @@ Key data points for program evaluation:
 | Geopolitics as motivation | 56% say geopolitics outweighs curiosity as driving factor | Bugcrowd 2026 |
 | Freelancing growth | AI-induced job scarcity driving new influx into security freelancing and bug bounty | Bugcrowd 2026 predictions |
 | CAI HTB performance | Top-30 Spain, top-500 worldwide on HTB within one week; 156x cost reduction | CAI 2025-2026 |
+| Docker MCP Horror Stories | 5-part series documenting real MCP attacks: WhatsApp exfiltration, GitHub injection, localhost breach, supply chain attack | Docker 2025-2026 |
+| Log-To-Leak attack class | New MCP privacy attack silently exfiltrates via malicious logging tool; preserves task quality | ICLR 2026 |
+| PoisonedRAG | First knowledge corruption attack on RAG systems; semantic poisoning of retrieval databases | USENIX Security 2025 |
+| Unit 42 persistent memory poisoning | Real-world agent memory poisoning surviving session restarts; Dec 2025 procurement agent scam: $5M in false purchase orders | Palo Alto 2025-2026 |
+| Semgrep AI-Powered Detection | Multimodal AppSec engine: deterministic + LLM reasoning; detects IDORs, broken auth; filters 1 in 5 false positives | Semgrep Secure 2026 |
+| OpenClaw exposed instances | 40,214+ internet-exposed instances; 3 CVEs with public exploits; active threat actor campaigns via ClawHub | Security research 2026 |
+| AI-enabled attacks growth | 89% YoY surge; average eCrime breakout time now 29 minutes | CrowdStrike 2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -390,6 +405,9 @@ Notable new programs and expansions (2025-2026):
 - **curl bug bounty shutdown** (January 2026): Daniel Stenberg ended program after AI-generated submissions overwhelmed team — only 5% of 2025 submissions were genuine vulnerabilities. First major program shutdown attributed to AI slop. Paid $90K+ for 81 genuine vulnerabilities before closing. 20 submissions in just the first weeks of 2026 (7 in a single 16-hour period), none identifying real vulnerabilities. Reports via GitHub directly now, no monetary rewards
 - **HackerOne Good Faith AI Research Safe Harbor** (January 20, 2026): clarifies legal protections for researchers conducting authorized AI security testing
 - **HackerOne AI Policy Update** (February 2026): researcher submissions are NOT used to train AI models — addresses researcher concerns about data usage
+- **HackerOne Agentic PTaaS** (2026): combines autonomous agent execution with human expertise for continuous testing
+- **0din** (Mozilla): GenAI-focused bug bounty covering GPT-4, Gemini, LLaMa, Claude. Bounties $500–$15,000. Launched **Agent 0DIN** gamified CTF for prompt injection/jailbreaking training
+- **OpenAI Codex Security** launched publicly March 6, 2026 (formerly Aardvark) — 14 CVEs discovered across OpenSSH, GnuTLS, GOGS, Chromium; available to ChatGPT Enterprise/Business/Edu
 
 Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-4609: Google Chrome sandbox escape — record-breaking $250,000 bounty payout
@@ -422,6 +440,9 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-27896: MCP Go SDK vulnerability — JSON parser handles field names case-insensitively, enabling crafted malicious MCP responses
 - CVE-2025-53109: critical symlink bypass in MCP file operations — system takeover if server runs with elevated privileges
 - Persistent prompt injection in procurement agent (Palo Alto Unit42, 2026): manufacturing company's agent manipulated over 3 weeks to approve $5M in false purchase orders
+- OmniGPT breach (February 2026): threat actor breached AI aggregator exposing **34 million lines of conversations**, 30,000 user credentials, and uploaded business documents
+- CVE-2025-32711: First high-severity vulnerability in Microsoft 365 Copilot (EchoLeak)
+- CVE-2025-34291: Langflow permissive CORS + missing CSRF enabling session hijack → RCE via code validation endpoint
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
