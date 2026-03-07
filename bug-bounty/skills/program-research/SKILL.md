@@ -320,7 +320,7 @@ Key data points for program evaluation:
 | Top 100 programs paid | $51M (Jul 2024 - Jun 2025) | HackerOne 2025 |
 | Top 100 all-time earners | $31.8M total | HackerOne 2025 |
 | HackerOne validated vulns | 580,000+ across 1,950 enterprise programs | HackerOne 2025 |
-| HackerOne all-time payouts | $300M+ (30 hackers earned $1M+) | HackerOne 2023 milestone |
+| HackerOne all-time payouts | $300M+ (30 hackers earned $1M+); Top 100 all-time earners $31.8M | HackerOne 2025 |
 | AI vulnerability reports | 210% increase YoY | HackerOne 2025 |
 | Prompt injection reports | 540% increase YoY | HackerOne 2025 |
 | Programs with AI in scope | 1,121 (270% YoY increase) | HackerOne 2025 |
@@ -335,6 +335,10 @@ Key data points for program evaluation:
 | Hardware vulns | 88% increase | Bugcrowd CISO Report 2025 |
 | Network vulns | 2x spike | Bugcrowd CISO Report 2025 |
 | Microsoft annual bounty payouts | $17M to 344 researchers | Microsoft 2025 |
+| Meta annual bounty payouts | $4M in 2025; $25M all-time | Meta 2025 |
+| Google record Chrome bounty | $250,000 for CVE-2025-4609 (sandbox escape) | Google 2025 |
+| Prompt injection in production AI | 73%+ of deployments affected; only 34.7% have defenses | Security audits 2025 |
+| AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3) | 2025 |
 | Smart contract damages (H1 2025) | $263M across Web3 | CoinLaw 2026 |
 
 Notable new programs (2025-2026):
@@ -349,9 +353,17 @@ Notable new programs (2025-2026):
 - Immunefi: undisputed leader in Web3/blockchain bounties, with some of the largest single payouts in the industry
 
 Notable disclosed vulnerabilities (2025-2026):
+- CVE-2025-4609: Google Chrome sandbox escape — record-breaking $250,000 bounty payout
+- CVE-2025-55315: ASP.NET Core Kestrel HTTP request smuggling — CVSS 9.9, highest ever for ASP.NET Core ($10K bounty)
+- CVE-2025-6965: Critical SQLite memory corruption (CVSS 7.2) — first AI agent (Google Big Sleep) to foil active exploitation in the wild
+- CVE-2025-53773: GitHub Copilot RCE via prompt injection (CVSS 9.6) — potentially compromising millions of developer machines
+- CVE-2025-6514: Critical OS command injection in mcp-remote (437K+ downloads) — malicious MCP servers achieve RCE via crafted auth endpoints
 - CVE-2026-27825: Critical unauthenticated RCE and SSRF in mcp-atlassian (MCP server vulnerability)
 - CVE-2025-55182: Critical RCE in React Server Components via insecure deserialization in Flight protocol (disclosed via Meta Bug Bounty)
 - GitHub MCP server prompt injection breach: public GitHub issues used to hijack AI assistants and exfiltrate private repos
+- Supabase Cursor agent breach: privileged agent processed support tickets as commands, attackers exfiltrated integration tokens via SQL injection
+- Anthropic Filesystem-MCP: sandbox escape + symlink bypass enabling arbitrary file access and code execution
+- OpenSSL: 12 zero-day vulnerabilities discovered by AISLE AI system, including CVE-2025-15467 (stack buffer overflow, remotely exploitable)
 - SSRF protection bypass in AutoGPT reported through huntr platform
 - Multiple Salesforce Tableau Server vulns including unrestricted file upload → RCE (CVE-2025-52449)
 
@@ -363,17 +375,18 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 - Continuous assurance testing is replacing annual pentests as the industry standard
 
 Competition awareness:
-- XBOW reached #1 on both US and global HackerOne leaderboards with ~1,060 submissions, running 80x faster than manual teams; raised $75M in funding
+- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ zero-day submissions, running 80x faster than manual teams; raised $75M in funding; expanding APAC presence in 2026
 - HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
 - XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days
 - 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
+- **Shannon** emerged as GitHub's fastest-rising security project (96.15% on XBOW benchmark, fully autonomous white-box pentesting)
 - **Strix** emerged as leading open-source autonomous AI pentest tool (~2K GitHub stars, used by Fortune 500 security teams and top 1% HackerOne hunters)
 - **NeuroSploit v3** introduced autonomous pentesting with exploit chaining and anti-hallucination safeguards
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
 - 75% of hackers say hacking is becoming more about money than curiosity (Bugcrowd 2026)
 - Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
 - HexStrike AI MCP server enables AI agents to autonomously run 150+ security tools — increasing automation of recon and scanning
-- **MCP security is a new attack surface** — CVE-2026-27825 (RCE in mcp-atlassian) and GitHub MCP server breach demonstrate real-world risk
+- **MCP security is a major attack surface** — CVE-2025-6514 (mcp-remote RCE, 437K downloads), CVE-2026-27825 (mcp-atlassian), Supabase Cursor agent breach, Anthropic Filesystem-MCP sandbox escape; 43% of tested implementations have command injection; VulnerableMCP.info tracks the growing CVE database
 - Web3 losses exceeded $3 billion in H1 2025 alone; Immunefi dominates blockchain bug bounties
 - FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws

@@ -98,8 +98,18 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Open-source agentic web app security testing and tampering tool
 - Designed for AI-driven web application testing workflows
 
+**Shannon (Autonomous AI Pentester):**
+- Fully autonomous white-box AI pentester for web apps and APIs by Keygraph
+- Analyzes source code to guide attack strategy, then validates with live browser and CLI-based exploits
+- Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark
+- Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
+- Leverages Nmap, Subfinder, WhatWeb, and Schemathesis during recon
+- Rapidly growing: GitHub's fastest-rising security project in early 2026
+- GitHub: `KeygraphHQ/shannon`
+
 **Google Big Sleep (DeepMind + Project Zero):**
-- Google's AI-based bug hunter found 20 security vulnerabilities in open-source software using Big Sleep
+- Google's AI-based bug hunter found 20+ security vulnerabilities in open-source software
+- **First AI agent to foil active exploitation in the wild**: discovered CVE-2025-6965 (critical SQLite memory corruption, CVSS 7.2) that was known only to threat actors and at risk of being exploited — Google coordinated patches before widespread attacks
 - Can spot complex chaining issues that single-tool SAST misses
 - Always verify: AI may hallucinate; always confirm any finding with manual proof-of-concept
 
@@ -114,15 +124,17 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 ### The XBOW/Autonomous Agent Reality Check
 
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
-- Submitted **~1,060 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+- Submitted **1,400+ zero-day vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
 - 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
-- Last 90 days severity breakdown: 54 critical, 242 high, 524 medium
 - Runs up to **80x faster** than manual teams
-- **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG) — indicating strong investor confidence in autonomous offensive security
-- However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings
+- Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
+- **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG)
+- However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings, though costs are expected to drop
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
-- **XBOW Pentest On-Demand** launched late 2025 — a fully automated pentest service delivering results within 5 business days
+- **XBOW Pentest On-Demand** launched late 2025 — fully automated pentest service delivering results within 5 business days
+- Appointed Databricks CRO to board; expanding APAC presence through customer deployments and partnerships in 2026
 - HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
+- Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
 
 **Wiz Research AI Agent Benchmarks (2025-2026):**
 - Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
@@ -145,11 +157,13 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 **Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
 
 **The 2026 Tool Landscape:**
+- **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark)
 - **Strix** for autonomous web app testing with browser + proxy + terminal
 - **NeuroSploit v3** for autonomous pentesting with exploit chaining and anti-hallucination
 - **CAI** for CTF-level challenges and structured offensive tasks
 - **Hound** for deep source code audits with knowledge-graph reasoning
 - **HexStrike AI** for MCP-native tool orchestration across 150+ security tools
+- **PentAGI** for fully autonomous pentesting in sandboxed Docker environments with 20+ tools
 - **XBOW Pentest On-Demand** for commercial automated pentesting
 
 ### MCP (Model Context Protocol) as Attack Surface
@@ -166,7 +180,18 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Cross-System Data Exfiltration** | Once an agent can call tools via MCP, a single prompt can trigger actions across multiple systems — reading private repos, accessing databases, sending emails | Critical |
 | **Tool Shadowing** | A malicious MCP server registers tools with names similar to legitimate ones, intercepting calls intended for trusted tools | High |
 
-**Real-World Example (GitHub MCP Server Breach):**
+**Additional MCP Vulnerability Classes:**
+
+| MCP Vuln Type | Description | Severity |
+|---|---|---|
+| **"Rug Pull" Attacks** | MCP servers modify tool definitions between sessions, presenting different capabilities than initially approved. Exploits dynamic nature of MCP tool definitions for post-deployment modification | High |
+| **Command Injection in MCP Packages** | CVE-2025-6514: critical OS command injection in `mcp-remote` (437K+ downloads) — malicious MCP servers send booby-trapped authorization_endpoint for RCE. Effectively a supply-chain backdoor | Critical |
+| **Sandbox Escape** | Anthropic's own Filesystem-MCP server had sandbox escape + symlink bypass enabling arbitrary file access and code execution | Critical |
+| **Token Passthrough Anti-Pattern** | MCP server accepts tokens from client without validating they were properly issued to the server — fundamental auth architecture flaw | High |
+
+**Real-World Examples:**
+
+1. **GitHub MCP Server Breach:**
 ```
 1. Attacker creates a public GitHub issue with hidden prompt injection
 2. Victim's AI assistant (connected via GitHub MCP server) processes the issue
@@ -175,6 +200,15 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 5. Data exfiltrated through the agent's normal output channel
 ```
 
+2. **Supabase Cursor Agent Breach (mid-2025):** Cursor agent running with privileged service-role access processed support tickets containing user-supplied input as commands. Attackers embedded SQL instructions to read and exfiltrate sensitive integration tokens.
+
+3. **mcp-remote Supply Chain (CVE-2025-6514):** Critical command injection in the widely-used mcp-remote package allowed malicious MCP servers to achieve RCE via crafted authorization_endpoint URLs. With 437K+ downloads and adoption in major companies, unpatched installs became supply-chain backdoors.
+
+**Implementation Vulnerability Stats (March 2025 analysis):**
+- **43% of tested MCP server implementations** contained command injection flaws
+- **30% permitted unrestricted URL fetching** (SSRF-prone)
+- VulnerableMCP.info tracks MCP-specific vulnerability database
+
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
 2. Test if tool descriptions can be poisoned by upstream content
@@ -182,12 +216,16 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 4. Check if the agent validates tool call parameters before execution
 5. Test cross-system chaining: can a prompt in System A trigger actions in System B?
 6. Check for tool shadowing: register a tool with a similar name to a legitimate one
+7. Test "rug pull" scenarios: can tool definitions change between sessions without re-approval?
+8. Check for command injection in MCP server configuration parameters (especially OAuth/auth endpoints)
+9. Test sandbox/containment escape via symlinks, path traversal, or filesystem operations
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
 - Enterprise AI agent platforms connecting to internal tools
 - Open-source MCP server implementations (check GitHub for `mcp-server-*` repos)
 - huntr platform specifically accepts AI/ML vulnerability reports
+- VulnerableMCP.info for known MCP-specific vulnerabilities and affected implementations
 
 ---
 
@@ -250,6 +288,13 @@ These occur when an attacker poisons *input data* that the LLM later processes:
 4. If LLM outputs user list → DIRECT VULNERABLE (reportable)
 5. If LLM outputs user list to unauthorized user → HIGH severity
 ```
+
+**Real-World Prompt Injection Incidents (2025-2026):**
+- **Devin AI ($500 test):** A researcher found Devin completely defenseless against prompt injection — manipulated to expose ports, leak access tokens, and install C2 malware
+- **GitHub Copilot RCE (CVE-2025-53773):** Prompt injection allowed remote code execution, potentially compromising millions of developer machines (CVSS 9.6)
+- **First in-the-wild malicious IDPI (Dec 2025):** Palo Alto Unit 42 detected real-world indirect prompt injection designed to bypass an AI-based product ad review system
+- **Cursor IDE (CVSS 9.8):** Prompt injection vulnerabilities in popular AI coding assistant
+- **Microsoft Copilot (CVSS 9.3):** EchoLeak (CVE-2025-32711) demonstrated prompt injection in enterprise AI
 
 **Scoping Note:** Not all prompt injections are reportable. If the injected output stays within the user's own session and doesn't change app behavior or access control, it's often "by design" (user sees what LLM outputs, but no harm done).
 
@@ -614,6 +659,10 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Nearly 10% of researchers** now specialize in AI/LLM security testing
 - **XBOW** (autonomous agent) reached #1 on HackerOne leaderboard with 1,400+ zero-days
 - **560+ valid reports** submitted by autonomous AI agents on HackerOne
+- **Prompt injection in 73%+ of production AI deployments** assessed during security audits; only 34.7% have dedicated defenses
+- **Critical CVEs in AI coding tools**: GitHub Copilot RCE (CVE-2025-53773, CVSS 9.6), Cursor IDE (CVSS 9.8), Microsoft Copilot (CVSS 9.3)
+- **83% of organizations** now use bug bounties (HackerOne 2025); 83% plan to deploy agentic AI but only 29% feel ready to secure it
+- **Google awarded $250,000** for a single Chrome flaw (CVE-2025-4609) — record-breaking bounty payout
 
 ### How to Scope AI Vulnerabilities with Programs
 

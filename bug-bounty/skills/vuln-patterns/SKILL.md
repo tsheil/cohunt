@@ -336,8 +336,8 @@ When you know the target's technology, focus your testing:
 | **SPA (React/Vue/Angular)** | DOM XSS, broken access control, API abuse | Client-side rendering, exposed APIs |
 | **WordPress** | Plugin vulns, SQLi, file upload | Plugin ecosystem, legacy code |
 | **AWS-hosted** | SSRF → metadata, S3 misconfig, IAM issues | Cloud-specific attack surface |
-| **AI/LLM features** | Prompt injection, system prompt leak, output injection, excessive agency | OWASP LLM Top 10, new attack surface, 540% increase in reports |
-| **MCP integrations** | Tool poisoning, indirect prompt injection via retrieved content, over-privileged tokens, cross-system data exfiltration | Rapidly adopted for AI agent tooling; GitHub MCP server breach demonstrated real-world impact |
+| **AI/LLM features** | Prompt injection, system prompt leak, output injection, excessive agency | OWASP LLM Top 10 #1 risk; 540% increase in reports; present in 73% of production AI; CVEs in GitHub Copilot (9.6), Cursor (9.8), MS Copilot (9.3) |
+| **MCP integrations** | Tool poisoning, rug pull attacks, command injection (CVE-2025-6514), sandbox escape, cross-system data exfiltration | 43% of implementations have command injection; CVE-2025-6514 in mcp-remote (437K downloads) turned installs into supply-chain backdoors; VulnerableMCP.info tracks CVEs |
 | **GraphQL** | SQLi via complex queries, IDOR via node queries, DoS via nested queries | Standardized input sanitization gaps, complex query surfaces |
 | **Web3/Blockchain** | Reentrancy, access control, oracle manipulation, flash loan attacks | $3B+ in Web3 losses H1 2025; access control flaws caused $953.2M; OWASP Smart Contract Top 10 ranks access control #1 |
 | **Hardware/IoT** | Firmware extraction, JTAG/UART access, BLE attacks, default credentials | 88% increase in hardware vulns (Bugcrowd 2025), Samsung paying up to $1M |
@@ -367,8 +367,16 @@ When you know the target's technology, focus your testing:
 | 6 | Credential exfiltration | Prompt the agent to reveal its MCP server configuration | Agent discloses API keys, tokens, or connection strings |
 | 7 | Scope escalation | Ask agent to use tools beyond its intended purpose | Agent calls tools it shouldn't have access to or with unexpected parameters |
 | 8 | Data exfiltration via tool output | Craft prompts that cause the agent to read private data through its tools | Private repos, internal docs, or PII returned through agent responses |
+| 9 | "Rug pull" attack | Check if MCP server modifies tool definitions between sessions | Different capabilities than initially approved; post-deployment modification |
+| 10 | Command injection in config | Inject shell metacharacters in MCP server config params (OAuth endpoints, URLs) | OS command execution via crafted configuration values |
+| 11 | Sandbox/containment escape | Test filesystem operations for symlink traversal, path escape | Arbitrary file access beyond intended sandbox boundaries |
 
-**Real-world reference:** GitHub MCP server breach — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT.
+**Real-world references:**
+- **GitHub MCP server breach** — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT
+- **CVE-2025-6514 (mcp-remote)** — critical OS command injection; malicious MCP servers send crafted authorization_endpoint for RCE (437K+ downloads affected)
+- **Supabase Cursor agent** — privileged agent processed support tickets as commands; attackers embedded SQL to exfiltrate integration tokens
+- **Anthropic Filesystem-MCP** — sandbox escape + symlink/containment bypass enabling arbitrary file access and code execution
+- **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching
 
 ---
 
