@@ -130,10 +130,10 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 
 **OpenAI Codex Security (formerly Aardvark):**
 - **Launched March 6, 2026** as research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
-- Builds project-specific threat models, searches for vulnerabilities using agentic reasoning, validates in sandboxed environments, generates PoC exploits, and proposes fixes
-- In beta: false positive rates dropped **50%+**, over-reported severity dropped **90%+**
+- Three-stage approach: builds editable threat model, validates issues in sandboxed environments, proposes fixes with full system context
+- Performance claims: **84% less noise**, **90% reduction in over-reported severity**, **50%+ lower false positive rates** compared to traditional scanners
 - Scanned **1.2 million commits**, finding **792 critical** and **10,561 high-severity** issues in the past month
-- Scanning major open-source repos (OpenSSH, GnuTLS, PHP) and sharing findings with maintainers
+- Discovered **14 CVEs** across major open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh)
 - Open-source maintainers can apply via the **Codex for OSS** program; **$10M in API credits** committed for open-source security
 - Best for: continuous monitoring of large codebases; major competitive threat to human hunters on pattern-matching vulns
 
@@ -464,6 +464,9 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **MCP Sampling Attacks** (Palo Alto Unit42, 2026): MCP's sampling feature (where servers can initiate LLM text generation) creates new prompt injection angles — a malicious server becomes an "active prompt author" rather than a passive tool. Demonstrated attacks: resource theft, persistent session manipulation, unauthorized content generation
 - **MCPJam Inspector RCE** (CVE-2026-23744): unauthenticated HTTP endpoint can install arbitrary MCP servers; listens on 0.0.0.0 by default, enabling remote code execution from the network
 - **Tenable Cloud & AI Security Risk Report** (2026): 70% of organizations integrated AI/MCP third-party packages without centralized security oversight; 18% granted AI services administrative permissions rarely audited; non-human identities (AI agents, service accounts) represent higher risk (52%) than human users (37%)
+- **Gravitee State of AI Agent Security 2026**: **3+ million AI agents** operating in corporations; **88% of organizations** reported confirmed or suspected AI agent security incidents; **47% of agents** not actively monitored or secured (~1.5 million at risk); only 14.4% of organizations have full security approval for their agent fleet
+- **Endor Labs MCP shell=True pattern**: 34% of 2,614 studied MCP implementations use APIs prone to command injection (CWE-78) — systemic pattern, not isolated incidents; 38% completely lack authentication
+- **n8n 6-CVE batch disclosure** (February 2026): six CVEs disclosed in a single day covering RCE, command injection, arbitrary file access, and XSS — including CVE-2026-25049 (CVSS 9.4, TypeScript type confusion sandbox escape) and CVE-2026-21877 (Git Node RCE affecting n8n Cloud)
 - **MINJA** (Memory Injection Attack): research demonstrating **95%+ injection success rates** against production AI agents with persistent memory — temporally decoupled attacks where injection in one session activates weeks later
 
 ### Agent Skill Supply Chain Attacks (2026)
@@ -567,6 +570,11 @@ A new vulnerability class where companies embed hidden instructions in web conte
 21. Test for invisible prompt injection via Unicode tag characters (range E0000-E007F): can hidden instructions be embedded within normal-looking text input to manipulate AI behavior undetectably? (HackerOne Hai vulnerability — Cyrex)
 22. Test for hybrid prompt injection 2.0: can prompt injection payloads combine with traditional exploits (XSS, CSRF, SQLi) to create compound attack chains? (arXiv:2507.13169)
 23. Test for mcp-server-git RCE: if target uses git-based MCP servers, can malicious `.git/config` files achieve code execution? (CVE-2025-68145/68143/68144 — even Anthropic's first-party MCP server was vulnerable)
+24. Test for AI framework regex denylist bypass: if target uses AI agent frameworks with command execution (Shell tools, code interpreters), can command obfuscation bypass regex-based denylists? (CVE-2026-2256, ModelScope MS-Agent, CVSS 9.8 — prompt injection → full system compromise)
+25. Test for unauthenticated AI agent local servers: does the AI coding tool auto-start an HTTP server on localhost? Is CORS permissive? Can any website trigger command execution? (CVE-2026-22812, OpenCode — any local process or website could execute arbitrary shell commands)
+26. Test for workspace trust bypass: does the AI IDE disable workspace trust by default? Can malicious `.vscode/tasks.json` auto-execute without user confirmation? (Oasis Security — Cursor ships with Workspace Trust disabled)
+27. Test for sandbox/container escape via AI agent config: can AI agent installation or skill download flows write files outside intended directories or inject dangerous Docker options? (CVE-2026-27001/27002, OpenClaw — sandbox escape + Docker container escape)
+28. Test for TypeScript type confusion sandbox escape: if target uses sandboxed expression evaluation, can TypeScript type annotations (not enforced at runtime) bypass sanitization via destructuring syntax? (CVE-2026-25049, n8n, CVSS 9.4 — novel sandbox escape pattern)
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -779,6 +787,13 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **Anthropic mcp-server-git RCE chain** | CVE-2025-68145/68143/68144: three chained vulnerabilities in Anthropic's official mcp-server-git achieving full RCE via malicious `.git/config` files — demonstrates that even first-party MCP servers can be exploited | First-party MCP server compromise |
 | **HackerOne Hai invisible prompt injection** | HackerOne's beta AI assistant "Hai" found vulnerable to invisible prompt injection using Unicode tag characters (range E0000-E007F); hidden instructions embedded within normal-looking user input manipulated AI behavior undetectably (Cyrex) | AI triage system manipulation |
 | **Kali Linux MCP server command injection** | Official Kali Linux MCP server ships with textbook command injection via `subprocess` with `shell=True`; reported by Simone Margaritelli (evilsocket) — highlights that even security-focused tools have basic injection flaws | Security tool irony |
+| **MS-Agent AI framework RCE (CVE-2026-2256)** | CVSS 9.8: critical command injection in ModelScope MS-Agent — Shell tool's regex-based denylist for dangerous commands bypassed through command obfuscation; triggered remotely via prompt injection without authentication; public PoC on GitHub | AI framework total compromise |
+| **OpenCode unauthenticated RCE (CVE-2026-22812)** | CVSS 8.8: open-source AI coding agent auto-starts unauthenticated HTTP server; any local process or website (via permissive CORS) can execute arbitrary shell commands with user's privileges; fixed in v1.0.216 | AI coding agent local server RCE |
+| **n8n expression sandbox escape (CVE-2026-25049)** | CVSS 9.4: TypeScript type confusion — type annotations not enforced at runtime allow attackers to bypass sanitization controls using destructuring syntax; system command execution through crafted workflow expressions; fixed v1.123.17 / v2.5.2 | Novel sandbox escape pattern |
+| **n8n Git Node RCE (CVE-2026-21877)** | Git Node code injection enabling RCE on both self-hosted and n8n Cloud instances; part of 6-CVE batch disclosed in a single day | Workflow automation RCE |
+| **OpenClaw sandbox escape (CVE-2026-27001)** | Prompt injection via unsanitized workspace path embedding into system prompt + sandbox escape in download skill installation allowing file writes outside intended directories; fixed v2026.2.15 | AI agent sandbox escape |
+| **OpenClaw Docker escape (CVE-2026-27002)** | Docker container escape via configuration injection — allows dangerous Docker options including bind mounts, host networking, and unconfined profiles; fixed v2026.2.15 | Container escape via AI agent |
+| **Cursor Workspace Trust disabled** | Oasis Security found Cursor ships with Workspace Trust disabled by default, enabling silent code execution via malicious `.vscode/tasks.json` when opening untrusted repositories | AI IDE trust bypass |
 | **MCP Denial-of-Wallet overthinking loops** | arXiv:2602.14798 (February 2026): 14 malicious tools across 3 MCP servers trigger repetition, forced refinement, and distraction loops; amplifies token consumption up to **142.4x** and increases latency; no single step looks abnormal, making detection difficult; severe financial risk for pay-per-token deployments | Economic denial-of-service via AI |
 | **PleaseFix 1Password breach path** | Zenity Labs PleaseFix disclosure included credential theft via 1Password: attackers assumed Perplexity Comet agent privileges to access password vaults; initial fix bypassed using `view-source:file:///`; 120-day disclosure timeline (Oct 2025–Feb 2026) | Password manager compromise via AI agent |
 | **GRP-Obliteration** | February 2026: Microsoft researchers showed single unlabeled prompt removes LLM safety alignment via inverted GRPO; GPT-OSS-20B attack success rate jumped 13% → 93% across all 44 harm categories | Complete safety alignment removal |
@@ -842,6 +857,13 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2026-0830 | Kiro (AWS) | Command injection leading to RCE | — |
 | CVE-2025-7656 | Chromium (Cursor/Windsurf) | 94+ Chromium vulnerabilities in AI IDEs using legacy builds | — |
 | CVE-2026-29783 | GitHub Copilot CLI | Shell expansion arbitrary code execution via bash parameter patterns (`${var@P}`, `${!var}`) — safety layer misclassified dangerous commands as read-only | HIGH |
+| CVE-2026-22812 | OpenCode | Unauthenticated HTTP server auto-starts with permissive CORS — any local process or website can execute shell commands with user privileges | 8.8 |
+
+**Cursor Workspace Trust Bypass (Oasis Security, 2026):**
+- Cursor ships with **Workspace Trust disabled by default** — unlike VS Code which prompts users before trusting workspaces
+- Enables silent code execution via malicious `.vscode/tasks.json` when opening untrusted repositories
+- Combined with other IDEsaster patterns (MCP config manipulation, hooks injection), creates unopposed attack surface from repo clone
+- Test for: open a crafted repository in Cursor and check if tasks.json auto-executes without trust prompt
 
 **Rules File Backdoor (Pillar Security, 2026):**
 - Configuration/rules files used by Cursor and GitHub Copilot can be weaponized with **invisible Unicode characters** — undetectable to humans but readable by AI agents
@@ -1542,8 +1564,14 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts) across all safety categories
 - **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024; unprecedented vulnerability volume
 - **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely; 34% use APIs prone to command injection (Endor Labs study of 2,614 implementations)
-- **Cisco State of AI Security 2026** report confirms expanding threat landscape for AI agent deployments
+- **Cisco State of AI Security 2026**: 83% plan agentic AI deployment, only 29% ready to secure; espionage campaigns using AI coding agents to scan for weaknesses
+- **Gravitee State of AI Agent Security 2026**: **3+ million AI agents** in corporations; **88% reported security incidents**; **47% of agents not monitored**; only 14.4% have full security approval — massive unmanaged attack surface
 - **Only 10% of AI-generated code is secure** (Endor Labs study, March 2026) — massive surface area for code review bounties
+- **n8n multi-CVE disclosure** (Feb 2026): 6 CVEs in a single day including CVE-2026-25049 (CVSS 9.4, TypeScript type confusion sandbox escape) and CVE-2026-21877 (Git Node RCE on Cloud); plus original CVE-2026-21858 (CVSS 10.0) — workflow automation platforms are a goldmine
+- **OpenClaw additional CVEs**: CVE-2026-27001 (sandbox escape + workspace path injection) and CVE-2026-27002 (Docker container escape) — both fixed v2026.2.15; total OpenClaw CVE count now exceeds 10
+- **CVE-2026-2256** (ModelScope MS-Agent, CVSS 9.8): AI framework command injection via regex denylist bypass — public PoC available; demonstrates that AI agent framework shell tools are systematically vulnerable
+- **CVE-2026-22812** (OpenCode, CVSS 8.8): AI coding agent auto-starts unauthenticated HTTP server with permissive CORS — any website can execute commands; pattern applicable to any AI tool with local server components
+- **Cursor Workspace Trust disabled** by default (Oasis Security) — unlike VS Code, Cursor doesn't prompt before trusting workspaces; enables silent code execution via `.vscode/tasks.json`
 - **Joseph Thacker prediction**: 2x bug submissions in 2026 vs. prior year, driven by AI coding agents like Claude Code — but companies will eventually run these agents internally, potentially reducing bounty submissions in future years
 - **Claude Opus 4.6 + Mozilla**: found 22 Firefox vulnerabilities (14 high-severity) over 2 weeks; 500+ total across OSS codebases — AI is now competitive with decade-long expert review
 - **OpenAI Codex Security** (March 6, 2026): scanned 1.2M commits, found 792 critical + 10,561 high-severity issues; free month for Enterprise customers; open-source via Codex for OSS program

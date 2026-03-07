@@ -143,6 +143,10 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ A2A protocol exploitation: if finding involves Google A2A protocol, demonstrate agent identity spoofing, capability forgery, or task chain poisoning — east-west agent traffic bypasses traditional perimeters (arXiv:2505.12490)
 □ Denial-of-wallet (overthinking loops): if finding involves MCP tools triggering repetition/refinement/distraction loops, quantify token amplification factor and cost impact — reference arXiv:2602.14798 (up to 142.4x amplification; each step looks normal, evading detection)
 □ Git MCP server exploitation: if finding involves git-based MCP server, reference CVE-2025-68145/68143/68144 (Anthropic's mcp-server-git RCE chain via `.git/config`) — demonstrates that even first-party MCP servers are exploitable
+□ AI framework regex denylist bypass: if finding involves command execution tool with denylist, reference CVE-2026-2256 (MS-Agent, CVSS 9.8) — regex-based filters systematically bypassable via command obfuscation; demonstrate specific obfuscation technique used
+□ TypeScript type confusion sandbox escape: if finding involves expression sandbox bypass, reference CVE-2026-25049 (n8n, CVSS 9.4) — novel attack class where type annotations (compile-time only) don't prevent runtime exploitation via destructuring
+□ Unauthenticated AI agent local server: if finding involves localhost HTTP server in AI coding tool, reference CVE-2026-22812 (OpenCode, CVSS 8.8) — demonstrate CORS policy allows cross-origin access; any website can execute shell commands
+□ AI agent sandbox/container escape: if finding involves file writes outside sandbox or Docker config manipulation, reference CVE-2026-27001/27002 (OpenClaw) — demonstrate escape from intended containment boundary
 
   Supply Chain & IDE Exploitation:
 □ Supply chain attack via AI tool configs (hooks, MCP configs, env vars) demonstrates code execution path from repo clone to compromise
@@ -158,6 +162,9 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Copilot CLI shell expansion: if finding involves GitHub Copilot CLI, reference CVE-2026-29783 — bash parameter expansion (`${var@P}`, `${!var}`) bypassed safety layer; demonstrate that "read-only" classification was incorrect
 □ Workflow automation RCE: if finding involves n8n, Make, Zapier, or similar platforms, reference CVE-2026-21858 (n8n Ni8mare, CVSS 10.0) — unauthenticated RCE via Content-Type confusion affecting ~100K servers; demonstrate complete instance takeover
 □ Agentic browser credential theft: if finding involves AI browser agents accessing password managers, reference PleaseFix (Zenity Labs) — Perplexity Comet agent hijacked to access 1Password vaults; note initial fix bypassed with `view-source:file:///`
+□ Workspace trust bypass: if finding involves AI IDE auto-executing workspace tasks, reference Cursor Workspace Trust disabled by default (Oasis Security) — demonstrate `.vscode/tasks.json` executes without user confirmation; compare to VS Code's trust prompt
+□ Pre-trust API key exfiltration: if finding involves AI tool processing project configs before trust dialog, reference CVE-2026-21852 (Claude Code, CVSS 5.3) — demonstrate that API base URL redirection captures auth headers before user consent
+□ n8n multi-CVE patterns: if finding involves workflow automation sandbox escape, reference CVE-2026-25049 (TypeScript type confusion, CVSS 9.4) and 6-CVE batch disclosure — workflow platforms contain multiple interacting vulnerability classes
 
   Frameworks, Infrastructure & Scoring:
 □ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant" (OWASP LLM07:2025)
@@ -178,6 +185,8 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ CVSS accounts for "Attack Requirements" (CVSS 4.0) — many AI vulns need specific conditions
 □ Consider OWASP AIVSS scoring (v0.5+) for AI-specific severity — extends CVSS with autonomy, non-determinism, and tool-use factors
 □ CVSS V4 compliance: if submitting to Intigriti (all new submissions use CVSS V4 as of 2026), ensure scoring uses CVSS V4 metrics including Attack Requirements
+□ Gravitee AI agent scale context: 3+ million AI agents in corporations, 88% reported security incidents, 47% unmonitored — use to frame organizational impact of agent-related findings
+□ MS-Agent framework exploitation: if finding involves AI agent framework shell/code execution tools, reference CVE-2026-2256 (CVSS 9.8) — regex denylist bypass is a systematic pattern across AI agent frameworks
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified

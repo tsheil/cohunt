@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.19.0)*
+*Last updated: March 2026 (v0.20.0)*
 
 Key data points for program evaluation:
 
@@ -450,6 +450,13 @@ Key data points for program evaluation:
 | AgentShield Benchmark | First open benchmark for 6 AI agent security tools; 537 test cases; 95%+ PI detection but weak tool abuse detection | GitHub Mar 2026 |
 | Kali MCP server command injection | Official Kali Linux MCP server has `subprocess` with `shell=True`; textbook command injection in security-focused tool | evilsocket 2026 |
 | FIRST CVE forecast 2026 | Predicted median 59,427 new CVEs for 2026 (first year >50K); realistic scenarios suggest 70-100K possible | FIRST Feb 2026 |
+| Gravitee AI agent security | **3+ million AI agents** in corporations; **88% reported security incidents**; **47% of agents not monitored** (~1.5M at risk); only 14.4% have full security approval | Gravitee 2026 |
+| MS-Agent AI framework RCE (CVE-2026-2256) | CVSS 9.8: command injection via regex denylist bypass in ModelScope MS-Agent; prompt injection → full system compromise; public PoC | SecurityWeek Mar 2026 |
+| OpenCode local server RCE (CVE-2026-22812) | CVSS 8.8: unauthenticated HTTP server with permissive CORS; any website can execute shell commands with user privileges | NVD Mar 2026 |
+| n8n multi-CVE batch (Feb 2026) | 6 CVEs in a single day: CVE-2026-25049 (CVSS 9.4, TypeScript type confusion sandbox escape), CVE-2026-21877 (Git Node RCE on Cloud), plus RCE, command injection, file access, XSS | Cyera/Endor Labs 2026 |
+| OpenClaw additional CVEs | CVE-2026-27001 (sandbox escape + workspace path injection), CVE-2026-27002 (Docker container escape via config injection); total CVE count exceeds 10 | CVE Details 2026 |
+| Cursor Workspace Trust disabled | Cursor ships with Workspace Trust disabled by default; silent code execution via `.vscode/tasks.json` without user confirmation | Oasis Security 2026 |
+| Codex Security refined performance | 84% less noise, 90% reduction in over-reported severity, 50%+ lower false positive rates; discovered 14 CVEs across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh | OpenAI Mar 2026 |
 | GRP-Obliteration | Single unlabeled prompt removes LLM safety alignment via inverted GRPO training; GPT-OSS-20B attack success rate: 13% → 93% across all 44 harm categories | Microsoft Security Feb 2026 |
 | Autonomous jailbreak agents | Large reasoning models as autonomous adversaries achieve 97.14% jailbreak success rate across 9 target models with no human supervision | Nature Communications Mar 2026 |
 | ZombieAgent | Zero-click ChatGPT memory poisoning via malicious email → long-term memory corruption → self-propagation to contacts; all activity within OpenAI cloud, invisible to endpoint monitoring | Radware Jan 2026 |
@@ -515,6 +522,12 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-68664: LangChain "LangGrinch" — prompt injection vulnerability in LangChain Core; $4,000 bounty (maximum ever awarded in the project)
 - CVE-2025-49596: Critical RCE in Anthropic's MCP Inspector (CVSS 9.4) — one of the first critical RCEs in Anthropic's MCP ecosystem (Oligo Security)
 - CVE-2025-53967: Figma MCP server RCE — command injection via unvalidated user input in shell commands
+- CVE-2026-2256: ModelScope MS-Agent command injection (CVSS 9.8) — regex denylist bypass via command obfuscation; prompt injection → full system compromise; public PoC on GitHub
+- CVE-2026-22812: OpenCode unauthenticated RCE (CVSS 8.8) — AI coding agent HTTP server with permissive CORS allows any website to execute shell commands
+- CVE-2026-25049: n8n expression sandbox escape (CVSS 9.4) — TypeScript type confusion; destructuring bypasses sanitization for system command execution
+- CVE-2026-21877: n8n Git Node RCE affecting self-hosted and Cloud instances; part of 6-CVE batch disclosure
+- CVE-2026-27001/27002: OpenClaw sandbox escape + Docker container escape; workspace path injection and dangerous Docker config options
+- Cursor Workspace Trust disabled by default — silent code execution via `.vscode/tasks.json` (Oasis Security)
 - ChatGPT message limit bypass: business-logic vulnerability allowed free-tier users to bypass GPT-5 message limits by editing messages in older conversations; silently patched 69 days after submission
 - Google Cloud Apigee CVE-2025-13292: cross-tenant vulnerability providing read/write access to analytics data across thousands of organizations (Focal Security)
 - CVE-2026-25536: MCP TypeScript SDK cross-client data leak — responses leak across client boundaries when McpServer instance is reused
