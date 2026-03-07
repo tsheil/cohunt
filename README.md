@@ -8,7 +8,6 @@ A plugin marketplace for security research and bug bounty hunting. Built for [Cl
 |--------|-------------|------------|
 | **[bug-bounty](./bug-bounty)** | Full hunting lifecycle — recon targets, research programs, audit source code, test for vulns, write reports, and plan engagements. Works standalone with curl/dig and web search, supercharged with platform and asset discovery connectors. | HackerOne, Bugcrowd, Shodan, Censys, SecurityTrails, GitHub |
 
-Complements [breach-marketplace](https://github.com/tsheil/breach-marketplace) for source code analysis workflows.
 
 ## Getting Started
 

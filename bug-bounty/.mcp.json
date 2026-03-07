@@ -33,6 +33,22 @@
         "BUGCROWD_API_TOKEN": ""
       },
       "disabled": true
+    },
+    "snyk": {
+      "command": "npx",
+      "args": ["-y", "@snyk/mcp-server"],
+      "env": {
+        "SNYK_TOKEN": ""
+      },
+      "disabled": true
+    },
+    "semgrep": {
+      "command": "npx",
+      "args": ["-y", "@semgrep/mcp"],
+      "env": {
+        "SEMGREP_APP_TOKEN": ""
+      },
+      "disabled": true
     }
   }
 }

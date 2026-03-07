@@ -340,6 +340,11 @@ Key data points for program evaluation:
 | Prompt injection in production AI | 73%+ of deployments affected; only 34.7% have defenses | Security audits 2025 |
 | AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3) | 2025 |
 | Smart contract damages (H1 2025) | $263M across Web3 | CoinLaw 2026 |
+| Cisco vs DeepSeek R1 | 50/50 jailbreak prompts succeeded (100% bypass rate) | Cisco Q1 2025 |
+| OpenClaw supply chain attack | 1,184 malicious skills across ClawHub (~1 in 5 packages) — largest supply chain attack on AI agent infrastructure | Security research 2025 |
+| GTG-1002 incident | First documented state-sponsored espionage primarily orchestrated by AI agent; autonomous Claude Code executed 80-90% of intrusion lifecycle | Security research Sep 2025 |
+| MCP auth security | 88% of MCP servers require credentials; 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth | Astrix State of MCP Security 2025 |
+| huntr AI/ML fix rate | 50.5% of AI/ML OSS vulnerabilities found through huntr have been fixed; 49.5% remain unpatched | huntr 2025 |
 | Bug bounty market valuation | $1.19B (2024), projected $3.98B by 2032 (16.3% CAGR) | Market research 2025 |
 | Critical vuln payout increase | 32% average increase for critical findings | Bugcrowd CISO Report 2025 |
 | Exploitation speed | 32.1% exploited on/before CVE disclosure day | VulnCheck State of Exploitation 2026 |
@@ -368,6 +373,9 @@ Notable new programs and expansions (2025-2026):
 - Nvidia + Intigriti: Bug bounty covering core AI assets + public VDP for all Nvidia properties
 - OpenAI on Bugcrowd: increased critical payouts from $20K to **$100K** for critical infrastructure flaws. Specialized Bio Bug Bounty: $25K for universal jailbreaks of bio/chem safety filters, $10K for multiple jailbreak prompts
 - Anthropic on HackerOne: up to $15K for universal jailbreaks on Constitutional Classifiers; 405 participants, 3,000+ hours of red teaming
+- **Bugcrowd Hacker Showdown** (2nd annual, 2025): "The Mind Cathedral" themed, $30K grand prize for teams of 2-3 hackers
+- **Usual (crypto)** partnered with Sherlock for $16M stablecoin codebase audit — **largest single bug bounty prize in history**
+- **Intigriti** won Security Innovation of the Year at the 2025 UK IT Industry Awards; Google Cloud Apigee cross-tenant vulnerability (CVE-2025-13292) disclosed through Intigriti
 - **Jenkins** (December 2025): launched new bug bounty program on YesWeHack, backed by the European Commission
 - Czech Republic government: Public sector bug bounty via Hackrate
 - huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
@@ -398,6 +406,12 @@ Notable disclosed vulnerabilities (2025-2026):
 - Multiple Salesforce Tableau Server vulns including unrestricted file upload → RCE (CVE-2025-52449)
 - WhatsApp MCP tool poisoning: Invariant Labs demonstrated malicious MCP server silently exfiltrating user's entire WhatsApp history via tool poisoning combined with legitimate whatsapp-mcp server
 - CVE-2025-37899: Linux kernel SMB use-after-free zero-day found with OpenAI o3 assistance by Sean Heelan
+- CVE-2025-43714: ChatGPT SVG vulnerability — crafted SVG executed arbitrary HTML/JS in user's browser within ChatGPT's preview window; formal CVE assignment coordinated with MITRE/NVD
+- CVE-2025-68664: LangChain "LangGrinch" — prompt injection vulnerability in LangChain Core; $4,000 bounty (maximum ever awarded in the project)
+- CVE-2025-49596: Critical RCE in Anthropic's MCP Inspector (CVSS 9.4) — one of the first critical RCEs in Anthropic's MCP ecosystem (Oligo Security)
+- CVE-2025-53967: Figma MCP server RCE — command injection via unvalidated user input in shell commands
+- ChatGPT message limit bypass: business-logic vulnerability allowed free-tier users to bypass GPT-5 message limits by editing messages in older conversations; silently patched 69 days after submission
+- Google Cloud Apigee CVE-2025-13292: cross-tenant vulnerability providing read/write access to analytics data across thousands of organizations (Focal Security)
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
@@ -436,6 +450,10 @@ Competition awareness:
 - **MITRE CWE Top 25 (2025):** CWE-79 (XSS) still #1 but CWE-862 (Missing Authorization) climbed 5 positions — biggest mover. New entries include CWE-770 (Allocation of Resources Without Limits), CWE-639 (Authorization Bypass Through User-Controlled Key)
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
 - **curl bug bounty shutdown** (Jan 2026) demonstrates AI slop risk — first major program closed due to AI-generated garbage flooding; 8x normal submission volume, only 5% genuine
+- **Burp Suite with Burp AI** released 2025 — agentic pentesting assistant for probing deeper and generating attack ideas in real-time from PortSwigger
+- **Penligent** — fully autonomous Security Agent with its own runtime environment; executes commands, analyzes traffic, and plans next moves autonomously with feedback loops
+- **Aikido Attack** — autonomous agents that pentest every deployment, validate exploitability, generate patches, and retest fixes before code hits production
+- **DeepKeep** launched AI agent attack surface scanner (March 2026) — maps enterprise risk across Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, and Make frameworks
 - **By 2027**, "manual pentesting" predicted to become a boutique service; 99% of vulnerability assessments will be agentic (industry prediction)
 - **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming and creating new consulting/testing demand
 

@@ -11,10 +11,11 @@ Plugins are **tool-agnostic** — they describe workflows in terms of categories
 | Category | Placeholder | Included servers | Other options |
 |----------|-------------|-----------------|---------------|
 | Bug bounty platform | `~~bug bounty platform` | bug-bounty-mcp (disabled) | HackerOne, Bugcrowd, Intigriti, YesWeHack |
-| Vulnerability database | `~~vulnerability database` | — | NVD, CVE.org, VulnDB, Snyk |
+| Vulnerability database | `~~vulnerability database` | Snyk (disabled) | NVD, CVE.org, VulnDB |
 | Asset discovery | `~~asset discovery` | Shodan (disabled), Censys (disabled) | SecurityTrails, FullHunt |
 | DNS intelligence | `~~dns intelligence` | — | SecurityTrails, PassiveTotal, VirusTotal |
 | Code search | `~~code search` | GitHub (disabled) | GitLab, Sourcegraph |
+| Code security scanner | `~~code scanner` | Semgrep (disabled) | SonarQube, CodeQL |
 | Web application scanner | `~~web scanner` | — | Burp Suite, Nuclei, OWASP ZAP |
 
 ## Enabling a connector

@@ -163,6 +163,41 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Integrates with common security tools while adding AI-driven decision-making
 - GitHub: emerging open-source project
 
+**Penligent (Autonomous Security Agent):**
+- Fully autonomous Security Agent with its own runtime environment — unlike PentestGPT (AI copilot for human), Penligent executes commands, analyzes return traffic, and plans next moves autonomously
+- Implements military OODA Loop (Observe-Orient-Decide-Act) with feedback loops
+- Generates payloads, sends them to targets, analyzes errors, refines payloads, and retries until successful
+- Built on Large Action Models (LAMs) that predict state transitions
+- Best for: autonomous black-box vulnerability validation and end-to-end pentesting
+- Documented workflow: Claude Code Security (white-box) → Penligent (black-box proof of exploitability)
+
+**Aikido Attack (Autonomous Deployment Pentesting):**
+- Deploys autonomous agents that pentest every deployment; validates exploitability, generates patches, and retests fixes — all before code hits production
+- Integrates into CI/CD pipeline for continuous security validation
+- Best for: pre-deployment security testing with automated remediation
+
+**Burp Suite with Burp AI (PortSwigger, 2025):**
+- Agentic pentesting assistant integrated into Burp Suite Professional
+- Probes deeper and generates attack ideas in real-time using AI reasoning
+- Builds on PortSwigger's existing scanning engine with AI-driven exploration
+- Best for: enhancing manual pentesting with AI-suggested attack vectors
+
+**DeepKeep (AI Agent Attack Surface Scanner, March 2026):**
+- Maps enterprise AI agent risk across frameworks: Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, Make
+- Discovers and catalogs AI agent deployments across the organization
+- Best for: AI attack surface discovery and risk mapping in multi-framework environments
+
+**NVIDIA Garak (LLM Vulnerability Scanner):**
+- Open-source scanner probing LLMs for hallucination, data leakage, prompt injection, misinformation, toxicity, and jailbreaks
+- Supports Hugging Face Hub, Replicate, OpenAI API, LiteLLM, and REST-accessible systems
+- ~100 attack vectors; AVID integration for community vulnerability sharing
+- Best for: systematic LLM vulnerability scanning before deployment or as part of bug bounty testing
+
+**Augustus (Praetorian, LLM Adversarial Testing):**
+- Launches over 210 distinct adversarial attacks against 28 LLM providers
+- Built-in rate limiting, retry logic, and timeout handling for production-grade testing
+- Best for: broad adversarial testing of LLM deployments at scale
+
 **Google Big Sleep (DeepMind + Project Zero):**
 - Google's AI-based bug hunter found 20+ security vulnerabilities in open-source software including 5 Safari vulnerabilities (buffer overflows, use-after-free)
 - **First AI agent to foil active exploitation in the wild**: discovered CVE-2025-6965 (critical SQLite memory corruption, CVSS 7.2) that was known only to threat actors and at risk of being exploited — Google coordinated patches before widespread attacks
@@ -264,6 +299,12 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
 - **Hadrian** for attack-surface-driven 24/7 autonomous pentesting
 - **Escape** for API-native DAST with agentic crawling and MCP endpoint discovery (Y Combinator backed)
+- **Penligent** for fully autonomous black-box pentesting with OODA loop feedback
+- **Aikido Attack** for autonomous pre-deployment security testing with remediation
+- **Burp Suite with Burp AI** for AI-augmented manual pentesting (PortSwigger 2025)
+- **DeepKeep** for AI agent attack surface discovery across multi-framework environments (March 2026)
+- **NVIDIA Garak** for systematic LLM vulnerability scanning (~100 attack vectors)
+- **Augustus** (Praetorian) for broad adversarial LLM testing (210+ attacks, 28 providers)
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -316,6 +357,23 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **MCP Security Bench (MSB)** accepted at ICLR 2026 as academic benchmark for MCP attacks
 - VulnerableMCP.info tracks MCP-specific vulnerability database
 - **MCP Security Tools:** MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+- **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
+
+**Security MCP Servers for Bug Bounty Workflows:**
+
+| MCP Server | Purpose | Integration |
+|---|---|---|
+| **Burp Suite MCP** (PortSwigger) | Official extension — automated HTTP request crafting, proxy history analysis, scanner issue retrieval | Claude Desktop, Claude Code |
+| **Snyk MCP** | Integrated security scanning via Snyk CLI; standardized AI-agent interface to Snyk's vulnerability database | Claude Desktop, Claude Code |
+| **Semgrep MCP** | Bridges Semgrep SAST scanning with AI-assisted workflows | Claude Desktop, Claude Code |
+| **Levo MCP** | Runtime security intelligence — API specs, runtime traces, vulnerabilities, exploit data, auth states | Claude Desktop, Claude Code |
+| **Nmap MCP** | Natural language network reconnaissance via Nmap | Claude Desktop, Claude Code |
+| **SQLMap MCP** | AI-guided SQL injection testing via SQLMap | Claude Desktop, Claude Code |
+| **FFUF MCP** | AI-driven web fuzzing | Claude Desktop, Claude Code |
+| **MobSF MCP** | Mobile app security testing via Mobile Security Framework | Claude Desktop, Claude Code |
+| **Kali Linux MCP** (`mcp-kali-server`) | SSH bridge to Kali box — Claude turns natural-language prompts into security tool commands | Claude Desktop, Claude Code |
+
+**Popular Combined Workflow:** Claude Code + Kali Linux MCP — connect via SSH to a Kali box, use natural-language prompts to orchestrate nmap, gobuster, curl, etc. for automated security assessments
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -391,6 +449,17 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 
 **Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS
 
+### AI Bug Bounty Competitions & CTFs (2025-2026)
+
+| Event | Details | Significance |
+|---|---|---|
+| **XBOW #1 on HackerOne** (2025) | First AI system to top a human bug bounty leaderboard; prompted HackerOne to restructure leaderboards | Watershed moment for AI in bug bounty |
+| **Cyber Apocalypse CTF 2025** ("AI vs Human") | CAI achieved first place among AI teams, top-20 worldwide; 18,369 participants, 8,129 teams, 62 challenges | Benchmark for AI CTF capability |
+| **Fetch the Flag 2026** (Snyk + NahamSec) | Feb 12-13, 2026; web, binary, exploitation challenges | Major community CTF |
+| **AI CTF 2025** (PHDays) | Jeopardy-style, 12 AI/ML themed challenges over 40 hours | AI-focused CTF format |
+| **OpenAI Bio Bug Bounty** (GPT-5) | $25K for universal jailbreak of bio/chem safety filters; $10K for multiple prompts | Novel model-safety bounty |
+| **huntr** (Protect AI) | World's first bug bounty platform for AI/ML repos; 50.5% of findings fixed, 49.5% remain unpatched | Dedicated AI/ML vulnerability platform |
+
 ### Real-World LLM Exploitation Incidents (2025-2026)
 
 | Incident | Details | Impact |
@@ -403,6 +472,12 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 | **91,000+ attack sessions** | GreyNoise honeypots captured SSRF exploitation of Ollama and enumeration of 73+ LLM model endpoints (Oct 2025-Jan 2026) | Active targeting of AI infrastructure |
 | **Nation-state AI operationalization** | DPRK, Iran, China, Russia using AI for coding, target research, vulnerability research, and post-compromise activities (late 2025) | State-sponsored AI-augmented attacks |
 | **AI-generated phishing** | 14% of focused email attacks generated by LLMs by April 2025 (up from 7.6% a year prior) | Increasing sophistication of automated attacks |
+| **OpenClaw supply chain attack** | Largest confirmed supply chain attack on AI agent infrastructure — 1,184 malicious skills across ClawHub (~1 in 5 packages); poisoned agent pipelines at scale | AI agent supply chain compromise |
+| **GTG-1002 state-sponsored AI espionage** | September 2025: first documented case of state-sponsored espionage primarily orchestrated by an AI agent; autonomous Claude Code executed 80-90% of the intrusion lifecycle | State-level AI-augmented attack |
+| **Cisco vs DeepSeek R1** | Q1 2025: Cisco researchers broke DeepSeek R1 with 50/50 jailbreak prompts — 100% bypass rate across all safety categories | Complete AI safety filter failure |
+| **ChatGPT SVG exploitation** | CVE-2025-43714: crafted SVG uploaded to ChatGPT executed arbitrary HTML/JS in user's browser within the preview window | XSS via AI-generated content |
+| **LangChain LangGrinch** | CVE-2025-68664: prompt injection in LangChain Core; $4K bounty — highest ever awarded in the project | Framework-level prompt injection |
+| **MCP Inspector RCE** | CVE-2025-49596 (CVSS 9.4): critical RCE in Anthropic's MCP Inspector — one of the first critical RCEs in MCP tooling (Oligo Security) | MCP toolchain exploitation |
 
 ---
 
@@ -864,6 +939,16 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Terra Security** raised $38M total for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** (preview re:Invent 2025): multi-agent architecture for continuous on-demand pentesting
 - **8,000+ MCP servers** found publicly exposed (Feb 2026); Adversa AI published MCP Security TOP 25 vulnerability catalog
+- **MCP Inspector RCE** (CVE-2025-49596, CVSS 9.4): critical RCE in Anthropic's own MCP Inspector tool (Oligo Security)
+- **Figma MCP server RCE** (CVE-2025-53967): command injection via unvalidated user input
+- **Usual crypto bounty**: $16M — largest single bug bounty prize in tech history
+- **Google Cloud Apigee** (CVE-2025-13292): cross-tenant vulnerability affecting thousands of organizations (Focal Security via Intigriti)
+- **ChatGPT SVG exploit** (CVE-2025-43714): arbitrary HTML/JS execution via crafted SVG upload
+- **LangChain LangGrinch** (CVE-2025-68664): prompt injection in LangChain Core ($4K bounty — max ever for LangChain)
+- **OpenClaw supply chain attack**: 1,184 malicious skills across ClawHub (~1 in 5 packages) — largest AI agent supply chain attack
+- **GTG-1002**: first documented state-sponsored espionage primarily orchestrated by AI agent (Sep 2025)
+- **AI-enabled attacks** surged 89% YoY; average eCrime breakout time now 29 minutes (CrowdStrike 2026)
+- **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts) across all safety categories
 
 ### How to Scope AI Vulnerabilities with Programs
 

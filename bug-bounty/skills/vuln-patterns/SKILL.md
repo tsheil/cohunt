@@ -327,6 +327,15 @@ The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 20
 | Excessive agency → unauthorized actions | High-Critical | Yes |
 | Data exfiltration of PII/secrets | High-Critical | Yes |
 
+**Additional AI/LLM Test Patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 11 | Memory poisoning | Inject malicious context into persistent agent memory (chat history, knowledge base) | Agent recalls and acts on poisoned instructions in future sessions — unlike standard injection, persists across sessions |
+| 12 | Agent chaining privilege escalation | In multi-agent systems, trick a low-privilege agent into asking a higher-privilege agent to perform unauthorized actions | ServiceNow Now Assist pattern: low-privilege agent passes malformed request to higher-privilege agent |
+| 13 | SVG/file injection in AI apps | Upload crafted SVG/file to AI features that preview or render content | CVE-2025-43714 (ChatGPT): crafted SVG executed arbitrary HTML/JS in preview window |
+| 14 | AI supply chain poisoning | Check MCP/agent marketplace packages for malicious code or tool definitions | OpenClaw attack: 1 in 5 packages in ClawHub were malicious (1,184 poisoned skills) |
+
 **Bypasses when prompt injection is filtered:**
 - Use multi-turn conversation to gradually shift context
 - Encode instructions in base64 and ask LLM to decode
@@ -391,6 +400,9 @@ When you know the target's technology, focus your testing:
 | 9 | "Rug pull" attack | Check if MCP server modifies tool definitions between sessions | Different capabilities than initially approved; post-deployment modification |
 | 10 | Command injection in config | Inject shell metacharacters in MCP server config params (OAuth endpoints, URLs) | OS command execution via crafted configuration values |
 | 11 | Sandbox/containment escape | Test filesystem operations for symlink traversal, path escape | Arbitrary file access beyond intended sandbox boundaries |
+| 12 | MCP Inspector exploitation | Test MCP development/debugging tools for RCE | CVE-2025-49596 (CVSS 9.4): RCE in Anthropic's MCP Inspector |
+| 13 | Supply chain marketplace poisoning | Audit MCP/agent marketplace packages for malicious tool definitions or code | OpenClaw attack: 1,184 malicious skills; check tool descriptions, post-install hooks, and embedded scripts |
+| 14 | Credential storage audit | Check how MCP server stores OAuth tokens, API keys, and secrets | 53% of MCP servers use insecure long-lived static secrets; only 8.5% use modern OAuth |
 
 **Real-world references:**
 - **GitHub MCP server breach** — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT
@@ -401,6 +413,10 @@ When you know the target's technology, focus your testing:
 - **Anthropic Filesystem-MCP** — sandbox escape + symlink/containment bypass enabling arbitrary file access and code execution
 - **WhatsApp exfiltration via tool poisoning** — Invariant Labs demonstrated a malicious MCP server silently exfiltrating a user's entire WhatsApp history via tool poisoning combined with a legitimate whatsapp-mcp server
 - **8,000+ MCP servers** found publicly exposed (Feb 2026), 492 identified as vulnerable (lacking auth or encryption)
+- **CVE-2025-49596 (MCP Inspector, CVSS 9.4)** — critical RCE in Anthropic's own MCP Inspector tool (Oligo Security); one of the first critical RCEs in MCP tooling
+- **CVE-2025-53967 (Figma MCP server)** — RCE through command injection via unvalidated user input in shell commands
+- **OpenClaw supply chain attack** — 1,184 malicious skills across ClawHub (~1 in 5 packages); largest confirmed supply chain attack on AI agent infrastructure; highlights risk of untrusted MCP/agent marketplaces
+- **MCP auth security** — 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth (Astrix State of MCP Security 2025)
 - **Adversa AI MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories
 - **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching
 
