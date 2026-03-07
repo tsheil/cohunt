@@ -107,19 +107,26 @@ COMMON DOWNGRADE TRIGGERS (flag if present)
 
 AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Prompt injection is reproducible across sessions (not a one-time fluke)
-□ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant"
+□ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant" (OWASP LLM07:2025)
 □ Jailbreak is explicitly in scope for this program (many programs exclude jailbreaks)
 □ Impact goes beyond the user's own chat session (affects other users, triggers actions, accesses data)
 □ AI agent action has real-world consequences (not just "LLM said something weird")
 □ Indirect injection has a realistic delivery mechanism (not just "paste this into the chatbot yourself")
+□ Zero-click injection (EchoLeak pattern) proves the attack works without ANY user interaction — attacker plants content, AI retrieves and acts on it autonomously
 □ MCP-related finding identifies the specific MCP server, version, and affected tool
-□ Memory poisoning demonstrates persistence across sessions (not just in-context manipulation)
+□ MCP sampling attack specifies the vector: resource theft, conversation hijacking, or covert tool invocation
+□ Memory poisoning demonstrates persistence across sessions (not just in-context manipulation) — document time-to-propagation and scope of affected decisions
 □ CVSS accounts for "Attack Requirements" (CVSS 4.0) — many AI vulns need specific conditions
+□ Consider OWASP AIVSS scoring (v0.5+) for AI-specific severity — extends CVSS with autonomy, non-determinism, and tool-use factors
 □ Report distinguishes between model-level and application-level vulnerabilities
 □ Output injection (XSS/SQLi via LLM) proves the app executes/renders the output (not just displays it)
 □ LPCI findings demonstrate conditional trigger activation (not just static injection)
 □ Multi-turn injection documents the full conversation sequence, not just the final payload
-□ OWASP Agentic Top 10 risk ID cited if targeting agent-specific behavior (ASI01-ASI10)
+□ OWASP Agentic Top 10 2026 risk ID cited if targeting agent-specific behavior (ASI01-ASI10)
+□ Vector/embedding poisoning (OWASP LLM08:2025) demonstrates manipulation of RAG retrieval results, not just the embedding itself
+□ Multimodal injection specifies the modality (image, audio, document) and proves the hidden prompt alters AI behavior
+□ Supply chain attack via AI tool configs (hooks, MCP configs, env vars) demonstrates code execution path from repo clone to compromise
+□ Cascading failure in multi-agent system documents the propagation chain and scope of impact across agents
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -142,7 +149,8 @@ AI SLOP DETECTION (flag if report may be AI-generated low quality)
 □ Report reads like an AI-generated template with placeholders not filled in
 □ Multiple reports from same hunter follow identical formatting patterns
 □ Finding was not manually verified — "AI says this is vulnerable" without confirmation
-□ WARNING: curl shut down its entire bug bounty due to AI slop; platforms actively penalize this
+□ Report transparency: AI-assisted research disclosed but findings independently verified with specific manual testing
+□ WARNING: curl shut down its entire bug bounty due to AI slop; platforms actively penalize this — 82% of hackers now use AI (Bugcrowd 2026), so quality differentiation is critical
 ```
 
 **Review Output Format:**
@@ -206,7 +214,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 [Tips for the specific platform — apply the relevant platform's conventions]
 
-**HackerOne:** Use their severity taxonomy (Critical/High/Medium/Low maps to CVSS ranges). Hai Triage (90% adoption) uses AI to process reports — well-structured reports with clear CWE IDs, CVSS breakdown, and reproduction steps get faster triage. Note leaderboard split separates human researchers from XBOW/agents — adjust duplicate risk accordingly. HackerOne Agentic PTaaS combines autonomous agents with human expertise; reports competing against agent-discovered findings need stronger chain/logic components. AI submissions are NOT used for training (Feb 2026 policy).
+**HackerOne:** Use their severity taxonomy (Critical/High/Medium/Low maps to CVSS ranges). Hai Triage (90% adoption) uses AI to process reports — well-structured reports with clear CWE IDs, CVSS breakdown, and reproduction steps get faster triage. Note leaderboard split separates human researchers from XBOW/agents — adjust duplicate risk accordingly. HackerOne Agentic PTaaS combines autonomous agents with human expertise; reports competing against agent-discovered findings need stronger chain/logic components. AI submissions are NOT used for training (Feb 2026 policy). $81M total bounties paid in 2025 (13% YoY increase); 1,121 programs now include AI in scope (270% YoY). 560+ valid reports from autonomous agents — human reports need to demonstrate reasoning that autonomous tools can't replicate.
 
 **Bugcrowd:** Map findings to Bugcrowd VRT (Vulnerability Rating Taxonomy). AI Triage Assistant has 98% P1 accuracy and 98% duplicate detection confidence — ensure critical findings are unambiguously framed. CrowdMatch AI matches researchers to programs; check if this program favors specific vuln classes. Check if program uses managed triage vs. self-managed.
 
@@ -251,7 +259,8 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique.
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs. The bar is rising.
+11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 
 **Edge Cases:**
 

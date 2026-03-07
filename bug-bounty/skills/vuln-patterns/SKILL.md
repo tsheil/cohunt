@@ -409,6 +409,13 @@ When you know the target's technology, focus your testing:
 | 14 | Credential storage audit | Check how MCP server stores OAuth tokens, API keys, and secrets | 53% of MCP servers use insecure long-lived static secrets; only 8.5% use modern OAuth |
 | 15 | Protocol-level field bypass | Craft MCP responses with case-altered field names (e.g., "Method" instead of "method") | SDK parses altered fields correctly, bypassing validation that checks exact field names (CVE-2026-27896) |
 | 16 | Persistent conversation poisoning | Over multiple interactions, gradually inject "clarifications" that shift agent's understanding of authorization rules | Agent develops false beliefs about what it can approve; effective against agents with long conversation histories (Unit42 research) |
+| 17 | MCP sampling — resource theft | Craft requests that cause the MCP server to drain AI compute quotas through excessive sampling calls | Disproportionate resource consumption; billing impact on the target's AI infrastructure |
+| 18 | MCP sampling — conversation hijacking | Inject persistent instructions through MCP sampling that survive across conversation turns | Attacker-planted instructions persist and influence future agent behavior without re-injection |
+| 19 | MCP sampling — covert tool invocation | Craft MCP responses that trigger the agent to invoke tools without user awareness or consent | Unauthorized actions executed silently; no user-visible indication of tool calls |
+| 20 | Zero-click indirect injection | Plant malicious instructions in content the AI will auto-retrieve (emails, docs, issues) — no user interaction needed | EchoLeak pattern: attacker sends email → AI retrieves it → exfiltrates data autonomously (CVE-2025-32711, CVSS 9.3) |
+| 21 | Multimodal prompt injection | Embed malicious prompts within images, PDFs, or audio alongside benign content | AI processes hidden prompt from non-text modality and alters behavior; test with Base64/emoji/multi-language encoding |
+| 22 | Vector/embedding poisoning | Inject semantically poisoned documents into RAG vector database | Manipulated retrieval results cause AI to generate attacker-controlled outputs (OWASP LLM08:2025, PoisonedRAG USENIX 2025) |
+| 23 | AI coding tool supply chain | Plant malicious hooks, MCP configs, or env vars in repo files that execute when dev opens the project | CVE-2025-59536: Claude Code hooks injection (CVSS 8.7); CVE-2026-21852: env var exfiltration (CVSS 5.3); test .claude/, .cursor/, .github/ configs |
 
 **Real-world references:**
 - **GitHub MCP server breach** — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT
@@ -434,6 +441,10 @@ When you know the target's technology, focus your testing:
 - **Log-To-Leak framework** (ICLR 2026): new attack class using malicious logging tools to silently exfiltrate user data while preserving task quality; tested across 5 MCP servers and 4 LLM agents
 - **PoisonedRAG** (USENIX Security 2025): first knowledge corruption attack on RAG systems — semantic poisoning that bypasses embedding similarity defenses
 - **Docker MCP Defender + Gateway**: runtime detection of tool poisoning and data exfiltration (Defender) + infrastructure-level sandboxed execution (Gateway)
+- **EchoLeak (CVE-2025-32711, CVSS 9.3)** — first real-world zero-click prompt injection in production LLM system; email→Copilot→exfiltration with zero user interaction; canonical example of zero-click indirect injection chain
+- **Palo Alto Unit42 MCP Sampling Attacks** (2026): three new vectors — resource theft (drain compute quotas), conversation hijacking (persistent instruction injection), covert tool invocation (unauthorized silent actions)
+- **Claude Code supply chain CVEs** — CVE-2025-59536 (CVSS 8.7, code injection via Hooks config) and CVE-2026-21852 (CVSS 5.3, API key exfiltration via ANTHROPIC_BASE_URL manipulation); demonstrates AI coding tool project file supply chain risk
+- **CyberStrikeAI weaponization** (Jan-Feb 2026) — open-source AI offensive tool deployed by threat actors across 55 countries against FortiGate firewalls; signals AI offensive tool proliferation as attack vector
 
 ---
 

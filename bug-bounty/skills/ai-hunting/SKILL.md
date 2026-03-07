@@ -315,6 +315,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **NVIDIA Garak** for systematic LLM vulnerability scanning (~100 attack vectors)
 - **Augustus** (Praetorian) for broad adversarial LLM testing (210+ attacks, 28 providers)
 - **Semgrep AI-Powered Detection** (2026) — multimodal AppSec engine combining deterministic SAST analysis with LLM reasoning; detects business logic flaws (IDORs, broken authorization) beyond traditional pattern matching; AI noise filtering removes 1 in 5 false positives at 95% user alignment; "AI-Powered Memories" re-analyzes backlogs when new patterns are added
+- **RunSybil** for AI-driven pentesting with coordinated autonomous agents (map, probe, chain exploits); built by OpenAI/Bishop Fox/Rapid7/CrowdStrike alumni; free tier + Pro at $99/mo
+- **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -988,13 +990,17 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **curl shut down its bug bounty** (January 2026) due to AI-generated submission flood — first major program shutdown attributed to AI slop
 - **Bug bounty market valued at $1.76B** (2025), projected $2.06B in 2026, reaching **$5.74B by 2034** (CAGR 15.94%)
 - **Q4 2025 AI security startup funding**: $2.17B across 28 deals — **8x growth** over two years
-- **Enterprise AI readiness gap**: only 34% have AI-specific security controls; less than 40% conduct regular security testing on AI models or agent workflows
+- **Enterprise AI readiness gap**: only 34% have AI-specific security controls; less than 40% conduct regular security testing on AI models or agent workflows (PwC 2025: 79% of companies have deployed agentic AI, but security lags adoption)
+- **EchoLeak (CVE-2025-32711, CVSS 9.3)**: first real-world zero-click prompt injection exploit in production — attacker sends crafted email to victim's Outlook, MS 365 Copilot retrieves it, hidden instructions exfiltrate internal files with no user interaction; bypassed XPIA classifier, link redaction, and CSP via Teams proxy; patched June 2025
+- **CyberStrikeAI attacks**: open-source AI offensive tool deployed across 55 countries against FortiGate firewalls (Jan-Feb 2026); 21 unique IPs observed; signals offensive AI tool proliferation
 - **32.1% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck State of Exploitation 2026)
 - **AISLE discovered all 12 OpenSSL zero-days** in January 2026, including bugs dating back 25-27 years
 - **Claude Opus 4.6 found 500+ vulnerabilities** in production open-source codebases (Anthropic Claude Code Security)
 - **AI agent attack success rates 66-84%** when testing prompt injection against systems with auto-execution enabled
 - **OWASP Agentic Security Initiative** published taxonomy of 15 threat categories for agentic AI (goal misalignment, memory poisoning, multi-agent collusion)
-- **OWASP Top 10 for Agentic Applications** released December 2025 — a separate list from LLM Top 10, covering agent-specific risks (goal hijack, tool misuse, memory poisoning, rogue agents)
+- **OWASP Top 10 for Agentic Applications 2026** released December 2025 — ASI01 Agent Goal Hijacking, ASI02 Insecure Tool Usage, ASI03 Privilege Mismanagement, ASI04 Supply Chain Risks, ASI05 Code Execution, ASI06 Memory Poisoning, ASI07 Cascading Failures, ASI08 Human-Agent Trust Exploitation (plus 2 more); developed by 100+ industry experts
+- **OWASP AIVSS** (AI Vulnerability Scoring System) — extends CVSS for AI-specific risks by adding agentic-capabilities assessment (autonomy, non-determinism, tool use); v0.5 available at aivss.owasp.org; v1.0 targeted for RSA Conference March 2026. Use alongside CVSS when scoring AI/agent vulnerabilities
+- **OWASP AI Testing Guide v1** (November 2025) — first comprehensive standard for AI Trustworthiness testing, bridging theoretical risks and practical repeatable methodologies
 - **EU AI Act** compliance deadline: **August 2, 2026** — penalties up to 35M EUR or 7% of global turnover; driving AI red teaming adoption
 - **60% of large enterprises** using continuous automated red teaming (CART) by 2026; manual pentesting predicted to become boutique service by 2027
 - **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy

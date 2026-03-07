@@ -278,7 +278,7 @@ Check for AI-specific program features:
 5. Note if program uses HackerOne's AI Bug Bounty framework
 6. Check for different bounty tables for AI vs traditional vulns
 
-Context: As of 2025, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%. HackerOne Hai Triage adopted by 90% of customers. Bugcrowd AI Triage Assistant (Dec 2025) achieves 98% P1 accuracy. HackerOne clarified (Feb 2026) that researcher submissions are NOT used to train AI models. OWASP Top 10 for Agentic Applications released December 2025.
+Context: As of 2025-2026, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%. HackerOne Hai Triage adopted by 90% of customers. Bugcrowd AI Triage Assistant (Dec 2025) achieves 98% P1 accuracy. HackerOne clarified (Feb 2026) that researcher submissions are NOT used to train AI models. OWASP Top 10 for Agentic Applications 2026 (ASI01-ASI10) released December 2025 covering agent-specific risks. OWASP AIVSS (AI Vulnerability Scoring System v0.5) extends CVSS for AI-specific severity — use for AI/agent vulnerability reports. OWASP AI Testing Guide v1 (November 2025) provides first comprehensive AI testing methodology. 79% of companies have deployed agentic AI but only 34% have AI-specific security controls (PwC 2025). EchoLeak (CVE-2025-32711) demonstrated first zero-click prompt injection in production (MS 365 Copilot). CyberStrikeAI weaponized across 55 countries (Jan-Feb 2026) — AI offensive tool proliferation is real.
 
 ### Step 7: Synthesize
 
@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.10.0)*
+*Last updated: March 2026 (v0.11.0)*
 
 Key data points for program evaluation:
 
@@ -385,6 +385,15 @@ Key data points for program evaluation:
 | Semgrep AI-Powered Detection | Multimodal AppSec engine: deterministic + LLM reasoning; detects IDORs, broken auth; filters 1 in 5 false positives | Semgrep Secure 2026 |
 | OpenClaw exposed instances | 40,214+ internet-exposed instances; 3 CVEs with public exploits; active threat actor campaigns via ClawHub | Security research 2026 |
 | AI-enabled attacks growth | 89% YoY surge; average eCrime breakout time now 29 minutes | CrowdStrike 2026 |
+| OWASP AIVSS | AI Vulnerability Scoring System v0.5 — extends CVSS for AI risks (autonomy, non-determinism, tool use); v1.0 at RSA March 2026 | OWASP 2025-2026 |
+| OWASP AI Testing Guide | v1.0 — first comprehensive standard for AI Trustworthiness testing | OWASP November 2025 |
+| OWASP Agentic Top 10 2026 | ASI01-ASI10: Goal Hijacking, Insecure Tool Usage, Privilege Mismanagement, Supply Chain, Code Execution, Memory Poisoning, Cascading Failures, Trust Exploitation | OWASP December 2025 |
+| Enterprise agentic AI deployment | 79% of companies deployed; only 34% have AI-specific security controls | PwC AI Agent Survey 2025 |
+| EchoLeak (CVE-2025-32711) | First zero-click prompt injection in production — MS 365 Copilot data exfiltration via crafted email, CVSS 9.3 | HackTheBox/arxiv June 2025 |
+| CyberStrikeAI weaponization | Open-source AI offensive tool deployed across 55 countries against FortiGate firewalls (Jan-Feb 2026) | The Hacker News March 2026 |
+| RunSybil | AI-driven pentesting with coordinated autonomous agents; built by OpenAI/Bishop Fox/CrowdStrike alumni | RunSybil 2026 |
+| Cascading failure propagation | Single compromised agent poisons 87% of downstream decisions within 4 hours in multi-agent systems | Academic research 2025-2026 |
+| Autonomous ransomware | First confirmed AI-orchestrated attacks in 2025; fully autonomous pipelines predicted for 2026 | Cybersecurity Dive 2025-2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -441,7 +450,7 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-53109: critical symlink bypass in MCP file operations — system takeover if server runs with elevated privileges
 - Persistent prompt injection in procurement agent (Palo Alto Unit42, 2026): manufacturing company's agent manipulated over 3 weeks to approve $5M in false purchase orders
 - OmniGPT breach (February 2026): threat actor breached AI aggregator exposing **34 million lines of conversations**, 30,000 user credentials, and uploaded business documents
-- CVE-2025-32711: First high-severity vulnerability in Microsoft 365 Copilot (EchoLeak)
+- CVE-2025-32711 (EchoLeak, CVSS 9.3): First real-world zero-click prompt injection in production LLM — attacker email → Copilot retrieves → exfiltrates internal files with no user interaction; bypassed XPIA classifier, link redaction, and CSP via Teams proxy
 - CVE-2025-34291: Langflow permissive CORS + missing CSRF enabling session hijack → RCE via code validation endpoint
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
