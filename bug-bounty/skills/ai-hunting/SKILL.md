@@ -369,6 +369,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **Shift** (Caido AI plugin) for AI-augmented proxy workflows — English-command control, context-aware wordlists, Shift Agents micro-agent framework
 - **Aikido Infinite** for self-securing software — autonomous agents pentest every code change (found 7 CVEs in Coolify including RCE as root)
 - **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
+- **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; 55 automated audit/hardening checks mapped to OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
+- **AgentGuard** — runtime guard for AI agents blocking malicious skills, data leaks, and secret exposure; sub-millisecond latency local PolicyEngine with tamper-evident audit logs; compliance evidence for EU AI Act and SOC 2
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -817,6 +819,12 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **Aikido Infinite Coolify CVEs** | February 2026: autonomous agents found 7 CVEs in Coolify including privilege escalation and RCE as root across 52,000+ exposed instances | Self-securing software discovery |
 | **Vibe Hacking emergence** | 2026: low-effort AI-built attacks beating enterprise defenses; HP research confirms attackers prioritize cost over quality yet still bypass security controls | Democratized AI-powered attacks |
 | **FIRST CVE forecast** | February 2026: predicted median 59,427 new CVEs for 2026 (first year to exceed 50,000); realistic scenarios suggest 70,000-100,000 possible | Unprecedented vulnerability volume |
+| **Reprompt (Microsoft Copilot)** | Varonis Threat Labs: single-click data exfiltration chain via `q` URL parameter in Microsoft Copilot; attacker injects instructions causing Copilot to exfiltrate user data and conversation memory silently, maintaining control even when chat is closed; patched January 13, 2026 | Enterprise AI data exfiltration |
+| **OpenClaw Browser Relay CDP (CVE-2026-28458)** | CVSS 7.5: unauthenticated `/cdp` WebSocket endpoint in Browser Relay extension enables cookie/session theft from all browser tabs; fixed v2026.2.1 | AI agent browser session hijacking |
+| **OpenClaw Sandbox Bridge (CVE-2026-28468)** | Sandbox browser bridge server accepts requests without authentication when sandboxed browser feature is enabled; local attacker fully compromises all browser sessions running in OpenClaw's sandbox — cookie/session/page content theft; fixed v2026.2.14 | AI agent sandbox authentication bypass |
+| **LLM-assisted deanonymization** | arXiv:2602.16800 (February 2026): LLM agents identify anonymous users from Hacker News, Reddit, LinkedIn posts with 25-67% recall and 70-90% precision at $1-4 per identification; practical obscurity no longer holds as privacy assumption | AI-powered privacy destruction |
+| **AI app data breach epidemic** | Barrack.ai documented 20+ AI app breaches since January 2025 exposing tens of millions of users; four root causes: misconfigured Firebase (196/198 iOS AI apps), missing Supabase RLS, hardcoded API keys (72% of Android AI apps), absent authentication; Chat & Ask AI exposed 406M records including 300M+ chat messages | Systemic AI app security crisis |
+| **IDE Extension Namespace Squatting** | Koi Security: Cursor, Windsurf, and Google Antigravity IDEs recommended nonexistent extensions from OpenVSX; attackers could register namespaces and upload malware with full system access; Cursor patched Dec 2025, Google patched Jan 2026, Windsurf unresponsive | AI IDE extension supply chain |
 
 ---
 
@@ -875,6 +883,8 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2026-22812 | OpenCode | Unauthenticated HTTP server auto-starts with permissive CORS — any local process or website can execute shell commands with user privileges | 8.8 |
 | CVE-2025-64106 | Cursor | MCP installation deep-link RCE — insufficient validation allows masking malicious commands behind trusted installation dialog (e.g., appearing as "Playwright" while executing payloads); patched within 2 days (Cyata) | 8.8 |
 | CVE-2026-24887 | Claude Code | Confirmation prompt bypass — allows execution of untrusted commands through `find` command, circumventing interactive approval mechanisms | — |
+| CVE-2026-28458 | OpenClaw | Browser Relay `/cdp` WebSocket endpoint missing authentication — cookie/session theft from all browser tabs | 7.5 |
+| CVE-2026-28468 | OpenClaw | Sandbox browser bridge unauthenticated access — full compromise of sandboxed browser sessions | — |
 
 **Cursor Workspace Trust Bypass (Oasis Security, 2026):**
 - Cursor ships with **Workspace Trust disabled by default** — unlike VS Code which prompts users before trusting workspaces
@@ -903,11 +913,19 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 - PromptArmor demonstrated GitHub Copilot CLI can download and execute malware with **zero user approval**
 - CVE-2026-29783: shell tool allows arbitrary code execution through bash parameter expansion patterns — safety layer incorrectly classified dangerous commands as "read-only"
 
-**Extension Recommendation Attacks:**
+**Extension Recommendation Attacks (Koi Security, 2026):**
 - Cursor, Windsurf, Google Antigravity, and Trae recommend non-existent VSCode extensions from OpenVSX registry
 - Threat actors can claim unclaimed extension namespaces and serve malicious extensions to 1.8M+ developers
 - Attack chain: AI IDE recommends extension → developer installs → malicious code executes with full IDE permissions
+- Koi Security preemptively claimed vulnerable namespaces; Cursor patched Dec 2025, Google patched Jan 2026, Windsurf unresponsive
 - Test for: extension namespace squatting, fake extension serving, trust chain exploitation
+
+**Reprompt (Varonis Threat Labs, January 2026):**
+- Single-click data exfiltration chain exploiting the `q` URL parameter in Microsoft Copilot
+- Attacker crafts URL containing injected instructions → victim clicks → Copilot exfiltrates user data and conversation memory
+- Maintains persistent control even after chat is closed — instructions survive in Copilot's conversation context
+- Patched by Microsoft January 13, 2026
+- Test for: URL parameter injection in AI assistants, persistent instruction injection via conversation context, data exfiltration through AI-mediated channels
 
 **Testing Approach:**
 1. Clone a repository containing malicious `.claude/`, `.cursor/`, `.github/` configurations
@@ -1559,6 +1577,17 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **OWASP Top 10 for Agentic Applications 2026** released December 2025 — ASI01 Agent Goal Hijacking, ASI02 Insecure Tool Usage, ASI03 Privilege Mismanagement, ASI04 Supply Chain Risks, ASI05 Code Execution, ASI06 Memory Poisoning, ASI07 Cascading Failures, ASI08 Human-Agent Trust Exploitation (plus 2 more); developed by 100+ industry experts
 - **OWASP AIVSS** (AI Vulnerability Scoring System) — extends CVSS for AI-specific risks by adding agentic-capabilities assessment (autonomy, non-determinism, tool use); v0.5 available at aivss.owasp.org; v1.0 targeted for RSA Conference March 2026. Use alongside CVSS when scoring AI/agent vulnerabilities
 - **OWASP AI Testing Guide v1** (November 2025) — first comprehensive standard for AI Trustworthiness testing, bridging theoretical risks and practical repeatable methodologies
+- **OWASP MCP Secure Development Guide** published — practical guidance for securing MCP server implementations; actionable checklist for developers and auditors
+- **OWASP GenAI Security Summit at RSAC 2026** — March 23-26 in San Francisco, featuring Agentic Security Hackathon and practitioner sessions on LLM/GenAI/agent security
+- **Apiiro "4x Velocity, 10x Vulnerabilities"** — AI coding assistants produce 10x more security findings per month; 322% increase in privilege escalation bugs; 2x credential exposure vs pre-AI development; signals growing attack surface from AI-generated code
+- **Bright Security 2026 State of LLM Security** — benchmark: all context is untrusted by default; tool-enabled LLMs represent highest-risk AI adoption category; effective programs prioritize runtime behavior, controlled integration, and continuous validation
+- **HackerOne Hai** AI validation agent launched February 2026 — 56% reduction in vulnerability validation time; HackerOne confirmed no training on researcher submissions
+- **Salesforce Bug Bounty 10th Anniversary** — $30.4M invested since 2015, celebrated March 4, 2026
+- **Google AI Vulnerability Reward Program** — dedicated bug bounty for AI systems (Search, Gemini Apps, Workspace); up to $30K per report with novelty bonuses; $430K+ already paid for AI bugs; prompt injection/jailbreaks excluded from scope but encouraged
+- **MCP attack surface statistics (March 2026)**: 30 CVEs filed in 60 days; 38% of 500+ scanned MCP servers completely lack authentication (Adversa AI)
+- **Adversa AI MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories with real-world examples, red team testing guides, and defensive playbooks
+- **AI app data breach epidemic**: 20+ incidents since Jan 2025; systemic root causes: misconfigured Firebase (196/198 iOS AI apps), missing Supabase RLS, hardcoded API keys (72% of Android AI apps); Chat & Ask AI exposed 406M records (Barrack.ai)
+- **LLM-assisted deanonymization** (arXiv:2602.16800): AI agents identify anonymous users with 25-67% recall, 70-90% precision at $1-4 per identification — practical obscurity is no longer a valid privacy assumption
 - **EU AI Act** compliance deadline: **August 2, 2026** — penalties up to 35M EUR or 7% of global turnover; driving AI red teaming adoption
 - **60% of large enterprises** using continuous automated red teaming (CART) by 2026; manual pentesting predicted to become boutique service by 2027
 - **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy

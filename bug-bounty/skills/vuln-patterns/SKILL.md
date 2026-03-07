@@ -613,6 +613,13 @@ When you know the target's technology, focus your testing:
 - **OpenClaw Docker container escape** (CVE-2026-27002) — configuration injection allowing dangerous Docker options (bind mounts, host networking, unconfined profiles); enables host system compromise from within agent container
 - **Cursor Workspace Trust disabled** (Oasis Security) — Cursor ships with Workspace Trust disabled by default, enabling silent code execution via `.vscode/tasks.json` without user confirmation
 - **Gravitee AI agent security** — 3+ million AI agents in corporations; 88% of orgs reported security incidents; 47% of agents not monitored; systemic unmanaged attack surface
+- **Reprompt (Varonis, Jan 2026)** — single-click data exfiltration via Microsoft Copilot `q` URL parameter injection; attacker crafts URL → victim clicks → Copilot silently exfiltrates user data and conversation memory; persistent control even after chat close; new attack class: URL parameter injection in AI assistants
+- **OpenClaw Browser Relay CDP** (CVE-2026-28458, CVSS 7.5) — unauthenticated `/cdp` WebSocket endpoint in Browser Relay extension enables cookie/session theft from all browser tabs; fixed v2026.2.1
+- **OpenClaw Sandbox Bridge auth bypass** (CVE-2026-28468) — sandbox browser bridge server accepts unauthenticated requests on localhost; full compromise of all sandboxed browser sessions including cookie/session/page content theft; fixed v2026.2.14
+- **AI app Firebase/Supabase misconfiguration epidemic** (Barrack.ai, 2025-2026) — 20+ AI app breaches; systemic root causes: Firebase rules set to public read/write (196/198 iOS AI apps), missing Supabase RLS, hardcoded API keys in client-side code (72% of Android AI apps); Chat & Ask AI exposed 406M records; structural crisis in AI wrapper/vibe-coded products
+- **LLM-assisted deanonymization** (arXiv:2602.16800) — LLM agents identify anonymous users from social media posts with 25-67% recall, 70-90% precision at $1-4 per identification; privacy implications for bug bounty researchers operating pseudonymously
+- **IDE extension namespace squatting** (Koi Security, 2026) — AI IDEs (Cursor, Windsurf, Google Antigravity) recommend nonexistent extensions from OpenVSX; attackers register namespaces, serve malware with full system access to 1.8M+ developers; Cursor patched Dec 2025, Google Jan 2026, Windsurf unresponsive
+- **MCP attack surface acceleration** (March 2026) — 30 CVEs in 60 days; 38% of 500+ servers lack authentication entirely; Adversa AI published MCP Security TOP 25 with 25 vulnerability categories, red team guides, and defensive playbooks
 
 ---
 

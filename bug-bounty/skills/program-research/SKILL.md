@@ -609,6 +609,14 @@ Competition awareness:
 - **DeepKeep** launched AI agent attack surface scanner (March 2026) — maps enterprise risk across Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, and Make frameworks
 - **By 2027**, "manual pentesting" predicted to become a boutique service; 99% of vulnerability assessments will be agentic (industry prediction)
 - **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming and creating new consulting/testing demand
+- **Google AI VRP** (Oct 2025) — dedicated AI bug bounty covering Search, Gemini Apps, Workspace core apps; up to $30K per report with novelty bonuses; $430K+ paid for AI bugs; prompt injection/jailbreaks excluded from scope but encouraged as research; significant opportunity for AI security specialists
+- **HackerOne Hai AI validation agent** (Feb 2026) — 56% reduction in vulnerability validation time; updated AI policy confirms no training on researcher submissions; may accelerate triage turnaround for reporters
+- **Salesforce Bug Bounty 10th Anniversary** (March 4, 2026) — $30.4M invested since 2015; signals continued enterprise commitment to bug bounty
+- **Reprompt (Varonis → Microsoft, patched Jan 13, 2026)**: single-click Microsoft Copilot data exfiltration via URL parameter injection; new attack class for enterprise AI assistants
+- **OpenClaw Browser Relay** (CVE-2026-28458, CVSS 7.5) and **Sandbox Bridge** (CVE-2026-28468): unauthenticated WebSocket/HTTP endpoints enabling session theft; total OpenClaw CVE count now exceeds 12
+- **AI app breach epidemic** (Barrack.ai): 20+ breaches since Jan 2025 from misconfigured Firebase, missing Supabase RLS, hardcoded keys; vibe-coded AI wrappers represent a systemic, structural security crisis with hundreds of millions of records exposed
+- **Apiiro research**: AI coding assistants produce 10x more security findings per month; 322% increase in privilege escalation bugs; 2x credential exposure — AI-generated code is expanding the attack surface for human hunters
+- **30 MCP CVEs in 60 days** (early 2026); 38% of 500+ scanned servers lack authentication; Adversa AI published MCP Security TOP 25 as definitive vulnerability catalog
 
 ---
 
