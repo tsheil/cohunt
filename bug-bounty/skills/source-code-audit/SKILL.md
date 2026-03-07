@@ -394,6 +394,56 @@ Focus on: Security implications of changes, newly introduced sinks, removed prot
 ### Full Audit
 Focus on: Everything — data flows, auth, dependencies, configuration, logic. Best for: new codebases, pre-launch reviews, bounty targets with source access.
 
+### AI/LLM Integration Audit
+Focus on: How the application integrates with LLM APIs and AI services. Best for: apps using OpenAI, Anthropic, Google AI APIs, or any LLM-backed features.
+
+**What to Check:**
+
+| Pattern | What to Look For | Severity |
+|---------|-----------------|----------|
+| **Prompt construction** | User input concatenated directly into prompts without sanitization | High — enables prompt injection |
+| **Output trust** | LLM output passed to `eval()`, `exec()`, SQL queries, or rendered as HTML without escaping | Critical — enables RCE, SQLi, XSS via LLM output |
+| **API key handling** | OpenAI/Anthropic/Google API keys hardcoded, in env vars without rotation, or leaked in frontend bundles | High — credential exposure |
+| **System prompt exposure** | System prompts stored in client-accessible files, frontend code, or version control | Medium — information disclosure |
+| **Token/cost controls** | No rate limiting on LLM API calls, no max token limits, no cost caps | Medium — economic DoS |
+| **Multi-tenant isolation** | Shared conversation context between users, no per-user session isolation | Critical — cross-user data leakage |
+| **Tool call validation** | LLM tool/function calls executed without parameter validation or allowlist enforcement | Critical — arbitrary action execution |
+| **Memory/RAG poisoning** | Vector database ingestion from user-controlled sources without sanitization | High — persistent prompt injection (LPCI) |
+
+**Code Patterns to Flag:**
+
+```
+# DANGEROUS: User input directly in prompt
+prompt = f"Summarize this: {user_input}"
+response = openai.chat.completions.create(messages=[{"role": "user", "content": prompt}])
+
+# DANGEROUS: LLM output trusted and executed
+result = llm.generate(user_query)
+eval(result)  # or subprocess.run(result) or cursor.execute(result)
+
+# DANGEROUS: No output sanitization before HTML rendering
+return render_template("result.html", content=llm_response)
+
+# FLAG: Check if API keys are in source
+OPENAI_API_KEY = "sk-..."  # hardcoded key
+```
+
+### MCP Server Implementation Audit
+Focus on: Security of MCP server code — input validation, authentication, command injection. Best for: reviewing custom MCP servers or auditing MCP server dependencies.
+
+**What to Check:**
+
+| Pattern | What to Look For | Severity |
+|---------|-----------------|----------|
+| **Command injection** | User-supplied arguments passed to `exec()`, `spawn()`, `system()` without sanitization | Critical — 67% of MCP servers have Code Injection risks (Endor Labs) |
+| **Path traversal** | File paths from MCP tool parameters not validated — `../` traversal | Critical — 82% use file system operations prone to Path Traversal |
+| **Authentication** | No auth on MCP endpoints, or static tokens without rotation | High — 38% of scanned MCP servers lack auth entirely |
+| **Tool description poisoning** | Tool descriptions loaded from external/user-controlled sources | High — enables invisible manipulation of AI behavior |
+| **Rug pull potential** | Tool definitions mutable between sessions without re-approval | High — post-deployment behavior modification |
+| **OAuth endpoint validation** | Authorization endpoints accepted without URL validation (CVE-2025-6514 pattern) | Critical — RCE via malicious auth endpoint |
+| **Case sensitivity in JSON parsing** | Field name handling differs from specification (CVE-2026-27896 pattern in Go SDK) | Medium — validation bypass |
+| **Symlink handling** | File operations don't resolve symlinks before access checks | Critical — sandbox escape |
+
 ---
 
 ## Tips for Better Audits

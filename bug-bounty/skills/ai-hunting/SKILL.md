@@ -343,6 +343,13 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Claude Code Project File Exploitation** | CVE-2025-59536 / CVE-2026-21852: RCE and API token exfiltration through Claude Code project files (Check Point Research) | Critical |
 | **Git MCP Server RCE** | CVE-2025-68145, CVE-2025-68143, CVE-2025-68144: Three CVEs in Anthropic's Git MCP server enabling RCE via prompt injection | Critical |
 | **MCP Server SSRF → Cloud Compromise** | Unpatched SSRF in Microsoft MarkItDown MCP server — compromises AWS EC2 instances via metadata service exploitation | Critical |
+| **Gemini MCP 0-day** | CVE-2026-0755 (CVSS 9.8): command injection via execAsync in gemini-mcp-tool; vendor unresponsive, published as 0-day | Critical |
+| **Godot MCP Command Injection** | CVE-2026-25546: command injection via exec() in godot-mcp server | High |
+| **GitHub Kanban MCP Injection** | CVE-2026-0756: command injection in create_issue functionality | High |
+| **eBay API MCP RCE** | CVE-2026-27203: RCE via updateEnvFile in eBay API MCP Server | Critical |
+| **mcp-remote OAuth RCE** | CVE-2025-6514 (CVSS 10.0): OS command injection via malicious authorization_endpoint in mcp-remote npm package (437K+ downloads) | Critical |
+| **DockerDash MCP Gateway** | Malicious Docker image labels compromise environments via Ask Gordon AI MCP Gateway — data exfil of container details, network topology | High-Critical |
+| **Shadow Escape (Zero-Click MCP)** | Hidden instructions in documents cause MCP-enabled AI to exfiltrate PII from connected databases and CRM systems within authorized identity boundaries | Critical |
 
 **Real-World Examples:**
 
@@ -375,6 +382,7 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **MCP Security Bench (MSB)** accepted at ICLR 2026 as academic benchmark for MCP attacks
 - VulnerableMCP.info tracks MCP-specific vulnerability database
 - **MCP Security Tools:** MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+- **CoSAI MCP Security Whitepaper** (January 27, 2026): Coalition for Secure AI released comprehensive taxonomy identifying **12 core threat categories** and **~40 distinct threats** — tool poisoning, shadow servers, confused deputy problem, identity spoofing via weak authentication, malicious tool metadata manipulation; recommended controls include strong identity chains, zero-trust for AI agents, and sandboxing
 - **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series documenting real attacks (WhatsApp exfiltration, GitHub prompt injection, localhost breach, supply chain attack); MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
 - **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate user queries, tool responses, and agent replies. Evaluated across 5 real-world MCP servers and 4 LLM agents (GPT-4o, GPT-5, Claude-Sonnet-4, GPT-OSS). Preserves task quality while exfiltrating data — extremely hard to detect
@@ -543,6 +551,49 @@ Published by CSA (Cloud Security Alliance) in February 2026 and documented in ar
 | **Log-To-Leak MCP attack** | ICLR 2026: new attack class covertly forces agents to invoke malicious logging tools to exfiltrate user queries, tool responses, and agent replies while preserving task quality — nearly undetectable | Silent data exfiltration via MCP |
 | **Docker MCP WhatsApp exfiltration** | April 2025: Invariant Labs demonstrated tool poisoning combined with unrestricted network access stealing entire WhatsApp message histories; bypasses DLP because it looks like normal AI behavior | Mass personal data exfiltration |
 | **Unit 42 persistent memory poisoning** | December 2025: real-world indirect prompt injection poisoning long-term AI agent memory — attacker tricks victim into visiting malicious webpage, injected instructions survive session restarts via summarization | Cross-session persistent attack |
+| **DockerDash (Docker Ask Gordon AI)** | November 2025: Noma Security discovered malicious Docker image metadata labels could compromise environments through Docker's Ask Gordon AI assistant; MCP Gateway passed contextual info to LLMs without distinguishing descriptive metadata from instructions; fixed in Docker Desktop v4.50.0 | Supply chain → AI agent RCE |
+| **PleaseFix / PerplexedBrowser** | February 2026: Zenity Labs disclosed zero-click vulns in agentic browsers (Perplexity Comet); two exploit paths: (1) file system exfiltration via attacker-controlled calendar invites triggering autonomous agent execution, (2) credential theft by manipulating agent workflows to access password managers; patched by blocking `file://` path access | Zero-click agentic browser hijacking |
+| **Chrome Gemini Panel Hijacking** | CVE-2026-0628: Palo Alto Unit 42 found malicious Chrome extensions could exploit Chrome's Gemini panel for privilege escalation, enabling spying via Gemini Live | Browser extension → AI escalation |
+| **Shadow Escape (Operant AI)** | October 2025: first zero-click agentic attack via MCP; malicious instructions in documents (e.g., onboarding PDFs) cause MCP-enabled AI assistants to exfiltrate PII from connected databases and CRM systems; operates inside the firewall within authorized identity boundaries, invisible to conventional monitoring | Zero-click MCP data exfiltration |
+| **FortiGate AI-augmented mass breach** | Jan-Feb 2026: Russian-speaking threat actor used multiple commercial GenAI services to compromise 600+ FortiGate devices across 55+ countries; exploited exposed management ports and weak credentials; data exfiltration within 4 minutes of initial access (AWS Security) | AI-augmented mass exploitation |
+| **Gemini MCP Tool 0-day** | CVE-2026-0755 (CVSS 9.8): command injection in gemini-mcp-tool execAsync method; user input passed directly to system calls; vendor never responded; published as 0-day advisory January 2026 | MCP tool RCE |
+
+---
+
+### Promptware Kill Chain (2026)
+
+Published in arxiv:2601.09625 (January 2026), featured in a Black Hat webinar (February 2026), and covered by Bruce Schneier. Models prompt injection as multi-step malware using a 7-stage kill chain:
+
+| Stage | Name | Description | Bug Bounty Test |
+|-------|------|-------------|-----------------|
+| 1 | **Initial Access** | Prompt injection enters the system (direct, indirect, or via MCP) | Test all injection entry points: chat, documents, emails, MCP tools |
+| 2 | **Privilege Escalation** | Jailbreaking to bypass system constraints | Test if injection can override system prompt guardrails |
+| 3 | **Reconnaissance** | Probing for system capabilities, tools, and data access | Test if agent reveals its tools, permissions, and connected systems |
+| 4 | **Persistence** | Poisoning memory, retrieval stores, or RAG databases | Test if injected payloads survive across sessions (LPCI) |
+| 5 | **Command & Control** | Establishing ongoing communication with attacker | Test if agent can be directed to external URLs or APIs |
+| 6 | **Lateral Movement** | Spreading across connected tools, agents, or systems via MCP | Test cross-tool and cross-agent propagation of injected instructions |
+| 7 | **Actions on Objective** | Data exfiltration, unauthorized actions, or system modification | Test the final impact: what data leaks, what actions execute |
+
+**Why This Matters:** Analysis of 36 academic studies found 21 documented attacks traversing 4+ stages. Use this framework when scoping AI agent vulnerabilities — a finding that reaches stage 5+ is significantly more severe than one limited to stage 1-2. Reference the kill chain stage in reports to demonstrate attack sophistication.
+
+### Agentic Browser Attack Surface (2026)
+
+A new attack surface emerging in early 2026 as AI agents gain autonomous web browsing capabilities:
+
+**Affected Products:** Perplexity Comet, Chrome Gemini panel, ChatGPT Atlas/Operator, and other agentic browsers.
+
+**Attack Patterns:**
+- **Zero-click agent hijacking** — Attacker-controlled web content (calendar invites, emails, documents) triggers autonomous agent execution without user interaction
+- **File system access via agents** — Agents with `file://` access can be tricked into reading and exfiltrating local files
+- **Credential manager access** — Manipulated agent workflows access password managers through legitimate agent-browser integration
+- **Extension escalation** — Malicious browser extensions exploit AI panel integration points (CVE-2026-0628)
+
+**Testing Approach:**
+1. Identify if target has agentic browsing features (autonomous web access, scheduled browsing)
+2. Plant indirect prompt injection in content the agent will process (calendar, email, search results)
+3. Test if the agent acts on injected instructions without user confirmation
+4. Check if agent has access to local filesystem, password managers, or other sensitive browser state
+5. Test if browser extensions can interact with and manipulate the AI agent panel
 
 ---
 
@@ -1029,6 +1080,21 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **LPCI** (Logic-Layer Prompt Control Injection): novel vulnerability class targeting agent logic layers with persistent, conditionally-triggered payloads (CSA Feb 2026, arXiv:2507.10457)
 - **Endor Labs analysis** of 2,614 MCP implementations: 82% use file system operations prone to Path Traversal, 67% use sensitive APIs related to Code Injection, 34% related to Command Injection
 - **NIST AI RMF and ISO 42001** do not yet address technical controls for agentic deployments (tool call validation, prompt injection logging, containment testing)
+- **OWASP FinBot CTF** reference application available for practicing agentic security skills — hands-on training for ASI01-ASI10 testing
+- **OWASP AIVSS AIUC-1 integration** announced February 27, 2026 — scoring formula: `AIVSS_Score = [(w1 × ModifiedBaseScore) + (w2 × AISpecificMetrics) + (w3 × ImpactMetrics)] × TemporalMetrics × MitigationMultiplier`
+- **Promptware Kill Chain** (arxiv:2601.09625, January 2026): 7-stage model for prompt injection as malware — Initial Access → Privilege Escalation → Recon → Persistence → C2 → Lateral Movement → Actions on Objective; 21 of 36 studied attacks traverse 4+ stages
+- **PleaseFix / PerplexedBrowser**: Zenity Labs disclosed zero-click agentic browser vulnerabilities in Perplexity Comet (Feb 2026) — file system exfiltration and credential theft via autonomous agent manipulation
+- **Chrome Gemini Panel Hijacking** (CVE-2026-0628): malicious Chrome extensions exploit Gemini panel for privilege escalation and Gemini Live spying (Palo Alto Unit 42)
+- **Shadow Escape**: first zero-click agentic attack via MCP — hidden instructions in documents exfiltrate PII from connected databases within authorized identity boundaries (Operant AI, Oct 2025)
+- **DockerDash**: malicious Docker image metadata labels compromise environments through Ask Gordon AI MCP Gateway — fixed in Docker Desktop v4.50.0 (Noma Security, Nov 2025)
+- **Gemini MCP Tool 0-day** (CVE-2026-0755, CVSS 9.8): command injection in gemini-mcp-tool; vendor unresponsive; published as 0-day advisory Jan 2026
+- **New MCP CVEs (early 2026)**: CVE-2026-25546 (Godot MCP), CVE-2026-0756 (GitHub Kanban MCP), CVE-2026-27203 (eBay API MCP RCE)
+- **Microsoft paid $17M** in bug bounties in 2025 to 344 researchers
+- **Meta paid $4M** in 2025 ($25M lifetime) across ~13,000 reports with 800 rewarded
+- **Usual crypto bounty**: $16M single bounty offered — largest in tech history
+- **FortiGate AI-augmented breach**: 600+ devices compromised across 55+ countries using commercial GenAI services (Jan-Feb 2026, AWS Security)
+- **CrowdStrike named threat actors using AI**: FANCY BEAR (LLM-enabled malware), PUNK SPIDER (AI scripts for credential dumping), FAMOUS CHOLLIMA (AI-generated personas for insider operations)
+- **Memory injection / sleeper agents** (Lakera AI, Nov 2025): indirect prompt injection via poisoned data corrupts agent long-term memory, creating persistent false beliefs about security policies — dormant until triggered
 
 ### How to Scope AI Vulnerabilities with Programs
 

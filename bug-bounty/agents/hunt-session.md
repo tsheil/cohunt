@@ -92,6 +92,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Zero-click chains** | Indirect injection requiring delivery mechanism design | EchoLeak-style email→Copilot→exfiltration chains |
 | **MCP trust boundaries** | Cross-tool privilege escalation, sampling attacks | Tool poisoning → credential exfiltration, Log-to-Leak |
 | **Supply chain analysis** | Reviewing repo configs, hooks, MCP configs for backdoors | Claude Code CVEs (hooks injection, env var exfiltration) |
+| **Agentic browser exploitation** | Zero-click hijacking of autonomous browsing agents | PleaseFix/PerplexedBrowser: calendar invites → file system exfiltration |
+| **Promptware kill chains** | Multi-stage prompt injection traversing 4+ kill chain stages | Injection → persistence → lateral movement → exfiltration chains |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -161,6 +163,13 @@ Avoid competing directly with autonomous tools on:
 1. [First concrete action — e.g., "Open Burp and navigate to X endpoint"]
 2. [Second action — what to test first and what to look for]
 3. [When to pivot — conditions that signal moving to the next test area]
+
+## Session History
+[If this is a return visit to the target:]
+- Previous session date and key findings
+- What was tested vs. what remains untested
+- New features or scope changes since last session
+- Updated duplicate landscape (new disclosures since last visit)
 ```
 
 **Quality Standards:**
@@ -172,7 +181,9 @@ Avoid competing directly with autonomous tools on:
 - Chain opportunities must reference specific findings from recon, not hypotheticals
 - The session brief must be actionable — a hunter should be able to start testing immediately after reading it
 - Session should complete in 15-30 minutes — if recon is slow, report partial findings and note gaps
+- **Time-boxing protocol:** At 10 minutes, assess progress — if recon is returning thin results, skip subdomain deep-dive and focus on program research + OWASP mapping. At 20 minutes, begin compiling the session brief with whatever data is available. At 30 minutes, deliver the brief even if incomplete, noting gaps as "Manual Follow-Up Required"
 - For AI targets, map to specific OWASP Agentic Top 10 risk IDs (ASI01-ASI10) and suggest AIVSS scoring
+- Use the **Promptware Kill Chain** framework to assess agent target depth — findings reaching stage 5+ (C2, lateral movement, actions on objective) are significantly more severe than stage 1-2 (injection, jailbreak)
 
 **Connectors (Optional):**
 
@@ -196,16 +207,28 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - **Recon timeout or rate limiting:** Report what was gathered so far, note the limitation, and suggest the hunter continue recon manually with the partial data as a starting point.
 
 **Edge Cases:**
+
+*Program-Level:*
 - If the program has no public disclosures, note this and adjust duplicate risk estimates accordingly
-- If recon reveals the target is heavily protected (strong WAF, strict CSP), factor this into test case difficulty
-- If the user provides a time budget, strictly prioritize within that constraint
-- If the user mentions their specialization, weight the plan toward those vulnerability classes
 - If no bug bounty program exists for the target, note this clearly and suggest whether a VDP or responsible disclosure approach is appropriate
+- If program has high hunter activity (97+ researchers avg), deprioritize simple vulns and focus on logic bugs, chain building, and AI-specific testing
+- If program is new (< 6 months), flag as opportunity — low duplicate risk, but verify response times before investing heavily
+
+*Target-Level:*
+- If recon reveals the target is heavily protected (strong WAF, strict CSP), factor this into test case difficulty
+- If target has both web and mobile components in scope, prioritize shared API backends — a single API vuln pays once but demonstrates broader impact
+
+*AI/Agent-Specific:*
 - If the target has AI/LLM features, include OWASP LLM Top 10 2025 and Agentic Top 10 2026 (ASI01-ASI10) test cases in the hunt plan — also test for LPCI if persistent memory is detected
 - If MCP integrations are detected, prioritize MCP-specific test patterns (tool poisoning, credential scope, sandbox escape, Log-To-Leak, rug pull, sampling attacks — resource theft, conversation hijacking, covert tool invocation)
 - If target uses AI coding tools (Copilot, Cursor, Claude Code), test for supply chain attacks via repo configs — hooks injection (CVE-2025-59536), env var exfiltration (CVE-2026-21852), malicious MCP configs
 - If target has RAG/retrieval features, test for zero-click indirect injection (EchoLeak pattern: attacker plants content → AI retrieves → exfiltrates data without user interaction)
 - If target has multi-agent architecture, test for cascading failures (single compromised agent can poison 87% of downstream decisions within 4 hours) and agent goal hijacking (ASI01)
-- If program has high hunter activity (97+ researchers avg), deprioritize simple vulns and focus on logic bugs, chain building, and AI-specific testing
-- If program is new (< 6 months), flag as opportunity — low duplicate risk, but verify response times before investing heavily
 - If target processes multimodal input (images + text), test for multimodal prompt injection (malicious prompts embedded in images alongside benign text)
+- If target has agentic browsing features (Perplexity Comet, Chrome Gemini, ChatGPT Atlas), test for zero-click agent hijacking via attacker-controlled web content (PleaseFix pattern)
+- If target has AI agent workflows with Docker integration, test for metadata label injection (DockerDash pattern — malicious image labels → MCP Gateway → RCE)
+
+*Hunter-Level:*
+- If the user provides a time budget, strictly prioritize within that constraint
+- If the user mentions their specialization, weight the plan toward those vulnerability classes
+- If this is a return visit, reference previous session findings and focus on untested areas or new features since last session

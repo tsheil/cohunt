@@ -127,6 +127,10 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Multimodal injection specifies the modality (image, audio, document) and proves the hidden prompt alters AI behavior
 □ Supply chain attack via AI tool configs (hooks, MCP configs, env vars) demonstrates code execution path from repo clone to compromise
 □ Cascading failure in multi-agent system documents the propagation chain and scope of impact across agents
+□ Promptware Kill Chain stage assessed — findings reaching stage 5+ (C2/lateral movement/actions) are significantly more severe than stage 1-2 (injection/jailbreak); reference arxiv:2601.09625
+□ Agentic browser exploitation (PleaseFix pattern) demonstrates zero-click trigger mechanism — attacker content → autonomous agent processes → impact without user interaction
+□ Docker/container AI supply chain finding (DockerDash pattern) demonstrates metadata label → MCP Gateway → compromise path
+□ Shadow Escape pattern: confirms exfiltration operates within authorized identity boundaries (not just external network exfil)
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -261,6 +265,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
 10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs. The bar is rising.
 11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
+12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
 
 **Edge Cases:**
 
