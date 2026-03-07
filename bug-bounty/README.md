@@ -120,9 +120,13 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
-## What's New in v0.2.0
+## What's New in v0.16.0
 
-- **New `ai-hunting` skill** — AI-assisted hunting workflows + AI/LLM vulnerability patterns (OWASP LLM Top 10)
-- **Updated `program-research`** — AI/automation landscape assessment, XBOW competition awareness, 2025-2026 market data
-- **Updated `vuln-patterns`** — Added AI/LLM vulnerability class with testing patterns and severity guidance
-- **Market intelligence** — Incorporates HackerOne 2025 annual report data, XBOW benchmarks, and emerging program trends
+- **IDEsaster campaign coverage** — 30+ AI coding IDE vulnerabilities (24 CVEs), extension recommendation attacks, Chromium flaws in Cursor/Windsurf
+- **Supply chain worm patterns** — Shai-Hulud npm supply chain worm, dependency cooldown defenses, 454K malicious packages
+- **Cross-agent privilege escalation** — Second-order prompt injection patterns (ServiceNow Now Assist), multi-agent exploitation
+- **React2Shell (CVE-2025-55182)** — CVSS 10.0 React Server Components RCE, Flight protocol deserialization
+- **Microsoft Entra ID (CVE-2025-55241)** — CVSS 10.0 Global Admin takeover via Actor Tokens
+- **Expanded tool coverage** — Burp AI features (Explore Issue, Explainer, BAC filtering), ZAP-MCP integration
+- **Updated market intelligence** — Exploitation speed data, API security detection gap stats, updated program payouts
+- **36 vulnerability test patterns** — Added AI IDE supply chain, cross-agent injection, supply chain worms, cloud identity token abuse

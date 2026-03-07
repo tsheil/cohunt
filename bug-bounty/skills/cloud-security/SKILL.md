@@ -188,6 +188,8 @@ When basic `169.254.169.254` is blocked:
 | 3 | Tenant enumeration | `https://login.microsoftonline.com/{domain}/.well-known/openid-configuration` |
 | 4 | Guest user escalation | Guest accounts with access to internal resources |
 | 5 | Conditional access gaps | Test from different locations, devices, risk levels |
+| 6 | Actor Token abuse | Test Actor Tokens authentication mechanism for privilege escalation — CVE-2025-55241 (CVSS 10.0) enabled Global Administrator takeover |
+| 7 | Token exchange attacks | Test token exchange flows between services for privilege escalation via intermediate tokens |
 
 ## Serverless Security
 

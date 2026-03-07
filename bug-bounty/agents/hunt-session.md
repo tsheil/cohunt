@@ -100,6 +100,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **WebSocket agent hijacking** | Cross-origin WebSocket connection to localhost AI agents | ClawJacked: any webpage could control local OpenClaw agent with full permissions |
 | **MCP SDK-level exploitation** | Protocol and SDK flaws that affect all implementations, not just individual servers | CVE-2026-25536 cross-client data leak, CVE-2026-27896 case sensitivity bypass |
 | **eval() epidemic pattern** | Source code audit of MCP servers for dangerous execution functions | 7 RCE CVEs in Feb 2026, all from user input to eval()/exec() — systematic pattern |
+| **AI IDE supply chain (IDEsaster)** | Testing AI coding tools for project file exploitation, extension squatting, Chromium flaws | 30+ vulns, 24 CVEs: hooks injection, MCP config manipulation, OpenVSX namespace squatting |
+| **Cross-agent privilege escalation** | In multi-agent systems, crafting requests that trick higher-privilege agents via lower-privilege intermediaries | ServiceNow Now Assist: first documented cross-agent privilege escalation in production |
+| **Supply chain worm detection** | Analyzing npm/package ecosystems for self-propagating credential theft patterns | Shai-Hulud: stolen creds from one victim used to compromise packages they maintain |
+| **Cloud identity token abuse** | Testing cloud identity mechanisms for privilege escalation via actor tokens, managed identities | CVE-2025-55241 (Entra ID, CVSS 10.0): Actor Tokens → Global Admin |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -241,6 +245,10 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target's AI agent learns from or adapts to repeated user interactions, test for salami slicing — gradual constraint bypass through incremental requests over days/weeks (procurement agent $5M fraud example)
 - If target uses MCP servers built with the official TypeScript SDK, test for cross-client data leaks (CVE-2026-25536) — especially if a single server instance handles multiple clients
 - If target has open-source MCP servers, audit for eval()/exec() epidemic pattern — 7 RCE CVEs in Feb 2026 from this single root cause
+- If target has multi-agent systems (ServiceNow Now Assist, multi-bot pipelines), test for second-order cross-agent injection — low-privilege agent tricking higher-privilege agent into unauthorized actions
+- If target uses React Server Components or Next.js RSC, test for deserialization in Flight protocol (React2Shell pattern, CVE-2025-55182) — pre-auth RCE with near-100% reliability
+- If target uses Microsoft Entra ID / Azure AD, test Actor Tokens authentication for privilege escalation (CVE-2025-55241, CVSS 10.0)
+- If target AI IDE recommends extensions, test for OpenVSX namespace squatting (IDEsaster pattern) — unclaimed extension names → malicious package serving
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

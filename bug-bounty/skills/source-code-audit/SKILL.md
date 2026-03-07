@@ -443,6 +443,9 @@ Focus on: Security of MCP server code — input validation, authentication, comm
 | **OAuth endpoint validation** | Authorization endpoints accepted without URL validation (CVE-2025-6514 pattern) | Critical — RCE via malicious auth endpoint |
 | **Case sensitivity in JSON parsing** | Field name handling differs from specification (CVE-2026-27896 pattern in Go SDK) | Medium — validation bypass |
 | **Symlink handling** | File operations don't resolve symlinks before access checks | Critical — sandbox escape |
+| **React Server Component deserialization** | Flight protocol deserialization of untrusted data in RSC implementations (React2Shell pattern, CVE-2025-55182) | Critical — pre-auth RCE, CVSS 10.0 |
+| **Extension/plugin loading** | AI IDE extension recommendations loading from unvalidated registries; namespace squatting risk | High — IDEsaster: malicious code served to 1.8M+ developers |
+| **Cloud identity token flows** | Actor Token, managed identity, or token exchange mechanisms without proper authorization checks | Critical — CVE-2025-55241: Global Admin via Actor Tokens |
 
 ---
 

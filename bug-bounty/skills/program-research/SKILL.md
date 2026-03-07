@@ -340,7 +340,7 @@ Key data points for program evaluation:
 | Meta annual bounty payouts | $4M in 2025; $25M all-time | Meta 2025 |
 | Google record Chrome bounty | $250,000 for CVE-2025-4609 (sandbox escape) | Google 2025 |
 | Prompt injection in production AI | 73%+ of deployments affected; only 34.7% have defenses | Security audits 2025 |
-| AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3) | 2025 |
+| AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3); IDEsaster campaign: 30+ vulns, 24 CVEs across 10+ AI IDEs | 2025-2026 |
 | Smart contract damages (H1 2025) | $263M across Web3 | CoinLaw 2026 |
 | Cisco vs DeepSeek R1 | 50/50 jailbreak prompts succeeded (100% bypass rate) | Cisco Q1 2025 |
 | OpenClaw supply chain attack | 1,184 malicious skills across ClawHub (~1 in 5 packages) — largest supply chain attack on AI agent infrastructure | Security research 2025 |
@@ -363,7 +363,7 @@ Key data points for program evaluation:
 | LPCI (novel vuln class) | Logic-Layer Prompt Control Injection — persistent, conditionally-triggered payloads in agent memory; QSAF reduces success from 43% to 5.3% | CSA Feb 2026, arXiv:2507.10457 |
 | NIST/ISO AI gaps | AI RMF and ISO 42001 do not yet address technical controls for agentic deployments | Standards analysis 2026 |
 | Critical vuln payout increase | 32% average increase for critical findings | Bugcrowd CISO Report 2025 |
-| Exploitation speed | 32.1% exploited on/before CVE disclosure day | VulnCheck State of Exploitation 2026 |
+| Exploitation speed | 28.96% of KEVs exploited on or before CVE publication day (up from 23.6% in 2024); 884 KEVs in 2025; vuln exploitation was #1 cause of incidents (40%) | VulnCheck / IBM X-Force 2026 |
 | CISA KEV catalog additions | 245 vulnerabilities in 2025 (30%+ increase over 2023-2024) | CISA 2025 |
 | API-related CVEs | 17% of all 2025 published security bulletins (11,053 of 67,058) | Wallarm 2025 |
 | API-related CISA KEVs | 43% of newly added CISA KEVs in 2025 were API-related | Wallarm 2025 |
@@ -377,6 +377,14 @@ Key data points for program evaluation:
 | Bugcrowd AI Triage Assistant | 98% P1 accuracy, 98% duplicate detection confidence | Bugcrowd Dec 2025 |
 | MCP servers exposed | 8,000+ publicly exposed (Feb 2026), 492 vulnerable | Security research 2026 |
 | Enterprise CART adoption | 60% of large enterprises using continuous automated red teaming by 2026 | Industry 2026 |
+| React2Shell (CVE-2025-55182) | CVSS 10.0: pre-auth RCE in React Server Components; #1 most exploited CVE on HackerOne; exploited in-the-wild within hours | React.dev / Wiz Dec 2025 |
+| Microsoft Entra ID (CVE-2025-55241) | CVSS 10.0: Global Admin takeover via Actor Tokens; cloud identity total compromise | Microsoft 2025 |
+| Shai-Hulud supply chain worm | 454,648 malicious npm packages in 2025 (99% of all open-source malware); s1ngularity harvested 2,349 creds from 1,079 dev systems | CISA / Dark Reading 2025 |
+| API security detection gap | Only 21% of orgs can detect API attacks; only 13% can prevent >50%; 97% of API vulns exploitable with single request | 42Crunch 2026 |
+| IDEsaster campaign | 30+ vulns across 10+ AI coding tools, 24 CVEs; extension recommendation attacks via OpenVSX; 94+ Chromium flaws in Cursor/Windsurf | Security research 2025-2026 |
+| Cross-agent privilege escalation | ServiceNow Now Assist second-order prompt injection: first documented cross-agent privilege escalation in production | ServiceNow 2025-2026 |
+| AWS CodeBuild vulnerability | Critical flaw allowing hijacking of official AWS GitHub repositories and leaking build secrets | Wiz 2025 |
+| Dependency cooldown defense | 7-14 day adoption delay would have prevented 8 of 10 major 2025 supply chain attacks | Industry analysis 2025 |
 | EU AI Act compliance deadline | August 2, 2026; penalties up to 35M EUR or 7% of global turnover | EU 2026 |
 | OpenAI o3 zero-day | CVE-2025-37899 Linux kernel SMB use-after-free found with o3 assistance | Security research 2025 |
 | CVEs disclosed in H1 2026 | 21,500+ (16-18% increase over 2024) — unprecedented vulnerability volume | NVD H1 2026 |
@@ -489,6 +497,14 @@ Notable disclosed vulnerabilities (2025-2026):
 - PerplexedBrowser / PleaseFix (Zenity Labs, Mar 2026): zero-click agentic browser vulnerabilities in Perplexity Comet — file system exfiltration and 1Password vault credential theft via calendar invite → autonomous agent manipulation
 - Anthropic AI Espionage Disruption (Feb 2026): first documented large-scale AI-orchestrated cyberattack — Chinese state actors jailbroke Claude Code as autonomous pentest orchestrator; 150GB of Mexican government data (195M taxpayer records); AI executed 80-90% of operations; 30+ global targets autonomously discovered and exploited
 - ToxicSkills (Snyk, Feb 2026): comprehensive audit of 3,984 ClawHub skills found 36% with prompt injection, 1,467 malicious payloads; SKILL.md to shell access in 3 lines of markdown
+- CVE-2025-55241 (Microsoft Entra ID, CVSS 10.0): Global Administrator privilege escalation via Actor Tokens authentication mechanism — cloud identity total compromise
+- CVE-2026-0830 (Kiro/AWS): command injection leading to RCE in AWS AI coding IDE
+- IDEsaster campaign: 30+ vulnerabilities across 10+ AI coding tools (Claude Code, Cursor, Kiro, Windsurf), 24 CVEs by researcher Ari Marzouk
+- CVE-2025-7656 (Chromium in Cursor/Windsurf): 94+ Chromium vulnerabilities in AI IDEs due to legacy Chromium builds, affecting 1.8M developers
+- Extension Recommendation Attacks: AI coding IDEs (Cursor, Windsurf, Trae, Google Antigravity) recommend non-existent extensions from OpenVSX — threat actors claim namespaces and serve malware
+- Shai-Hulud supply chain worm: multi-wave npm campaign; 454,648 malicious npm packages in 2025; s1ngularity campaign harvested 2,349 credentials from 1,079 dev systems
+- AWS CodeBuild vulnerability (Wiz): critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
+- ServiceNow Now Assist second-order prompt injection: first documented cross-agent privilege escalation in production multi-agent system
 - AI Recommendation Poisoning (Microsoft, Feb 2026): 50+ poisoning prompts from 31 companies embedded in web content to manipulate AI assistants on health, finance, security topics
 - FortiGate AI-Augmented Breach (Jan-Feb 2026): 600+ devices across 55+ countries compromised using multiple commercial GenAI services; data exfiltration within 4 minutes of initial access
 
@@ -537,7 +553,8 @@ Competition awareness:
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
 - **curl bug bounty shutdown** (Jan 2026) demonstrates AI slop risk — first major program closed due to AI-generated garbage flooding; 8x normal submission volume, only 5% genuine
 - **CAI** reached top-30 in Spain, top-500 worldwide on HTB within a week; **156x cost reduction** vs traditional testing; enables non-professionals to find CVSS 4.3-7.5 bugs at expert rates
-- **Burp Suite with Burp AI** released 2025 — agentic pentesting assistant for probing deeper and generating attack ideas in real-time from PortSwigger
+- **Burp Suite with Burp AI** (Professional 2025.2+) — Explore Issue autonomously investigates scanner findings; Explainer generates AI explanations in Repeater; BAC false positive reduction; AI-powered recorded logins for authenticated scanning
+- **OWASP ZAP 2.17.0** (Dec 2025) — MCP integration for AI-powered web security testing; free/open-source AI-augmented scanning
 - **Penligent** — fully autonomous Security Agent with its own runtime environment; executes commands, analyzes traffic, and plans next moves autonomously with feedback loops
 - **Aikido Attack** — autonomous agents that pentest every deployment, validate exploitability, generate patches, and retest fixes before code hits production
 - **DeepKeep** launched AI agent attack surface scanner (March 2026) — maps enterprise risk across Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, and Make frameworks

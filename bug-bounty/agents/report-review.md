@@ -146,6 +146,12 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Salami slicing (gradual constraint bypass): if finding involves incremental interactions shifting agent behavior over time, document the full sequence of interactions, the baseline behavior, and the final drift — reference procurement agent $5M fraud case (Palo Alto Unit42)
 □ MCP health/diagnostic info disclosure: if finding involves unauthenticated info leakage from health endpoints, reference CVE-2026-29787 — document what system data is exposed (OS, CPU, memory, database paths)
 □ CVSS V4 compliance: if submitting to Intigriti (all new submissions use CVSS V4 as of 2026), ensure scoring uses CVSS V4 metrics including Attack Requirements
+□ AI coding IDE supply chain (IDEsaster pattern): if finding involves project files exploiting AI IDEs (hooks, MCP configs, workspace files), reference the IDEsaster campaign (30+ vulns, 24 CVEs across Claude Code, Cursor, Kiro, Windsurf) — demonstrate that opening a malicious repo triggers exploitation
+□ Extension recommendation squatting: if finding involves AI IDE recommending non-existent extensions that can be claimed by attackers, reference IDEsaster extension attacks on OpenVSX affecting 1.8M+ developers
+□ Cross-agent privilege escalation: if finding involves multi-agent systems where low-privilege agent tricks higher-privilege agent, reference ServiceNow Now Assist second-order injection — first documented cross-agent privilege escalation in production
+□ React Server Component deserialization: if finding involves React/Next.js RSC, reference React2Shell (CVE-2025-55182, CVSS 10.0) — pre-auth RCE via Flight protocol deserialization; became #1 most exploited CVE on HackerOne
+□ Cloud identity token abuse: if finding involves Entra ID/Azure AD, reference CVE-2025-55241 (CVSS 10.0) — Actor Tokens mechanism enabling Global Admin takeover
+□ Supply chain worm propagation: if finding involves npm/package credential theft that enables self-propagation, reference Shai-Hulud (454K malicious npm packages in 2025); note dependency cooldown defense (7-14 days prevents 80% of attacks)
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified

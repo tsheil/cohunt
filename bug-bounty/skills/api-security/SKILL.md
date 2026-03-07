@@ -14,6 +14,9 @@ APIs are now the primary digital attack surface. Key stats:
 - **43% of newly added CISA KEVs** in 2025 were API-related
 - **Missing authentication** is the #1 API vulnerability (17% of incidents)
 - **Broken authentication** present in 52% of API incidents
+- **97% of API vulnerabilities** exploitable with a single request (42Crunch 2026)
+- **Only 21% of organizations** can detect attacks at the API layer; only 13% can prevent >50% of API attacks (42Crunch 2026)
+- **36% of AI vulnerabilities** also qualify as API vulnerabilities — AI and API attack surfaces overlap
 - Companies shipping microservices and multi-cloud APIs faster than they can secure them
 
 ---

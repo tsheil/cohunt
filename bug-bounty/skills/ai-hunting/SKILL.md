@@ -188,11 +188,20 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Integrates into CI/CD pipeline for continuous security validation
 - Best for: pre-deployment security testing with automated remediation
 
-**Burp Suite with Burp AI (PortSwigger, 2025):**
-- Agentic pentesting assistant integrated into Burp Suite Professional
-- Probes deeper and generates attack ideas in real-time using AI reasoning
+**Burp Suite with Burp AI (PortSwigger, 2025-2026):**
+- Agentic pentesting assistant integrated into Burp Suite Professional 2025.2+
+- **Explore Issue**: autonomously investigates scanner findings, attempts exploits, identifies additional attack vectors — turns passive scan results into active exploitation
+- **Explainer**: AI-generated explanations of unfamiliar technologies within Repeater — reduces learning curve for complex targets
+- **Broken Access Control false positive reduction**: intelligent filtering before results appear — addresses the #1 pain point in automated scanning
+- **AI-powered recorded logins**: automatically generates login sequences for authenticated scanning — eliminates manual session management
 - Builds on PortSwigger's existing scanning engine with AI-driven exploration
-- Best for: enhancing manual pentesting with AI-suggested attack vectors
+- Best for: enhancing manual pentesting with AI-suggested attack vectors; automated exploitation of scanner findings
+
+**OWASP ZAP with MCP Integration (ZAP 2.17.0, December 2025):**
+- OWASP ZAP integrating with Model Context Protocol for AI-powered web security testing
+- AI enhancement for bug bounty hunting workflows — LLMs can drive ZAP scanning and analysis
+- ZAP 2.17.0 released December 2025 with foundational MCP support
+- Best for: free/open-source AI-augmented web app security testing via MCP
 
 **DeepKeep (AI Agent Attack Surface Scanner, March 2026):**
 - Maps enterprise AI agent risk across frameworks: Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, Make
@@ -707,6 +716,12 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **Shadow Escape (Operant AI)** | October 2025: first zero-click agentic attack via MCP; malicious instructions in documents (e.g., onboarding PDFs) cause MCP-enabled AI assistants to exfiltrate PII from connected databases and CRM systems; operates inside the firewall within authorized identity boundaries, invisible to conventional monitoring | Zero-click MCP data exfiltration |
 | **FortiGate AI-augmented mass breach** | Jan-Feb 2026: Russian-speaking threat actor used multiple commercial GenAI services to compromise 600+ FortiGate devices across 55+ countries; exploited exposed management ports and weak credentials; data exfiltration within 4 minutes of initial access (AWS Security) | AI-augmented mass exploitation |
 | **Gemini MCP Tool 0-day** | CVE-2026-0755 (CVSS 9.8): command injection in gemini-mcp-tool execAsync method; user input passed directly to system calls; vendor never responded; published as 0-day advisory January 2026 | MCP tool RCE |
+| **IDEsaster campaign** | 30+ vulnerabilities across 10+ AI coding tools (Claude Code, Cursor, Kiro, Windsurf), 24 CVEs; researcher Ari Marzouk; extension recommendation attacks allow malware distribution via namespace squatting on OpenVSX; 94+ Chromium flaws in Cursor/Windsurf due to legacy builds | AI coding IDE as attack surface |
+| **React2Shell (CVE-2025-55182)** | CVSS 10.0: pre-authentication RCE in React Server Components via insecure deserialization in Flight protocol; affects React 19.0-19.2.0, Next.js 15-16; exploited in-the-wild by China-nexus groups (Earth Lamia, Jackpot Panda) within hours of disclosure Dec 3, 2025; became #1 most exploited CVE on HackerOne | Critical framework RCE |
+| **Microsoft Entra ID (CVE-2025-55241)** | CVSS 10.0: vulnerability allowing attackers to obtain Global Administrator privileges via Actor Tokens authentication mechanism | Cloud identity total compromise |
+| **Shai-Hulud supply chain worm** | Multi-wave npm supply chain worm; 454,648 malicious packages in 2025 (99% of all open-source malware); s1ngularity campaign harvested 2,349 credentials from 1,079 dev systems; self-propagating via stolen maintainer credentials | Supply chain worm |
+| **ServiceNow second-order prompt injection** | Second-order prompt injection in Now Assist: low-privilege agent tricked into sending malformed request to higher-privilege agent, causing cross-agent privilege escalation — first documented cross-agent privilege escalation in production multi-agent system | Cross-agent privilege escalation |
+| **AWS CodeBuild vulnerability** | Wiz uncovered critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs | Cloud CI/CD compromise |
 
 ---
 
@@ -744,6 +759,58 @@ A new attack surface emerging in early 2026 as AI agents gain autonomous web bro
 3. Test if the agent acts on injected instructions without user confirmation
 4. Check if agent has access to local filesystem, password managers, or other sensitive browser state
 5. Test if browser extensions can interact with and manipulate the AI agent panel
+
+---
+
+### IDEsaster: AI Coding IDE Attack Surface (2025-2026)
+
+A major new attack surface category: **30+ vulnerabilities across 10+ AI coding tools**, resulting in 24 CVEs (researcher Ari Marzouk). Named "IDEsaster" — AI coding assistants as vectors for RCE and credential theft.
+
+**Key CVEs:**
+
+| CVE | Tool | Impact | CVSS |
+|-----|------|--------|------|
+| CVE-2025-59536 | Claude Code | Arbitrary code execution through untrusted project hooks | 8.7 |
+| CVE-2026-21852 | Claude Code | API key exfiltration when opening crafted repositories | 5.3 |
+| CVE-2025-59944 | Cursor | Case-sensitivity bypass allowing file protection circumvention | — |
+| CVE-2025-61590/91/92/93 | Cursor | Workspace file and MCP connection manipulation leading to RCE | — |
+| CVE-2026-0830 | Kiro (AWS) | Command injection leading to RCE | — |
+| CVE-2025-7656 | Chromium (Cursor/Windsurf) | 94+ Chromium vulnerabilities in AI IDEs using legacy builds | — |
+
+**Extension Recommendation Attacks:**
+- Cursor, Windsurf, Google Antigravity, and Trae recommend non-existent VSCode extensions from OpenVSX registry
+- Threat actors can claim unclaimed extension namespaces and serve malicious extensions to 1.8M+ developers
+- Attack chain: AI IDE recommends extension → developer installs → malicious code executes with full IDE permissions
+- Test for: extension namespace squatting, fake extension serving, trust chain exploitation
+
+**Testing Approach:**
+1. Clone a repository containing malicious `.claude/`, `.cursor/`, `.github/` configurations
+2. Open in target AI IDE and observe if project hooks, MCP configs, or environment variables are automatically executed
+3. Check if file protection mechanisms can be bypassed via case sensitivity or path traversal
+4. Test if IDE extension recommendations can be manipulated to install attacker-controlled extensions
+5. Verify if workspace file manipulation can inject MCP connections or alter build configurations
+6. Check for legacy Chromium vulnerabilities if IDE uses embedded browser (94+ known flaws in Cursor/Windsurf builds)
+
+---
+
+### Supply Chain Worm: Shai-Hulud (2025-2026)
+
+A multi-wave JavaScript supply chain worm campaign demonstrating self-propagating compromise:
+
+**Attack Waves:**
+- **Wave 1:** Compromised maintainer accounts, malicious postinstall scripts injecting credential harvesters
+- **Wave 2 (Shai-Hulud 2.0):** Cross-victim credential exposure — stolen credentials from one victim used to compromise packages maintained by another
+- **s1ngularity campaign:** Compromised Nx packages harvested **2,349 credentials from 1,079 developer systems**
+- **Scale:** **454,648 new malicious packages** published on npm in 2025 alone — 99% of all open-source malware
+
+**Key Defense:** Dependency cooldowns (7-14 day delay before adopting new packages/versions) would have prevented 8 out of 10 major 2025 supply chain attacks. npm Trusted Publishing recommended over token-based authentication.
+
+**Testing Approach:**
+1. Check if target uses npm packages without lockfile integrity verification
+2. Test for postinstall script execution in CI/CD pipelines
+3. Verify dependency pinning and cooldown policies
+4. Check for transitive dependency poisoning risk
+5. Test if npm publish tokens are rotated and scoped
 
 ---
 
@@ -1253,6 +1320,14 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **FortiGate AI-augmented breach**: 600+ devices compromised across 55+ countries using commercial GenAI services (Jan-Feb 2026, AWS Security)
 - **CrowdStrike named threat actors using AI**: FANCY BEAR (LLM-enabled malware), PUNK SPIDER (AI scripts for credential dumping), FAMOUS CHOLLIMA (AI-generated personas for insider operations)
 - **Memory injection / sleeper agents** (Lakera AI, Nov 2025): indirect prompt injection via poisoned data corrupts agent long-term memory, creating persistent false beliefs about security policies — dormant until triggered
+- **IDEsaster campaign**: 30+ vulnerabilities across 10+ AI coding tools (Claude Code, Cursor, Kiro, Windsurf), 24 CVEs by researcher Ari Marzouk; CVE-2026-0830 (Kiro/AWS RCE via command injection); 94+ Chromium vulnerabilities in Cursor/Windsurf due to legacy builds affecting 1.8M developers; extension recommendation attacks via OpenVSX namespace squatting
+- **React2Shell (CVE-2025-55182, CVSS 10.0)**: pre-auth RCE in React Server Components via insecure deserialization in Flight protocol; exploited in-the-wild within hours by China-nexus groups; became #1 most exploited CVE on HackerOne
+- **Microsoft Entra ID (CVE-2025-55241, CVSS 10.0)**: attackers obtain Global Administrator privileges via Actor Tokens authentication mechanism — cloud identity total compromise
+- **Shai-Hulud supply chain worm**: multi-wave npm supply chain campaign; 454,648 malicious npm packages published in 2025 (99% of all open-source malware); s1ngularity campaign harvested 2,349 credentials from 1,079 dev systems; dependency cooldowns (7-14 days) would have prevented 80% of attacks
+- **Exploitation speed accelerating**: 28.96% of Known Exploited Vulnerabilities exploited on or before CVE publication day (up from 23.6% in 2024); 884 KEVs identified in 2025; vulnerability exploitation was #1 cause of incidents at 40% (VulnCheck / IBM X-Force)
+- **API security detection gap**: only 21% of organizations can detect attacks at the API layer; only 13% can prevent >50% of API attacks; 97% of API vulnerabilities exploitable with a single request (42Crunch 2026)
+- **AWS CodeBuild vulnerability**: Wiz uncovered critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
+- **Second-order prompt injection** in ServiceNow Now Assist: first documented cross-agent privilege escalation in production multi-agent system — low-privilege agent tricks higher-privilege agent into acting on attacker's behalf
 
 ### How to Scope AI Vulnerabilities with Programs
 
