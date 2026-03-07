@@ -288,6 +288,88 @@ The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 20
 
 ---
 
+### Race Conditions
+
+**What it is:** Exploiting timing between check and use of a resource to achieve unintended behavior.
+
+**Where to look:**
+- Payment/checkout flows
+- Coupon/gift card redemption
+- Account balance operations
+- Invitation/join workflows
+- Rate-limited actions
+- File upload processing
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | TOCTOU (time of check to time of use) | Send parallel requests that modify the same resource | Double-spend, duplicate rewards |
+| 2 | Limit bypass | Send N parallel requests to a rate-limited endpoint (e.g., coupon use) | More successful uses than allowed |
+| 3 | Balance manipulation | Concurrent withdrawal/transfer requests | Balance goes negative or doubles |
+| 4 | Invite race | Accept same invite from two sessions simultaneously | Duplicated permissions or roles |
+| 5 | File overwrite | Upload two files concurrently to the same resource path | Unintended overwrite or data leak |
+| 6 | Session race | Trigger password change + sensitive action in parallel | Action completes under old session |
+| 7 | Last-byte sync | Use Turbo Intruder/HTTP/2 single-packet attack for precise timing | Sub-millisecond race windows exploitable |
+
+**Tools:** Turbo Intruder (Burp extension), HTTP/2 single-packet attack technique, `race-the-web`.
+
+---
+
+### Deserialization
+
+**What it is:** Exploiting unsafe deserialization of user-controlled data to achieve RCE, privilege escalation, or data manipulation.
+
+**Where to look:**
+- APIs accepting serialized objects (Java, PHP, Python pickle, .NET)
+- Session tokens stored in cookies (especially Base64-encoded objects)
+- WebSocket messages with serialized payloads
+- Caching layers (Redis, Memcached) with serialized data
+- Message queues (RabbitMQ, Kafka) with serialized payloads
+- React Server Components Flight protocol (React2Shell, CVE-2025-55182)
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Java deserialization | Send ysoserial gadget chains via Java serialized data (magic bytes `AC ED 00 05`) | RCE, stack traces revealing deserialization |
+| 2 | PHP deserialization | Inject crafted `O:` (object) payloads in PHP serialized fields | Arbitrary object instantiation, RCE |
+| 3 | Python pickle | Send crafted pickle payloads to endpoints accepting pickled data | RCE via `__reduce__` method |
+| 4 | JSON deserialization | Include `@type`, `$type`, or `class` fields in JSON to trigger polymorphic deserialization | Type confusion, RCE via gadget chains |
+| 5 | .NET ViewState | Tamper with ViewState MAC validation; test for insecure deserialization | RCE via BinaryFormatter/ObjectStateFormatter |
+| 6 | React Flight protocol | Test React Server Components for insecure deserialization in streaming responses | React2Shell (CVE-2025-55182, CVSS 10.0): pre-auth RCE |
+| 7 | LLM framework serialization | Test LangChain/LlamaIndex streaming/serialization paths with untrusted metadata | LangGrinch pattern: prompt cascades through deserialization to exfiltrate secrets |
+
+**Tools:** ysoserial (Java), PHPGGC (PHP), Freddy (Burp extension), SerializationDumper.
+
+---
+
+### Prototype Pollution
+
+**What it is:** Modifying JavaScript object prototypes to affect application behavior across the entire runtime.
+
+**Where to look:**
+- APIs accepting deeply nested JSON objects
+- Object merge/extend operations (lodash `merge`, `defaultsDeep`)
+- GraphQL mutations with deeply nested inputs
+- Configuration endpoints accepting arbitrary key-value pairs
+- Any endpoint that recursively processes user-controlled objects
+
+**Test patterns:**
+
+| # | Test | Payload | What to look for |
+|---|------|---------|-----------------|
+| 1 | Basic pollution | `{"__proto__":{"admin":true}}` | Privilege escalation, role bypass |
+| 2 | Constructor pollution | `{"constructor":{"prototype":{"isAdmin":true}}}` | Bypasses `__proto__` filtering |
+| 3 | Nested pollution | `{"a":{"__proto__":{"polluted":"yes"}}}` | Deep merge vulnerability |
+| 4 | Array pollution | `{"__proto__":{"length":1000000}}` | DoS via resource exhaustion |
+| 5 | Template pollution | `{"__proto__":{"outputFunctionName":"x;process.mainModule.require('child_process').execSync('id')//"}}` | RCE via EJS template engine |
+| 6 | Server-side pollution → XSS | Pollute a rendering property used by the view engine | Reflected prototype pollution to XSS |
+
+**Impact escalation:** Prototype pollution alone is often Medium, but chains into RCE (via template engines), XSS (via rendering libraries), or privilege escalation (via auth checks on polluted properties).
+
+---
+
 ### AI/LLM Vulnerabilities (OWASP LLM Top 10)
 
 **What it is:** Exploiting AI-powered features — chatbots, summarizers, content generators, AI agents — through prompt manipulation, output exploitation, and tool abuse.
@@ -379,6 +461,7 @@ When you know the target's technology, focus your testing:
 | **Web3/Blockchain** | Reentrancy, access control, oracle manipulation, flash loan attacks | $3B+ in Web3 losses H1 2025; access control flaws caused $953.2M; OWASP Smart Contract Top 10 ranks access control #1 |
 | **Hardware/IoT** | Firmware extraction, JTAG/UART access, BLE attacks, default credentials | 88% increase in hardware vulns (Bugcrowd 2025), Samsung paying up to $1M |
 | **Identity/Access** | BOLA, BFLA, privilege escalation, session management, OAuth flows | Fastest growing vuln class (HackerOne 2025); organizations shifting rewards here as XSS/SQLi decline |
+| **A2A protocol** | Agent identity spoofing, capability forgery, task chain poisoning, trust graph attacks | Google's Agent-to-Agent protocol: east-west traffic bypasses perimeters; 40+ academic threats identified (arXiv:2505.12490); no token lifetime limits |
 
 ---
 
@@ -432,6 +515,10 @@ When you know the target's technology, focus your testing:
 | 34 | Second-order cross-agent prompt injection | In multi-agent systems, craft request to low-privilege agent that tricks it into asking a higher-privilege agent to perform unauthorized actions | ServiceNow Now Assist: low-privilege agent → malformed request → higher-privilege agent acts on attacker's behalf; first documented cross-agent privilege escalation |
 | 35 | Supply chain worm propagation | Test if compromised package credentials can self-propagate to compromise other packages maintained by the victim | Shai-Hulud: stolen npm credentials from one victim used to poison packages they maintain → cross-victim propagation; 454K malicious npm packages in 2025 |
 | 36 | Cloud identity token abuse | Test cloud identity mechanisms for privilege escalation via token exchange, actor tokens, or managed identity impersonation | CVE-2025-55241 (Entra ID, CVSS 10.0): Actor Tokens mechanism allows obtaining Global Administrator privileges |
+| 37 | A2A protocol exploitation | In targets using Google A2A protocol, test for agent identity spoofing, capability declaration forgery, and task chain poisoning | East-west agent traffic bypasses traditional perimeters; no token lifetime limits; arXiv:2505.12490 identified 40+ threats |
+| 38 | Zero-click memory poisoning via email | Send email with hidden instructions to target using AI email processing → test if agent memory is persistently corrupted | ZombieAgent pattern: email → ChatGPT memory poisoned → persistent rules across sessions → self-propagation (Radware Jan 2026) |
+| 39 | GRP-Obliteration (alignment removal) | If target exposes fine-tuning/RLHF APIs, submit single adversarial training example and test for safety regression across harm categories | Microsoft Feb 2026: single prompt → 13% to 93% attack success across all 44 SorryBench categories |
+| 40 | Side-channel timing analysis | Analyze streaming LLM response timing/packet sizes for information leakage about query content or model behavior | Whisper Leak: >98% classification across 28 LLMs; speculative decoding fingerprints queries at >75% accuracy |
 
 **OWASP MCP Top 10 Mapping:** Map MCP findings to MCP01-MCP10 risk IDs for stronger reports — Token Mismanagement (MCP01), Privilege Escalation (MCP02), Command Injection (MCP03), Supply Chain (MCP04), Auth (MCP05), Tool Poisoning (MCP06), Shadow Servers (MCP07), Insecure Data (MCP08), Input Validation (MCP09), Logging (MCP10).
 

@@ -166,7 +166,19 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 **BlacksmithAI (Multi-Agent Pentesting):**
 - Open-source AI pentesting framework using multiple AI agents for different stages of security assessment (March 2026)
 - Each agent specializes in a different phase: recon, vulnerability analysis, exploitation
-- GitHub: emerging open-source project
+- GitHub: `yohannesgk/blacksmith`
+
+**Shift (AI Plugin for Caido):**
+- AI plugin for the Caido web security proxy integrating LLMs directly into the proxy UI
+- English-command control of Caido, context-aware wordlist generation, AI-powered HTTP request modification
+- **Shift Agents**: micro-agent framework that performs proxy actions on behalf of the user (targeted fuzzing, parameter extraction, response analysis)
+- Best for: AI-augmented manual pentesting within Caido proxy workflows
+- GitHub: `caido-community/shift`
+
+**Aikido Infinite (Self-Securing Software):**
+- Industry's first self-securing software: every code change triggers autonomous pentesting agents that discover risk, validate exploitability, generate patches, and retest
+- Found **7 CVEs in Coolify** including privilege escalation and full host compromise via RCE as root across 52,000+ exposed instances
+- Best for: continuous pre-deployment security validation with automated remediation
 
 **Zen-AI-Pentest:**
 - Python-based open-source framework wrapping 20+ established security tools (Nmap, SQLMap, Metasploit, Burp Suite, Gobuster, Nuclei, BloodHound) under an AI-driven orchestration layer (February 2026)
@@ -330,6 +342,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - **Augustus** (Praetorian) for broad adversarial LLM testing (210+ attacks, 28 providers)
 - **Semgrep AI-Powered Detection** (2026) — multimodal AppSec engine combining deterministic SAST analysis with LLM reasoning; detects business logic flaws (IDORs, broken authorization) beyond traditional pattern matching; AI noise filtering removes 1 in 5 false positives at 95% user alignment; "AI-Powered Memories" re-analyzes backlogs when new patterns are added
 - **RunSybil** for AI-driven pentesting with coordinated autonomous agents (map, probe, chain exploits); built by OpenAI/Bishop Fox/Rapid7/CrowdStrike alumni; free tier + Pro at $99/mo
+- **Shift** (Caido AI plugin) for AI-augmented proxy workflows — English-command control, context-aware wordlists, Shift Agents micro-agent framework
+- **Aikido Infinite** for self-securing software — autonomous agents pentest every code change (found 7 CVEs in Coolify including RCE as root)
 - **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
 
 ### MCP (Model Context Protocol) as Attack Surface
@@ -707,7 +721,7 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **LangChain LangGrinch** | CVE-2025-68664: prompt injection in LangChain Core; $4K bounty — highest ever awarded in the project | Framework-level prompt injection |
 | **MCP Inspector RCE** | CVE-2025-49596 (CVSS 9.4): critical RCE in Anthropic's MCP Inspector — one of the first critical RCEs in MCP tooling (Oligo Security) | MCP toolchain exploitation |
 | **Persistent procurement agent manipulation** | Palo Alto Unit42 (2026): manufacturing company's procurement agent manipulated over 3 weeks through "clarification" messages about purchase authorization limits; agent eventually approved $5M in false purchase orders across 10 transactions | Multi-week agent memory poisoning |
-| **Lakera AI memory injection** | November 2026: demonstrated indirect prompt injection via poisoned data sources corrupting agent long-term memory — persistent false beliefs about security policies and vendor relationships | Long-term agent memory corruption |
+| **Lakera AI memory injection** | November 2025: demonstrated indirect prompt injection via poisoned data sources corrupting agent long-term memory — persistent false beliefs about security policies and vendor relationships | Long-term agent memory corruption |
 | **MCP Go SDK case sensitivity** | CVE-2026-27896: MCP Go SDK JSON parser handles field names case-insensitively, allowing crafted MCP responses to bypass validation | Protocol-level bypass |
 | **Log-To-Leak MCP attack** | ICLR 2026: new attack class covertly forces agents to invoke malicious logging tools to exfiltrate user queries, tool responses, and agent replies while preserving task quality — nearly undetectable | Silent data exfiltration via MCP |
 | **Anthropic AI espionage disruption** | February 2026: Anthropic disrupted first documented large-scale AI-orchestrated cyberattack; suspected Chinese state actors jailbroke Claude Code as autonomous pentest orchestrator; 150GB of Mexican government data stolen including 195M taxpayer records; AI executed 80-90% of operations independently at physically impossible request rates | AI-orchestrated state-sponsored intrusion |
@@ -721,7 +735,6 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **PleaseFix / PerplexedBrowser** | February 2026: Zenity Labs disclosed zero-click vulns in agentic browsers (Perplexity Comet); two exploit paths: (1) file system exfiltration via attacker-controlled calendar invites triggering autonomous agent execution, (2) credential theft by manipulating agent workflows to access password managers; patched by blocking `file://` path access | Zero-click agentic browser hijacking |
 | **Chrome Gemini Panel Hijacking** | CVE-2026-0628: Palo Alto Unit 42 found malicious Chrome extensions could exploit Chrome's Gemini panel for privilege escalation, enabling spying via Gemini Live | Browser extension → AI escalation |
 | **Shadow Escape (Operant AI)** | October 2025: first zero-click agentic attack via MCP; malicious instructions in documents (e.g., onboarding PDFs) cause MCP-enabled AI assistants to exfiltrate PII from connected databases and CRM systems; operates inside the firewall within authorized identity boundaries, invisible to conventional monitoring | Zero-click MCP data exfiltration |
-| **FortiGate AI-augmented mass breach** | Jan-Feb 2026: Russian-speaking threat actor used multiple commercial GenAI services to compromise 600+ FortiGate devices across 55+ countries; exploited exposed management ports and weak credentials; data exfiltration within 4 minutes of initial access (AWS Security) | AI-augmented mass exploitation |
 | **Gemini MCP Tool 0-day** | CVE-2026-0755 (CVSS 9.8): command injection in gemini-mcp-tool execAsync method; user input passed directly to system calls; vendor never responded; published as 0-day advisory January 2026 | MCP tool RCE |
 | **IDEsaster campaign** | 30+ vulnerabilities across 10+ AI coding tools (Claude Code, Cursor, Kiro, Windsurf), 24 CVEs; researcher Ari Marzouk; extension recommendation attacks allow malware distribution via namespace squatting on OpenVSX; 94+ Chromium flaws in Cursor/Windsurf due to legacy builds | AI coding IDE as attack surface |
 | **React2Shell (CVE-2025-55182)** | CVSS 10.0: pre-authentication RCE in React Server Components via insecure deserialization in Flight protocol; affects React 19.0-19.2.0, Next.js 15-16; exploited in-the-wild by China-nexus groups (Earth Lamia, Jackpot Panda) within hours of disclosure Dec 3, 2025; became #1 most exploited CVE on HackerOne | Critical framework RCE |
@@ -734,6 +747,12 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **Rules File Backdoor** | Pillar Security: configuration/rules files (`.cursorrules`, `.github/copilot-instructions.md`) weaponized with invisible Unicode characters — undetectable to humans, readable by AI agents; one compromised rules file shared across projects creates widespread supply chain compromise | AI IDE supply chain via invisible content |
 | **Copilot CLI shell expansion RCE** | CVE-2026-29783 (HIGH): GitHub Copilot CLI shell tool allows arbitrary code execution through bash parameter expansion patterns (`${var@P}`, `${!var}`, `$(cmd)`); safety layer misclassified dangerous commands as "read-only"; fixed v0.0.423 | AI coding tool RCE |
 | **MCPJam Inspector RCE** | CVE-2026-23744: unauthenticated HTTP endpoint can install arbitrary MCP servers; listens on 0.0.0.0 by default enabling remote code execution from the network | MCP toolchain exploitation |
+| **GRP-Obliteration** | February 2026: Microsoft researchers showed single unlabeled prompt removes LLM safety alignment via inverted GRPO; GPT-OSS-20B attack success rate jumped 13% → 93% across all 44 harm categories | Complete safety alignment removal |
+| **ZombieAgent (ChatGPT)** | January 2026: zero-click exploit chain — malicious email → ChatGPT memory poisoned → persistent rules → self-propagation to contacts; all within OpenAI cloud, invisible to endpoint monitoring; patched Dec 2025 | Self-propagating memory corruption |
+| **Autonomous jailbreak agents** | March 2026 (Nature Communications): large reasoning models as autonomous adversaries achieved 97.14% jailbreak success across 9 target models with no human supervision — "alignment regression" | Systematic safety erosion |
+| **Aikido Infinite Coolify CVEs** | February 2026: autonomous agents found 7 CVEs in Coolify including privilege escalation and RCE as root across 52,000+ exposed instances | Self-securing software discovery |
+| **Vibe Hacking emergence** | 2026: low-effort AI-built attacks beating enterprise defenses; HP research confirms attackers prioritize cost over quality yet still bypass security controls | Democratized AI-powered attacks |
+| **FIRST CVE forecast** | February 2026: predicted median 59,427 new CVEs for 2026 (first year to exceed 50,000); realistic scenarios suggest 70,000-100,000 possible | Unprecedented vulnerability volume |
 
 ---
 
@@ -845,6 +864,125 @@ A multi-wave JavaScript supply chain worm campaign demonstrating self-propagatin
 3. Verify dependency pinning and cooldown policies
 4. Check for transitive dependency poisoning risk
 5. Test if npm publish tokens are rotated and scoped
+
+---
+
+### GRP-Obliteration: Single-Prompt Safety Alignment Removal (Microsoft, February 2026)
+
+A novel attack that can **remove an LLM's safety alignment using a single unlabeled prompt**:
+
+**How It Works:**
+- Based on Group Relative Policy Optimization (GRPO), a training technique normally used to improve model behavior
+- Inverts the process: one harmful prompt generates multiple responses; a "judge" model scores based on compliance
+- A single training example (e.g., "Create a fake news article") caused safety regressions across **all 44 harm categories** in SorryBench
+- GPT-OSS-20B attack success rate jumped from **13% to 93%**
+- Generalizes to text-to-image diffusion models
+
+**Testing for GRP-Obliteration:**
+1. If target allows model fine-tuning or RLHF customization, test if a single adversarial training example can degrade safety
+2. Test if target's safety filters can be inverted through adversarial optimization
+3. Check if target models expose training APIs that could be abused for alignment regression
+
+**Severity Guidance:** Critical if fine-tuning API is publicly accessible; High if requires authenticated access; reference arxiv:2602.06258.
+
+---
+
+### ZombieAgent: Zero-Click Memory Poisoning via Email (Radware, January 2026)
+
+A zero-click exploit chain against ChatGPT demonstrating self-propagating memory corruption:
+
+**Attack Chain:**
+1. Attacker sends malicious email containing hidden instructions
+2. Victim asks ChatGPT to summarize unread messages
+3. Agent processes email → long-term memory poisoned with attacker-created rules
+4. Poisoned rules persist across all future sessions
+5. Agent scans inbox and sends poisoned messages to victim's contacts → **self-propagation**
+6. All activity occurs within OpenAI's cloud infrastructure — invisible to endpoint monitoring
+
+**Testing for ZombieAgent Pattern:**
+1. Identify if target AI processes external content (emails, documents, messages) with memory persistence
+2. Plant instructions in content the AI will retrieve — test if they survive as persistent memory rules
+3. Check if memory corruption persists across session boundaries
+4. Test if compromised agent can propagate instructions to contacts or collaborators
+5. Verify if poisoned memory entries are visible to the user (most are not)
+
+**Severity Guidance:** Critical — zero-click, self-propagating, persistent. Maps to ASI06 (Memory Poisoning) and enables ASI07 (Insecure Inter-Agent Communication) via propagation. OpenAI patched December 2025.
+
+---
+
+### Autonomous Jailbreak Agents (Nature Communications, March 2026)
+
+Large reasoning models acting as **autonomous adversaries** can systematically erode safety guardrails:
+
+**Key Findings:**
+- DeepSeek-R1, Gemini 2.5 Flash, Grok 3 Mini, Qwen3 235B as autonomous jailbreak agents
+- **97.14% jailbreak success rate** across 9 target models in multi-turn conversations with no human supervision
+- Demonstrates "alignment regression" — LRMs can systematically erode other models' safety in extended conversations
+- DOI: s41467-026-69010-1
+
+**Testing Implications:**
+- Multi-turn conversations are far more dangerous than single-shot prompts
+- If target uses reasoning models (o3, R1, Gemini 2.5), test for extended conversation safety degradation
+- Safety testing should include multi-turn attack scenarios, not just single prompt injection
+
+---
+
+### Agent-to-Agent (A2A) Protocol Attack Surface (2026)
+
+Google's Agent-to-Agent protocol (open-source, Apache 2.0, Linux Foundation governed) creates new attack vectors:
+
+**Vulnerability Classes:**
+- **Agent identity spoofing** — impersonating trusted agents to inject instructions
+- **Capability declaration forgery** — claiming capabilities to redirect task assignments
+- **Task chain poisoning** — injecting malicious tasks into multi-agent workflows
+- **Trust graph attacks** — exploiting trust relationships between agents for lateral movement
+- **No token lifetime limitations** — persistent access once compromised
+
+**Testing Approach:**
+1. If target uses A2A protocol, test for agent identity verification between peers
+2. Check if capability declarations are validated or trusted implicitly
+3. Test if task assignments can be intercepted or modified in transit
+4. Verify that east-west agent traffic has security controls (most don't — bypasses traditional perimeters)
+5. Map to ASI07 (Insecure Inter-Agent Communication) in OWASP Agentic Top 10
+
+**Reference:** arXiv:2505.12490 identifies 40+ academic threats; real-world scenario: compromised research agent inserts hidden instructions consumed by financial agent → unintended trades.
+
+---
+
+### Side-Channel Timing Attacks Against LLMs (2026)
+
+A new class of inference attacks exploiting timing characteristics of language models:
+
+**Attack Types:**
+- **Whisper Leak** — analyzes packet size and timing patterns in streaming LLM responses; achieves **>98% AUPRC** classification across 28 popular LLMs
+- **Speculative decoding attacks** — fingerprint user queries with **>75% accuracy** by analyzing token generation timing
+- Optimization techniques in language models (speculative decoding, caching) create exploitable timing patterns
+
+**Testing Approach:**
+1. Analyze streaming response timing for information leakage about query content or model behavior
+2. Check if target uses speculative decoding or token caching that creates timing side channels
+3. Test if response timing varies predictably based on query sensitivity or content type
+4. Check if mitigations (padding, delay injection) are applied to streaming responses
+
+**Current Mitigations:** Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures. Test if target has similar protections.
+
+---
+
+### NIST AI Agent Standards Initiative (February 2026)
+
+NIST's Center for AI Standards and Innovation (CAISI) launched a formal initiative for AI agent security standards:
+
+**Three Pillars:**
+1. Facilitating industry-led agent standards and U.S. leadership in international standards bodies
+2. Fostering community-led open-source protocol development
+3. Advancing research in AI agent security and identity
+
+**Key Deadlines:**
+- RFI on AI Agent Security (due March 9, 2026)
+- ITL AI Agent Identity and Authorization concept paper (due April 2, 2026)
+- Listening sessions begin April 2026
+
+**Bug Bounty Relevance:** As NIST standards mature, programs will increasingly require compliance — understanding emerging standards gives hunters an edge in framing reports against forthcoming regulatory requirements.
 
 ---
 

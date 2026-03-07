@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.15.0)*
+*Last updated: March 2026 (v0.18.0)*
 
 Key data points for program evaluation:
 
@@ -390,7 +390,6 @@ Key data points for program evaluation:
 | React2Shell (CVE-2025-55182) | CVSS 10.0: pre-auth RCE in React Server Components; #1 most exploited CVE on HackerOne; exploited in-the-wild within hours | React.dev / Wiz Dec 2025 |
 | Microsoft Entra ID (CVE-2025-55241) | CVSS 10.0: Global Admin takeover via Actor Tokens; cloud identity total compromise | Microsoft 2025 |
 | Shai-Hulud supply chain worm | 454,648 malicious npm packages in 2025 (99% of all open-source malware); s1ngularity harvested 2,349 creds from 1,079 dev systems | CISA / Dark Reading 2025 |
-| API security detection gap | Only 21% of orgs can detect API attacks; only 13% can prevent >50%; 97% of API vulns exploitable with single request | 42Crunch 2026 |
 | IDEsaster campaign | 30+ vulns across 10+ AI coding tools, 24 CVEs; extension recommendation attacks via OpenVSX; 94+ Chromium flaws in Cursor/Windsurf | Security research 2025-2026 |
 | Cross-agent privilege escalation | ServiceNow Now Assist second-order prompt injection: first documented cross-agent privilege escalation in production | ServiceNow 2025-2026 |
 | AWS CodeBuild vulnerability | Critical flaw allowing hijacking of official AWS GitHub repositories and leaking build secrets | Wiz 2025 |
@@ -439,6 +438,21 @@ Key data points for program evaluation:
 | Agent skill scanners | Cisco MCP Scanner v4.0.1, Snyk Agent Scan, Repello SkillCheck, MCPGuard (78% of 700+ servers vulnerable), Akto (1,000+ agent exploits) | Various Mar 2026 |
 | MCP classic vuln patterns | 82% Path Traversal, 67% Code Injection, 34% Command Injection across 2,614 MCP implementations | Endor Labs 2026 |
 | Clinejection | Prompt injection turning AI coding bots into supply chain vectors via GitHub Actions pipelines | Snyk 2026 |
+| GRP-Obliteration | Single unlabeled prompt removes LLM safety alignment via inverted GRPO training; GPT-OSS-20B attack success rate: 13% → 93% across all 44 harm categories | Microsoft Security Feb 2026 |
+| Autonomous jailbreak agents | Large reasoning models as autonomous adversaries achieve 97.14% jailbreak success rate across 9 target models with no human supervision | Nature Communications Mar 2026 |
+| ZombieAgent | Zero-click ChatGPT memory poisoning via malicious email → long-term memory corruption → self-propagation to contacts; all activity within OpenAI cloud, invisible to endpoint monitoring | Radware Jan 2026 |
+| Side-channel timing attacks | Whisper Leak achieves >98% AUPRC classification across 28 LLMs via packet timing analysis; speculative decoding attacks fingerprint queries at >75% accuracy | Schneier/Cloudflare Feb 2026 |
+| A2A Protocol vulnerabilities | Google Agent-to-Agent protocol: identity spoofing, capability forgery, task chain poisoning, trust graph attacks; east-west agent traffic bypasses traditional security perimeters | arXiv:2505.12490 / 2026 |
+| FIRST CVE forecast 2026 | Median 59,427 new CVEs predicted (first year to exceed 50,000); realistic scenarios suggest 70,000-100,000 possible | FIRST Feb 2026 |
+| NIST AI Agent Standards Initiative | CAISI launched formal AI agent security standards; RFI on AI Agent Security (Mar 2026); Agent Identity and Authorization concept paper (Apr 2026) | NIST Feb 2026 |
+| Vibe Hacking | Attackers use AI to lower hacking barrier; low-effort AI-built attacks beating enterprise defenses; prioritizes cost over quality | HP/BleepingComputer 2026 |
+| HackerOne Agentic PTaaS details | 88% fix-verified accuracy; proprietary exploit knowledge base; combines autonomous agents with elite pentesters | HackerOne Jan 2026 |
+| Shift for Caido | AI plugin for Caido proxy: English-command control, context-aware wordlists, AI-powered HTTP modification, Shift Agents micro-agent framework | Shift 2026 |
+| Aikido Infinite | Industry's first self-securing software: autonomous agents pentest every code change, validate, remediate, retest; found 7 CVEs in Coolify including RCE as root across 52,000+ instances | Aikido Feb 2026 |
+| Shannon AI bug bounty service | AI-powered recon, exploitation, and report writing for HackerOne, Bugcrowd, Intigriti programs | Shannon AI 2026 |
+| Ransomware AI involvement | ~80% of ransomware attacks now involve AI | MIT Sloan 2026 |
+| Intigriti retesting feature | New submission retesting for validating fixes across all program types with one click | Intigriti 2026 |
+| Microsoft Copilot bounty | $250-$30,000 for AI-specific vulnerabilities | Microsoft 2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date

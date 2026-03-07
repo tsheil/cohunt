@@ -108,6 +108,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Rules file backdoor** | Invisible Unicode characters in AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`) | Pillar Security: undetectable to humans, readable by AI agents; shared config = supply chain compromise |
 | **Passive issue-based injection (RoguePilot)** | GitHub issues with hidden HTML comments that inject prompts into IDE/Codespace agents | Orca Security: Copilot processes hidden HTML → GITHUB_TOKEN exfiltrated; patched by Microsoft |
 | **MCP sampling exploitation** | MCP servers using sampling feature to become "active prompt authors" instead of passive tools | Unit42: resource theft, session manipulation, unauthorized content generation via server-initiated prompts |
+| **A2A protocol exploitation** | In multi-agent systems using Google A2A, test agent identity verification, capability validation, and task chain integrity | Agent spoofing, capability forgery, trust graph attacks; east-west traffic bypasses perimeters |
+| **Zero-click memory poisoning via email** | Plant instructions in emails processed by AI with persistent memory — test for self-propagation | ZombieAgent: email → memory corruption → persistent rules → contact propagation; invisible to endpoint monitoring |
+| **Side-channel timing analysis** | Analyze streaming response timing for information leakage about queries or model behavior | Whisper Leak: >98% classification across 28 LLMs; speculative decoding fingerprints at >75% accuracy |
+| **Safety alignment testing (GRP-Obliteration)** | If target exposes fine-tuning APIs, test for single-prompt safety regression across harm categories | Microsoft: one training example → 13% to 93% attack success across all 44 SorryBench categories |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -192,7 +196,7 @@ Avoid competing directly with autonomous tools on:
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
 - Time estimates must be realistic
 - Duplicate risk assessment must reference actual disclosed reports when available
-- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, BlacksmithAI, HackerOne Agentic PTaaS) — simple vulns they'd catch should be deprioritized
+- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, BlacksmithAI, Aikido Infinite, HackerOne Agentic PTaaS) — simple vulns they'd catch should be deprioritized
 - Chain opportunities must reference specific findings from recon, not hypotheticals
 - The session brief must be actionable — a hunter should be able to start testing immediately after reading it
 - Session should complete in 15-30 minutes — if recon is slow, report partial findings and note gaps
@@ -257,6 +261,10 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target uses AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`), test for Rules File Backdoor — invisible Unicode characters that are undetectable to humans but readable by AI agents; shared configs = widespread supply chain compromise
 - If target uses GitHub Codespaces with Copilot integration, test for RoguePilot pattern — hidden HTML comments in issues inject prompts when Codespace opens → GITHUB_TOKEN exfiltrated
 - If target has MCP servers using the sampling feature (server-initiated LLM generation), test for MCP sampling attacks — server becomes "active prompt author" enabling resource theft, session manipulation, and unauthorized content generation (Unit42 research)
+- If target uses Google A2A protocol for multi-agent coordination, test for agent identity spoofing, capability declaration forgery, and task chain poisoning — east-west agent traffic typically has no security controls (arXiv:2505.12490)
+- If target AI processes external content (emails, documents) with persistent memory, test for ZombieAgent pattern — zero-click memory corruption via malicious email → persistent rules → self-propagation to contacts (Radware Jan 2026)
+- If target exposes LLM fine-tuning or RLHF customization APIs, test for GRP-Obliteration — single adversarial training example can remove safety alignment across all harm categories (Microsoft Feb 2026)
+- If target uses streaming LLM responses, test for side-channel timing attacks — Whisper Leak achieves >98% classification across 28 LLMs via packet timing analysis (Schneier/Cloudflare Feb 2026)
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

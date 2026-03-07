@@ -106,58 +106,73 @@ COMMON DOWNGRADE TRIGGERS (flag if present)
 □ Theoretical RCE without actual code execution proof
 
 AI/LLM VULNERABILITY REPORTS (check if applicable)
+
+  Prompt Injection & Jailbreak:
 □ Prompt injection is reproducible across sessions (not a one-time fluke)
-□ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant" (OWASP LLM07:2025)
 □ Jailbreak is explicitly in scope for this program (many programs exclude jailbreaks)
-□ Impact goes beyond the user's own chat session (affects other users, triggers actions, accesses data)
-□ AI agent action has real-world consequences (not just "LLM said something weird")
 □ Indirect injection has a realistic delivery mechanism (not just "paste this into the chatbot yourself")
 □ Zero-click injection (EchoLeak pattern) proves the attack works without ANY user interaction — attacker plants content, AI retrieves and acts on it autonomously
+□ Multi-turn injection documents the full conversation sequence, not just the final payload
+□ Multimodal injection specifies the modality (image, audio, document) and proves the hidden prompt alters AI behavior
+□ Prompt injection defense bypass: references meta-analysis showing 85% success rate against SOTA defenses (arXiv:2601.17548) — strengthens case that defensive measures are insufficient
+□ LPCI findings demonstrate conditional trigger activation (not just static injection)
+□ GRP-Obliteration (alignment removal): if finding involves fine-tuning API abuse, reference Microsoft Feb 2026 — single prompt can cause safety regression across all 44 harm categories (13% → 93% attack success)
+□ Autonomous jailbreak agents: if multi-turn attack used reasoning models, reference Nature Communications Mar 2026 — 97.14% success rate with no human supervision
+
+  Memory & Agent Exploitation:
+□ Memory poisoning demonstrates persistence across sessions (not just in-context manipulation) — document time-to-propagation and scope of affected decisions
+□ ZombieAgent (zero-click memory poisoning): if finding involves AI processing external emails/messages with persistent memory corruption, demonstrate self-propagation capability and cross-session persistence (Radware Jan 2026)
+□ MINJA memory poisoning: if finding involves memory injection attacks, reference MINJA research showing 95%+ success rates against production agents — emphasize temporal decoupling (injection in one session, activation weeks later)
+□ Salami slicing (gradual constraint bypass): if finding involves incremental interactions shifting agent behavior over time, document the full sequence of interactions, the baseline behavior, and the final drift — reference procurement agent $5M fraud case (Palo Alto Unit42)
+□ Cascading failure in multi-agent system documents the propagation chain and scope of impact across agents
+□ Cross-agent privilege escalation: if finding involves multi-agent systems where low-privilege agent tricks higher-privilege agent, reference ServiceNow Now Assist second-order injection — first documented cross-agent privilege escalation in production
+□ AI agent action has real-world consequences (not just "LLM said something weird")
+□ Impact goes beyond the user's own chat session (affects other users, triggers actions, accesses data)
+
+  MCP & Protocol Layer:
 □ MCP-related finding identifies the specific MCP server, version, and affected tool
 □ MCP sampling attack specifies the vector: resource theft, conversation hijacking, or covert tool invocation
-□ Memory poisoning demonstrates persistence across sessions (not just in-context manipulation) — document time-to-propagation and scope of affected decisions
-□ CVSS accounts for "Attack Requirements" (CVSS 4.0) — many AI vulns need specific conditions
-□ Consider OWASP AIVSS scoring (v0.5+) for AI-specific severity — extends CVSS with autonomy, non-determinism, and tool-use factors
+□ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings
+□ eval()/exec() epidemic (MCP servers): if finding involves unsanitized input to eval/exec in MCP servers, reference the 7 RCE CVEs in February 2026 sharing this root cause — systematic pattern, not isolated incident
+□ MCP SDK cross-client data leak: if finding involves data leaking between client sessions, reference CVE-2026-25536 (TypeScript SDK); this is a protocol-level flaw affecting all implementations using shared instances
+□ WebSocket agent hijacking (ClawJacked): if finding involves cross-origin WebSocket access to local AI agents, demonstrate that any webpage can connect — no user interaction required; full agent control with all permissions
+□ MCP installation flow abuse (Cursor MCPoison pattern): demonstrates trust assumption bypass during MCP server installation or setup
+□ MCP health/diagnostic info disclosure: if finding involves unauthenticated info leakage from health endpoints, reference CVE-2026-29787 — document what system data is exposed (OS, CPU, memory, database paths)
+□ MCP sampling attacks: if finding involves MCP servers using the sampling feature as an injection vector, reference Palo Alto Unit42 — demonstrate server becoming "active prompt author" enabling resource theft, session manipulation, or unauthorized content generation
+□ A2A protocol exploitation: if finding involves Google A2A protocol, demonstrate agent identity spoofing, capability forgery, or task chain poisoning — east-west agent traffic bypasses traditional perimeters (arXiv:2505.12490)
+
+  Supply Chain & IDE Exploitation:
+□ Supply chain attack via AI tool configs (hooks, MCP configs, env vars) demonstrates code execution path from repo clone to compromise
+□ Agent skill supply chain (ClawHavoc/ToxicSkills pattern): if finding involves third-party AI skills, demonstrates malicious instruction execution via SKILL.md or similar skill definition files — reference ToxicSkills stats (36% prompt injection rate across 3,984 skills)
+□ AI coding IDE supply chain (IDEsaster pattern): if finding involves project files exploiting AI IDEs (hooks, MCP configs, workspace files), reference the IDEsaster campaign (30+ vulns, 24 CVEs across Claude Code, Cursor, Kiro, Windsurf) — demonstrate that opening a malicious repo triggers exploitation
+□ Extension recommendation squatting: if finding involves AI IDE recommending non-existent extensions that can be claimed by attackers, reference IDEsaster extension attacks on OpenVSX affecting 1.8M+ developers
+□ CI/CD pipeline injection (PromptPwnd): if finding involves AI agents in GitHub Actions/GitLab CI processing untrusted issue/PR content, reference Aikido Security research — 5+ Fortune 500 confirmed affected; Google patched within 4 days; demonstrate that issue/PR content → AI agent → secret exfiltration (GEMINI_API_KEY, GITHUB_TOKEN, cloud tokens)
+□ CI/CD pipeline injection (Clinejection pattern): if finding involves AI coding bots in CI/CD, demonstrates prompt injection → pipeline compromise path via GitHub Actions or similar
+□ Rules file backdoor: if finding involves invisible Unicode in AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`), reference Pillar Security — demonstrate that content is undetectable via normal code review but executable by AI agents; shared config files create supply chain risk
+□ Passive issue injection (RoguePilot): if finding involves GitHub issues with hidden HTML comments exploiting Copilot/Codespaces, reference Orca Security — demonstrate GITHUB_TOKEN exfiltration path via `json.schemaDownload.enable`
+□ Supply chain worm propagation: if finding involves npm/package credential theft that enables self-propagation, reference Shai-Hulud (454K malicious npm packages in 2025); note dependency cooldown defense (7-14 days prevents 80% of attacks)
+□ Documentation supply chain (ContextCrush pattern): if finding involves MCP-served docs/custom rules, demonstrates injection → agent execution path with no sanitization
+□ Copilot CLI shell expansion: if finding involves GitHub Copilot CLI, reference CVE-2026-29783 — bash parameter expansion (`${var@P}`, `${!var}`) bypassed safety layer; demonstrate that "read-only" classification was incorrect
+
+  Frameworks, Infrastructure & Scoring:
+□ System prompt leak contains genuinely sensitive data (API keys, internal URLs) — not just "you are a helpful assistant" (OWASP LLM07:2025)
 □ Report distinguishes between model-level and application-level vulnerabilities
 □ Output injection (XSS/SQLi via LLM) proves the app executes/renders the output (not just displays it)
-□ LPCI findings demonstrate conditional trigger activation (not just static injection)
-□ Multi-turn injection documents the full conversation sequence, not just the final payload
 □ OWASP Agentic Top 10 2026 risk ID cited if targeting agent-specific behavior (ASI01-ASI10)
 □ Vector/embedding poisoning (OWASP LLM08:2025) demonstrates manipulation of RAG retrieval results, not just the embedding itself
-□ Multimodal injection specifies the modality (image, audio, document) and proves the hidden prompt alters AI behavior
-□ Supply chain attack via AI tool configs (hooks, MCP configs, env vars) demonstrates code execution path from repo clone to compromise
-□ Cascading failure in multi-agent system documents the propagation chain and scope of impact across agents
 □ Promptware Kill Chain stage assessed — findings reaching stage 5+ (C2/lateral movement/actions) are significantly more severe than stage 1-2 (injection/jailbreak); reference arxiv:2601.09625
 □ Agentic browser exploitation (PleaseFix pattern) demonstrates zero-click trigger mechanism — attacker content → autonomous agent processes → impact without user interaction
 □ Docker/container AI supply chain finding (DockerDash pattern) demonstrates metadata label → MCP Gateway → compromise path
 □ Shadow Escape pattern: confirms exfiltration operates within authorized identity boundaries (not just external network exfil)
-□ Documentation supply chain (ContextCrush pattern): if finding involves MCP-served docs/custom rules, demonstrates injection → agent execution path with no sanitization
 □ LLM framework serialization (LangGrinch pattern): if finding involves LangChain/LlamaIndex/Haystack, demonstrates prompt cascading through serialization/deserialization paths
 □ Exposed agent infrastructure (Clawdbot pattern): if finding involves exposed MCP gateways/admin panels, quantifies what data is accessible (API keys, tokens, conversation histories)
-□ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings
-□ MCP installation flow abuse (Cursor MCPoison pattern): demonstrates trust assumption bypass during MCP server installation or setup
-□ Agent skill supply chain (ClawHavoc/ToxicSkills pattern): if finding involves third-party AI skills, demonstrates malicious instruction execution via SKILL.md or similar skill definition files — reference ToxicSkills stats (36% prompt injection rate across 3,984 skills)
 □ AI recommendation poisoning (Microsoft Feb 2026): if finding involves hidden instructions in web content biasing AI recommendations, demonstrates cross-assistant impact and persistence of bias
-□ CI/CD pipeline injection (Clinejection pattern): if finding involves AI coding bots in CI/CD, demonstrates prompt injection → pipeline compromise path via GitHub Actions or similar
-□ Prompt injection defense bypass: references meta-analysis showing 85% success rate against SOTA defenses (arXiv:2601.17548) — strengthens case that defensive measures are insufficient
-□ eval()/exec() epidemic (MCP servers): if finding involves unsanitized input to eval/exec in MCP servers, reference the 7 RCE CVEs in February 2026 sharing this root cause — systematic pattern, not isolated incident
-□ MCP SDK cross-client data leak: if finding involves data leaking between client sessions, reference CVE-2026-25536 (TypeScript SDK); this is a protocol-level flaw affecting all implementations using shared instances
-□ WebSocket agent hijacking (ClawJacked): if finding involves cross-origin WebSocket access to local AI agents, demonstrate that any webpage can connect — no user interaction required; full agent control with all permissions
-□ Salami slicing (gradual constraint bypass): if finding involves incremental interactions shifting agent behavior over time, document the full sequence of interactions, the baseline behavior, and the final drift — reference procurement agent $5M fraud case (Palo Alto Unit42)
-□ MCP health/diagnostic info disclosure: if finding involves unauthenticated info leakage from health endpoints, reference CVE-2026-29787 — document what system data is exposed (OS, CPU, memory, database paths)
-□ CVSS V4 compliance: if submitting to Intigriti (all new submissions use CVSS V4 as of 2026), ensure scoring uses CVSS V4 metrics including Attack Requirements
-□ AI coding IDE supply chain (IDEsaster pattern): if finding involves project files exploiting AI IDEs (hooks, MCP configs, workspace files), reference the IDEsaster campaign (30+ vulns, 24 CVEs across Claude Code, Cursor, Kiro, Windsurf) — demonstrate that opening a malicious repo triggers exploitation
-□ Extension recommendation squatting: if finding involves AI IDE recommending non-existent extensions that can be claimed by attackers, reference IDEsaster extension attacks on OpenVSX affecting 1.8M+ developers
-□ Cross-agent privilege escalation: if finding involves multi-agent systems where low-privilege agent tricks higher-privilege agent, reference ServiceNow Now Assist second-order injection — first documented cross-agent privilege escalation in production
 □ React Server Component deserialization: if finding involves React/Next.js RSC, reference React2Shell (CVE-2025-55182, CVSS 10.0) — pre-auth RCE via Flight protocol deserialization; became #1 most exploited CVE on HackerOne
 □ Cloud identity token abuse: if finding involves Entra ID/Azure AD, reference CVE-2025-55241 (CVSS 10.0) — Actor Tokens mechanism enabling Global Admin takeover
-□ Supply chain worm propagation: if finding involves npm/package credential theft that enables self-propagation, reference Shai-Hulud (454K malicious npm packages in 2025); note dependency cooldown defense (7-14 days prevents 80% of attacks)
-□ CI/CD pipeline injection (PromptPwnd): if finding involves AI agents in GitHub Actions/GitLab CI processing untrusted issue/PR content, reference Aikido Security research — 5+ Fortune 500 confirmed affected; Google patched within 4 days; demonstrate that issue/PR content → AI agent → secret exfiltration (GEMINI_API_KEY, GITHUB_TOKEN, cloud tokens)
-□ Rules file backdoor: if finding involves invisible Unicode in AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`), reference Pillar Security — demonstrate that content is undetectable via normal code review but executable by AI agents; shared config files create supply chain risk
-□ Passive issue injection (RoguePilot): if finding involves GitHub issues with hidden HTML comments exploiting Copilot/Codespaces, reference Orca Security — demonstrate GITHUB_TOKEN exfiltration path via `json.schemaDownload.enable`
-□ MCP sampling attacks: if finding involves MCP servers using the sampling feature as an injection vector, reference Palo Alto Unit42 — demonstrate server becoming "active prompt author" enabling resource theft, session manipulation, or unauthorized content generation
-□ Copilot CLI shell expansion: if finding involves GitHub Copilot CLI, reference CVE-2026-29783 — bash parameter expansion (`${var@P}`, `${!var}`) bypassed safety layer; demonstrate that "read-only" classification was incorrect
-□ MINJA memory poisoning: if finding involves memory injection attacks, reference MINJA research showing 95%+ success rates against production agents — emphasize temporal decoupling (injection in one session, activation weeks later)
+□ Side-channel timing analysis: if finding involves information leakage via streaming response timing, reference Whisper Leak (>98% classification across 28 LLMs) and speculative decoding attacks (>75% query fingerprinting)
+□ CVSS accounts for "Attack Requirements" (CVSS 4.0) — many AI vulns need specific conditions
+□ Consider OWASP AIVSS scoring (v0.5+) for AI-specific severity — extends CVSS with autonomy, non-determinism, and tool-use factors
+□ CVSS V4 compliance: if submitting to Intigriti (all new submissions use CVSS V4 as of 2026), ensure scoring uses CVSS V4 metrics including Attack Requirements
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -290,7 +305,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs; BlacksmithAI and Snyk Agent Scan now automate agent skill auditing; HackerOne Agentic PTaaS combines autonomous agents with human expertise as competitive baseline. The bar is rising. For agent skill supply chain findings, reference ToxicSkills stats (36% prompt injection rate) to contextualize severity. For CI/CD pipeline injection findings, reference PromptPwnd (5+ Fortune 500 affected). For memory poisoning findings, reference MINJA (95%+ success rates).
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs; BlacksmithAI and Snyk Agent Scan now automate agent skill auditing; Aikido Infinite pentests every code change; HackerOne Agentic PTaaS (88% fix-verified accuracy) combines autonomous agents with human expertise as competitive baseline. Autonomous jailbreak agents achieve 97.14% success rate (Nature Communications 2026) — multi-turn attacks are commoditized. The bar is rising. For agent skill supply chain findings, reference ToxicSkills stats (36% prompt injection rate) to contextualize severity. For CI/CD pipeline injection findings, reference PromptPwnd (5+ Fortune 500 affected). For memory poisoning findings, reference MINJA (95%+ success rates) and ZombieAgent (self-propagating, zero-click).
 11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
 
@@ -300,3 +315,8 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 - If the finding is borderline (might be N/A on some programs), note the risk and let the hunter decide.
 - If CVSS scoring is inflated, provide the corrected score AND explain why — don't just change the number.
 - If the report is excellent, say so clearly and recommend SUBMIT. Don't invent issues for the sake of having feedback.
+- If the report chains AI and traditional vulns (e.g., prompt injection → SSRF → cloud metadata), ensure both the AI and traditional components are independently verified and the chain is realistic.
+- If the program has no explicit AI-specific vulnerability policy, note this — the hunter may need to justify reportability with extra context, OWASP references, and business impact.
+- If CVSS 3.1 and 4.0 scores diverge significantly (common for AI vulns with complex Attack Requirements), flag the discrepancy and recommend the score most favorable to the hunter's platform.
+- If the finding could be split into multiple reports (e.g., separate MCP server vuln + cross-system chaining impact), advise whether to split or combine based on program's typical response to chained reports.
+- If the report describes a self-propagating vulnerability (ZombieAgent pattern, Shai-Hulud), emphasize wormable/self-replicating nature in impact section — this dramatically increases severity.
