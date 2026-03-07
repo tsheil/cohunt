@@ -488,6 +488,13 @@ When you know the target's technology, focus your testing:
 - **Second-order cross-agent prompt injection** — ServiceNow Now Assist: low-privilege agent sends malformed request that tricks higher-privilege agent into performing unauthorized actions; first documented cross-agent privilege escalation in production multi-agent system
 - **AWS CodeBuild vulnerability** — Wiz uncovered critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
 - **Exploitation speed** — 28.96% of Known Exploited Vulnerabilities exploited on or before CVE publication day in 2025, up from 23.6% in 2024; 884 KEVs identified (VulnCheck); vulnerability exploitation #1 cause of incidents at 40% (IBM X-Force)
+- **PromptPwnd (CI/CD pipeline injection)** — Aikido Security: prompt injection in GitHub Actions/GitLab CI/CD exploits AI agents (Gemini CLI, Claude Code, Codex); attacker submits malicious issue → AI agent leaks API keys, GITHUB_TOKEN, cloud tokens; 5+ Fortune 500 confirmed affected; Google patched within 4 days
+- **RoguePilot (GitHub Codespaces)** — Orca Security: passive prompt injection via hidden HTML comments in GitHub issues; Codespace opens → Copilot processes injected prompt → GITHUB_TOKEN exfiltrated via `json.schemaDownload.enable`; patched by Microsoft
+- **Rules File Backdoor** — Pillar Security: `.cursorrules`, `.github/copilot-instructions.md` weaponized with invisible Unicode characters — undetectable to humans, readable by AI agents; shared config files create widespread supply chain compromise
+- **Copilot CLI shell RCE (CVE-2026-29783)** — bash parameter expansion patterns (`${var@P}`, `${!var}`) bypass safety layer that misclassified dangerous commands as "read-only"; fixed v0.0.423
+- **MCPJam Inspector RCE (CVE-2026-23744)** — unauthenticated HTTP endpoint installs arbitrary MCP servers; listens on 0.0.0.0 by default, enabling remote code execution from the network
+- **OpenClaw CVE crisis** — 8 critical CVEs in 6 weeks (CVE-2026-25253 CVSS 8.8 RCE, CVE-2026-28485 missing auth); 42,665 exposed instances, 5,194 actively vulnerable; 824+ malicious skills in registry; infostealers now target OpenClaw file paths
+- **MINJA memory injection** — 95%+ injection success rates against production AI agents; temporally decoupled attacks where injection and execution occur weeks apart
 
 ---
 

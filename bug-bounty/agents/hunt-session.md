@@ -104,6 +104,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Cross-agent privilege escalation** | In multi-agent systems, crafting requests that trick higher-privilege agents via lower-privilege intermediaries | ServiceNow Now Assist: first documented cross-agent privilege escalation in production |
 | **Supply chain worm detection** | Analyzing npm/package ecosystems for self-propagating credential theft patterns | Shai-Hulud: stolen creds from one victim used to compromise packages they maintain |
 | **Cloud identity token abuse** | Testing cloud identity mechanisms for privilege escalation via actor tokens, managed identities | CVE-2025-55241 (Entra ID, CVSS 10.0): Actor Tokens → Global Admin |
+| **CI/CD pipeline injection (PromptPwnd)** | Prompt injection through GitHub issues/PRs that exploit AI agents in CI/CD pipelines to leak secrets | Aikido Security: GEMINI_API_KEY, GITHUB_TOKEN, cloud tokens leaked; 5+ Fortune 500 affected |
+| **Rules file backdoor** | Invisible Unicode characters in AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`) | Pillar Security: undetectable to humans, readable by AI agents; shared config = supply chain compromise |
+| **Passive issue-based injection (RoguePilot)** | GitHub issues with hidden HTML comments that inject prompts into IDE/Codespace agents | Orca Security: Copilot processes hidden HTML → GITHUB_TOKEN exfiltrated; patched by Microsoft |
+| **MCP sampling exploitation** | MCP servers using sampling feature to become "active prompt authors" instead of passive tools | Unit42: resource theft, session manipulation, unauthorized content generation via server-initiated prompts |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -249,6 +253,10 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target uses React Server Components or Next.js RSC, test for deserialization in Flight protocol (React2Shell pattern, CVE-2025-55182) — pre-auth RCE with near-100% reliability
 - If target uses Microsoft Entra ID / Azure AD, test Actor Tokens authentication for privilege escalation (CVE-2025-55241, CVSS 10.0)
 - If target AI IDE recommends extensions, test for OpenVSX namespace squatting (IDEsaster pattern) — unclaimed extension names → malicious package serving
+- If target has AI agents running in CI/CD pipelines (GitHub Actions, GitLab CI), test for PromptPwnd pattern — malicious issue/PR content → AI agent processes → secrets leaked (GEMINI_API_KEY, GITHUB_TOKEN, cloud tokens); 5+ Fortune 500 confirmed affected
+- If target uses AI IDE config files (`.cursorrules`, `.github/copilot-instructions.md`), test for Rules File Backdoor — invisible Unicode characters that are undetectable to humans but readable by AI agents; shared configs = widespread supply chain compromise
+- If target uses GitHub Codespaces with Copilot integration, test for RoguePilot pattern — hidden HTML comments in issues inject prompts when Codespace opens → GITHUB_TOKEN exfiltrated
+- If target has MCP servers using the sampling feature (server-initiated LLM generation), test for MCP sampling attacks — server becomes "active prompt author" enabling resource theft, session manipulation, and unauthorized content generation (Unit42 research)
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

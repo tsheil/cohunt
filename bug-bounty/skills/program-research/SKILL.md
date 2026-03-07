@@ -343,11 +343,11 @@ Key data points for program evaluation:
 | AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3); IDEsaster campaign: 30+ vulns, 24 CVEs across 10+ AI IDEs | 2025-2026 |
 | Smart contract damages (H1 2025) | $263M across Web3 | CoinLaw 2026 |
 | Cisco vs DeepSeek R1 | 50/50 jailbreak prompts succeeded (100% bypass rate) | Cisco Q1 2025 |
-| OpenClaw supply chain attack | 1,184 malicious skills across ClawHub (~1 in 5 packages) — largest supply chain attack on AI agent infrastructure | Security research 2025 |
+| OpenClaw supply chain crisis | 1,184+ malicious skills across ClawHub; 8 critical CVEs in 6 weeks; 42,665 exposed instances; 824+ actively malicious skills out of 10,700+; infostealers now target OpenClaw file paths | Security research 2025-2026 |
 | GTG-1002 incident | First documented state-sponsored espionage primarily orchestrated by AI agent; autonomous Claude Code executed 80-90% of intrusion lifecycle | Security research Sep 2025 |
 | MCP auth security | 88% of MCP servers require credentials; 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth | Astrix State of MCP Security 2025 |
 | huntr AI/ML fix rate | 50.5% of AI/ML OSS vulnerabilities found through huntr have been fixed; 49.5% remain unpatched | huntr 2025 |
-| Bug bounty market valuation | **$2.06B** (2026), projected **$3.98B by 2032** (CAGR 16.3%); 63% of Fortune 500 run bug bounty programs | Verified Market Research / Business Research Insights 2026 |
+| Bug bounty market valuation | **$2.06B** (2026), projected **$7.74B by 2035** (CAGR 15.94%); 63% of Fortune 500 run bug bounty programs | Verified Market Research 2026 |
 | Bug bounty ROI | For every $1 spent on bounties, companies save $15 ($3B in mitigated losses) | Industry analysis 2026 |
 | AI security startup funding Q4 2025 | $2.17B across 28 deals — **8x growth** over two years | Industry analysis 2026 |
 | Enterprise AI readiness | Only 34% have AI-specific security controls; <40% conduct regular AI testing | Help Net Security 2026 |
@@ -367,6 +367,16 @@ Key data points for program evaluation:
 | CISA KEV catalog additions | 245 vulnerabilities in 2025 (30%+ increase over 2023-2024) | CISA 2025 |
 | API-related CVEs | 17% of all 2025 published security bulletins (11,053 of 67,058) | Wallarm 2025 |
 | API-related CISA KEVs | 43% of newly added CISA KEVs in 2025 were API-related | Wallarm 2025 |
+| PromptPwnd CI/CD injection | AI agents in GitHub Actions/GitLab CI leak secrets via prompt injection; 5+ Fortune 500 confirmed affected | Aikido Security 2026 |
+| Rules File Backdoor | Invisible Unicode in `.cursorrules`/`.github/copilot-instructions.md` weaponizes AI IDE config files | Pillar Security 2026 |
+| RoguePilot | Passive prompt injection via GitHub issues → Copilot GITHUB_TOKEN theft in Codespaces | Orca Security 2026 |
+| Copilot CLI RCE (CVE-2026-29783) | Shell expansion arbitrary code execution; safety layer misclassified dangerous commands as "read-only" | GitHub 2026 |
+| MCPJam Inspector RCE (CVE-2026-23744) | Unauthenticated endpoint installs arbitrary MCP servers; listens on 0.0.0.0 | Security advisory 2026 |
+| Tenable AI/MCP risk | 70% of orgs integrated AI/MCP packages without centralized security oversight; 18% granted AI admin permissions rarely audited | Tenable Cloud & AI Risk Report 2026 |
+| Non-human identity risk | AI agents/service accounts represent higher risk (52%) than human users (37%) in cloud environments | Tenable 2026 |
+| MINJA memory poisoning | 95%+ injection success against production AI agents with persistent memory; temporally decoupled attacks | Academic research 2026 |
+| IBM X-Force 2026 | 300K+ ChatGPT credentials exposed via infostealer malware; 44% increase in public-facing app exploitation | IBM Feb 2026 |
+| API security detection gap | Only 21% of orgs detect attacks at API layer; only 13% can prevent >50% of API attacks; 97% of API vulns exploitable with single request | 42Crunch 2026 |
 | AISLE AI CVE discoveries | 100+ CVEs across 30+ projects; 13/14 OpenSSL CVEs in 2025 | AISLE Jan 2026 |
 | Claude Code Security vulns found | 500+ in production open-source codebases (launched Feb 20, 2026) | Anthropic 2026 |
 | ZAST.AI CVE discoveries | 119 CVEs across Microsoft Azure SDK, Apache Struts, WordPress, Langfuse | ZAST.AI Feb 2026 |
