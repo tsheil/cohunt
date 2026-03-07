@@ -364,7 +364,38 @@ Look for:
 - `.env` file not in `.gitignore`
 - Sensitive values in `docker-compose.yml` or CI configs
 
-### Step 8: Synthesize Findings
+### Step 8: Variant Analysis
+
+When you find a vulnerability, systematically check for the same pattern elsewhere:
+
+```
+For each confirmed finding:
+1. Identify the root cause pattern (e.g., missing auth check, unsanitized input to exec())
+2. Search the entire codebase for the same pattern — use grep/ripgrep for the dangerous function
+3. Check all endpoints using the same middleware/decorator to see if any skip the protection
+4. Look at recently added code (git log --diff-filter=A) — new code often copies old patterns
+5. Check if the fix for a known CVE was applied everywhere or just the reported location
+```
+
+**Example:** Found SQL injection in `/api/users`? Search for all `cursor.execute(f"` or string-concatenated queries in the project. The same developer likely used the same pattern in `/api/orders`, `/api/invoices`, etc.
+
+### Step 9: False Positive Verification
+
+Before reporting, confirm each finding is exploitable — not just theoretically dangerous:
+
+```
+For each finding:
+1. Can you reach the sink from an unauthenticated or low-privilege entry point?
+   - If gated behind admin-only middleware → lower severity or FP
+2. Is there upstream validation that neutralizes the input?
+   - ORM parameterization, WAF rules, framework auto-escaping
+3. Does the code path actually execute in production?
+   - Dead code, feature-flagged off, test-only routes → FP
+4. Can you construct a concrete payload that demonstrates impact?
+   - If you can't write a PoC, it's not ready to report
+```
+
+### Step 10: Synthesize Findings
 
 ```
 1. Rank findings by severity and exploitability
