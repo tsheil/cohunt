@@ -7,6 +7,17 @@ description: API-specific security testing patterns for REST, GraphQL, WebSocket
 
 Architecture-specific testing patterns for APIs. While `vuln-patterns` covers vulnerability classes (IDOR, SSRF, etc.) and `auth-testing` covers authentication/authorization, this skill focuses on how API design and protocol choices create unique attack surfaces.
 
+## API Threat Landscape (2025-2026)
+
+APIs are now the primary digital attack surface. Key stats:
+- **17% of all 2025 published security bulletins** (11,053 of 67,058) were API-related
+- **43% of newly added CISA KEVs** in 2025 were API-related
+- **Missing authentication** is the #1 API vulnerability (17% of incidents)
+- **Broken authentication** present in 52% of API incidents
+- Companies shipping microservices and multi-cloud APIs faster than they can secure them
+
+---
+
 ## When This Skill Activates
 
 - Target recon reveals a REST API, GraphQL endpoint, WebSocket, or gRPC service

@@ -44,6 +44,24 @@ I'll give you concrete patterns tailored to the target's technology stack when I
 
 ---
 
+## MITRE CWE Top 25 (2025)
+
+The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 2025, shows **authorization flaws climbing fast** while traditional injection remains at the top:
+
+| Rank | CWE | Name | Trend |
+|------|-----|------|-------|
+| 1 | CWE-79 | Cross-Site Scripting (XSS) | Stable at #1 (score 60.38) |
+| 2 | CWE-89 | SQL Injection | Up 1 position |
+| 3 | CWE-352 | Cross-Site Request Forgery (CSRF) | Up 1 position |
+| 4 | **CWE-862** | **Missing Authorization** | **Up 5 positions — biggest climber** |
+| 5 | CWE-787 | Out-of-Bounds Write | Stable |
+
+**New entries in 2025:** CWE-120 (Classic Buffer Overflow), CWE-121 (Stack-based Buffer Overflow), CWE-122 (Heap-based Buffer Overflow), CWE-284 (Improper Access Control), CWE-639 (Authorization Bypass Through User-Controlled Key), CWE-770 (Allocation of Resources Without Limits).
+
+**Key trend:** Authorization-related vulnerabilities (IDOR, BOLA, missing access controls) are rising as the most impactful vulnerability class, displacing traditional injection flaws in bounty value. Programs are shifting rewards toward identity, access, and business logic flaws.
+
+---
+
 ## Vulnerability Classes
 
 ### Access Control / IDOR
