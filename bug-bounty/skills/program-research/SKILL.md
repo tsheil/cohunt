@@ -363,6 +363,13 @@ Key data points for program evaluation:
 | Enterprise CART adoption | 60% of large enterprises using continuous automated red teaming by 2026 | Industry 2026 |
 | EU AI Act compliance deadline | August 2, 2026; penalties up to 35M EUR or 7% of global turnover | EU 2026 |
 | OpenAI o3 zero-day | CVE-2025-37899 Linux kernel SMB use-after-free found with o3 assistance | Security research 2025 |
+| CVEs disclosed in H1 2026 | 21,500+ (16-18% increase over 2024) — unprecedented vulnerability volume | NVD H1 2026 |
+| MCP CVEs filed | 30+ CVEs in 60 days — AI's fastest-growing attack surface | MCP Security Research 2026 |
+| MCP servers lacking auth | 38% of 500+ scanned servers completely lack authentication | MCP Security Research 2026 |
+| Bugcrowd hacker pride | 98% proud of their work; 85% say reporting critical vulns > money | Bugcrowd 2026 |
+| Geopolitics as motivation | 56% say geopolitics outweighs curiosity as driving factor | Bugcrowd 2026 |
+| Freelancing growth | AI-induced job scarcity driving new influx into security freelancing and bug bounty | Bugcrowd 2026 predictions |
+| CAI HTB performance | Top-30 Spain, top-500 worldwide on HTB within one week; 156x cost reduction | CAI 2025-2026 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -412,6 +419,9 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-53967: Figma MCP server RCE — command injection via unvalidated user input in shell commands
 - ChatGPT message limit bypass: business-logic vulnerability allowed free-tier users to bypass GPT-5 message limits by editing messages in older conversations; silently patched 69 days after submission
 - Google Cloud Apigee CVE-2025-13292: cross-tenant vulnerability providing read/write access to analytics data across thousands of organizations (Focal Security)
+- CVE-2026-27896: MCP Go SDK vulnerability — JSON parser handles field names case-insensitively, enabling crafted malicious MCP responses
+- CVE-2025-53109: critical symlink bypass in MCP file operations — system takeover if server runs with elevated privileges
+- Persistent prompt injection in procurement agent (Palo Alto Unit42, 2026): manufacturing company's agent manipulated over 3 weeks to approve $5M in false purchase orders
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
@@ -422,6 +432,7 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 
 Competition awareness:
 - XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ zero-day submissions, running 80x faster than manual teams; raised $75M in funding; expanding APAC presence in 2026
+- XBOW benchmark: **75% of standard web security challenges** solved autonomously, **85% of custom-built challenges** — uses automated "validator" peer reviewers to confirm each finding
 - HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
 - XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days
 - 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
@@ -444,12 +455,13 @@ Competition awareness:
 - **PentAGI** (Feb 2026) — Go-based multi-agent pentesting with PostgreSQL + Neo4j; 20+ tools in isolated Docker environments
 - **Assail Ares** launched from stealth (Jan 2026) — autonomous API/web/mobile pentesting
 - **BlacksmithAI** and **Zen-AI-Pentest** emerged as new open-source AI pentesting frameworks (Feb-Mar 2026)
-- **MCP security is a major attack surface** — 8,000+ servers exposed (Feb 2026), 492 vulnerable; CVE-2025-6514 (CVSS 10.0, mcp-remote RCE); Adversa AI published MCP Security TOP 25; CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE); VulnerableMCP.info tracks the growing CVE database
+- **MCP security is AI's fastest-growing attack surface** — **30+ CVEs in 60 days**; 8,000+ servers exposed (Feb 2026), 492 vulnerable; 38% of 500+ scanned servers lack auth; CVE-2025-6514 (CVSS 10.0, mcp-remote RCE); Adversa AI published MCP Security TOP 25; CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE), CVE-2026-27896 (MCP Go SDK), CVE-2025-53109 (symlink bypass); Palo Alto Unit42 published new MCP sampling attack vectors; VulnerableMCP.info tracks the growing CVE database
 - Web3 losses exceeded **$3 billion in H1 2025** alone; $1.83B from access control exploits; Immunefi surpassed $100M in total payouts
 - FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
 - **MITRE CWE Top 25 (2025):** CWE-79 (XSS) still #1 but CWE-862 (Missing Authorization) climbed 5 positions — biggest mover. New entries include CWE-770 (Allocation of Resources Without Limits), CWE-639 (Authorization Bypass Through User-Controlled Key)
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
 - **curl bug bounty shutdown** (Jan 2026) demonstrates AI slop risk — first major program closed due to AI-generated garbage flooding; 8x normal submission volume, only 5% genuine
+- **CAI** reached top-30 in Spain, top-500 worldwide on HTB within a week; **156x cost reduction** vs traditional testing; enables non-professionals to find CVSS 4.3-7.5 bugs at expert rates
 - **Burp Suite with Burp AI** released 2025 — agentic pentesting assistant for probing deeper and generating attack ideas in real-time from PortSwigger
 - **Penligent** — fully autonomous Security Agent with its own runtime environment; executes commands, analyzes traffic, and plans next moves autonomously with feedback loops
 - **Aikido Attack** — autonomous agents that pentest every deployment, validate exploitability, generate patches, and retest fixes before code hits production

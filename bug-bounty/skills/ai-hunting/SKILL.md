@@ -51,8 +51,12 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 **CAI (Cybersecurity AI Framework):**
 - Open-source framework supporting 300+ AI models for building bug-bounty-ready security agents
 - CAI achieved **Top-10 ranking in the Dragos OT CTF 2025** (Rank 1 during hours 7-8), completing 32 of 34 challenges with a 37% velocity advantage over top human teams
-- Achieved first place among AI teams in the "AI vs Human" CTF challenge; solves challenges up to 3,600x faster than humans in specific tasks
+- Achieved first place among AI teams in the "AI vs Human" CTF challenge; solves challenges up to 3,600x faster than humans in specific tasks, averaging **11x faster** overall
+- Reached **top-30 in Spain** and **top-500 worldwide** on Hack The Box within a week of active operation
+- Reduces security testing costs by an average of **156x** compared to traditional approaches
+- **Non-professional enablement:** enables non-professionals to discover significant security bugs (CVSS 4.3-7.5) at rates comparable to experts during bug bounty exercises — democratizing offensive security
 - HackerOne's top engineers leverage CAI to explore agentic AI architectures; CAI's Retester agent inspired HackerOne's AI-powered Deduplication Agent, now in production
+- Published as academic paper: "CAI: An Open, Bug Bounty-Ready Cybersecurity AI" (arXiv:2504.06017)
 - **Security note:** CAI itself was found to have a critical command injection vulnerability (CVE-2025-67511, CVSS 9.6-9.7) — AI security tools can themselves be vulnerable
 - GitHub: `aliasrobotics/cai`
 
@@ -236,6 +240,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
 - Runs up to **80x faster** than manual teams
 - Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
+- **Benchmark performance:** handled **75% of standard web security challenges** entirely on its own, plus **85% of custom-built, never-before-seen vulnerabilities** that would stump skilled human researchers
+- **Validation approach:** sophisticated automated "validators" — peer reviewers that confirm each vulnerability (e.g., headless browsers verifying JavaScript payloads execute on target sites) — avoiding the false positive problem
 - **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG)
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings, though costs are expected to drop
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
@@ -348,10 +354,16 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 3. **mcp-remote Supply Chain (CVE-2025-6514):** Critical command injection in the widely-used mcp-remote package allowed malicious MCP servers to achieve RCE via crafted authorization_endpoint URLs. With 437K+ downloads and adoption in major companies, unpatched installs became supply-chain backdoors.
 
 **Implementation Vulnerability Stats:**
+- **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
 - **43% of tested MCP server implementations** contained command injection flaws (March 2025)
+- **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
 - **30% permitted unrestricted URL fetching** (SSRF-prone)
 - **8,000+ MCP servers** found publicly exposed in February 2026, with 492 identified as vulnerable (lacking authentication or encryption)
+- **Attack surface spans three layers:** MCP servers themselves, protocol implementation libraries (SDKs), and the machines running MCP clients — a vulnerability in any layer compromises the entire chain
 - **CVE-2025-6514** rated CVSS 10.0 — critical command injection in mcp-remote npm package
+- **CVE-2026-27896**: MCP Go SDK vulnerability — JSON parser handles field names case-insensitively, allowing attackers to craft malicious MCP responses with altered field names (e.g., "Method" instead of "method")
+- **CVE-2025-53109**: critical symlink bypass vulnerability enabling modification of privileged files; system takeover if MCP server runs with elevated privileges
+- **Palo Alto Unit42** published new research on prompt injection attack vectors through MCP sampling — agents with long conversation histories are significantly more vulnerable to manipulation
 - **Adversa AI published MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories
 - **11 MCP vulnerability classes** systematically cataloged, including supply chain typosquatting and cross-server context abuse
 - **MCP Security Bench (MSB)** accepted at ICLR 2026 as academic benchmark for MCP attacks
@@ -478,6 +490,9 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 | **ChatGPT SVG exploitation** | CVE-2025-43714: crafted SVG uploaded to ChatGPT executed arbitrary HTML/JS in user's browser within the preview window | XSS via AI-generated content |
 | **LangChain LangGrinch** | CVE-2025-68664: prompt injection in LangChain Core; $4K bounty — highest ever awarded in the project | Framework-level prompt injection |
 | **MCP Inspector RCE** | CVE-2025-49596 (CVSS 9.4): critical RCE in Anthropic's MCP Inspector — one of the first critical RCEs in MCP tooling (Oligo Security) | MCP toolchain exploitation |
+| **Persistent procurement agent manipulation** | Palo Alto Unit42 (2026): manufacturing company's procurement agent manipulated over 3 weeks through "clarification" messages about purchase authorization limits; agent eventually approved $5M in false purchase orders across 10 transactions | Multi-week agent memory poisoning |
+| **Lakera AI memory injection** | November 2026: demonstrated indirect prompt injection via poisoned data sources corrupting agent long-term memory — persistent false beliefs about security policies and vendor relationships | Long-term agent memory corruption |
+| **MCP Go SDK case sensitivity** | CVE-2026-27896: MCP Go SDK JSON parser handles field names case-insensitively, allowing crafted MCP responses to bypass validation | Protocol-level bypass |
 
 ---
 
@@ -949,6 +964,10 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **GTG-1002**: first documented state-sponsored espionage primarily orchestrated by AI agent (Sep 2025)
 - **AI-enabled attacks** surged 89% YoY; average eCrime breakout time now 29 minutes (CrowdStrike 2026)
 - **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts) across all safety categories
+- **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024; unprecedented vulnerability volume
+- **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely
+- **Cisco State of AI Security 2026** report confirms expanding threat landscape for AI agent deployments
+- **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity as a driving factor; AI-induced job scarcity driving new influx into freelancing and bug bounty hunting
 
 ### How to Scope AI Vulnerabilities with Programs
 

@@ -403,6 +403,8 @@ When you know the target's technology, focus your testing:
 | 12 | MCP Inspector exploitation | Test MCP development/debugging tools for RCE | CVE-2025-49596 (CVSS 9.4): RCE in Anthropic's MCP Inspector |
 | 13 | Supply chain marketplace poisoning | Audit MCP/agent marketplace packages for malicious tool definitions or code | OpenClaw attack: 1,184 malicious skills; check tool descriptions, post-install hooks, and embedded scripts |
 | 14 | Credential storage audit | Check how MCP server stores OAuth tokens, API keys, and secrets | 53% of MCP servers use insecure long-lived static secrets; only 8.5% use modern OAuth |
+| 15 | Protocol-level field bypass | Craft MCP responses with case-altered field names (e.g., "Method" instead of "method") | SDK parses altered fields correctly, bypassing validation that checks exact field names (CVE-2026-27896) |
+| 16 | Persistent conversation poisoning | Over multiple interactions, gradually inject "clarifications" that shift agent's understanding of authorization rules | Agent develops false beliefs about what it can approve; effective against agents with long conversation histories (Unit42 research) |
 
 **Real-world references:**
 - **GitHub MCP server breach** — attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT
@@ -419,6 +421,11 @@ When you know the target's technology, focus your testing:
 - **MCP auth security** — 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth (Astrix State of MCP Security 2025)
 - **Adversa AI MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories
 - **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching
+- **30+ MCP CVEs in 60 days** (early 2026) — MCP is AI's fastest-growing attack surface; attack surface spans three layers: MCP servers, protocol libraries (SDKs), and MCP client machines
+- **38% of 500+ scanned servers** completely lack authentication (2026 scan)
+- **CVE-2026-27896 (MCP Go SDK)** — JSON parser handles field names case-insensitively, enabling crafted malicious MCP responses to bypass validation
+- **CVE-2025-53109 (symlink bypass)** — exploits file operation vulnerabilities to modify privileged files; system takeover if MCP server runs with elevated privileges
+- **Palo Alto Unit42** published new MCP sampling attack vectors (2026) — agents with long conversation histories are significantly more vulnerable to persistent manipulation
 
 ---
 
