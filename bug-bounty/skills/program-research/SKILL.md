@@ -278,7 +278,7 @@ Check for AI-specific program features:
 5. Note if program uses HackerOne's AI Bug Bounty framework
 6. Check for different bounty tables for AI vs traditional vulns
 
-Context: As of 2025, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%.
+Context: As of 2025, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%. HackerOne Hai Triage adopted by 90% of customers. Bugcrowd AI Triage Assistant (Dec 2025) achieves 98% P1 accuracy. HackerOne clarified (Feb 2026) that researcher submissions are NOT used to train AI models. OWASP Top 10 for Agentic Applications released December 2025.
 
 ### Step 6: Synthesize
 
@@ -346,10 +346,18 @@ Key data points for program evaluation:
 | CISA KEV catalog additions | 245 vulnerabilities in 2025 (30%+ increase over 2023-2024) | CISA 2025 |
 | API-related CVEs | 17% of all 2025 published security bulletins (11,053 of 67,058) | Wallarm 2025 |
 | API-related CISA KEVs | 43% of newly added CISA KEVs in 2025 were API-related | Wallarm 2025 |
-| AISLE AI CVE discoveries | 100+ CVEs across 30+ projects; all 12 OpenSSL zero-days | AISLE Jan 2026 |
-| Claude Code Security vulns found | 500+ in production open-source codebases | Anthropic 2026 |
+| AISLE AI CVE discoveries | 100+ CVEs across 30+ projects; 13/14 OpenSSL CVEs in 2025 | AISLE Jan 2026 |
+| Claude Code Security vulns found | 500+ in production open-source codebases (launched Feb 20, 2026) | Anthropic 2026 |
+| ZAST.AI CVE discoveries | 119 CVEs across Microsoft Azure SDK, Apache Struts, WordPress, Langfuse | ZAST.AI Feb 2026 |
+| Trend Micro AESIR CVEs | 21 CVEs across NVIDIA, Tencent, MLflow, MCP tooling | Trend Micro 2025-2026 |
 | Immunefi total payouts | $100M+ total; largest single payout $10M (Wormhole) | Immunefi 2025 |
 | Web3 losses H1 2025 | $3B+; $1.83B from access control exploits alone | Immunefi 2025 |
+| HackerOne Hai Triage adoption | 90% of HackerOne customers by end of 2025 | HackerOne 2025 |
+| Bugcrowd AI Triage Assistant | 98% P1 accuracy, 98% duplicate detection confidence | Bugcrowd Dec 2025 |
+| MCP servers exposed | 8,000+ publicly exposed (Feb 2026), 492 vulnerable | Security research 2026 |
+| Enterprise CART adoption | 60% of large enterprises using continuous automated red teaming by 2026 | Industry 2026 |
+| EU AI Act compliance deadline | August 2, 2026; penalties up to 35M EUR or 7% of global turnover | EU 2026 |
+| OpenAI o3 zero-day | CVE-2025-37899 Linux kernel SMB use-after-free found with o3 assistance | Security research 2025 |
 
 Notable new programs and expansions (2025-2026):
 - **Apple Security Bounty Evolved** (November 2025): max reward doubled to **$2M** for zero-click remote exploits (from $1M), with bonuses potentially exceeding $5M. New categories: WebKit sandbox escapes (up to $300K), wireless proximity exploits over any radio (up to $1M). "Target Flags" system for accelerated payouts processed before a fix is available. $35M total paid to date
@@ -364,7 +372,9 @@ Notable new programs and expansions (2025-2026):
 - Czech Republic government: Public sector bug bounty via Hackrate
 - huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
 - **Immunefi**: surpassed **$100M in total payouts**. Smart contract bugs represent 77.5% ($78M) of total payouts. Largest single payout: $10M (Wormhole critical bug). Undisputed leader in Web3/blockchain bounties
-- **curl bug bounty shutdown** (January 2026): Daniel Stenberg ended program after AI-generated submissions overwhelmed team — only 5% of 2025 submissions were genuine vulnerabilities. First major program shutdown attributed to AI slop. Paid $90K+ for 81 genuine vulnerabilities before closing
+- **curl bug bounty shutdown** (January 2026): Daniel Stenberg ended program after AI-generated submissions overwhelmed team — only 5% of 2025 submissions were genuine vulnerabilities. First major program shutdown attributed to AI slop. Paid $90K+ for 81 genuine vulnerabilities before closing. 20 submissions in just the first weeks of 2026 (7 in a single 16-hour period), none identifying real vulnerabilities. Reports via GitHub directly now, no monetary rewards
+- **HackerOne Good Faith AI Research Safe Harbor** (January 20, 2026): clarifies legal protections for researchers conducting authorized AI security testing
+- **HackerOne AI Policy Update** (February 2026): researcher submissions are NOT used to train AI models — addresses researcher concerns about data usage
 
 Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-4609: Google Chrome sandbox escape — record-breaking $250,000 bounty payout
@@ -386,6 +396,8 @@ Notable disclosed vulnerabilities (2025-2026):
 - OpenSSL: 12 zero-day vulnerabilities discovered by AISLE AI system, including CVE-2025-15467 (stack buffer overflow, remotely exploitable); three bugs dated back to 1998-2000
 - SSRF protection bypass in AutoGPT reported through huntr platform
 - Multiple Salesforce Tableau Server vulns including unrestricted file upload → RCE (CVE-2025-52449)
+- WhatsApp MCP tool poisoning: Invariant Labs demonstrated malicious MCP server silently exfiltrating user's entire WhatsApp history via tool poisoning combined with legitimate whatsapp-mcp server
+- CVE-2025-37899: Linux kernel SMB use-after-free zero-day found with OpenAI o3 assistance by Sean Heelan
 
 Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed):
 - 92% of hackers are 34 or younger; 69% hold a college degree or higher
@@ -407,16 +419,25 @@ Competition awareness:
 - Bugcrowd 2026 prediction: high-end vulnerability research will become more valuable as AI handles low-hanging fruit
 - HexStrike AI MCP server enables AI agents to autonomously run 150+ security tools — increasing automation of recon and scanning
 - **AISLE** found all 12 OpenSSL zero-days (Jan 2026), 100+ CVEs across 30+ projects — sets new bar for AI-discovered bugs
-- **Aardvark** (OpenAI) in private beta — continuous source code analysis, 92% recall, 10 CVEs assigned
-- **Claude Code Security** found 500+ vulnerabilities in production open-source codebases — bugs undetected for decades
+- **Codex Security** (OpenAI, formerly Aardvark) — rebranded; available to ChatGPT Enterprise/Business/Edu via Codex web; continuous source code analysis, 92% recall, 10 CVEs assigned
+- **Claude Code Security** launched Feb 20, 2026 — found 500+ vulnerabilities in production open-source codebases; bugs undetected for decades
+- **ZAST.AI** raised $10M total, 119 CVEs assigned, "zero false positive" approach — new competitor for automated code scanning
+- **Trend Micro AESIR** — AI-powered zero-day discovery (21 CVEs across NVIDIA, Tencent, MLflow, MCP tooling)
+- **Terra Security** raised **$38M total** (Series A $30M led by Felicis, Sep 2025) — first agentic-AI continuous pentesting platform, Fortune 100 clients
+- **AWS Security Agent** (preview re:Invent Dec 2025) — multi-agent continuous on-demand pentesting
+- **Hadrian** — attack-surface-driven 24/7 autonomous pentesting; real-time testing triggered by attack surface changes
+- **Escape** (Y Combinator) — API-native DAST with agentic crawling; 140+ security tests; now discovers unauthenticated MCP endpoints; 2,000+ security teams
+- **PentAGI** (Feb 2026) — Go-based multi-agent pentesting with PostgreSQL + Neo4j; 20+ tools in isolated Docker environments
 - **Assail Ares** launched from stealth (Jan 2026) — autonomous API/web/mobile pentesting
 - **BlacksmithAI** and **Zen-AI-Pentest** emerged as new open-source AI pentesting frameworks (Feb-Mar 2026)
-- **MCP security is a major attack surface** — CVE-2025-6514 (mcp-remote RCE, 437K downloads), CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE), Supabase Cursor agent breach, Anthropic Filesystem-MCP sandbox escape; 43% of tested implementations have command injection; VulnerableMCP.info tracks the growing CVE database
+- **MCP security is a major attack surface** — 8,000+ servers exposed (Feb 2026), 492 vulnerable; CVE-2025-6514 (CVSS 10.0, mcp-remote RCE); Adversa AI published MCP Security TOP 25; CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE); VulnerableMCP.info tracks the growing CVE database
 - Web3 losses exceeded **$3 billion in H1 2025** alone; $1.83B from access control exploits; Immunefi surpassed $100M in total payouts
 - FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
 - **MITRE CWE Top 25 (2025):** CWE-79 (XSS) still #1 but CWE-862 (Missing Authorization) climbed 5 positions — biggest mover. New entries include CWE-770 (Allocation of Resources Without Limits), CWE-639 (Authorization Bypass Through User-Controlled Key)
 - As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
 - **curl bug bounty shutdown** (Jan 2026) demonstrates AI slop risk — first major program closed due to AI-generated garbage flooding; 8x normal submission volume, only 5% genuine
+- **By 2027**, "manual pentesting" predicted to become a boutique service; 99% of vulnerability assessments will be agentic (industry prediction)
+- **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming and creating new consulting/testing demand
 
 ---
 

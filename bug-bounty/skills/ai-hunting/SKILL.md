@@ -61,7 +61,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - v6.0 features multi-agent architecture with autonomous AI agents and intelligent decision-making
 - Integrates tools like Nmap, Burp Suite, Ghidra, and Metasploit via Model Context Protocol
 - Claims 98.7% detection rates and 24x speed improvements over manual workflows
-- **Dual-use warning:** threat actors have been observed abusing HexStrike to exploit Citrix NetScaler ADC zero-days — stay ethical
+- **Now included in Kali Linux** tools — signaling commoditization of AI-assisted offensive security
+- **Dual-use warning:** threat actors weaponized HexStrike to scan and exploit vulnerable instances within 12 hours of disclosure — stay ethical
 - Best for: automated recon pipelines, tool orchestration, MCP-native security workflows
 - GitHub: `0x4m4/hexstrike-ai`
 
@@ -109,25 +110,43 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - GitHub: `KeygraphHQ/shannon`
 
 **AISLE (AI-Driven Vulnerability Discovery):**
-- Landmark achievement in January 2026: discovered **all 12 zero-day vulnerabilities** in an OpenSSL security release, including CVE-2025-15467 (stack buffer overflow in CMS message parsing, potentially remotely exploitable)
+- Landmark achievement in January 2026: discovered **13 of 14 OpenSSL CVEs** assigned in 2025 (15 total across both releases), including CVE-2025-15467 (HIGH severity, stack buffer overflow in CMS message parsing, potentially remotely exploitable)
 - Three of the OpenSSL bugs dated back to 1998-2000, lurking undetected for 25-27 years
-- Credited with 13 of 14 OpenSSL CVEs assigned in 2025
-- Has been assigned **100+ externally validated CVEs** across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, and GnuTLS
+- Has been assigned **100+ externally validated CVEs** across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, and NASA CryptoLib
+- curl cancelled its bug bounty the same week AISLE's OpenSSL results were published — a stark contrast between AI-discovered quality and AI-generated slop
 - Demonstrates AI's ability to find deeply buried C/C++ memory safety bugs at scale
 
-**OpenAI Aardvark:**
-- Agentic security researcher powered by GPT-5, announced October 2025 (private beta)
-- Continuously analyzes source code repositories to identify vulnerabilities, assess exploitability, prioritize severity, and propose patches
+**OpenAI Aardvark (now Codex Security):**
+- Rebranded from "Aardvark" to **Codex Security** — available as research preview to ChatGPT Enterprise, Business, and Edu users via Codex web
+- Autonomous agent that continuously analyzes source code repositories to identify vulnerabilities, assess exploitability, prioritize severity, and propose targeted patches
 - In benchmark testing, identified **92% of known and synthetically-introduced vulnerabilities**
 - Has received **10 CVE identifiers** for discovered vulnerabilities in open-source projects
 - Best for: continuous monitoring of large codebases
 
 **Anthropic Claude Code Security:**
+- Launched **February 20, 2026** as limited research preview
 - Claude Opus 4.6 found **500+ vulnerabilities** in production open-source codebases — bugs that had gone undetected for decades despite expert review
-- Worked in a virtual machine with access to standard utilities and fuzzers
+- Worked in a virtual machine with access to standard utilities and fuzzers; no specific instructions or specialized knowledge — "out-of-the-box" capability
 - Key technique: reasoning about code by tracing data flows and reading commit histories to find variants of partially fixed bugs
 - Found edge cases in CGIF's LZW compression that would not have been discoverable through traditional fuzzing alone
-- Led to the launch of Claude Code Security as a product
+- **CVEs in Claude Code itself**: CVE-2025-59536 (CVSS 8.7, code injection via tool initialization, fixed v1.0.111) and CVE-2026-21852 (CVSS 5.3, data exfiltration including API keys, fixed v2.0.65)
+
+**ZAST.AI (Zero False Positive Security Scanner):**
+- Raised **$6M Pre-A** round led by Hillhouse Capital (February 2026), ~$10M total funding
+- Discovered hundreds of zero-day vulnerabilities in 2025, resulting in **119 CVE assignments** across Microsoft Azure SDK, Apache Struts XWork, Alibaba Nacos, Langfuse, WordPress, and others
+- Claims "zero false positive" approach; detects both syntax-level vulns (SQLi, XSS, SSRF) and semantic-level vulnerabilities (IDOR, privilege escalation, payment logic flaws)
+- Provides runnable PoC vulnerability reports automatically
+- Best for: automated source code scanning with minimal false positive noise
+
+**Trend Micro AESIR (AI-Powered Threat Intelligence):**
+- Launched mid-2025 by TrendAI; two core components: MIMIR (real-time threat intelligence) and FENRIR (zero-day vulnerability discovery)
+- Discovered **21 CVEs** across NVIDIA, Tencent, MLflow, and MCP tooling since mid-2025
+- Notable: ZDI-25-1041 (CVE-2025-33183) and ZDI-25-1044 (CVE-2025-33184) — patch bypasses in NVIDIA tools
+- Best for: zero-day discovery in AI infrastructure and enterprise tools
+
+**OpenAI o3 (LLM-Assisted Zero-Day Discovery):**
+- Security researcher Sean Heelan used o3 to discover **CVE-2025-37899**, a zero-day in the Linux kernel's SMB implementation (use-after-free), analyzing 12,000+ lines of code
+- Demonstrates that frontier reasoning models can assist in finding complex kernel-level vulnerabilities when guided by expert researchers
 
 **Assail Ares (Autonomous Pentesting):**
 - Launched from stealth in January 2026 with autonomous AI agents for continuous penetration testing across APIs, web, and mobile
@@ -225,20 +244,26 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Implication: when using AI to generate PoCs or test scripts, review for introduced vulnerabilities
 
 **The 2026 Tool Landscape:**
-- **AISLE** for deep C/C++ vulnerability discovery at scale (100+ CVEs, all 12 OpenSSL zero-days)
+- **AISLE** for deep C/C++ vulnerability discovery at scale (100+ CVEs, 13/14 OpenSSL CVEs)
 - **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark)
+- **ZAST.AI** for zero-false-positive source code scanning (119 CVEs, $10M funded)
+- **AESIR** (Trend Micro) for zero-day discovery in AI infrastructure (21 CVEs including NVIDIA, MCP tooling)
 - **Strix** for autonomous web app testing with browser + proxy + terminal
 - **NeuroSploit v3** for autonomous pentesting with exploit chaining and anti-hallucination
 - **CAI** for CTF-level challenges and structured offensive tasks (note: CVE-2025-67511 in CAI itself)
 - **Hound** for deep source code audits with knowledge-graph reasoning
-- **HexStrike AI** for MCP-native tool orchestration across 150+ security tools
-- **PentAGI** for fully autonomous pentesting in sandboxed Docker environments with 20+ tools
+- **HexStrike AI** for MCP-native tool orchestration across 150+ security tools (now in Kali Linux)
+- **PentAGI** for fully autonomous pentesting in sandboxed Docker environments with 20+ tools (Go-based, PostgreSQL + Neo4j)
 - **XBOW Pentest On-Demand** for commercial automated pentesting
 - **Assail Ares** for continuous API/web/mobile pentesting with co-evolutionary AI agents
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
-- **Aardvark** (OpenAI) for continuous source code vulnerability monitoring (private beta)
-- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding
+- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring
+- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding (Feb 2026 launch)
+- **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
+- **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
+- **Hadrian** for attack-surface-driven 24/7 autonomous pentesting
+- **Escape** for API-native DAST with agentic crawling and MCP endpoint discovery (Y Combinator backed)
 
 ### MCP (Model Context Protocol) as Attack Surface
 
@@ -281,10 +306,16 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 
 3. **mcp-remote Supply Chain (CVE-2025-6514):** Critical command injection in the widely-used mcp-remote package allowed malicious MCP servers to achieve RCE via crafted authorization_endpoint URLs. With 437K+ downloads and adoption in major companies, unpatched installs became supply-chain backdoors.
 
-**Implementation Vulnerability Stats (March 2025 analysis):**
-- **43% of tested MCP server implementations** contained command injection flaws
+**Implementation Vulnerability Stats:**
+- **43% of tested MCP server implementations** contained command injection flaws (March 2025)
 - **30% permitted unrestricted URL fetching** (SSRF-prone)
+- **8,000+ MCP servers** found publicly exposed in February 2026, with 492 identified as vulnerable (lacking authentication or encryption)
+- **CVE-2025-6514** rated CVSS 10.0 — critical command injection in mcp-remote npm package
+- **Adversa AI published MCP Security TOP 25** — definitive catalog of 25 MCP vulnerability categories
+- **11 MCP vulnerability classes** systematically cataloged, including supply chain typosquatting and cross-server context abuse
+- **MCP Security Bench (MSB)** accepted at ICLR 2026 as academic benchmark for MCP attacks
 - VulnerableMCP.info tracks MCP-specific vulnerability database
+- **MCP Security Tools:** MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -303,6 +334,75 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - Open-source MCP server implementations (check GitHub for `mcp-server-*` repos)
 - huntr platform specifically accepts AI/ML vulnerability reports
 - VulnerableMCP.info for known MCP-specific vulnerabilities and affected implementations
+
+---
+
+### OWASP Top 10 for Agentic Applications (December 2025)
+
+A new separate list from the LLM Top 10, with input from 100+ security researchers. Covers risks specific to **autonomous AI agents** that take actions:
+
+| Risk | Name | Description |
+|------|------|-------------|
+| ASI01 | Agent Goal Hijack | Prompt injection causing agent to pursue attacker's goals instead of user's |
+| ASI02 | Tool Misuse | Agent calls tools with attacker-controlled parameters |
+| ASI03 | Privilege Escalation | Agents inheriting high-privilege credentials beyond what tasks require |
+| ASI04 | Agentic Supply Chain | Compromised plugins, tools, or dependencies in agent pipelines |
+| ASI05 | Excessive Agency | Agents taking actions beyond intended scope without confirmation |
+| ASI06 | Memory Poisoning | Corrupting agent's persistent memory to alter future behavior |
+| ASI07 | Insecure Inter-Agent Communication | Unvalidated messages between agents in multi-agent systems |
+| ASI08 | Cascading Failures | Single agent failure propagating through interconnected agent systems |
+| ASI09 | Human-Agent Trust Exploitation | Agents exploiting user trust to bypass confirmation checks |
+| ASI10 | Rogue Agents | Misalignment, concealment, or self-directed action by autonomous agents |
+
+**Testing Agentic Applications:**
+- Test each ASI risk against targets with AI agent features (customer support agents, coding assistants, workflow automation)
+- Memory poisoning (ASI06) is especially impactful — inject malicious context that persists across sessions
+- Inter-agent communication (ASI07) is a new attack vector in multi-agent platforms — inject messages between agents
+- These risks compound with MCP vulnerabilities — an MCP tool poisoning attack can trigger agent goal hijack (ASI01) + tool misuse (ASI02) simultaneously
+
+### Platform AI Integration & Policy Updates
+
+**HackerOne:**
+- **Hai Triage** (July 2025): AI-powered vulnerability triage combining AI agents with human expertise; **90% adoption** by HackerOne customers by end of 2025
+- **AI Policy Update** (February 2026): Clarified that researcher submissions are NOT used to train AI models
+- **Good Faith AI Research Safe Harbor** (January 20, 2026): Clarifies legal protections for researchers conducting authorized AI testing
+- **Leaderboard split**: New system to distinguish human vs machine contributions (separating individuals from companies/agents like XBOW)
+- **210% spike** in AI vulnerability reports; **70% of researchers** now using AI tools
+
+**Bugcrowd:**
+- **AI Triage Assistant** (December 2025): Context-aware intelligence layer providing technical summaries, severity assessments, and remediation steps
+- **98% confidence** on duplicate detection; **98% accuracy** on P1 critical vulnerability identification
+- Human-in-the-loop approach — augments rather than replaces analysts
+
+### AI Red Teaming Tools & Frameworks
+
+As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties up to 35M EUR or 7% of global turnover), AI red teaming adoption is accelerating:
+
+**Commercial Platforms:**
+- **Splx AI**: End-to-end red teaming for conversational AI agents; thousands of automated adversarial scenarios
+- **Giskard**: Automated red-teaming with dynamic multi-turn stress tests; 50+ specialized probes; adaptive engine
+- **Novee**: Uses reasoning engines trained on top-tier red-team expertise; identifies logic flaws and chained attack scenarios
+
+**Open-Source Frameworks:**
+- **Microsoft PyRIT**: Open automation framework for adversarial AI campaigns; integrated into Azure AI Foundry; new AI Red Teaming Agent (public preview 2025)
+- **DeepTeam**: 40+ vulnerability classes, 10+ adversarial attack strategies; aligned to OWASP LLM Top 10 and NIST AI RMF
+- **NVIDIA Garak**: ~100 attack vectors; AVID integration for community vulnerability sharing; 20+ AI platform support
+- **Promptfoo**: CLI/library for LLM evaluation and red-teaming; 50+ vulnerability types; CI/CD integration; next-gen agent with deep reconnaissance, strategic planning, adaptive execution, persistent memory
+
+**Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS
+
+### Real-World LLM Exploitation Incidents (2025-2026)
+
+| Incident | Details | Impact |
+|----------|---------|--------|
+| **Claude jailbreak for government hacking** | Dec 2025-Jan 2026: hacker used Claude to hunt vulns, craft exploits, and exfiltrate data from Mexican government agencies by claiming bug bounty authorization | Data exfiltration from government systems |
+| **LLMjacking** | Stolen credentials for accessing LLMs via official APIs (Amazon Bedrock etc.); Microsoft filed civil lawsuit | Credential theft, unauthorized compute |
+| **HONESTCUE malware** | September 2025: malware using Gemini API to generate C# source code at runtime | Runtime-generated malware |
+| **MalTerminal** | GPT-4-powered malware capable of generating ransomware or reverse-shell code at runtime | Polymorphic AI-generated malware |
+| **ServiceNow prompt injection** | Second-order injection where low-privilege agent tricked higher-privilege agent into performing unauthorized actions | Multi-agent privilege escalation |
+| **91,000+ attack sessions** | GreyNoise honeypots captured SSRF exploitation of Ollama and enumeration of 73+ LLM model endpoints (Oct 2025-Jan 2026) | Active targeting of AI infrastructure |
+| **Nation-state AI operationalization** | DPRK, Iran, China, Russia using AI for coding, target research, vulnerability research, and post-compromise activities (late 2025) | State-sponsored AI-augmented attacks |
+| **AI-generated phishing** | 14% of focused email attacks generated by LLMs by April 2025 (up from 7.6% a year prior) | Increasing sophistication of automated attacks |
 
 ---
 
@@ -754,6 +854,16 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Claude Opus 4.6 found 500+ vulnerabilities** in production open-source codebases (Anthropic Claude Code Security)
 - **AI agent attack success rates 66-84%** when testing prompt injection against systems with auto-execution enabled
 - **OWASP Agentic Security Initiative** published taxonomy of 15 threat categories for agentic AI (goal misalignment, memory poisoning, multi-agent collusion)
+- **OWASP Top 10 for Agentic Applications** released December 2025 — a separate list from LLM Top 10, covering agent-specific risks (goal hijack, tool misuse, memory poisoning, rogue agents)
+- **EU AI Act** compliance deadline: **August 2, 2026** — penalties up to 35M EUR or 7% of global turnover; driving AI red teaming adoption
+- **60% of large enterprises** using continuous automated red teaming (CART) by 2026; manual pentesting predicted to become boutique service by 2027
+- **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy
+- **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026) clarifies legal protections
+- **ZAST.AI** assigned 119 CVEs across Microsoft Azure SDK, Apache Struts, WordPress, Langfuse (Feb 2026, $10M funded)
+- **Trend Micro AESIR** discovered 21 CVEs across NVIDIA, Tencent, MLflow, and MCP tooling since mid-2025
+- **Terra Security** raised $38M total for agentic-AI continuous pentesting for Fortune 100 companies
+- **AWS Security Agent** (preview re:Invent 2025): multi-agent architecture for continuous on-demand pentesting
+- **8,000+ MCP servers** found publicly exposed (Feb 2026); Adversa AI published MCP Security TOP 25 vulnerability catalog
 
 ### How to Scope AI Vulnerabilities with Programs
 
