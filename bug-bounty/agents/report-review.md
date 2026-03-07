@@ -225,6 +225,15 @@ DUPLICATE RISK ASSESSMENT
 □ Note if XBOW/autonomous agents likely already scanned for this pattern (simple XSS, SSRF, SQLi)
 □ Flag if the program has high hunter activity (avg 97+ researchers) — duplicate risk is elevated
 
+VALIDATION GATE (hard stop — check BEFORE reviewing report quality)
+□ Finding was reproduced by the hunter, not just theorized from code review
+□ Proof of concept actually works (not a template with placeholder values)
+□ Second-account test performed for access control findings (IDOR, auth bypass)
+□ Negative control confirms behavior requires the payload (not a false positive)
+□ Impact is demonstrated, not speculated (e.g., "I accessed user B's data" not "an attacker could")
+□ If chain: each link independently verified and the full chain executed end-to-end
+→ If ANY validation item fails: HOLD verdict, recommend the hunter go back and validate
+
 AI SLOP DETECTION (flag if report may be AI-generated low quality)
 □ Report uses vague, generic descriptions without specific endpoint/payload details
 □ Finding has no working proof-of-concept or reproduction steps are non-functional

@@ -59,9 +59,11 @@ Step 4: Cross-reference findings with scope
 Step 5: Assess competition — what have autonomous agents and other hunters likely already found?
 Step 6: Map OWASP frameworks — apply LLM Top 10, Agentic Top 10 (ASI01-ASI10), MCP Top 10 (MCP01-MCP10), or standard Top 10 based on target type
 Step 7: Prioritize targets by (reward × likelihood) / (competition + duplicate risk)
-Step 8: Select testing approach — match vuln classes to hunter strengths
-Step 9: Generate specific first test cases with expected payloads
-Step 10: Compile into session brief
+Step 8: Route into specialized skills based on findings (see Skill Routing below)
+Step 9: Check for fresh attack surface — changelogs, new features, scope deltas
+Step 10: Select testing approach — match vuln classes to hunter strengths
+Step 11: Generate specific first test cases with expected payloads
+Step 12: Compile into session brief (include Validation Gate checklist)
 ```
 
 **Prioritization Framework:**
@@ -77,6 +79,66 @@ Where:
 - Competition Level: low (new program, niche tech) / medium / high (popular program, common tech)
 - Time Investment: estimated hours to test this area
 ```
+
+**Skill Routing:**
+
+Based on recon findings, route into the appropriate specialized skill for deeper testing guidance:
+
+| Recon Signal | Route To | Why |
+|-------------|----------|-----|
+| OAuth/SSO login, JWT tokens, 2FA, session cookies | `auth-testing` | Auth/identity is highest-paying vuln class consistently |
+| REST/GraphQL/gRPC endpoints, API docs, Swagger/OpenAPI | `api-security` | API-specific patterns (BOLA, mass assignment, rate limiting) |
+| AWS/GCP/Azure infrastructure, S3 buckets, cloud metadata | `cloud-security` | Cloud misconfig is distinct from web app testing |
+| Source code access (open-source target, GitHub repos) | `source-code-audit` | Code review finds what black-box testing misses |
+| AI/LLM features, chatbots, MCP integrations, agent platforms | `ai-hunting` | AI-specific methodology with OWASP Agentic Top 10 |
+| HTTP/2, load balancers, CDN caching, reverse proxies | `http-desync` | Request smuggling, cache poisoning, race conditions |
+| Mobile app in scope (iOS/Android) | `mobile-security` | Mobile-specific attack surface (cert pinning, deep links) |
+| File upload, rich text editors, document processing | `vuln-patterns` → File Upload section | Upload-specific bypass chains |
+
+Always route to at least one specialized skill. If recon is thin, default to `auth-testing` + `api-security` — these cover the highest-value attack surface on most targets.
+
+**Fresh-Surface Hunting:**
+
+Before testing known patterns, check for fresh attack surface that autonomous tools haven't indexed yet:
+
+1. **Changelog/release notes** — Search for `[target] changelog`, `[target] release notes`, `[target] what's new`. Features shipped in the last 30 days are least likely to have been tested.
+2. **Scope deltas** — Compare current program scope against cached/archived versions. Recently added assets have lowest duplicate risk.
+3. **JS bundle diffing** — If SPA target, fetch main JS bundle and diff against archived version (web archive). New endpoints, API routes, feature flags.
+4. **Recent fix → variant hunt** — Search disclosed reports for recent fixes. A patched IDOR in `/api/v2/users` suggests testing `/api/v2/orders`, `/api/v2/documents` for the same pattern.
+5. **Dependency updates** — Check for recent framework/library upgrades that may have introduced new default behaviors or removed security controls.
+
+**Validation Gate (MUST complete before reporting):**
+
+Every finding must pass this gate before it becomes a report. Skip this and you risk N/A, informational, or AI slop bans.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    VALIDATION GATE                            │
+├─────────────────────────────────────────────────────────────┤
+│  1. EXPLOIT LADDER: Can you demonstrate actual impact?       │
+│     - Info disclosure: prove sensitive data exposed          │
+│     - Auth bypass: access another account's resources        │
+│     - Injection: demonstrate execution, not just reflection  │
+│                                                              │
+│  2. NEGATIVE CONTROL: Does the "vuln" reproduce without     │
+│     your payload? (eliminates false positives)               │
+│                                                              │
+│  3. SECOND ACCOUNT PROOF: Use two accounts to prove         │
+│     cross-user impact (IDOR, auth bypass, data leak)        │
+│                                                              │
+│  4. BLAST RADIUS: How many users/records are affected?      │
+│     (Single user = lower severity; all users = critical)     │
+│                                                              │
+│  5. SPLIT OR CHAIN: Multiple findings?                      │
+│     - Same root cause → one report (chain), higher severity  │
+│     - Different root causes → separate reports               │
+│                                                              │
+│  6. REPRODUCTION STEPS: Can a stranger reproduce from your  │
+│     write-up alone? Test by re-reading your own steps.      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+If any check fails, the finding is NOT ready to report. Go back to testing or escalate the finding (e.g., reflected XSS → stored XSS, IDOR read → IDOR write).
 
 **Human vs AI Edge:**
 
@@ -192,6 +254,12 @@ Avoid competing directly with autonomous tools on:
 ### Tier 3: Exploratory (Long shots)
 [High-reward but lower-probability targets]
 
+## Fresh Attack Surface
+[Recently shipped features, scope changes, dependency updates — lowest duplicate risk]
+- Changelog findings: [new features in last 30 days]
+- Scope deltas: [recently added assets]
+- Variant hunt targets: [if program has recent fixes, test adjacent endpoints]
+
 ## First 3 Tests to Run
 [Concrete, actionable test cases to start with — specific URLs, parameters, payloads]
 
@@ -211,6 +279,15 @@ Avoid competing directly with autonomous tools on:
 
 ## Tools You'll Need
 [What tools to have ready, organized by testing phase]
+
+## Validation Checklist
+Before reporting any finding, confirm:
+- [ ] Exploit demonstrates real impact (not just theoretical)
+- [ ] Negative control passes (behavior doesn't occur without payload)
+- [ ] Cross-user proof (second account test for access control issues)
+- [ ] Blast radius estimated
+- [ ] Split vs chain decision made
+- [ ] Reproduction steps tested independently
 
 ## Next Steps After This Session
 [Clear actions the hunter should take immediately after reading this brief]
