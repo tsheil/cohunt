@@ -140,6 +140,12 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ AI recommendation poisoning (Microsoft Feb 2026): if finding involves hidden instructions in web content biasing AI recommendations, demonstrates cross-assistant impact and persistence of bias
 □ CI/CD pipeline injection (Clinejection pattern): if finding involves AI coding bots in CI/CD, demonstrates prompt injection → pipeline compromise path via GitHub Actions or similar
 □ Prompt injection defense bypass: references meta-analysis showing 85% success rate against SOTA defenses (arXiv:2601.17548) — strengthens case that defensive measures are insufficient
+□ eval()/exec() epidemic (MCP servers): if finding involves unsanitized input to eval/exec in MCP servers, reference the 7 RCE CVEs in February 2026 sharing this root cause — systematic pattern, not isolated incident
+□ MCP SDK cross-client data leak: if finding involves data leaking between client sessions, reference CVE-2026-25536 (TypeScript SDK); this is a protocol-level flaw affecting all implementations using shared instances
+□ WebSocket agent hijacking (ClawJacked): if finding involves cross-origin WebSocket access to local AI agents, demonstrate that any webpage can connect — no user interaction required; full agent control with all permissions
+□ Salami slicing (gradual constraint bypass): if finding involves incremental interactions shifting agent behavior over time, document the full sequence of interactions, the baseline behavior, and the final drift — reference procurement agent $5M fraud case (Palo Alto Unit42)
+□ MCP health/diagnostic info disclosure: if finding involves unauthenticated info leakage from health endpoints, reference CVE-2026-29787 — document what system data is exposed (OS, CPU, memory, database paths)
+□ CVSS V4 compliance: if submitting to Intigriti (all new submissions use CVSS V4 as of 2026), ensure scoring uses CVSS V4 metrics including Attack Requirements
 
 CHAIN ASSESSMENT (check if report chains findings)
 □ Each link in the chain is independently verified
@@ -231,7 +237,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 **Bugcrowd:** Map findings to Bugcrowd VRT (Vulnerability Rating Taxonomy). AI Triage Assistant has 98% P1 accuracy and 98% duplicate detection confidence — ensure critical findings are unambiguously framed. CrowdMatch AI matches researchers to programs; check if this program favors specific vuln classes. Check if program uses managed triage vs. self-managed.
 
-**Intigriti:** Follow their severity guidelines. Note if program is private/public. Check for program-specific rules on AI vulnerability reporting. Won Security Innovation of the Year 2025 — growing platform with expanding program portfolio.
+**Intigriti:** Follow their severity guidelines — **all new submissions use CVSS V4** starting 2026 (ensure Attack Requirements metric is properly scored). Enhanced bonus criteria for quality, variant research, and exceptional PoCs. Note if program is private/public. Check for program-specific rules on AI vulnerability reporting. Won Security Innovation of the Year 2025 — fastest-growing platform with expanding program portfolio including Nvidia.
 
 **Self-hosted programs:** Check their VDP for specific formatting requirements. Response times vary widely — note if program has SLA commitments. No AI triage — reports reviewed by internal teams who may be less experienced with newer vuln classes (LPCI, MCP attacks). Provide extra context and references.
 
@@ -272,7 +278,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs; BlacksmithAI and Snyk Agent Scan now automate agent skill auditing. The bar is rising. For agent skill supply chain findings, reference ToxicSkills stats (36% prompt injection rate) to contextualize severity.
+10. **Know your competition.** If XBOW/Shannon could find this in seconds, your report needs something extra — a chain, a deeper impact analysis, or a novel exploitation technique. XBOW has 1,400+ zero-days; Big Sleep found 20+ OSS memory-safety bugs; CAI won 5 major CTFs; Codex Security reported 14 CVEs; AISLE found 100+ CVEs; BlacksmithAI and Snyk Agent Scan now automate agent skill auditing; HackerOne Agentic PTaaS combines autonomous agents with human expertise as competitive baseline. The bar is rising. For agent skill supply chain findings, reference ToxicSkills stats (36% prompt injection rate) to contextualize severity.
 11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
 

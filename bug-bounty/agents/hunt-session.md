@@ -96,6 +96,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Promptware kill chains** | Multi-stage prompt injection traversing 4+ kill chain stages | Injection → persistence → lateral movement → exfiltration chains |
 | **Documentation supply chain** | Poisoned library docs/custom rules served via MCP to AI agents | ContextCrush: trusted docs → env file theft, file deletion |
 | **Exposed agent infrastructure** | Scanning for unsecured MCP gateways, admin panels, agent configs | Clawdbot: 2,000+ exposed gateways with API keys, OAuth tokens, conversation histories |
+| **Salami slicing (gradual bypass)** | Multi-week constraint drift via incremental interactions | Procurement agent fraud: $5M in false POs after 3 weeks of gradual manipulation |
+| **WebSocket agent hijacking** | Cross-origin WebSocket connection to localhost AI agents | ClawJacked: any webpage could control local OpenClaw agent with full permissions |
+| **MCP SDK-level exploitation** | Protocol and SDK flaws that affect all implementations, not just individual servers | CVE-2026-25536 cross-client data leak, CVE-2026-27896 case sensitivity bypass |
+| **eval() epidemic pattern** | Source code audit of MCP servers for dangerous execution functions | 7 RCE CVEs in Feb 2026, all from user input to eval()/exec() — systematic pattern |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -180,7 +184,7 @@ Avoid competing directly with autonomous tools on:
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
 - Time estimates must be realistic
 - Duplicate risk assessment must reference actual disclosed reports when available
-- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, BlacksmithAI) — simple vulns they'd catch should be deprioritized
+- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, BlacksmithAI, HackerOne Agentic PTaaS) — simple vulns they'd catch should be deprioritized
 - Chain opportunities must reference specific findings from recon, not hypotheticals
 - The session brief must be actionable — a hunter should be able to start testing immediately after reading it
 - Session should complete in 15-30 minutes — if recon is slow, report partial findings and note gaps
@@ -233,6 +237,10 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target has an agent skill/plugin marketplace or uses third-party skills, test for supply chain attacks — ClawHavoc: 1 in 5 ClawHub skills were malicious; ToxicSkills: 36% contain prompt injection. Recommend scanning with Cisco MCP Scanner, Snyk Agent Scan, or Repello SkillCheck before testing
 - If target's web content is consumed by AI assistants, test for AI recommendation poisoning (Microsoft Feb 2026 research) — hidden instructions in meta tags, URL parameters, or invisible text that bias AI recommendations
 - If target has CI/CD pipelines integrated with AI coding bots, test for Clinejection — prompt injection through PR content that compromises GitHub Actions pipelines
+- If target has locally-running AI agents with WebSocket interfaces, test for ClawJacked pattern — cross-origin WebSocket hijacking from malicious webpages gives full agent control
+- If target's AI agent learns from or adapts to repeated user interactions, test for salami slicing — gradual constraint bypass through incremental requests over days/weeks (procurement agent $5M fraud example)
+- If target uses MCP servers built with the official TypeScript SDK, test for cross-client data leaks (CVE-2026-25536) — especially if a single server instance handles multiple clients
+- If target has open-source MCP servers, audit for eval()/exec() epidemic pattern — 7 RCE CVEs in Feb 2026 from this single root cause
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

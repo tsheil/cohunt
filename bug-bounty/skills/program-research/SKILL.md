@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.14.0)*
+*Last updated: March 2026 (v0.15.0)*
 
 Key data points for program evaluation:
 
@@ -351,6 +351,13 @@ Key data points for program evaluation:
 | Bug bounty ROI | For every $1 spent on bounties, companies save $15 ($3B in mitigated losses) | Industry analysis 2026 |
 | AI security startup funding Q4 2025 | $2.17B across 28 deals — **8x growth** over two years | Industry analysis 2026 |
 | Enterprise AI readiness | Only 34% have AI-specific security controls; <40% conduct regular AI testing | Help Net Security 2026 |
+| Shadow AI breach cost | $670,000 additional cost vs standard breach; 1 in 5 orgs breached via unauthorized AI | Help Net Security 2026 |
+| Intigriti CVSS V4 adoption | All new submissions paid using CVSS V4 starting 2026; enhanced bonuses for quality/variant research | Intigriti 2026 |
+| MCP eval() epidemic | 7 RCE CVEs in February 2026 alone — all from unsanitized user input to eval()/exec() | DEV Community 2026 |
+| MCP SDK-level flaws | CVE-2026-25536 (TypeScript SDK cross-client data leak), CVE-2026-29787 (memory service info disclosure) | Security advisories 2026 |
+| ClawJacked WebSocket hijack | Malicious websites hijack local AI agents via WebSocket — full remote control of localhost agents | The Hacker News Feb 2026 |
+| OpenClaw verified instances | 42,665 exposed instances (independent study), 5,194 actively vulnerable; enterprise deployment with no SOC visibility | Security research 2026 |
+| Salami slicing attacks | Gradual constraint bypass via incremental interactions over 1-3 weeks; procurement agent manipulated to approve $5M fraud | Repello AI / Palo Alto 2026 |
 | CrowdStrike AI-enabled attacks | 89% YoY surge; avg eCrime breakout time now 29 minutes; 90+ orgs compromised via prompt injection in 2025 | CrowdStrike 2026 Global Threat Report |
 | Multi-turn prompt injection success | Up to 92% success rates across 8 open-weight models | Academic research 2026 |
 | LPCI (novel vuln class) | Logic-Layer Prompt Control Injection — persistent, conditionally-triggered payloads in agent memory; QSAF reduces success from 43% to 5.3% | CSA Feb 2026, arXiv:2507.10457 |
@@ -426,7 +433,7 @@ Notable new programs and expansions (2025-2026):
 - Anthropic on HackerOne: up to $15K for universal jailbreaks on Constitutional Classifiers; 405 participants, 3,000+ hours of red teaming
 - **Bugcrowd Hacker Showdown** (2nd annual, 2025): "The Mind Cathedral" themed, $30K grand prize for teams of 2-3 hackers
 - **Usual (crypto)** partnered with Sherlock for $16M stablecoin codebase audit — **largest single bug bounty prize in history**
-- **Intigriti** won Security Innovation of the Year at the 2025 UK IT Industry Awards; Google Cloud Apigee cross-tenant vulnerability (CVE-2025-13292) disclosed through Intigriti
+- **Intigriti** won Security Innovation of the Year at the 2025 UK IT Industry Awards; adopted **CVSS V4 for all new submissions** starting 2026; enhanced bounty/bonus criteria evaluating quality, variant research, and exceptional PoCs; Google Cloud Apigee cross-tenant vulnerability (CVE-2025-13292) disclosed through Intigriti; hosts Nvidia bug bounty
 - **Jenkins** (December 2025): launched new bug bounty program on YesWeHack, backed by the European Commission
 - Czech Republic government: Public sector bug bounty via Hackrate
 - huntr: world's first bug bounty platform specifically for AI/ML vulnerabilities
@@ -466,8 +473,11 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-53967: Figma MCP server RCE — command injection via unvalidated user input in shell commands
 - ChatGPT message limit bypass: business-logic vulnerability allowed free-tier users to bypass GPT-5 message limits by editing messages in older conversations; silently patched 69 days after submission
 - Google Cloud Apigee CVE-2025-13292: cross-tenant vulnerability providing read/write access to analytics data across thousands of organizations (Focal Security)
+- CVE-2026-25536: MCP TypeScript SDK cross-client data leak — responses leak across client boundaries when McpServer instance is reused
+- CVE-2026-29787: MCP Memory Service info disclosure — `/api/health/detailed` leaks OS, CPU, memory, database path without auth
 - CVE-2026-27896: MCP Go SDK vulnerability — JSON parser handles field names case-insensitively, enabling crafted malicious MCP responses
 - CVE-2025-53109: critical symlink bypass in MCP file operations — system takeover if server runs with elevated privileges
+- ClawJacked (February 2026): WebSocket hijacking of local OpenClaw AI agent instances — malicious websites gain full remote control via localhost WebSocket
 - Persistent prompt injection in procurement agent (Palo Alto Unit42, 2026): manufacturing company's agent manipulated over 3 weeks to approve $5M in false purchase orders
 - OmniGPT breach (February 2026): threat actor breached AI aggregator exposing **34 million lines of conversations**, 30,000 user credentials, and uploaded business documents
 - CVE-2025-32711 (EchoLeak, CVSS 9.3): First real-world zero-click prompt injection in production LLM — attacker email → Copilot retrieves → exfiltrates internal files with no user interaction; bypassed XPIA classifier, link redaction, and CSP via Teams proxy
@@ -520,7 +530,7 @@ Competition awareness:
 - **Assail Ares** launched from stealth (Jan 2026) — autonomous API/web/mobile pentesting
 - **BlacksmithAI** and **Zen-AI-Pentest** emerged as new open-source AI pentesting frameworks (Feb-Mar 2026); Zen-AI-Pentest wraps 20+ tools (Nmap, SQLMap, Metasploit, Burp, Nuclei, BloodHound) with AI orchestration; CI/CD integration
 - **Penligent.ai** described as "first true end-to-end AI pentest agent" with natural language interface and OODA loop feedback; autonomous payload generation and refinement
-- **MCP security is AI's fastest-growing attack surface** — **30+ CVEs in 60 days**; 8,000+ servers exposed (Feb 2026), 492 vulnerable; 38% of 500+ scanned servers lack auth; CVE-2025-6514 (CVSS 10.0, mcp-remote RCE); Adversa AI published MCP Security TOP 25; CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE), CVE-2026-27896 (MCP Go SDK), CVE-2025-53109 (symlink bypass); Palo Alto Unit42 published new MCP sampling attack vectors; VulnerableMCP.info tracks the growing CVE database
+- **MCP security is AI's fastest-growing attack surface** — **30+ CVEs in 60 days**; **7 RCE CVEs in February 2026 alone** (eval() epidemic pattern); 8,000+ servers exposed (Feb 2026), 492 vulnerable; 38% of 500+ scanned servers lack auth; CVE-2025-6514 (CVSS 10.0, mcp-remote RCE); CVE-2026-25536 (SDK cross-client data leak); CVE-2026-29787 (health endpoint info disclosure); Adversa AI published MCP Security TOP 25; CVE-2026-27825 (mcp-atlassian), CVE-2025-59536/CVE-2026-21852 (Claude Code RCE), CVE-2025-68145/68143/68144 (Git MCP server RCE), CVE-2026-27896 (MCP Go SDK), CVE-2025-53109 (symlink bypass); ClawJacked WebSocket hijack of local AI agents; Palo Alto Unit42 published new MCP sampling attack vectors; VulnerableMCP.info tracks the growing CVE database
 - Web3 losses exceeded **$3 billion in H1 2025** alone; $1.83B from access control exploits; Immunefi surpassed $100M in total payouts
 - FailSafe 2025: access control flaws caused $953.2M in losses; logic flaws another $63M
 - **MITRE CWE Top 25 (2025):** CWE-79 (XSS) still #1 but CWE-862 (Missing Authorization) climbed 5 positions — biggest mover. New entries include CWE-770 (Allocation of Resources Without Limits), CWE-639 (Authorization Bypass Through User-Controlled Key)

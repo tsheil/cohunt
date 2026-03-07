@@ -341,6 +341,11 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 
 | MCP Vuln Type | Description | Severity |
 |---|---|---|
+| **eval() Epidemic Pattern** | User-controlled input passed directly to `eval()`, `exec()`, or `execAsync()` in MCP server implementations. 7 RCE CVEs in February 2026 alone shared this root cause — all in integration tools bridging AI assistants to other systems. Named pattern: all are unauthenticated or low-privilege, most unpatched at disclosure | Critical |
+| **SDK-Level Cross-Client Data Leak** | CVE-2026-25536: MCP TypeScript SDK vulnerability where reusing a single McpServer instance leaks responses across client boundaries — one client receives data intended for another. Protocol-level flaw, not implementation-specific | High-Critical |
+| **SDK Case Sensitivity Bypass** | CVE-2026-27896: MCP Go SDK JSON parser handles field names case-insensitively, allowing crafted MCP responses with altered field names (e.g., "Method" vs "method") to bypass validation logic | High |
+| **MCP Health Endpoint Info Disclosure** | CVE-2026-29787: `/api/health/detailed` endpoint in mcp-memory-service leaks OS version, CPU count, memory, disk, database path without authentication when anonymous access is enabled | Medium |
+| **ClawJacked (WebSocket Hijacking)** | Malicious websites hijack local AI agent instances (e.g., OpenClaw) via WebSocket connections. Attacker page connects to localhost-bound WebSocket, gains remote control of local agent with all its permissions and tool access | Critical |
 | **"Rug Pull" Attacks** | MCP servers modify tool definitions between sessions, presenting different capabilities than initially approved. Exploits dynamic nature of MCP tool definitions for post-deployment modification | High |
 | **Command Injection in MCP Packages** | CVE-2025-6514: critical OS command injection in `mcp-remote` (437K+ downloads) — malicious MCP servers send booby-trapped authorization_endpoint for RCE. Effectively a supply-chain backdoor | Critical |
 | **Sandbox Escape** | Anthropic's own Filesystem-MCP server had sandbox escape + symlink bypass enabling arbitrary file access and code execution | Critical |
@@ -377,7 +382,11 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 
 5. **ContextCrush (February 2026):** Noma Labs discovered supply chain vulnerability in Context7 (operated by Upstash) — a popular MCP server providing library documentation to AI coding assistants. Attackers could inject malicious instructions through Context7's "Custom Rules" feature; rules served verbatim through the MCP server with no sanitization. PoC showed a poisoned library entry prompting the AI to search for .env files, exfiltrate them, and delete files under the pretext of a "Cleanup" task. Patched February 23, 2026. Pattern: trusted documentation → MCP delivery → agent execution.
 
-6. **LangGrinch (CVE-2025-68664, CVSS 9.3):** Critical serialization injection in LangChain Core where untrusted LLM-influenced metadata could be rehydrated as objects, enabling secret exfiltration and unsafe instantiation. A single text prompt cascading through serialization/deserialization in streaming operations. Impacts ~847M total downloads. LangChain awarded $4,000 — maximum ever for the project. Patched in versions 1.2.5 and 0.3.81. Demonstrates that AI frameworks themselves are high-value targets.
+6. **ClawJacked WebSocket Hijack (February 2026):** Malicious websites exploited WebSocket connections to hijack local OpenClaw AI agent instances. Any webpage could connect to the localhost-bound WebSocket and gain full remote control of the local agent, including all tools and permissions. Demonstrates that locally-running AI agents with WebSocket interfaces are vulnerable to cross-origin hijacking.
+
+7. **eval() Epidemic — 7 MCP RCE CVEs in One Month (February 2026):** Seven remote code execution vulnerabilities published in February 2026 alone, all sharing the same root cause: user-controlled input reaching dangerous execution functions (`eval()`, `exec()`, `execAsync()`) without sanitization. All were in MCP integration tools. Examples include CVE-2026-25546 (godot-mcp), CVE-2026-0755 (gemini-mcp-tool, CVSS 9.8), CVE-2026-0756 (GitHub Kanban MCP), CVE-2026-27203 (eBay API MCP RCE). Pattern: arbitrary execution is the feature; the question is whether that execution is controllable by adversarial input. In all seven cases, it was.
+
+8. **LangGrinch (CVE-2025-68664, CVSS 9.3):** Critical serialization injection in LangChain Core where untrusted LLM-influenced metadata could be rehydrated as objects, enabling secret exfiltration and unsafe instantiation. A single text prompt cascading through serialization/deserialization in streaming operations. Impacts ~847M total downloads. LangChain awarded $4,000 — maximum ever for the project. Patched in versions 1.2.5 and 0.3.81. Demonstrates that AI frameworks themselves are high-value targets.
 
 **Implementation Vulnerability Stats:**
 - **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
@@ -496,6 +505,10 @@ A new vulnerability class where companies embed hidden instructions in web conte
 10. Map findings to **OWASP MCP Top 10** risk IDs (MCP01-MCP10) for stronger reports
 11. Test documentation supply chain (ContextCrush pattern): can "custom rules" or contributed docs inject instructions?
 12. Scan for shadow MCP servers (MCP07): unauthorized servers running on enterprise networks without security awareness
+13. Test for eval()/exec() epidemic pattern: does the MCP server pass user input to dangerous execution functions? (7 CVEs in Feb 2026 shared this root cause)
+14. Test for SDK-level cross-client data leaks: if MCP server reuses a single instance across clients, can responses leak between sessions? (CVE-2026-25536)
+15. Test for WebSocket hijacking (ClawJacked pattern): if AI agent runs locally with WebSocket interface, can a malicious webpage connect and control it?
+16. Test for salami slicing: can repeated small interactions gradually shift agent behavior past its constraints?
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -636,6 +649,27 @@ Published by CSA (Cloud Security Alliance) in February 2026 and documented in ar
 **Defense Benchmark:** The Qorvex Security AI Framework (QSAF) reduces LPCI attack success from 43% to 5.3% — use this as a severity benchmark when reporting.
 
 **Why This Matters for Hunters:** LPCI represents the next evolution of prompt injection. If a target has persistent agent memory (RAG, conversation history, knowledge bases), test for LPCI. Multi-turn attacks achieve up to **92% success rates** across 8 open-weight models.
+
+### Salami Slicing Attacks on AI Agents (2026)
+
+A new attack class identified by Repello AI where attackers submit multiple small, incremental requests over time to gradually shift an AI agent's behavior:
+
+**How It Works:**
+- Attacker submits 10+ support tickets, feedback items, or interactions over 1-3 weeks
+- Each request slightly redefines "normal" behavior — nudging constraints, adjusting expectations, or expanding permissions
+- By the 10th interaction, the agent's constraint model has drifted enough to perform unauthorized actions
+- Unlike prompt injection (single payload), salami slicing exploits the agent's adaptation and learning mechanisms
+
+**Testing for Salami Slicing:**
+1. Identify agents that learn from or adapt to repeated interactions (customer service bots, procurement agents, approval workflows)
+2. Submit a series of small requests, each incrementally escalating what's considered "normal"
+3. Track whether the agent's responses gradually shift — are things accepted on request 10 that were denied on request 1?
+4. Test if accumulated context drift survives session boundaries
+5. Measure the minimum number of interactions needed to achieve constraint bypass
+
+**Real-World Example:** A manufacturing company's procurement agent was gradually manipulated over 3 weeks through "clarification" messages about purchase authorization limits. By the end, it approved $5M in fraudulent purchase orders across 10 transactions — each individually small enough to avoid automated alerts.
+
+**Severity Guidance:** High-Critical if the drift enables financial transactions, data access, or privilege changes. Medium if limited to behavioral changes within the agent's existing scope. Maps to ASI06 (Memory Poisoning) and ASI09 (Human-Agent Trust Exploitation) in OWASP Agentic Top 10.
 
 ### Real-World LLM Exploitation Incidents (2025-2026)
 
@@ -1171,6 +1205,9 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **EU AI Act** compliance deadline: **August 2, 2026** — penalties up to 35M EUR or 7% of global turnover; driving AI red teaming adoption
 - **60% of large enterprises** using continuous automated red teaming (CART) by 2026; manual pentesting predicted to become boutique service by 2027
 - **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy
+- **Shadow AI breaches** cost an average of **$670,000 more** than standard security incidents; 1 in 5 organizations reported breaches linked to unauthorized AI use (Help Net Security 2026)
+- **Intigriti adopted CVSS V4** for all new submissions starting 2026 — enhanced bounty/bonus criteria for quality, variant research, and exceptional PoCs
+- **HackerOne Agentic PTaaS** (2026): continuous security testing combining autonomous AI agents with human expertise — new competitive baseline for penetration testing
 - **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026) clarifies legal protections
 - **ZAST.AI** assigned 119 CVEs across Microsoft Azure SDK, Apache Struts, WordPress, Langfuse (Feb 2026, $10M funded)
 - **Trend Micro AESIR** discovered 21 CVEs across NVIDIA, Tencent, MLflow, and MCP tooling since mid-2025
@@ -1183,7 +1220,7 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Google Cloud Apigee** (CVE-2025-13292): cross-tenant vulnerability affecting thousands of organizations (Focal Security via Intigriti)
 - **ChatGPT SVG exploit** (CVE-2025-43714): arbitrary HTML/JS execution via crafted SVG upload
 - **LangChain LangGrinch** (CVE-2025-68664): prompt injection in LangChain Core ($4K bounty — max ever for LangChain)
-- **OpenClaw supply chain attack**: 1,184 malicious skills across ClawHub (~1 in 5 packages) — largest AI agent supply chain attack
+- **OpenClaw supply chain attack**: 1,184+ malicious skills across ClawHub (~1 in 5 packages) — largest AI agent supply chain attack; updated scans report **800+ actively malicious skills (~20% of registry)**; independent study (Maor Dayan) verified **42,665 exposed instances, 5,194 actively vulnerable**; Bitdefender telemetry confirms employees deploying OpenClaw on corporate devices with no security review or SOC visibility
 - **GTG-1002**: first documented state-sponsored espionage primarily orchestrated by AI agent (Sep 2025)
 - **AI-enabled attacks** surged 89% YoY; average eCrime breakout time now 29 minutes (CrowdStrike 2026)
 - **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts) across all safety categories
