@@ -709,6 +709,7 @@ When you know the target's technology, focus your testing:
 | 8 | Claim tampering | Change `sub`, `role`, `admin` claims | Privilege escalation |
 | 9 | Token reuse | Use token after password change/logout | No token invalidation |
 | 10 | Cross-service | Use token from service A on service B | Shared secret, no audience check |
+| 11 | JWE-wrapped PlainJWT bypass | If target uses encrypted JWTs (JWE), wrap a PlainJWT (alg=none) inside JWE using server's RSA public key | Signature verification skipped — authenticate as any user including admin (CVE-2026-29000, pac4j-jwt, CVSS 10.0) |
 
 **Tools:** jwt.io (decode), jwt_tool (attack), hashcat mode 16500 (crack)
 

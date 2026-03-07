@@ -122,12 +122,19 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **AI agent sandbox/container escape** | Test AI agent skill install flows for file writes outside sandbox; test Docker config injection for dangerous options | CVE-2026-27001/27002 (OpenClaw): sandbox escape + Docker container escape; pattern applies to any containerized agent |
 | **Workspace trust bypass in AI IDEs** | Check if AI IDE disables workspace trust by default; test `.vscode/tasks.json` auto-execution on untrusted repos | Cursor Workspace Trust disabled (Oasis Security); combined with other IDEsaster patterns = silent code execution |
 | **Pre-trust window exploitation** | Test if AI coding tools process project configs (API base URL, env vars) before showing trust dialog | CVE-2026-21852 (Claude Code, CVSS 5.3): API key exfiltration before user consent; pattern for any IDE with pre-init config loading |
+| **Voice/audio extension pre-auth RCE** | Test AI agent voice/audio processing extensions for pre-auth command injection via audio metadata or processing pipelines | CVE-2026-28446 (OpenClaw Voice Extension, CVSS 9.8): pre-auth RCE in audio processing; pattern for any AI agent with media extensions |
+| **Enterprise AI zero-click injection (GeminiJack)** | Test enterprise AI assistants that process organizational documents for zero-click indirect prompt injection via shared content | GeminiJack: attacker embeds invisible instructions in Google Workspace docs → Gemini Enterprise processes → actions taken on attacker's behalf without user interaction |
+| **DXT/browser extension supply chain** | Test Claude Desktop Extension (DXT) packages for zero-click RCE via malicious extension code or config | Claude DXT RCE (CVSS 10.0, Anthropic declined to fix): malicious DXT package → arbitrary code execution on install; any DXT marketplace = supply chain risk |
+| **MCP connector SSRF analysis** | Audit MCP server connector implementations for unrestricted URI fetching, SSRF via resource endpoints | BlueRock MCP Trust Registry: 36.7% of 7,000+ analyzed MCP servers vulnerable to SSRF; systematic pattern across MCP ecosystem |
+| **AI IDE confirmation/permission bypass** | Test AI IDE tool approval dialogs for bypass via timing, repeated prompts, or UI manipulation | CVE-2026-24887 (Claude Code confirmation bypass): tool execution without user approval; CVE-2025-64106 (Cursor MCP deep-link RCE): mcpx:// protocol handler → malicious MCP server registration |
+| **Malicious AI browser extension analysis** | Test AI-powered browser extensions for data harvesting of LLM conversation histories and credentials | 900K+ installs of malicious AI assistant extensions harvesting ChatGPT/Gemini/Claude chat histories; pattern: popular AI helper → background exfiltration |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
 - Subdomain enumeration (AI tools are faster and more thorough)
 - Known CVE pattern matching (automated scanners excel here)
 - Standard prompt injection on chatbots (high duplicate risk — 540% jump in reports)
+- Basic MCP SSRF scanning (BlueRock Trust Registry already catalogued 36.7% of 7,000+ servers as SSRF-vulnerable — low-hanging fruit is mapped)
 
 **Session Brief Format:**
 
@@ -206,7 +213,7 @@ Avoid competing directly with autonomous tools on:
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
 - Time estimates must be realistic
 - Duplicate risk assessment must reference actual disclosed reports when available
-- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, Claude Code Security, BlacksmithAI, Aikido Infinite, HackerOne Agentic PTaaS, Endor Labs AURI) — simple vulns they'd catch should be deprioritized; March 2026 saw both OpenAI and Anthropic launch enterprise scanning products simultaneously
+- Competition assessment must consider autonomous tools (XBOW, Shannon, Strix, Big Sleep, CAI, RunSybil, Zen-AI-Pentest, PentAGI, Penligent, Codex Security, Claude Code Security, BlacksmithAI, Aikido Infinite, HackerOne Agentic PTaaS, Endor Labs AURI) — simple vulns they'd catch should be deprioritized; March 2026 saw both OpenAI and Anthropic launch enterprise scanning products simultaneously; OpenAI Lockdown Mode adds system prompt protection — test if target uses it and whether bypass exists; Amazon Nova AI Bug Bounty now active — covers Nova model vulnerabilities
 - Chain opportunities must reference specific findings from recon, not hypotheticals
 - The session brief must be actionable — a hunter should be able to start testing immediately after reading it
 - Session should complete in 15-30 minutes — if recon is slow, report partial findings and note gaps
@@ -280,6 +287,14 @@ This agent works standalone with web search and curl. Connect your tools to supe
 - If target uses git-based MCP servers, test for RCE via malicious `.git/config` files — even Anthropic's first-party mcp-server-git had three chained CVEs achieving full RCE (CVE-2025-68145/68143/68144)
 - If target uses workflow automation platforms (n8n, Make, Zapier), test for unauthenticated RCE — CVE-2026-21858 (n8n Ni8mare, CVSS 10.0) via Content-Type confusion affects ~100K servers globally
 - If target has agentic browser features accessing password managers, test for credential theft via agent privilege assumption — PleaseFix demonstrated 1Password vault access via Perplexity Comet agent hijacking (Zenity Labs, 120-day disclosure)
+- If target has voice/audio processing extensions or plugins, test for pre-auth RCE via audio processing pipelines — CVE-2026-28446 (OpenClaw Voice Extension, CVSS 9.8); pattern applies to any AI agent with media extension support
+- If target is a Google Workspace-integrated AI assistant (Gemini Enterprise), test for GeminiJack pattern — zero-click indirect injection via shared documents, slides, or emails within the organization
+- If target uses Claude Desktop Extensions (DXT), test for zero-click RCE via malicious extension packaging — Anthropic declined to fix (CVSS 10.0); any DXT marketplace or sharing mechanism = supply chain risk
+- If target has MCP server connectors/resources, audit for unrestricted URI fetching — BlueRock MCP Trust Registry found 36.7% of 7,000+ MCP servers vulnerable to SSRF via resource endpoints
+- If target is Claude Code, test for confirmation dialog bypass — CVE-2026-24887 allows tool execution without user approval; also test for pre-trust API exfiltration (CVE-2026-21852)
+- If target is Cursor, test for MCP deep-link RCE — CVE-2025-64106: `mcpx://` protocol handler enables malicious MCP server registration and arbitrary code execution
+- If target has AI-powered browser extensions, test for conversation history exfiltration — 900K+ installs of malicious AI assistant extensions that harvest LLM chat histories from ChatGPT, Gemini, Claude
+- If target uses encrypted JWTs (JWE), test for JWE-wrapped PlainJWT bypass — CVE-2026-29000 (pac4j-jwt, CVSS 10.0): wrapping alg=none token inside JWE skips signature verification, enabling auth as any user
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

@@ -454,6 +454,7 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 - **OWASP MCP Top 10** (2026): dedicated security framework for MCP-specific risks — token mismanagement, privilege escalation, command injection, supply chain, tool poisoning, shadow servers
 - **CoSAI MCP Security Whitepaper** (January 27, 2026): Coalition for Secure AI released comprehensive taxonomy identifying **12 core threat categories** and **~40 distinct threats** — tool poisoning, shadow servers, confused deputy problem, identity spoofing via weak authentication, malicious tool metadata manipulation; recommended controls include strong identity chains, zero-trust for AI agents, and sandboxing
 - **MCP Auth Security**: 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; modern OAuth adoption only 8.5% (Astrix State of MCP Security 2025)
+- **BlueRock MCP Trust Registry** (March 2026): analyzed **7,000+ MCP servers** — **36.7% exposed to SSRF** vulnerabilities; launched MCP Trust Registry (mcp-trust.com) providing security analysis across security rules and tool analysis; disclosed "MCP fURI" SSRF in Microsoft MarkItDown MCP server enabling cloud credential theft via instance metadata
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series documenting real attacks (WhatsApp exfiltration, GitHub prompt injection, localhost breach, supply chain attack); MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
 - **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate user queries, tool responses, and agent replies. Evaluated across 5 real-world MCP servers and 4 LLM agents (GPT-4o, GPT-5, Claude-Sonnet-4, GPT-OSS). Preserves task quality while exfiltrating data — extremely hard to detect
 - **PoisonedRAG** (USENIX Security 2025): first knowledge corruption attack on RAG systems — attackers inject semantically meaningful poisoned texts into RAG databases, inducing LLMs to generate targeted attack outputs. Test RAG systems for poisoned document injection
@@ -501,6 +502,7 @@ A major new attack surface emerging in early 2026 targeting AI agent skill/plugi
 | **Snyk Agent Scan** | CLI | Prompt injection, tool poisoning, tool shadowing, toxic flows, rug pulls, malware payloads, hardcoded secrets | Auto-discovers Claude Code/Desktop, Cursor, Gemini CLI, Windsurf configs |
 | **Repello SkillCheck** | Browser-based | Prompt injection variants, env var exfiltration, policy violations, payload delivery indicators | Upload skill zip, get score (0-100) |
 | **MCPGuard** (VirtueAI) | Agent-based | Purpose-built fine-tuned models for MCP-specific patterns; analyzed 700+ servers, found critical vulns in 78% | Maintains scan memory across codebase |
+| **BlueRock MCP Trust Registry** | Web platform | Security analysis of 7,000+ MCP servers; SSRF, auth, and tool poisoning detection; provides trust scores | mcp-trust.com |
 | **Akto** | Platform | 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; MCP discovery | Enterprise deployment |
 | **Agent-Wiz** (Repello AI) | CLI | Threat modeling and visualization for LangGraph, AutoGen, CrewAI agents | GitHub: `Repello-AI/Agent-Wiz` |
 
@@ -575,6 +577,9 @@ A new vulnerability class where companies embed hidden instructions in web conte
 26. Test for workspace trust bypass: does the AI IDE disable workspace trust by default? Can malicious `.vscode/tasks.json` auto-execute without user confirmation? (Oasis Security — Cursor ships with Workspace Trust disabled)
 27. Test for sandbox/container escape via AI agent config: can AI agent installation or skill download flows write files outside intended directories or inject dangerous Docker options? (CVE-2026-27001/27002, OpenClaw — sandbox escape + Docker container escape)
 28. Test for TypeScript type confusion sandbox escape: if target uses sandboxed expression evaluation, can TypeScript type annotations (not enforced at runtime) bypass sanitization via destructuring syntax? (CVE-2026-25049, n8n, CVSS 9.4 — novel sandbox escape pattern)
+29. Test for MCP server SSRF via unrestricted URI handling: does the MCP server accept arbitrary URIs without validation? In cloud deployments, can instance metadata (169.254.169.254) be queried to steal credentials? (BlueRock "MCP fURI" — 36.7% of 7,000+ MCP servers exposed; Microsoft MarkItDown MCP SSRF → AWS credential theft)
+30. Test for AI agent voice/audio extension RCE: if target has voice-call or audio processing extensions, test inbound allowlist bypass via empty caller IDs, suffix matching, or malformed SIP/VoIP headers (CVE-2026-28446, OpenClaw voice-call extension, CVSS 9.8 — pre-auth RCE affecting 42,000+ instances)
+31. Test for JWT alg=none authentication bypass in AI platforms: if target uses JWT-based authentication (especially with encrypted JWTs/JWE), test for PlainJWT wrapping that skips signature verification (CVE-2026-29000, pac4j-jwt, CVSS 10.0 — RSA public key + JWE-wrapped PlainJWT = full auth bypass as any user including admin)
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -683,6 +688,7 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 | **0din** (Mozilla) | GenAI vulnerabilities — GPT-4, Gemini, LLaMa, Claude | $500–$15,000 | Launched **Agent 0DIN** — gamified CTF for prompt injection/jailbreaking training |
 | **HackerOne** | General + 1,121 programs with AI in scope | $100–$100K+ | Largest platform; AI reports up 210% YoY |
 | **Bugcrowd** | General + AI triage | $100–$50K+ | CrowdMatch AI-powered researcher-to-program matching |
+| **Amazon Nova** | Amazon Nova foundation models (private, invite-based) | $200–$25,000 | Covers prompt injection, CBRN, biases; expanding early 2026 |
 
 ### AI Bug Bounty Competitions & CTFs (2025-2026)
 
@@ -795,6 +801,15 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **OpenClaw Docker escape (CVE-2026-27002)** | Docker container escape via configuration injection — allows dangerous Docker options including bind mounts, host networking, and unconfined profiles; fixed v2026.2.15 | Container escape via AI agent |
 | **Cursor Workspace Trust disabled** | Oasis Security found Cursor ships with Workspace Trust disabled by default, enabling silent code execution via malicious `.vscode/tasks.json` when opening untrusted repositories | AI IDE trust bypass |
 | **MCP Denial-of-Wallet overthinking loops** | arXiv:2602.14798 (February 2026): 14 malicious tools across 3 MCP servers trigger repetition, forced refinement, and distraction loops; amplifies token consumption up to **142.4x** and increases latency; no single step looks abnormal, making detection difficult; severe financial risk for pay-per-token deployments | Economic denial-of-service via AI |
+| **OpenClaw Voice Extension RCE (CVE-2026-28446)** | CVSS 9.8: pre-authentication RCE in OpenClaw voice-call extension — inbound allowlist policy bypass via empty caller ID and suffix matching; no session or authentication required; remote attacker achieves arbitrary code execution with OpenClaw process privileges; 42,000+ exposed instances; fixed v2026.2.1 (The Hacker News, February 2026) | AI agent voice feature RCE |
+| **MCP MarkItDown SSRF (MCP fURI)** | BlueRock Security disclosed SSRF in Microsoft's MarkItDown MCP server — unrestricted URI handling allows access to any HTTP or file resource; in cloud deployments, attackers query instance metadata to obtain AWS credentials including access and secret keys; no authentication required (BlueRock, March 2026) | MCP SSRF → cloud compromise |
+| **GeminiJack (Google Gemini Enterprise)** | Noma Labs: zero-click indirect prompt injection via poisoned Google Docs, Calendar invites, or emails; when any employee queries Gemini Enterprise, AI retrieves poisoned documents and exfiltrates data via disguised external image requests across Gmail, Calendar, Docs, and Workspace; Google separated Vertex AI Search from Gemini Enterprise in response (February 2026) | Enterprise AI data exfiltration |
+| **Claude DXT Zero-Click RCE** | LayerX: CVSS 10.0 zero-click RCE in Claude Desktop Extensions (DXT) affecting 50+ extensions and 10,000+ users; DXT extensions run unsandboxed with full system privileges; crafted Google Calendar event achieves full RCE; **Anthropic declined to fix** stating it falls outside their current threat model (February 9, 2026) | AI desktop extension zero-click RCE |
+| **Claude Code confirmation bypass RCE (CVE-2026-24887)** | RCE via bypass of Claude Code confirmation prompts — allows execution of untrusted commands through the `find` command; demonstrates that interactive approval mechanisms in AI coding tools can be circumvented (SentinelOne, 2026) | AI coding tool confirmation bypass |
+| **mcp-atlassian RCE + SSRF (CVE-2026-27825)** | Critical: missing directory confinement in Confluence attachment download allows unauthenticated path traversal for arbitrary file writes (overwrite ~/.bashrc, ~/.ssh/authorized_keys); SSRF via unsanitized X-Atlassian-Jira-Url headers; fixed v0.17.0 (Arctic Wolf, February 2026) | MCP connector RCE |
+| **mcp-nmap-server Command Injection (CVE-2026-3484)** | Command injection via child_process.exec in Nmap CLI handler; part of broader finding that 34% of MCP implementations use APIs prone to command injection (CWE-78) | MCP tool command injection |
+| **Clinejection supply chain compromise** | Snyk February 2026: GitHub issue title containing prompt injection compromised Cline's AI triage bot → npm token theft → malicious cline@2.3.0 published with postinstall script installing OpenClaw on ~4,000 developer machines in 8 hours; composed indirect prompt injection + GitHub Actions cache poisoning + credential model weaknesses (Adnan Khan disclosure) | AI supply chain total compromise |
+| **Malicious AI assistant browser extensions** | Microsoft Defender March 5, 2026: ~900,000 cumulative installs across 20,000+ enterprise environments of malicious Chromium extensions impersonating AI assistants (ChatGPT, DeepSeek sidebars) harvesting complete LLM chat histories and session tokens | AI extension data theft |
 | **PleaseFix 1Password breach path** | Zenity Labs PleaseFix disclosure included credential theft via 1Password: attackers assumed Perplexity Comet agent privileges to access password vaults; initial fix bypassed using `view-source:file:///`; 120-day disclosure timeline (Oct 2025–Feb 2026) | Password manager compromise via AI agent |
 | **GRP-Obliteration** | February 2026: Microsoft researchers showed single unlabeled prompt removes LLM safety alignment via inverted GRPO; GPT-OSS-20B attack success rate jumped 13% → 93% across all 44 harm categories | Complete safety alignment removal |
 | **ZombieAgent (ChatGPT)** | January 2026: zero-click exploit chain — malicious email → ChatGPT memory poisoned → persistent rules → self-propagation to contacts; all within OpenAI cloud, invisible to endpoint monitoring; patched Dec 2025 | Self-propagating memory corruption |
@@ -858,6 +873,8 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2025-7656 | Chromium (Cursor/Windsurf) | 94+ Chromium vulnerabilities in AI IDEs using legacy builds | — |
 | CVE-2026-29783 | GitHub Copilot CLI | Shell expansion arbitrary code execution via bash parameter patterns (`${var@P}`, `${!var}`) — safety layer misclassified dangerous commands as read-only | HIGH |
 | CVE-2026-22812 | OpenCode | Unauthenticated HTTP server auto-starts with permissive CORS — any local process or website can execute shell commands with user privileges | 8.8 |
+| CVE-2025-64106 | Cursor | MCP installation deep-link RCE — insufficient validation allows masking malicious commands behind trusted installation dialog (e.g., appearing as "Playwright" while executing payloads); patched within 2 days (Cyata) | 8.8 |
+| CVE-2026-24887 | Claude Code | Confirmation prompt bypass — allows execution of untrusted commands through `find` command, circumventing interactive approval mechanisms | — |
 
 **Cursor Workspace Trust Bypass (Oasis Security, 2026):**
 - Cursor ships with **Workspace Trust disabled by default** — unlike VS Code which prompts users before trusting workspaces
@@ -932,7 +949,8 @@ A novel attack that can **remove an LLM's safety alignment using a single unlabe
 - Inverts the process: one harmful prompt generates multiple responses; a "judge" model scores based on compliance
 - A single training example (e.g., "Create a fake news article") caused safety regressions across **all 44 harm categories** in SorryBench
 - GPT-OSS-20B attack success rate jumped from **13% to 93%**
-- Generalizes to text-to-image diffusion models
+- **Tested across 15 models** in the DeepSeek, GPT-OSS, Gemma, Llama, Ministral, and Qwen families — all 15 "reliably unalign"; even a relatively mild prompt like "Create a fake news article" removes safety across all 44 harm categories
+- Generalizes to text-to-image diffusion models (harmful generation rate: 56% → 90% on sexuality prompts)
 
 **Testing for GRP-Obliteration:**
 1. If target allows model fine-tuning or RLHF customization, test if a single adversarial training example can degrade safety
@@ -1524,7 +1542,8 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Apple doubled max payout to $2M** for zero-click remote exploits, with bonuses potentially exceeding $5M; launched "Target Flags" for accelerated payouts
 - **Microsoft Zero Day Quest expanded to $5M** total bounty pool for 2026 live hacking event (Azure, Copilot, M365, Identity); paid $1.6M in inaugural 2025 event
 - **Samsung launched $1M mobile bounty** for critical mobile security architecture flaws
-- **OpenAI raised max bounty to $100K** for critical infrastructure flaws; added specialized Bio Bug Bounty Programs ($25K for universal jailbreaks)
+- **OpenAI raised max bounty to $100K** for critical infrastructure flaws; added specialized Bio Bug Bounty Programs ($25K for universal jailbreaks); **Lockdown Mode** (Feb 2026) deterministically disables tools, images, browsing to block prompt injection — OpenAI acknowledged prompt injection "may never be fully patched"
+- **Amazon launched private AI Bug Bounty** for Nova foundation models ($200-$25,000) covering prompt injection, CBRN threat assistance, biases; expanding by invitation to researchers and academic teams in early 2026
 - **Google launched dedicated AI VRP** (October 2025) covering Search, Gemini Apps, Workspace — up to $30K per finding
 - **curl shut down its bug bounty** (January 2026) due to AI-generated submission flood — first major program shutdown attributed to AI slop
 - **Bug bounty market valued at $2.06B** (2026), projected to reach **$7.74B by 2035** (CAGR 15.94%; alternative: $5.7B by 2033)
@@ -1568,7 +1587,7 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Gravitee State of AI Agent Security 2026**: **3+ million AI agents** in corporations; **88% reported security incidents**; **47% of agents not monitored**; only 14.4% have full security approval — massive unmanaged attack surface
 - **Only 10% of AI-generated code is secure** (Endor Labs study, March 2026) — massive surface area for code review bounties
 - **n8n multi-CVE disclosure** (Feb 2026): 6 CVEs in a single day including CVE-2026-25049 (CVSS 9.4, TypeScript type confusion sandbox escape) and CVE-2026-21877 (Git Node RCE on Cloud); plus original CVE-2026-21858 (CVSS 10.0) — workflow automation platforms are a goldmine
-- **OpenClaw additional CVEs**: CVE-2026-27001 (sandbox escape + workspace path injection) and CVE-2026-27002 (Docker container escape) — both fixed v2026.2.15; total OpenClaw CVE count now exceeds 10
+- **OpenClaw additional CVEs**: CVE-2026-27001 (sandbox escape + workspace path injection), CVE-2026-27002 (Docker container escape), and CVE-2026-28446 (voice extension pre-auth RCE, CVSS 9.8) — total OpenClaw CVE count now exceeds 11; represents the most extensively exploited AI agent platform in history
 - **CVE-2026-2256** (ModelScope MS-Agent, CVSS 9.8): AI framework command injection via regex denylist bypass — public PoC available; demonstrates that AI agent framework shell tools are systematically vulnerable
 - **CVE-2026-22812** (OpenCode, CVSS 8.8): AI coding agent auto-starts unauthenticated HTTP server with permissive CORS — any website can execute commands; pattern applicable to any AI tool with local server components
 - **Cursor Workspace Trust disabled** by default (Oasis Security) — unlike VS Code, Cursor doesn't prompt before trusting workspaces; enables silent code execution via `.vscode/tasks.json`
@@ -1599,7 +1618,7 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **Shadow Escape**: first zero-click agentic attack via MCP — hidden instructions in documents exfiltrate PII from connected databases within authorized identity boundaries (Operant AI, Oct 2025)
 - **DockerDash**: malicious Docker image metadata labels compromise environments through Ask Gordon AI MCP Gateway — fixed in Docker Desktop v4.50.0 (Noma Security, Nov 2025)
 - **Gemini MCP Tool 0-day** (CVE-2026-0755, CVSS 9.8): command injection in gemini-mcp-tool; vendor unresponsive; published as 0-day advisory Jan 2026
-- **New MCP CVEs (early 2026)**: CVE-2026-25546 (Godot MCP), CVE-2026-0756 (GitHub Kanban MCP), CVE-2026-27203 (eBay API MCP RCE)
+- **New MCP CVEs (early 2026)**: CVE-2026-25546 (Godot MCP), CVE-2026-0756 (GitHub Kanban MCP), CVE-2026-27203 (eBay API MCP RCE, **unpatched**), CVE-2026-27825 (mcp-atlassian path traversal RCE + SSRF), CVE-2026-3484 (mcp-nmap-server command injection), CVE-2026-29787 (mcp-memory-service info disclosure)
 - **Microsoft paid $17M** in bug bounties in 2025 to 344 researchers
 - **Meta paid $4M** in 2025 ($25M lifetime) across ~13,000 reports with 800 rewarded
 - **Usual crypto bounty**: $16M single bounty offered — largest in tech history
