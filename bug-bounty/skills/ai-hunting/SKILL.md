@@ -108,11 +108,13 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Designed for AI-driven web application testing workflows
 
 **Shannon (Autonomous AI Pentester):**
-- Fully autonomous white-box AI pentester for web apps and APIs by Keygraph
+- Fully autonomous white-box AI pentester for web apps and APIs by Keygraph; **powered by Claude Agent SDK**
+- Four-phase multi-agent pipeline: reconnaissance, parallel vulnerability analysis, exploitation, and reporting
 - Analyzes source code to guide attack strategy, then validates with live browser and CLI-based exploits
 - Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark
 - Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
-- Leverages Nmap, Subfinder, WhatWeb, and Schemathesis during recon
+- Automates reconnaissance (Subfinder, Amass, WhatWeb), vulnerability scanning (Nuclei, ffuf), exploit generation, and report writing
+- Handles 2FA logins and browser-based attacks without human input; runs via Docker containers
 - Rapidly growing: GitHub's fastest-rising security project in early 2026
 - GitHub: `KeygraphHQ/shannon`
 
@@ -126,20 +128,32 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - curl cancelled its bug bounty the same week AISLE's OpenSSL results were published — a stark contrast between AI-discovered quality and AI-generated slop
 - Demonstrates AI's ability to find deeply buried C/C++ memory safety bugs at scale
 
-**OpenAI Aardvark (now Codex Security):**
-- Rebranded from "Aardvark" to **Codex Security** — available as research preview to ChatGPT Enterprise, Business, and Edu users via Codex web
-- Autonomous agent that continuously analyzes source code repositories to identify vulnerabilities, assess exploitability, prioritize severity, and propose targeted patches
-- In benchmark testing, identified **92% of known and synthetically-introduced vulnerabilities**
-- Has received **10 CVE identifiers** for discovered vulnerabilities in open-source projects
-- Best for: continuous monitoring of large codebases
+**OpenAI Codex Security (formerly Aardvark):**
+- **Launched March 6, 2026** as research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
+- Builds project-specific threat models, searches for vulnerabilities using agentic reasoning, validates in sandboxed environments, generates PoC exploits, and proposes fixes
+- In beta: false positive rates dropped **50%+**, over-reported severity dropped **90%+**
+- Scanned **1.2 million commits**, finding **792 critical** and **10,561 high-severity** issues in the past month
+- Scanning major open-source repos (OpenSSH, GnuTLS, PHP) and sharing findings with maintainers
+- Open-source maintainers can apply via the **Codex for OSS** program; **$10M in API credits** committed for open-source security
+- Best for: continuous monitoring of large codebases; major competitive threat to human hunters on pattern-matching vulns
 
 **Anthropic Claude Code Security:**
 - Launched **February 20, 2026** as limited research preview
 - Claude Opus 4.6 found **500+ vulnerabilities** in production open-source codebases — bugs that had gone undetected for decades despite expert review
+- **Mozilla partnership** (March 2026): found **22 vulnerabilities in Firefox** (14 high-severity) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24); 112 total reports submitted to Mozilla
 - Worked in a virtual machine with access to standard utilities and fuzzers; no specific instructions or specialized knowledge — "out-of-the-box" capability
 - Key technique: reasoning about code by tracing data flows and reading commit histories to find variants of partially fixed bugs
-- Found edge cases in CGIF's LZW compression that would not have been discoverable through traditional fuzzing alone
+- PoC exploit generation remains hard: ~$4,000 in API credits for exploit attempts, succeeded in only 2 cases — finding vulns is easier than exploiting them
 - **CVEs in Claude Code itself**: CVE-2025-59536 (CVSS 8.7, code injection via tool initialization, fixed v1.0.111) and CVE-2026-21852 (CVSS 5.3, data exfiltration including API keys, fixed v2.0.65)
+
+**Endor Labs AURI (Agentic Security Intelligence):**
+- Launched **March 3, 2026** — unified security intelligence for agentic software development
+- Embeds security directly into AI coding workflows; verifies security of code produced by different AI agents
+- **Free developer tier**: MCP server, CLI, and Skills plugin available at no cost for individual developers
+- Study found only **10% of AI-generated code is secure** — AURI addresses this gap
+- Identified **7 security vulnerabilities in OpenClaw** (acknowledged by development team)
+- Claims **80-95% reduction** in security findings for enterprise customers
+- Best for: developers wanting integrated security checks during AI-assisted coding
 
 **ZAST.AI (Zero False Positive Security Scanner):**
 - Raised **$6M Pre-A** round led by Hillhouse Capital (February 2026), ~$10M total funding
@@ -167,6 +181,14 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - Open-source AI pentesting framework using multiple AI agents for different stages of security assessment (March 2026)
 - Each agent specializes in a different phase: recon, vulnerability analysis, exploitation
 - GitHub: `yohannesgk/blacksmith`
+
+**AgentShield Benchmark (AI Agent Security Testing):**
+- First open benchmark testing 6 commercial AI agent security tools with **537 test cases**
+- Key finding: providers catching 95%+ of prompt injections miss most unauthorized tool calls — weak tool abuse detection across the board
+- Composite scores range from ~39 to ~98 across tested tools
+- Uses **Trustless Benchmark Protocol** with Ed25519 signatures for credibility
+- Fully open-source and auditable — useful for evaluating your target's AI security tooling
+- GitHub: `doronp/agentshield-benchmark`
 
 **Shift (AI Plugin for Caido):**
 - AI plugin for the Caido web security proxy integrating LLMs directly into the proxy UI
@@ -298,6 +320,8 @@ Feed to Claude/GPT-4: "This web app has these endpoints [list]. Based on the tec
 - 72% of hackers find more critical vulnerabilities when working in teams (Bugcrowd 2026)
 
 **Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
+
+**March 2026 Competition Escalation:** Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous vulnerability scanning within the same week (March 6, 2026). Codex Security scanned 1.2M commits finding 792 critical issues; Claude Code Security found 22 Firefox vulns in 2 weeks. These tools will flood programs with findings — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
 
 **Semgrep's AI Vulnerability Detection Benchmark (2025):**
 - Tested Claude Code (Sonnet 4) and OpenAI Codex (o4-mini) against 11 real-world open-source Python projects
@@ -539,6 +563,10 @@ A new vulnerability class where companies embed hidden instructions in web conte
 17. Test for MCP sampling attacks: can an MCP server use the sampling feature to become an "active prompt author" and inject instructions? (Unit42 research — resource theft, session manipulation, unauthorized content generation)
 18. Test for rules file backdoor: do AI IDE configuration files (`.cursorrules`, `.github/copilot-instructions.md`) contain invisible Unicode characters with hidden instructions? (Pillar Security)
 19. Test for CI/CD pipeline injection (PromptPwnd pattern): can a malicious GitHub issue or PR inject prompts into AI agents running in CI/CD pipelines, leaking secrets? (Aikido Security — 5+ Fortune 500 confirmed affected)
+20. Test for denial-of-wallet via MCP overthinking loops: can crafted tool responses trigger repetition, forced refinement, or distraction loops that amplify token consumption up to 142.4x? (arXiv:2602.14798 — each step looks normal, making detection difficult)
+21. Test for invisible prompt injection via Unicode tag characters (range E0000-E007F): can hidden instructions be embedded within normal-looking text input to manipulate AI behavior undetectably? (HackerOne Hai vulnerability — Cyrex)
+22. Test for hybrid prompt injection 2.0: can prompt injection payloads combine with traditional exploits (XSS, CSRF, SQLi) to create compound attack chains? (arXiv:2507.13169)
+23. Test for mcp-server-git RCE: if target uses git-based MCP servers, can malicious `.git/config` files achieve code execution? (CVE-2025-68145/68143/68144 — even Anthropic's first-party MCP server was vulnerable)
 
 **Where to Hunt:**
 - Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
@@ -747,6 +775,12 @@ A new attack class identified by Repello AI where attackers submit multiple smal
 | **Rules File Backdoor** | Pillar Security: configuration/rules files (`.cursorrules`, `.github/copilot-instructions.md`) weaponized with invisible Unicode characters — undetectable to humans, readable by AI agents; one compromised rules file shared across projects creates widespread supply chain compromise | AI IDE supply chain via invisible content |
 | **Copilot CLI shell expansion RCE** | CVE-2026-29783 (HIGH): GitHub Copilot CLI shell tool allows arbitrary code execution through bash parameter expansion patterns (`${var@P}`, `${!var}`, `$(cmd)`); safety layer misclassified dangerous commands as "read-only"; fixed v0.0.423 | AI coding tool RCE |
 | **MCPJam Inspector RCE** | CVE-2026-23744: unauthenticated HTTP endpoint can install arbitrary MCP servers; listens on 0.0.0.0 by default enabling remote code execution from the network | MCP toolchain exploitation |
+| **n8n Ni8mare (CVE-2026-21858)** | CVSS 10.0: unauthenticated RCE in n8n workflow automation platform (~100K servers globally); Content-Type confusion in Form Webhook request handling enables complete takeover of locally deployed instances; patched in v1.121.0 (Cyera Research Labs) | Workflow automation RCE |
+| **Anthropic mcp-server-git RCE chain** | CVE-2025-68145/68143/68144: three chained vulnerabilities in Anthropic's official mcp-server-git achieving full RCE via malicious `.git/config` files — demonstrates that even first-party MCP servers can be exploited | First-party MCP server compromise |
+| **HackerOne Hai invisible prompt injection** | HackerOne's beta AI assistant "Hai" found vulnerable to invisible prompt injection using Unicode tag characters (range E0000-E007F); hidden instructions embedded within normal-looking user input manipulated AI behavior undetectably (Cyrex) | AI triage system manipulation |
+| **Kali Linux MCP server command injection** | Official Kali Linux MCP server ships with textbook command injection via `subprocess` with `shell=True`; reported by Simone Margaritelli (evilsocket) — highlights that even security-focused tools have basic injection flaws | Security tool irony |
+| **MCP Denial-of-Wallet overthinking loops** | arXiv:2602.14798 (February 2026): 14 malicious tools across 3 MCP servers trigger repetition, forced refinement, and distraction loops; amplifies token consumption up to **142.4x** and increases latency; no single step looks abnormal, making detection difficult; severe financial risk for pay-per-token deployments | Economic denial-of-service via AI |
+| **PleaseFix 1Password breach path** | Zenity Labs PleaseFix disclosure included credential theft via 1Password: attackers assumed Perplexity Comet agent privileges to access password vaults; initial fix bypassed using `view-source:file:///`; 120-day disclosure timeline (Oct 2025–Feb 2026) | Password manager compromise via AI agent |
 | **GRP-Obliteration** | February 2026: Microsoft researchers showed single unlabeled prompt removes LLM safety alignment via inverted GRPO; GPT-OSS-20B attack success rate jumped 13% → 93% across all 44 harm categories | Complete safety alignment removal |
 | **ZombieAgent (ChatGPT)** | January 2026: zero-click exploit chain — malicious email → ChatGPT memory poisoned → persistent rules → self-propagation to contacts; all within OpenAI cloud, invisible to endpoint monitoring; patched Dec 2025 | Self-propagating memory corruption |
 | **Autonomous jailbreak agents** | March 2026 (Nature Communications): large reasoning models as autonomous adversaries achieved 97.14% jailbreak success across 9 target models with no human supervision — "alignment regression" | Systematic safety erosion |
@@ -965,6 +999,49 @@ A new class of inference attacks exploiting timing characteristics of language m
 4. Check if mitigations (padding, delay injection) are applied to streaming responses
 
 **Current Mitigations:** Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures. Test if target has similar protections.
+
+---
+
+### Denial-of-Wallet via MCP Overthinking Loops (February 2026)
+
+A new attack class exploiting MCP tool interactions to cause severe financial damage without obvious malicious behavior (arXiv:2602.14798):
+
+**How It Works:**
+- Attacker registers 14 malicious tools across 3 MCP servers
+- Tools trigger three loop types: **repetition loops** (agent repeats same tool calls), **forced refinement loops** (tool responses demand "improvements"), and **distraction loops** (introduce tangential tasks)
+- Amplifies token consumption up to **142.4x** and dramatically increases latency
+- No single step looks abnormal — each tool call appears legitimate, making detection extremely difficult
+- Creates severe financial risk for pay-per-token AI deployments
+
+**Testing for Denial-of-Wallet:**
+1. If target uses MCP servers with pay-per-token billing, test if tool responses can trigger repeated agent calls
+2. Craft tool outputs that request "refinement" or "additional analysis" — does the agent loop?
+3. Test if distraction tools can redirect the agent away from its primary task, consuming tokens on irrelevant work
+4. Check if token budgets or call limits exist for MCP tool interactions
+5. Measure cost amplification: what's the ratio of attacker cost (registering tools) to victim cost (token consumption)?
+
+**Severity Guidance:** High-Critical if target has no token budgets and uses production billing; Medium if testing/sandbox environments with spending caps. Maps to ASI05 (Excessive Agency) in OWASP Agentic Top 10.
+
+---
+
+### Invisible Unicode Prompt Injection (2026)
+
+A stealth injection technique using Unicode tag characters (range E0000-E007F) that are invisible to humans but processed by AI models:
+
+**How It Works:**
+- Attacker encodes malicious instructions using Unicode tag characters within seemingly normal text
+- Text appears completely benign to human reviewers — no visible difference
+- AI models read and execute the hidden instructions as if they were regular text
+- Used successfully against HackerOne's Hai AI triage assistant (Cyrex disclosure)
+
+**Testing Approach:**
+1. Encode prompt injection payloads using Unicode tag characters (E0000-E007F range)
+2. Submit encoded text through normal input channels (chat, forms, comments)
+3. Check if AI processes the hidden instructions — does behavior change?
+4. Test other invisible Unicode ranges: zero-width spaces (U+200B), zero-width joiners (U+200D), bidirectional overrides (U+202A-U+202E)
+5. If target has AI-powered content moderation, test if invisible instructions can bypass filters
+
+**Severity Guidance:** High if invisible injection can manipulate AI triage, content moderation, or automated decision-making; Medium if limited to chat-level manipulation. Especially relevant for AI-powered security tools that process user submissions.
 
 ---
 
@@ -1464,8 +1541,14 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 - **AI-enabled attacks** surged 89% YoY; average eCrime breakout time now 29 minutes (CrowdStrike 2026)
 - **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts) across all safety categories
 - **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024; unprecedented vulnerability volume
-- **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely
+- **30+ MCP CVEs** filed in 60 days; 38% of 500+ scanned MCP servers lack authentication entirely; 34% use APIs prone to command injection (Endor Labs study of 2,614 implementations)
 - **Cisco State of AI Security 2026** report confirms expanding threat landscape for AI agent deployments
+- **Only 10% of AI-generated code is secure** (Endor Labs study, March 2026) — massive surface area for code review bounties
+- **Joseph Thacker prediction**: 2x bug submissions in 2026 vs. prior year, driven by AI coding agents like Claude Code — but companies will eventually run these agents internally, potentially reducing bounty submissions in future years
+- **Claude Opus 4.6 + Mozilla**: found 22 Firefox vulnerabilities (14 high-severity) over 2 weeks; 500+ total across OSS codebases — AI is now competitive with decade-long expert review
+- **OpenAI Codex Security** (March 6, 2026): scanned 1.2M commits, found 792 critical + 10,561 high-severity issues; free month for Enterprise customers; open-source via Codex for OSS program
+- **n8n Ni8mare** (CVE-2026-21858, CVSS 10.0): unauthenticated RCE in ~100K workflow automation servers — AI workflow platforms are prime targets
+- **CoSAI MCP Security Whitepaper** (January 2026): maps 12 core threat categories and ~40 distinct threats; developed by EY, Google, IBM, Meta, Microsoft, NVIDIA, PayPal, Snyk, Trend Micro, Zscaler
 - **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity as a driving factor; AI-induced job scarcity driving new influx into freelancing and bug bounty hunting
 - **CrowdStrike 2026 Global Threat Report**: 89% YoY increase in AI-enabled attacks; average eCrime breakout time now **29 minutes** (fastest: 27 seconds); 90+ organizations already compromised via AI prompt injection in 2025; ChatGPT mentioned in criminal forums 550% more than any other model; cloud intrusions up 37% (266% from state-nexus actors)
 - **IBM X-Force 2026 Threat Index**: 44% increase in attacks via public-facing applications; vulnerability exploitation became leading attack cause (40% of incidents); 300,000+ ChatGPT credentials found for sale on dark web; 49% increase in active ransomware groups; ~4x increase in supply chain compromises since 2020

@@ -519,6 +519,11 @@ When you know the target's technology, focus your testing:
 | 38 | Zero-click memory poisoning via email | Send email with hidden instructions to target using AI email processing → test if agent memory is persistently corrupted | ZombieAgent pattern: email → ChatGPT memory poisoned → persistent rules across sessions → self-propagation (Radware Jan 2026) |
 | 39 | GRP-Obliteration (alignment removal) | If target exposes fine-tuning/RLHF APIs, submit single adversarial training example and test for safety regression across harm categories | Microsoft Feb 2026: single prompt → 13% to 93% attack success across all 44 SorryBench categories |
 | 40 | Side-channel timing analysis | Analyze streaming LLM response timing/packet sizes for information leakage about query content or model behavior | Whisper Leak: >98% classification across 28 LLMs; speculative decoding fingerprints queries at >75% accuracy |
+| 41 | Denial-of-wallet (overthinking loops) | Register MCP tools that trigger repetition, refinement, or distraction loops in the agent; measure token amplification vs. baseline | Up to 142.4x token amplification; no single step looks abnormal; severe financial risk for pay-per-token deployments (arXiv:2602.14798, Feb 2026) |
+| 42 | Invisible Unicode prompt injection | Encode malicious instructions using Unicode tag characters (E0000-E007F range) that are invisible to human reviewers | AI processes hidden instructions while text appears completely benign; successfully exploited HackerOne Hai (Cyrex); test zero-width spaces, BDI overrides |
+| 43 | Hybrid prompt injection + traditional exploits | Combine prompt injection with XSS, CSRF, or SQLi payloads to create compound attack chains | Prompt injection delivers traditional exploit payloads through AI; AI becomes the delivery mechanism for classical vulns (arXiv:2507.13169) |
+| 44 | Git config MCP server exploitation | If target uses git-based MCP servers, craft malicious `.git/config` files with injection payloads | CVE-2025-68145/68143/68144: three chained vulns in Anthropic's own mcp-server-git achieving full RCE; demonstrates first-party MCP server risk |
+| 45 | Workflow automation platform takeover | Test workflow platforms (n8n, Make, Zapier) for Content-Type confusion, unauthenticated endpoints, or webhook abuse | CVE-2026-21858 (n8n Ni8mare, CVSS 10.0): unauthenticated RCE via Content-Type confusion affecting ~100K servers globally |
 
 **OWASP MCP Top 10 Mapping:** Map MCP findings to MCP01-MCP10 risk IDs for stronger reports — Token Mismanagement (MCP01), Privilege Escalation (MCP02), Command Injection (MCP03), Supply Chain (MCP04), Auth (MCP05), Tool Poisoning (MCP06), Shadow Servers (MCP07), Insecure Data (MCP08), Input Validation (MCP09), Logging (MCP10).
 
@@ -582,6 +587,12 @@ When you know the target's technology, focus your testing:
 - **MCPJam Inspector RCE (CVE-2026-23744)** — unauthenticated HTTP endpoint installs arbitrary MCP servers; listens on 0.0.0.0 by default, enabling remote code execution from the network
 - **OpenClaw CVE crisis** — 8 critical CVEs in 6 weeks (CVE-2026-25253 CVSS 8.8 RCE, CVE-2026-28485 missing auth); 42,665 exposed instances, 5,194 actively vulnerable; 824+ malicious skills in registry; infostealers now target OpenClaw file paths
 - **MINJA memory injection** — 95%+ injection success rates against production AI agents; temporally decoupled attacks where injection and execution occur weeks apart
+- **Denial-of-Wallet overthinking loops** (arXiv:2602.14798, Feb 2026) — 14 malicious tools across 3 MCP servers amplify token consumption up to 142.4x; repetition, refinement, and distraction loops; no single step looks abnormal; severe financial risk for pay-per-token deployments
+- **HackerOne Hai invisible prompt injection** (Cyrex) — Unicode tag characters (E0000-E007F) used to embed invisible instructions in normal text; manipulated HackerOne's AI triage assistant behavior
+- **Anthropic mcp-server-git RCE chain** (CVE-2025-68145/68143/68144) — three chained vulns in first-party MCP server achieving full RCE via malicious `.git/config` files
+- **n8n Ni8mare** (CVE-2026-21858, CVSS 10.0) — unauthenticated RCE in ~100K n8n workflow automation servers via Content-Type confusion in Form Webhook handling
+- **Kali Linux MCP server command injection** — official Kali MCP server uses `subprocess` with `shell=True`, enabling textbook command injection (reported by evilsocket)
+- **PleaseFix 1Password breach path** — Perplexity Comet agent hijacked to access 1Password vaults; initial fix bypassed with `view-source:file:///`; 120-day disclosure timeline
 
 ---
 

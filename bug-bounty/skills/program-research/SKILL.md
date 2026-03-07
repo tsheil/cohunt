@@ -311,7 +311,7 @@ Focus on: Should I invest time here? Quick assessment with recommendation
 
 ## Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.18.0)*
+*Last updated: March 2026 (v0.19.0)*
 
 Key data points for program evaluation:
 
@@ -438,6 +438,18 @@ Key data points for program evaluation:
 | Agent skill scanners | Cisco MCP Scanner v4.0.1, Snyk Agent Scan, Repello SkillCheck, MCPGuard (78% of 700+ servers vulnerable), Akto (1,000+ agent exploits) | Various Mar 2026 |
 | MCP classic vuln patterns | 82% Path Traversal, 67% Code Injection, 34% Command Injection across 2,614 MCP implementations | Endor Labs 2026 |
 | Clinejection | Prompt injection turning AI coding bots into supply chain vectors via GitHub Actions pipelines | Snyk 2026 |
+| OpenAI Codex Security launch | March 6, 2026: scanned 1.2M commits, found 792 critical + 10,561 high-severity issues; free month for Enterprise customers; evolved from Aardvark | OpenAI Mar 2026 |
+| Claude Code Security + Mozilla | Found 22 Firefox vulns (14 high-severity) in 2 weeks; 500+ total across OSS codebases; fixes in Firefox 148 (Feb 24) | Anthropic/Mozilla Mar 2026 |
+| Endor Labs AURI launch | Free MCP-integrated security intelligence for agentic coding; found 7 OpenClaw vulns; only 10% of AI-generated code is secure | Endor Labs Mar 2026 |
+| n8n Ni8mare (CVE-2026-21858) | CVSS 10.0: unauthenticated RCE in ~100K workflow automation servers via Content-Type confusion | Cyera Research Labs 2026 |
+| Denial-of-wallet via MCP | 142.4x token amplification via MCP overthinking loops; no single step looks abnormal; severe financial risk | arXiv:2602.14798 Feb 2026 |
+| Invisible Unicode prompt injection | Unicode tag chars (E0000-E007F) encode hidden instructions in normal text; exploited HackerOne Hai triage assistant | Cyrex 2026 |
+| mcp-server-git RCE chain | CVE-2025-68145/68143/68144: three chained vulns in Anthropic's first-party MCP server via `.git/config` | Security advisory 2026 |
+| CoSAI MCP Security Whitepaper | 12 core threat categories, ~40 distinct threats; developed by EY, Google, IBM, Meta, Microsoft, NVIDIA, PayPal, Snyk, Trend Micro, Zscaler | CoSAI Jan 2026 |
+| AI coding agent bug submission prediction | 2x bug submissions in 2026 vs prior year driven by coding agents; companies may eventually run agents internally | Joseph Thacker Feb 2026 |
+| AgentShield Benchmark | First open benchmark for 6 AI agent security tools; 537 test cases; 95%+ PI detection but weak tool abuse detection | GitHub Mar 2026 |
+| Kali MCP server command injection | Official Kali Linux MCP server has `subprocess` with `shell=True`; textbook command injection in security-focused tool | evilsocket 2026 |
+| FIRST CVE forecast 2026 | Predicted median 59,427 new CVEs for 2026 (first year >50K); realistic scenarios suggest 70-100K possible | FIRST Feb 2026 |
 | GRP-Obliteration | Single unlabeled prompt removes LLM safety alignment via inverted GRPO training; GPT-OSS-20B attack success rate: 13% → 93% across all 44 harm categories | Microsoft Security Feb 2026 |
 | Autonomous jailbreak agents | Large reasoning models as autonomous adversaries achieve 97.14% jailbreak success rate across 9 target models with no human supervision | Nature Communications Mar 2026 |
 | ZombieAgent | Zero-click ChatGPT memory poisoning via malicious email → long-term memory corruption → self-propagation to contacts; all activity within OpenAI cloud, invisible to endpoint monitoring | Radware Jan 2026 |
