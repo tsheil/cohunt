@@ -98,6 +98,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Exposed agent infrastructure** | Scanning for unsecured MCP gateways, admin panels, agent configs | Clawdbot: 2,000+ exposed gateways with API keys, OAuth tokens, conversation histories |
 | **Salami slicing (gradual bypass)** | Multi-week constraint drift via incremental interactions | Procurement agent fraud: $5M in false POs after 3 weeks of gradual manipulation |
 | **WebSocket agent hijacking** | Cross-origin WebSocket connection to localhost AI agents | ClawJacked: any webpage could control local OpenClaw agent with full permissions |
+| **MCP tool name collision** | Register tool that overwrites legitimate one via namespace ambiguity | CVE-2026-30856: `mcp_{service}_{tool}` naming hijacks execution flow for prompt/context theft |
+| **Allowlist shell expansion gap** | Exploit validation/execution gap in command allowlists | CVE-2026-28463: safe bins read arbitrary files via glob patterns after pre-expansion validation |
 | **MCP SDK-level exploitation** | Protocol and SDK flaws that affect all implementations, not just individual servers | CVE-2026-25536 cross-client data leak, CVE-2026-27896 case sensitivity bypass |
 | **MCP OAuth exploitation** | CSRF-style account takeover via MCP server acting as both authz server and OAuth client | Obsidian Security: affected Claude Desktop, VS Code, Cursor, Cline; test missing state param |
 | **Google Antigravity exploitation** | RCE via web page interaction, Forced Descent persistent code execution, 70+ architectural vulns | $10K bounty (Hacktron AI); global config modification survives uninstall/reinstall |

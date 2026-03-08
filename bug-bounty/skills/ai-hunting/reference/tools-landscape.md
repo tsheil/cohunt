@@ -286,6 +286,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **XBOW Pentest On-Demand** launched late 2025 — fully automated pentest service delivering results within 5 business days at **$6,000 per engagement**
 - **XBOW Public API** launched February 1, 2026 in Public Preview — programmatic access to start, pause, resume, cancel pentests and retrieve findings; enables running dozens of pentests in parallel; pricing starts at $6K
 - Appointed Databricks CRO to board; expanding APAC presence through customer deployments and partnerships in 2026
+- A fully local pentesting agent achieved **~78% on XBOW benchmarks** via feedback-driven iteration — demonstrates locally-run agents can approach XBOW-level capability without cloud infrastructure
 - HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
 

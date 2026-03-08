@@ -139,4 +139,10 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **OpenAI Codex Security update**: discovered 14 CVEs across OpenSSH, Chromium, GnuTLS, GOGS, libssh, PHP; $10M in API credits for open-source security
 - **Malicious AI browser extensions**: ~900,000 cumulative installs across 20,000+ enterprise environments of Chromium extensions impersonating AI assistants (Microsoft Defender, March 2026)
 - **ContextCrush (Context7)**: supply chain vulnerability in one of the most popular MCP servers (~50K GitHub stars, 8M+ npm downloads); custom rules served verbatim allowing code execution via trusted documentation (Noma Labs, Feb 2026; patched Feb 23)
+- **MCP server audit (March 2026)**: 194 packages audited across 211 security reports — **118 findings across 68 packages**; most common: command injection via `child_process.exec()`, credential leakage in error messages/logs, excessive filesystem permissions
+- **MCP tool name collision** (CVE-2026-30856, March 7 2026): new vulnerability class — ambiguous `mcp_{service}_{tool}` naming enables tool namespace hijacking in MCP clients; affects any client without namespace isolation
+- **HackTheBox AI Red Teamer Certification** launching Q1 2026 — developed with Google, aligned to SAIF; first industry certification for AI red teaming
+- **Node.js permission model bypass** (CVE-2026-21636, March 2026): Unix Domain Socket connections bypass permission model restrictions entirely; CVE-2026-21637: TLS PSK/ALPN callback exceptions
+- **OpenClaw exec-approvals shell expansion gap** (CVE-2026-28463): allowlist validates pre-expansion argv, execution uses real shell expansion — safe bins read arbitrary files via globs. Total OpenClaw CVE count now exceeds 13
+- **78% local XBOW benchmark**: fully local pentesting agent achieved 78% on XBOW benchmarks via feedback-driven iteration — cloud infrastructure no longer required for competitive autonomous testing
 

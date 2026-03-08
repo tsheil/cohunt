@@ -137,6 +137,8 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2026-28484 | OpenClaw | Option injection RCE in git-hooks/pre-commit — attacker-controlled options lead to arbitrary code execution | High |
 | CVE-2026-28479 | OpenClaw | SHA-1 collision attack on sandbox identifier cache keys — cache poisoning enables unsafe sandbox state reuse | 7.5 |
 | CVE-2026-29609 | OpenClaw | `fetchWithGuard` memory exhaustion DoS — allocates entire response payloads before enforcing size limits | 7.5 |
+| CVE-2026-28463 | OpenClaw | Exec-approvals allowlist validates pre-expansion argv tokens, but execution uses real shell expansion — safe bins like `head`, `tail`, `grep` can read arbitrary files via glob patterns | High |
+| CVE-2026-28465 | OpenClaw | Voice-call plugin webhook verification bypass via forged forwarded headers — attacker bypasses caller allowlist | High |
 | CVE-2026-21518 | GitHub Copilot/VS Code | Security feature bypass via command injection (CWE-77) — unauthorized network attacker bypasses workspace trust | High |
 
 **Cursor Workspace Trust Bypass (Oasis Security, 2026):**

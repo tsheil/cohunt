@@ -285,6 +285,31 @@ When you know the target's technology, focus your testing:
 
 ---
 
+## Node.js Permission Model & TLS Bypass
+
+**What it is:** Exploiting flaws in Node.js's experimental permission model and TLS implementation.
+
+**Key CVEs:**
+- **CVE-2026-21636**: Permission model bypass via Unix Domain Socket connections — attackers bypass file/network access restrictions entirely
+- **CVE-2026-21637**: TLS PSK/ALPN callback exceptions — uncaught exceptions in TLS callbacks cause process crashes (DoS)
+
+**Where to look:**
+- Applications running Node.js with `--experimental-permission` flag
+- Services using Node.js TLS with PSK or ALPN callbacks
+- Any Node.js app relying on the permission model for security boundaries
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | UDS permission bypass | Connect via Unix Domain Socket to bypass permission model restrictions | File/network access without permission grant |
+| 2 | TLS PSK callback crash | Send TLS connection with crafted PSK identity that triggers exception in callback | Process crash (DoS) |
+| 3 | ALPN callback exception | Connect with ALPN protocol list that triggers unhandled exception | Process crash via TLS negotiation |
+
+**Severity Guidance:** High for permission model bypass (security boundary violation); Medium for TLS DoS (service availability). Permission model bypass is especially impactful when apps rely on it for sandboxing — test any Node.js service that uses `--experimental-permission`.
+
+---
+
 ## ContextCrush / Documentation Supply Chain
 
 **What it is:** Injecting malicious instructions into trusted documentation served via MCP servers or shared knowledge bases.

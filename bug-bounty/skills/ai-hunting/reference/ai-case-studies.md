@@ -114,6 +114,10 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **n8n `with` sandbox escape (CVE-2026-1470)** | CVSS 9.9: JavaScript `with` statement manipulates scope chain to escape expression sandbox; deprecated `with` syntax creates exploitable scope confusion in security boundaries | Novel sandbox escape via deprecated JS |
 | **Cursor shell builtin bypass (CVE-2026-22708)** | CVSS 9.8: command injection bypassing shell restriction via shell builtins; part of expanding IDEsaster campaign | AI IDE command injection |
 | **Copilot AI output validation RCE (CVE-2026-21523)** | RCE via insufficient validation of AI-generated output before execution; demonstrates AI output trust as attack surface | AI output trust exploitation |
+| **WeKnora MCP tool name collision (CVE-2026-30856)** | March 7, 2026: MCP tool name collision in WeKnora Go framework (CVSS 5.9) — attacker registers tool that overwrites legitimate one via `mcp_{service}_{tool}` naming ambiguity; enables system prompt exfiltration and context theft. Fixed v0.3.0 | MCP namespace hijacking |
+| **OpenClaw exec-approvals shell expansion bypass (CVE-2026-28463)** | Exec-approvals allowlist validates pre-expansion argv tokens, but execution uses real shell expansion — safe bins like `head`/`tail`/`grep` read arbitrary files via globs. Pattern: validation/execution gap in command allowlists | AI tool allowlist bypass |
+| **Node.js permission model bypass (CVE-2026-21636)** | Permission model bypass via Unix Domain Socket connections — attackers bypass access restrictions entirely | Node.js security model bypass |
+| **MCP server audit: 118 findings in 68 packages** | March 2026: 194 MCP packages audited across 211 reports; most common: `child_process.exec()` command injection, credential leakage in logs/LLM context, excessive filesystem permissions | Systematic MCP ecosystem vulnerability |
 
 ---
 
@@ -163,6 +167,11 @@ As the **EU AI Act** requires full compliance by **August 2, 2026** (penalties u
 **Google 2025 Zero-Day Review:**
 - 90 zero-day vulnerabilities tracked in 2025; **48% targeted enterprise technology** (new high)
 - Google anticipates AI will accelerate both attack and defense in 2026
+
+**HackTheBox AI Red Teamer Certification (Q1 2026):**
+- Developed with Google, aligned to SAIF (Secure AI Framework)
+- Covers AI red teaming methodology including prompt injection, jailbreaking, agent manipulation
+- First industry certification specifically for AI red teaming — validates skills for bug bounty hunters targeting AI systems
 
 **Key references:** OWASP Gen AI Red Teaming Guide (January 2025), NIST AI RMF, MITRE ATLAS, OWASP AI Testing Guide v1 (AITG, November 2025)
 
