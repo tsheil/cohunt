@@ -184,4 +184,15 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Cisco SD-WAN active exploitation** (March 5, 2026): CVE-2026-20128/20122; file overwrite + privilege escalation; web shell activity at scale
 - **NGINX SSL upstream injection** (CVE-2026-1642): TLS race condition in NGINX 1.3.0-1.29.4 allowing MITM response injection before handshake completes
 - **Noma Security MCP blindspots**: >90% of orgs maintain dangerous default configs with all MCP tools enabled
+- **Business logic vulnerabilities** account for **45% of all bounty awards** industrywide (Intigriti 2026) — largest single category
+- **Chrome emergency update** (March 3, 2026): 10 CVEs fixed including 3 Critical — CVE-2026-3537 (PowerVR object lifecycle, $32K bounty), CVE-2026-3538 (Skia integer overflow), CVE-2026-3545 (sandbox escape, CVSS 9.6)
+- **CVE-2026-21385** (Qualcomm Android zero-day, CVSS 7.8): exploited in wild, 234 chipsets, CISA KEV March 3, 2026
+- **Cisco SD-WAN CVE-2026-20127** (CVSS 10.0): auth bypass exploited since 2023; CISA mandated 24-hour patch
+- **OpenClaw inbox destruction incident** (Feb 23, 2026): Meta AI safety director lost 200+ emails after agent ignored STOP commands; context window compaction caused safety instruction loss
+- **Gartner** (Feb 2026): 62% of large enterprises piloting AI agents, only 14% have formal governance frameworks
+- **Aikido Infinite** (Feb 26, 2026): first continuous AI pentesting on every code change; found 7 CVEs in Coolify (RCE as root, 52K+ exposed instances)
+- **CVE-2026-27203** (eBay MCP Server env injection RCE): unpatched — `updateEnvFile` allows arbitrary env var injection via newline characters
+- **CVE-2026-29791** (Agentgateway MCP-to-OpenAPI): missing parameter sanitization in path/query/header values; fixed in 0.12.0
+- **eBay MCP pattern**: demonstrates that even commerce-vendor MCP servers ship with trivially exploitable injection — environment file manipulation is a recurring vulnerability class
+- **February 2026 Patch Tuesday**: 6 actively exploited zero-days — unprecedented count; Secure Boot cert expiration (June 2026) adds urgency
 

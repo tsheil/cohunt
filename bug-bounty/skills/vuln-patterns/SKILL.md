@@ -62,6 +62,20 @@ The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 20
 
 ---
 
+## Automation Resistance Tiers
+
+Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex Security) have commoditized some classes, while others remain human-only territory. **Focus your time on Tier A and B** — these are where payouts happen.
+
+| Tier | Description | Classes | Duplicate Risk |
+|------|-------------|---------|---------------|
+| **A: Human-Only** | Requires business context, domain knowledge, or multi-step reasoning | Business logic, multi-tenant isolation, payment flows, workflow state abuse, subscription bypass | **Low** — each finding is app-specific |
+| **B: Human-Advantaged** | Humans find deeper variants and chains; tools find surface-level | Auth chains (BOLA→privilege escalation), race conditions with business impact, complex SSRF chains, AI/LLM agent exploitation | **Medium** — surface variants automated, deep chains are not |
+| **C: Commodity** | Autonomous tools find 75-85% of instances faster | Basic XSS/SQLi/SSRF, subdomain takeovers, missing headers, simple IDOR, known CVE patterns | **High** — submit only if novel bypass or high impact chain |
+
+> **Business logic is 45% of all bounty awards** (Intigriti 2026). Deep dive: [reference/business-logic.md](reference/business-logic.md)
+
+---
+
 ## Vulnerability Classes
 
 ### Access Control / IDOR
@@ -286,6 +300,8 @@ The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 20
 | 9 | Time manipulation | Modify timestamps in requests | Extended trials, expired tokens working |
 | 10 | Currency confusion | Switch currency mid-transaction | Arbitrage opportunity |
 
+> **Payment flows, state machines, subscription bypass, multi-tenant isolation, monetary impact quantification, and validation gate:** See [reference/business-logic.md](reference/business-logic.md)
+
 ---
 
 ### Race Conditions
@@ -449,6 +465,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
+| [reference/business-logic.md](reference/business-logic.md) | Payment flow exploitation, state machine mapping, subscription bypass, multi-tenant isolation, race conditions, monetary impact quantification, validation gate | ~300 |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns 11-18, LPCI, real-world incidents, OWASP MCP Top 10 mapping | ~360 |
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT manipulation, OAuth/OIDC, API rate limiting, n8n/workflow sandbox escapes | ~290 |
 

@@ -419,3 +419,37 @@ A new MCP attack vector (ecap0/AgentAudit, February 2026) — the MCP equivalent
 - Open-source MCP server implementations (check GitHub for `mcp-server-*` repos)
 - huntr platform specifically accepts AI/ML vulnerability reports
 - VulnerableMCP.info for known MCP-specific vulnerabilities and affected implementations
+
+---
+
+## New MCP CVEs (March 2026)
+
+### CVE-2026-27203: eBay MCP Server Environment Injection RCE
+
+**Affected:** `ebay-mcp` npm package (all versions through 1.7.2) — **no patch available**
+
+**Vulnerability:** The `updateEnvFile` function blindly appends values without sanitizing newlines or quotes, allowing attackers to inject arbitrary environment variables. This enables RCE by overwriting `PATH`, `LD_PRELOAD`, or application-specific variables.
+
+**Test Procedure (#59):**
+1. Install `ebay-mcp` in a sandboxed environment
+2. Craft a tool call that passes newline-injected values: `value\nMALICIOUS_VAR=payload`
+3. Verify env file shows injected variable
+4. Demonstrate RCE via environment manipulation (e.g., override `NODE_OPTIONS`)
+
+**Pattern:** Environment file manipulation is a recurring MCP vulnerability class — any MCP server that writes to `.env` files without input sanitization is likely vulnerable.
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-94 (Code Injection)
+
+### CVE-2026-29791: Agentgateway MCP-to-OpenAPI Parameter Sanitization
+
+**Affected:** Agentgateway < 0.12.0
+
+**Vulnerability:** When converting MCP `tools/call` requests to OpenAPI requests, path, query, and header parameter values are not sanitized. Attacker-controlled MCP tool parameters pass directly into HTTP requests.
+
+**Test Procedure (#60):**
+1. Set up Agentgateway proxying MCP requests to an OpenAPI backend
+2. Send MCP `tools/call` with path traversal in parameter: `../../admin/users`
+3. Send MCP `tools/call` with header injection: `X-Custom: value\r\nHost: evil.com`
+4. Verify unsanitized values reach the backend
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-20 (Improper Input Validation)

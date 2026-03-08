@@ -155,6 +155,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 
 ### Key Market Stats (2025-2026)
 
+- **Business logic vulnerabilities** = **45% of all bounty awards** industrywide (Intigriti 2026) — highest-value human edge
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
 - **XBOW**: #1 HackerOne with 1,060 submissions; **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
