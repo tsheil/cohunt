@@ -1,16 +1,9 @@
 ---
 name: cloud-security
-description: Cloud security misconfiguration patterns for AWS, GCP, and Azure. Use when a target is cloud-hosted, uses cloud services (S3, GCS, Azure Blob, Lambda, Cloud Functions), or when recon reveals cloud infrastructure. Trigger with "cloud misconfig", "S3 bucket", "AWS security", "GCP security", "Azure security", "cloud enumeration", "serverless security", "metadata endpoint", "cloud storage", "IAM", or when target-recon identifies cloud hosting.
+description: Cloud security misconfiguration patterns for AWS, GCP, and Azure. Use when a target is cloud-hosted, uses cloud services (S3, GCS, Azure Blob, Lambda, Cloud Functions), or when recon reveals cloud infrastructure. Trigger with "cloud misconfig", "S3 bucket", "AWS security", "GCP security", "Azure security", "cloud enumeration", "serverless security", "metadata endpoint", "cloud storage", "IAM", or when target-recon identifies cloud hosting. Also activates when SSRF testing reveals cloud metadata endpoints, or when storage URLs (s3.amazonaws.com, storage.googleapis.com, blob.core.windows.net) appear in scope.
 ---
 
 Cloud misconfiguration patterns for bug bounty hunting. Covers storage, compute, identity, serverless, and metadata attack surfaces across AWS, GCP, and Azure. Works standalone with curl and web search; supercharged with asset discovery connectors for comprehensive cloud enumeration.
-
-## When This Skill Activates
-
-- Target recon reveals cloud infrastructure (AWS, GCP, Azure, DigitalOcean, etc.)
-- User asks about cloud-specific vulnerabilities or misconfigurations
-- SSRF testing reveals cloud metadata endpoints
-- Storage URLs (s3.amazonaws.com, storage.googleapis.com, blob.core.windows.net) appear in scope
 
 ## Execution Flow
 

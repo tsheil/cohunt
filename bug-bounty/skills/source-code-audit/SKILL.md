@@ -7,45 +7,6 @@ description: Audit source code for security vulnerabilities — trace data flows
 
 Find vulnerabilities by reading code — trace data flows from user input to dangerous sinks, spot authentication and authorization gaps, identify injection points, and flag logic flaws. Works on any code you can share or point to: files, repos, snippets, or diffs.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    SOURCE CODE AUDIT                          │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ Data flow tracing: user input → processing → output      │
-│  ✓ Sink analysis: SQL, command exec, file ops, template      │
-│  ✓ Authentication & authorization review                     │
-│  ✓ Secrets detection: hardcoded creds, API keys, tokens      │
-│  ✓ Dependency risk: known-vulnerable packages                │
-│  ✓ Logic flaw identification: race conditions, TOCTOUs       │
-│  ✓ Framework-specific anti-patterns                          │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Code search: cross-repo pattern matching, history search  │
-│  + Vulnerability DB: CVE mapping for detected dependencies   │
-│  + Web scanner: validate findings against running instance   │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Point me at code to audit:
-
-- "Audit this file for security issues" (with code shared)
-- "Review this repo for vulnerabilities: github.com/org/project"
-- "Find auth bypasses in this Express middleware"
-- "Check this Python API for injection points"
-- "Security review this PR diff"
-- "What's dangerous about this code?"
-
-I'll read the code, trace data flows, and identify vulnerabilities with concrete exploitation paths.
-
----
-
 ## Connectors (Optional)
 
 Connect your tools to supercharge this skill:

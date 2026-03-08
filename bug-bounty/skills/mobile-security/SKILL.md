@@ -7,46 +7,6 @@ description: Mobile application security testing patterns for iOS and Android. C
 
 Security testing patterns for mobile applications — iOS and Android. Covers the mobile-specific attack surface that web-only testing misses: client-side secrets, transport security, deep link handlers, local data storage, and mobile API abuse patterns.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    MOBILE SECURITY                            │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ Static analysis: APK/IPA decompilation, secrets in binary │
-│  ✓ API analysis: endpoint extraction, auth token handling    │
-│  ✓ Transport security: certificate pinning, TLS config       │
-│  ✓ Deep link / universal link abuse patterns                 │
-│  ✓ Local storage: keychain, shared prefs, SQLite, file perms │
-│  ✓ Authentication: biometric bypass, session handling        │
-│  ✓ Inter-process communication: intents, URL schemes         │
-│  ✓ WebView security: JavaScript bridges, file access         │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Code search: find secrets across app versions in repos    │
-│  + Asset discovery: identify mobile API endpoints            │
-│  + Vulnerability DB: CVE mapping for mobile frameworks       │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Tell me about the mobile app you're testing:
-
-- "Test this Android app for security issues"
-- "What should I look for in this iOS banking app?"
-- "Mobile API security patterns for a fintech app"
-- "How do I bypass certificate pinning on this app?"
-- "Deep link attack patterns for Android"
-- "The scope includes mobile apps — what extra tests should I run?"
-
-I'll give you concrete patterns tailored to the platform and app type.
-
----
-
 ## Execution Flow
 
 ```

@@ -195,4 +195,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **CVE-2026-29791** (Agentgateway MCP-to-OpenAPI): missing parameter sanitization in path/query/header values; fixed in 0.12.0
 - **eBay MCP pattern**: demonstrates that even commerce-vendor MCP servers ship with trivially exploitable injection — environment file manipulation is a recurring vulnerability class
 - **February 2026 Patch Tuesday**: 6 actively exploited zero-days — unprecedented count; Secure Boot cert expiration (June 2026) adds urgency
+- **CVE-2026-3680** (biome-mcp-server, March 7 2026): command injection via `child_process` in CLI-wrapping MCP server; CVSS 5.3; unauthenticated remote; pattern repeats across MCP servers that wrap CLI tools
+- **XBOW #1 globally** confirmed at Black Hat 2026 with live demo running real-time on HackerOne programs
+- **Cloudflare public bug bounty** launched: high-value target covering CDN, DNS, Workers, R2, zero trust
+- **NEAR Intents bridge** bug bounty (March 3, 2026): cross-chain MPC infrastructure; bridges historically yield top payouts
+- **Microsoft "In Scope by Default"** expanded to include third-party and open source code impacting Microsoft online services
 

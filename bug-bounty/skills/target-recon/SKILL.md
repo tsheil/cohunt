@@ -7,43 +7,6 @@ description: Recon a web target — fingerprint tech stack, enumerate subdomains
 
 Get a complete external view of any web target before hunting. This skill always works with curl, dig, and web search, and gets significantly better with asset discovery connectors.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                       TARGET RECON                           │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone via curl, dig, web search)         │
-│  ✓ HTTP fingerprinting: headers, cookies, error pages        │
-│  ✓ Technology detection: server, framework, CMS, libraries   │
-│  ✓ Subdomain enumeration: crt.sh, DNS, status check         │
-│  ✓ Security headers: CSP, CORS, HSTS, X-Frame-Options       │
-│  ✓ Common paths: robots.txt, sitemap.xml, /.well-known/     │
-│  ✓ WAF/CDN detection: signatures, behavior analysis          │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Asset discovery: full subdomain inventory, port scanning  │
-│  + DNS intelligence: historical records, zone transfers      │
-│  + Vulnerability database: known CVEs for detected stack     │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Just tell me what to recon:
-
-- "Recon example.com"
-- "Fingerprint the tech stack at acme.io"
-- "Enumerate subdomains for target.com"
-- "What's the attack surface of example.com?"
-- "Map target.com before I start hunting"
-
-I'll run curl, dig, and web searches immediately. If you have asset discovery or DNS intelligence connected, I'll pull that data too.
-
----
-
 ## Connectors (Optional)
 
 Connect your tools to supercharge this skill:

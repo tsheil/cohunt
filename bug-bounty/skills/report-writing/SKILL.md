@@ -7,42 +7,6 @@ description: Write high-quality bug bounty reports that get triaged fast and pai
 
 Write bug bounty reports that get triaged fast, avoid N/A, and maximize payout. Good reporting is the difference between a bounty and a wontfix.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      REPORT WRITING                          │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ Structured report with clear title and summary            │
-│  ✓ Step-by-step reproduction with exact requests             │
-│  ✓ Impact assessment tied to business consequences           │
-│  ✓ CVSS scoring with justification                           │
-│  ✓ Remediation suggestions                                   │
-│  ✓ Platform-specific formatting (HackerOne, Bugcrowd, etc.) │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: auto-submit, check scope, attach files      │
-│  + Vulnerability DB: CWE/CVE references, CVSS validation     │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Tell me what you found:
-
-- "Write a report for an IDOR I found on api.example.com/users/{id}"
-- "Help me report this XSS on example.com's search page"
-- "Draft a bug report — I can bypass 2FA on the mobile app"
-- "Write up this SSRF finding for HackerOne"
-- "I found an open redirect, help me write it up so it doesn't get N/A'd"
-
-I'll ask what I need to know, then produce a complete report ready to submit.
-
----
-
 ## What I Need From You
 
 **Required:**

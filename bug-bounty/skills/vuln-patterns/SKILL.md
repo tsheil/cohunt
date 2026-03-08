@@ -7,43 +7,6 @@ description: Testing patterns and checklists for web vulnerability classes that 
 
 Concrete testing patterns for the vulnerability classes that pay bounties. Not theory — actionable test cases you can run against a target right now.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                  VULNERABILITY PATTERNS                       │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ Testing checklists for major vulnerability classes        │
-│  ✓ Payloads and test cases for each pattern                  │
-│  ✓ Tech-stack-specific variations                            │
-│  ✓ Common bypasses for security controls                     │
-│  ✓ What to look for in responses                             │
-│  ✓ Severity and impact guidance per finding                  │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Vulnerability DB: known CVEs for the target's stack       │
-│  + Web scanner: automated testing for pattern validation     │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Ask about any vulnerability class or testing scenario:
-
-- "How do I test for IDOR on this API?"
-- "XSS checklist for a React app"
-- "What should I test on this file upload endpoint?"
-- "Common authentication bypass patterns"
-- "SSRF test cases for a URL preview feature"
-- "What vulns should I look for in a GraphQL API?"
-
-I'll give you concrete patterns tailored to the target's technology stack when I know it (from recon data or your description).
-
----
-
 ## MITRE CWE Top 25 (2025)
 
 The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 2025, shows **authorization flaws climbing fast** while traditional injection remains at the top:

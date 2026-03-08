@@ -7,43 +7,6 @@ description: Research a bug bounty program before hunting — scope, rewards, di
 
 Get complete intelligence on any bug bounty program before you start hunting. This skill always works with web search, and gets significantly better with bug bounty platform connectors.
 
-## How It Works
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    PROGRAM RESEARCH                               │
-├─────────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone via web search)                        │
-│  ✓ Program profile: platform, scope, policy, safe harbor        │
-│  ✓ Reward structure: bounty table, bonus programs, swag         │
-│  ✓ Scope analysis: in-scope domains/apps, out-of-scope items    │
-│  ✓ Disclosed reports: top paid vulns, common CWEs, N/A patterns │
-│  ✓ Response metrics: time to first response, triage, bounty     │
-│  ✓ Hunt readiness: go/no-go recommendation with rationale       │
-├─────────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                      │
-│  + Platform API: live scope, real-time stats, report history     │
-│  + Vulnerability DB: CVE mapping for in-scope technologies       │
-│  + Asset discovery: pre-mapped attack surface for scope items    │
-└─────────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Just tell me what program to research:
-
-- "Research the Shopify bug bounty program"
-- "What does GitHub pay for bugs?"
-- "What's in scope for the Tesla program?"
-- "Program intel on HackerOne's own program"
-- "Should I hunt on Uber's bug bounty?"
-
-I'll search the web for program details, disclosed reports, and hunter experiences. If you have platform connectors, I'll pull live data too.
-
----
-
 ## Connectors (Optional)
 
 Connect your tools to supercharge this skill:
@@ -278,7 +241,7 @@ Check for AI-specific program features:
 5. Note if program uses HackerOne's AI Bug Bounty framework
 6. Check for different bounty tables for AI vs traditional vulns
 
-Context: As of 2025-2026, 1,121 HackerOne programs include AI in scope (270% YoY increase). Programs paying for AI vulns saw 339% increase in bounties YoY. Prompt injection reports surged 540%. HackerOne Hai Triage adopted by 90% of customers. Bugcrowd AI Triage Assistant (Dec 2025) achieves 98% P1 accuracy. HackerOne clarified (Feb 2026) that researcher submissions are NOT used to train AI models. OWASP Top 10 for Agentic Applications 2026 (ASI01-ASI10) released December 2025 covering agent-specific risks. OWASP AIVSS (AI Vulnerability Scoring System v0.5) extends CVSS for AI-specific severity — use for AI/agent vulnerability reports. OWASP AI Testing Guide v1 (November 2025) provides first comprehensive AI testing methodology. 79% of companies have deployed agentic AI but only 34% have AI-specific security controls (PwC 2025). EchoLeak (CVE-2025-32711) demonstrated first zero-click prompt injection in production (MS 365 Copilot). CyberStrikeAI weaponized across 55 countries (Jan-Feb 2026) — AI offensive tool proliferation is real.
+For full AI market context and statistics, see [reference/market-context.md](reference/market-context.md).
 
 ### Step 7: Synthesize
 

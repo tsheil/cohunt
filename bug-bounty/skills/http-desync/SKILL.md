@@ -7,42 +7,6 @@ description: HTTP request smuggling, web cache poisoning, and race condition tes
 
 Protocol-level and timing-based vulnerability classes that consistently pay high bounties. These bugs exploit how infrastructure components — proxies, caches, load balancers — interpret HTTP differently from the origin server.
 
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    HTTP DESYNC & CACHE                        │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ HTTP request smuggling: CL.TE, TE.CL, TE.TE patterns     │
-│  ✓ Web cache poisoning: unkeyed inputs, cache key analysis   │
-│  ✓ Web cache deception: path confusion, extension tricks     │
-│  ✓ Race conditions: TOCTOU, limit overrun, state collision   │
-│  ✓ HTTP/2 desync: H2.CL, H2.TE, CRLF in H2 headers         │
-│  ✓ Response queue poisoning                                  │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Web scanner: automated smuggling/cache detection          │
-│  + Asset discovery: identify CDN/proxy layer for targeting   │
-└──────────────────────────────────────────────────────────────┘
-```
-
----
-
-## Getting Started
-
-Ask about any of these attack classes:
-
-- "How do I test for request smuggling on this target?"
-- "This target uses Cloudflare + nginx — what cache poisoning is possible?"
-- "Race condition patterns for a coupon redemption endpoint"
-- "Can I do HTTP/2 desync against this target?"
-- "Web cache deception test cases for an API behind Akamai"
-
-I'll give you concrete test cases tailored to the target's infrastructure when I know it.
-
----
-
 ## HTTP Request Smuggling
 
 ### What It Is

@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.32.0)*
+*Last updated: March 2026 (v0.36.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
@@ -153,7 +153,9 @@ Notable new programs and expansions (2025-2026):
 - **OpenAI Codex Security** launched publicly March 6, 2026 (formerly Aardvark) — 14 CVEs discovered across OpenSSH, GnuTLS, GOGS, Chromium; available to ChatGPT Enterprise/Business/Edu
 - **Amazon Nova** — Private AI bug bounty; prompt injection, jailbreaks, exploitable model behavior; $55K+ paid, 30+ validated findings (Amazon Science, early 2026)
 - **Microsoft Copilot added moderate payouts** — up to $5K (previously $0 for moderate). Range now $250-$30K. Expanded to Copilot for Telegram, WhatsApp. 2026 Research Challenge and Live Hacking Event announced
-- **Microsoft "In Scope by Default" expansion**: All online services now in scope; new services auto-included on launch; $17M+ paid to 344 researchers in 2025
+- **Microsoft "In Scope by Default" expansion**: All online services now in scope; new services auto-included on launch; **third-party and open source code** impacting Microsoft services now eligible for bounties; any critical vulnerability with demonstrable impact qualifies regardless of code origin; $17M+ paid to 344 researchers in 2025
+- **Cloudflare public bug bounty launch** (2026): Cloudflare launched its paid public bug bounty program after years of operating a private program — high-value target covering CDN, DNS, Workers, R2, and zero trust products
+- **NEAR Intents bridge bug bounty** (March 3, 2026): covers critical cross-chain infrastructure including MPC network for chain signatures and bridge protocols; cross-chain bridges are historically high-value targets (Wormhole $10M, Ronin $600M incident)
 - **Bugcrowd FedRAMP Authorization**: FedRAMP Moderate Authorization sponsored by CISA — federal agencies can now deploy Bugcrowd at scale
 - **Salesforce Bug Bounty 10th Anniversary** (March 4, 2026): $30.4M invested since 2015
 - **Google AI VRP** (Oct 2025): dedicated AI bug bounty covering Search, Gemini Apps, Workspace core apps; up to $30K per report with novelty bonuses; $430K+ paid for AI bugs; prompt injection/jailbreaks excluded from scope but encouraged as research

@@ -1,6 +1,6 @@
 ---
 name: api-security
-description: API architecture security — design flaws in REST, GraphQL, WebSocket, and gRPC that create unique attack surfaces. Covers versioning gaps, batch/bulk abuse, schema introspection, subscription hijacking, and protocol-specific misconfigurations. Use when testing API design rather than individual vuln classes. For auth bugs (BOLA, BFLA, access control), use auth-testing. For vuln class checklists (SSRF, IDOR, XSS), use vuln-patterns.
+description: API architecture security — design flaws in REST, GraphQL, WebSocket, and gRPC that create unique attack surfaces. Covers versioning gaps, batch/bulk abuse, schema introspection, subscription hijacking, and protocol-specific misconfigurations. Use when testing API design rather than individual vuln classes. Trigger when target recon reveals a REST API, GraphQL endpoint, WebSocket, or gRPC service; when multiple API versions are detected (v1, v2, internal); when user asks about batch endpoints, bulk operations, or rate limiting; or when API documentation or OpenAPI/Swagger spec is available. For auth bugs (BOLA, BFLA, access control), use auth-testing. For vuln class checklists (SSRF, IDOR, XSS), use vuln-patterns.
 ---
 
 # API Security
@@ -18,38 +18,6 @@ APIs are now the primary digital attack surface. Key stats:
 - **Only 21% of organizations** can detect attacks at the API layer; only 13% can prevent >50% of API attacks (42Crunch 2026)
 - **36% of AI vulnerabilities** also qualify as API vulnerabilities — AI and API attack surfaces overlap
 - Companies shipping microservices and multi-cloud APIs faster than they can secure them
-
----
-
-## When This Skill Activates
-
-- Target recon reveals a REST API, GraphQL endpoint, WebSocket, or gRPC service
-- User asks about testing a specific API architecture
-- Multiple API versions detected (v1, v2, internal)
-- User mentions batch endpoints, bulk operations, or rate limiting
-- API documentation or OpenAPI/Swagger spec is available
-
-## How It Works
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                      API SECURITY                             │
-├──────────────────────────────────────────────────────────────┤
-│  ALWAYS (works standalone)                                   │
-│  ✓ Architecture-specific testing patterns                    │
-│  ✓ API versioning and deprecation abuse                      │
-│  ✓ Batch/bulk endpoint abuse patterns                        │
-│  ✓ Rate limiting bypass techniques                           │
-│  ✓ API documentation and schema exploitation                 │
-│  ✓ Protocol-level attacks (GraphQL, WebSocket, gRPC)         │
-│  ✓ Resource exhaustion and abuse patterns                    │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Asset discovery: enumerate API endpoints comprehensively  │
-│  + Code search: find internal API routes in source code      │
-│  + Vulnerability DB: CVEs in API frameworks                  │
-└──────────────────────────────────────────────────────────────┘
-```
 
 ---
 

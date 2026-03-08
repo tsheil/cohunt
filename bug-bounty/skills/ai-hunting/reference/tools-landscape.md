@@ -289,6 +289,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - A fully local pentesting agent achieved **~78% on XBOW benchmarks** via feedback-driven iteration — demonstrates locally-run agents can approach XBOW-level capability without cloud infrastructure
 - HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
+- **XBOW #1 globally** confirmed at Black Hat 2026 with live demo — ran real-time on HackerOne programs finding vulnerabilities on stage; nominated #6 in Enterprise Tech 30 Early Stage
 
 **Wiz Research AI Agent Benchmarks (2025-2026):**
 - Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
