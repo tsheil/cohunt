@@ -40,7 +40,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy
 - **HackerOne Hai** AI validation agent launched February 2026 — 56% reduction in vulnerability validation time
 - **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026)
-- **HackerOne Agentic PTaaS** (2026): continuous security testing combining autonomous AI agents with human expertise
+- **HackerOne Agentic PTaaS** (January 2026): continuous testing with **88% accuracy**, fix-verified findings; trained on proprietary exploit intelligence
+- **IBM Granite AI Bug Bounty** (HackerOne): up to **$100K** to test Granite models with Granite Guardian guardrails; focus on jailbreaks in enterprise environments
 - **Intigriti adopted CVSS V4** for all new submissions starting 2026
 - **Salesforce Bug Bounty 10th Anniversary** — $30.4M invested since 2015
 - **Google awarded $250,000** for a single Chrome flaw (CVE-2025-4609) — record-breaking payout

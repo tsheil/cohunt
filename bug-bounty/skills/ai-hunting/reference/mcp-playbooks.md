@@ -364,6 +364,8 @@ A rogue MCP server can inject JavaScript into Cursor's built-in browser, replaci
 | **Akto** | Platform | 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; MCP discovery | Enterprise deployment |
 | **AgentAudit** (ecap0) | Registry + CLI | MCP server security registry; multi-agent consensus-based auditing; schema drift detection; 194 packages audited, 118 findings across 68 packages; covers npm, pip, and AgentSkills | agentaudit.dev |
 | **Agent-Wiz** (Repello AI) | CLI | Threat modeling and visualization for LangGraph, AutoGen, CrewAI agents | GitHub: `Repello-AI/Agent-Wiz` |
+| **Javelin Ramparts** | CLI (Rust) | High-performance MCP scanner; tool poisoning, tool shadowing, rug pulls; maps findings to OWASP/MITRE; includes runtime guardrails | Docker Hub (2-min deploy); Mozilla Ventures-backed |
+| **Cycode MCP Server** | MCP integration | SAST, SCA, IaC, and secrets scanning integrated into AI coding workflows; scans generated/modified code with contextual remediation | Cycode CLI v3.2.0+; works with Cursor, Windsurf, Copilot |
 
 **MCP Security Tools:** mcp-scan v0.4.2 (Invariant Labs, acquired by Snyk Feb 2026 — standard MCP scanner for tool poisoning, rug pulls, cross-origin escalation; static + proxy modes), MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
 

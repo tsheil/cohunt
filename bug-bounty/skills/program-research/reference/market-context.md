@@ -148,7 +148,8 @@ Notable new programs and expansions (2025-2026):
 - **curl bug bounty shutdown** (January 2026): Daniel Stenberg ended program after AI-generated submissions overwhelmed team — only 5% of 2025 submissions were genuine vulnerabilities. First major program shutdown attributed to AI slop. Paid $90K+ for 81 genuine vulnerabilities before closing. 20 submissions in just the first weeks of 2026 (7 in a single 16-hour period), none identifying real vulnerabilities. Reports via GitHub directly now, no monetary rewards
 - **HackerOne Good Faith AI Research Safe Harbor** (January 20, 2026): clarifies legal protections for researchers conducting authorized AI security testing
 - **HackerOne AI Policy Update** (February 2026): researcher submissions are NOT used to train AI models — addresses researcher concerns about data usage
-- **HackerOne Agentic PTaaS** (2026): combines autonomous agent execution with human expertise for continuous testing
+- **HackerOne Agentic PTaaS** (January 2026): combines autonomous agent execution with human expertise for continuous testing; **88% accurate**, fix-verified findings with low false positives; trained on proprietary exploit intelligence
+- **IBM Granite AI Bug Bounty** (HackerOne, 2026): up to **$100K in bounties** to test IBM Granite AI models; focus on jailbreaks and flaws in enterprise environments with Granite Guardian guardrails active; select researchers invited
 - **0din** (Mozilla): GenAI-focused bug bounty covering GPT-4, Gemini, LLaMa, Claude. Bounties $500-$15,000. Launched **Agent 0DIN** gamified CTF for prompt injection/jailbreaking training
 - **OpenAI Codex Security** launched publicly March 6, 2026 (formerly Aardvark) — 14 CVEs discovered across OpenSSH, GnuTLS, GOGS, Chromium; available to ChatGPT Enterprise/Business/Edu
 - **Amazon Nova** — Private AI bug bounty; prompt injection, jailbreaks, exploitable model behavior; $55K+ paid, 30+ validated findings (Amazon Science, early 2026)
