@@ -13,7 +13,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **HackerOne total annual payouts**: $81M (13% YoY increase), top 10 programs paid $21.6M
 - **82% of hackers** now use AI in their workflows (Bugcrowd 2026, up from 64% in 2023)
 - **Nearly 10% of researchers** now specialize in AI/LLM security testing
-- **XBOW** (autonomous agent) reached #1 on HackerOne leaderboard with 1,400+ zero-days
+- **XBOW** (autonomous agent) reached #1 on HackerOne leaderboard with 1,400+ zero-days; **$117M total funding** ($75M Series B led by Altimeter + Sequoia)
 - **560+ valid reports** submitted by autonomous AI agents on HackerOne
 - **Prompt injection in 73%+ of production AI deployments** assessed during security audits; only 34.7% have dedicated defenses
 - **Critical CVEs in AI coding tools**: GitHub Copilot RCE (CVE-2025-53773, CVSS 9.6), Cursor IDE (CVSS 9.8), Microsoft Copilot (CVSS 9.3)
@@ -149,4 +149,13 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **AgentAudit MCP registry** (March 2026): 194 MCP packages audited using multi-agent consensus — 118 findings across 68 packages; registry-wide Trust Score 98/100 but 14 critical/high findings are real exploitable vulnerabilities; discovered Schema Drift and Context Pivoting as new MCP attack vectors
 - **ICON indirect prompt injection defense** (March 2026): two-stage defense (attention collapse detection + Mitigating Rectifier) significantly reduces indirect injection success rates — emerging defense to test against in hardened targets
 - **Full Schema Poisoning (FSP)** identified as evolution beyond tool description poisoning — structural compromise of tool schemas (hidden parameters, altered return types, malicious defaults) bypasses description-only MCP scanners (Adversa AI, March 2026)
+- **43% of MCP servers vulnerable to command execution** (Adversa AI March 2026 aggregate — broader than Endor Labs' 34% API-level metric); 3 demonstrated attack classes with PoC code: external prompt injection, tool prompt injection, cross-tool hijacking
+- **Image-based prompt injection** (arXiv:2603.03637, March 2026): 64% attack success rate against GPT-4-turbo via adversarial instructions embedded in natural images — new multimodal attack vector for any system processing images through vision-language models
+- **Cisco FMC CVSS 10.0 pair** (March 4, 2026): CVE-2026-20079 (auth bypass) + CVE-2026-20131 (Java deser RCE); both maximum severity with no workarounds — demonstrates critical infrastructure remains high-value target
+- **VMware Aria Operations active exploitation** (CVE-2026-22719, CVSS 8.1): command injection granting root + full virtual infrastructure compromise; added to CISA KEV March 3, 2026
+- **Qualcomm Android zero-day** (CVE-2026-21385): 230+ chipset models affected; limited targeted exploitation attributed to spyware/nation-state; part of 129-vuln Android March 2026 patch
+- **OpenSSF AI/ML Security Working Group** (February 2026): new bi-weekly collaboration with CoSAI, AGNTCY, NIST, SPDX, OWASP — standardization momentum for agentic AI security
+- **Trail of Bits Comet audit** (February 20, 2026): 4 prompt injection techniques found in Perplexity's agentic browser; defined TRAIL trust zone taxonomy (INJECTION, CTX_IN, CTX_OUT, REV_CTX_IN) for agentic browser security testing
+- **Novee Security benchmark**: proprietary offensive AI model outperformed Gemini 2.5 Pro and Claude 4 Sonnet by 55%+ on constrained web exploitation, achieving up to 90% accuracy vs ~65% for frontier LLMs
+- **97% of AI-related incidents** stemmed from basic access control flaws (HackerOne 2025) — most AI bugs are still fundamentally traditional auth/authz issues
 

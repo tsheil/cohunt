@@ -245,7 +245,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 ## MCP Implementation Vulnerability Stats
 
 - **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
-- **43% of tested MCP server implementations** contained command injection flaws (March 2025)
+- **43% of MCP servers vulnerable to command execution** (Adversa AI March 2026 aggregate across 500+ servers; 3 demonstrated attack classes with PoC code: external prompt injection, tool prompt injection, cross-tool hijacking)
 - **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
 - **30% permitted unrestricted URL fetching** (SSRF-prone)
 - **8,000+ MCP servers** found publicly exposed in February 2026, with 492 identified as vulnerable (lacking authentication or encryption)
@@ -268,6 +268,8 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 - **BlueRock MCP Trust Registry** (March 2026): analyzed **7,000+ MCP servers** — **36.7% exposed to SSRF** vulnerabilities
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series; MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
 - **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate data. Evaluated across 5 real-world MCP servers and 4 LLM agents
+- **AgentAudit registry growth** (March 2026): **270+ packages** audited with **247 vulnerabilities** found using multi-agent consensus auditing — growth from 194 packages in early March demonstrates expanding MCP ecosystem audit coverage
+- **MCP server audit ecosystem maturing**: 194→270+ packages with systematic scanning; most common patterns remain `child_process.exec()` command injection, credential leakage in error messages/logs, and excessive filesystem permissions
 - **PoisonedRAG** (USENIX Security 2025): first knowledge corruption attack on RAG systems — attackers inject semantically meaningful poisoned texts into RAG databases
 - **"Lethal Trifecta" Pattern**: repeated pattern across real-world MCP incidents — privileged access + untrusted input + external communication channel
 - **5.5% of MCP servers** in the wild exhibit active tool poisoning attacks; **33% allow unrestricted network access** (arXiv research on 2,614 MCP implementations)

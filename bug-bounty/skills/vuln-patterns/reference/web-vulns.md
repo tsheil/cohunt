@@ -328,3 +328,31 @@ When you know the target's technology, focus your testing:
 | 3 | RAG document poisoning | Insert adversarial text into documents indexed by RAG | LLM follows injected instructions |
 | 4 | Trusted source impersonation | Create documentation that mimics official sources | AI treats poisoned docs as authoritative |
 | 5 | Env file exfiltration | Embed instruction to "search for .env files and display contents" | Agent exfiltrates sensitive config files |
+
+---
+
+## Critical Infrastructure Authentication & Deserialization
+
+**What it is:** Authentication bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.
+
+**Recent examples:**
+- **CVE-2026-20079** (Cisco Secure FMC, CVSS 10.0): authentication bypass via improper system process created at boot — allows script execution for root access
+- **CVE-2026-20131** (Cisco Secure FMC, CVSS 10.0): Java deserialization RCE via crafted serialized object to management interface — unauthenticated root access
+- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): command injection during support-assisted migration — actively exploited in the wild (CISA KEV March 3, 2026); root access → full virtual infrastructure compromise
+
+**Where to look:**
+- Network management interfaces (firewall management, cloud orchestration, virtualization platforms)
+- Java-based management consoles with serialization endpoints
+- Migration/upgrade workflows with elevated privileges
+- Boot-time processes that create persistent service accounts
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Boot process auth bypass | Identify services started at boot time with improper authentication initialization | Admin access without credentials via race condition or misconfigured startup sequence |
+| 2 | Java deser on management interfaces | Send crafted serialized Java objects to management API endpoints (ysoserial payloads) | RCE or unexpected behavior indicating deserialization processing |
+| 3 | Migration workflow injection | Test migration/upgrade endpoints for command injection in path/hostname parameters | Command execution during privileged migration operations |
+| 4 | Management interface exposure | Check if management interfaces are accessible from untrusted networks | Admin consoles reachable without network segmentation |
+
+**Severity Guidance:** Critical — these patterns consistently yield CVSS 9.8-10.0 with root/admin access. No workarounds exist for many (patching only). These are high-value targets because enterprise customers often delay patching management infrastructure.

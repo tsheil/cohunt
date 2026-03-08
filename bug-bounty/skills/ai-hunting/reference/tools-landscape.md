@@ -100,7 +100,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
 - Automates reconnaissance (Subfinder, Amass, WhatWeb), vulnerability scanning (Nuclei, ffuf), exploit generation, and report writing
 - Handles 2FA logins and browser-based attacks without human input; runs via Docker containers
-- **Cost**: ~$50 per run using Claude 3.5 Sonnet, completing in 1-1.5 hours
+- **Pricing**: subscription-based — Free ($0, 80K daily tokens), Starter ($3.14/mo), Plus ($5.99/mo), Pro ($49.99/mo, 10M daily tokens), Enterprise (custom). Previously characterized as ~$50/run, but actual model is subscription with token limits
 - Rapidly growing: GitHub's fastest-rising security project in early 2026
 - GitHub: `KeygraphHQ/shannon`
 
@@ -280,7 +280,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
 - **Benchmark performance:** handled **75% of standard web security challenges** entirely on its own, plus **85% of custom-built, never-before-seen vulnerabilities** that would stump skilled human researchers
 - **Validation approach:** sophisticated automated "validators" — peer reviewers that confirm each vulnerability (e.g., headless browsers verifying JavaScript payloads execute on target sites) — avoiding the false positive problem
-- **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG)
+- **Raised $75M Series B** (led by Altimeter Capital, with Sequoia Capital and NFDG); **$117M total funding**
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings, though costs are expected to drop
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
 - **XBOW Pentest On-Demand** launched late 2025 — fully automated pentest service delivering results within 5 business days at **$6,000 per engagement**
@@ -328,7 +328,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **The 2026 Tool Landscape:**
 - **AISLE** for deep C/C++ vulnerability discovery at scale (100+ CVEs, 13/14 OpenSSL CVEs)
-- **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark)
+- **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark; subscription pricing $0-$49.99/mo)
 - **ZAST.AI** for zero-false-positive source code scanning (119 CVEs, $10M funded)
 - **AESIR** (Trend Micro) for zero-day discovery in AI infrastructure (21 CVEs including NVIDIA, MCP tooling)
 - **Strix** for autonomous web app testing with browser + proxy + terminal
@@ -360,7 +360,10 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
 - **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; 55 automated audit/hardening checks mapped to OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
 - **AgentGuard** — runtime guard for AI agents blocking malicious skills, data leaks, and secret exposure; sub-millisecond latency local PolicyEngine with tamper-evident audit logs; compliance evidence for EU AI Act and SOC 2
-- **Novee Security** ($51.5M funded, January 2026) — AI penetration testing platform with proprietary offensive AI model; founded by Unit 8200/Talpiot veterans; transitions red teaming from scheduled events to continuous operational pressure
+- **Ironclaw** (February 2026) — OpenClaw-inspired Rust agent runtime with defense-in-depth (sandboxing, secret boundaries); open-source alternative focused on security-first agent execution
+- **Nono** (February 2026) — kernel-enforced sandbox CLI and SDK to isolate AI agents with capability controls and safe secret injection; granular permission model for agent containment
+- **Clawsec** (February 2026) — security skill suite for OpenClaw and NanoClaw agents with automated audits, drift detection, and integrity checks; open-source agent hardening toolkit
+- **Novee Security** ($51.5M funded, January 2026) — AI penetration testing platform with proprietary offensive AI model; founded by Unit 8200/Talpiot veterans; outperformed frontier LLMs (Gemini 2.5 Pro, Claude 4 Sonnet) by over **55%** on constrained web exploitation challenges, achieving **up to 90% accuracy** where general-purpose models plateau at ~65%; transitions red teaming from scheduled events to continuous operational pressure
 - **Maze** ($31M funded) — AI agents for vulnerability management modeling analyst workflows; deploys thousands of agents to investigate cloud data, proving 80-90% of findings are false positives and identifying exploitable ones
 - **Enkrypt AI MCP Scan + Secure MCP Gateway** — automated MCP scanner with CVSS severity scores and line-level references; open-source Secure MCP Gateway provides real-time AI safety filters between MCP client and servers; GitHub: `enkryptai/secure-mcp-gateway`
 - **MCPScan.ai** — platform with advanced Tool Metadata Scanner using specialized LLM classifier to detect poisoning attempts across MCP tool definitions
@@ -369,5 +372,5 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Cecuro AI** (DeFi Security Agent) — purpose-built AI agent for smart contract vulnerability detection; detected vulnerabilities in **92% of 90 exploited DeFi contracts** ($96.8B exploit value) vs 34% for baseline GPT-5.1; performance gap from domain-specific security methodology, not model capability; best for: DeFi/Web3 bug bounty programs
 - **Hacktron AI** (Bug Bounty Research Team) — AI-powered research team earning bounties across AI IDEs; $10,000 for Google Antigravity RCE; CVE-2026-1731 (CVSS 9.9) pre-auth RCE in BeyondTrust Remote Support; findings in Cursor, Windsurf, Perplexity Comet, OpenAI Atlas; demonstrates AI-augmented bug bounty team model — currently in private beta
 - **Cisco MCP Scanner v4.0.1** (Open Source, March 2026) — three scanning engines: YARA static analysis, LLM-as-judge semantic evaluation, and Cisco AI Defense integration; contextual/semantic analysis of tool definitions and implementations; partnership with AWS for MCP registry/gateway integration; also covers A2A protocol and agentic skill scanning; GitHub: `cisco-ai-defense/mcp-scanner`
-- **Snyk Agent Scan** (February 2026) — AI agent, MCP server, and Claude Skills security scanner; detects prompt injection, tool poisoning, tool shadowing, toxic flows, rug pull attacks, malware payloads, credential handling issues, and hardcoded secrets; CLI scan + background MDM mode; Skill Inspector for community use; GitHub: `snyk/agent-scan`
-- **AgentAudit** (ecap0, March 2026) — MCP server security registry using multi-agent consensus-based auditing; 194 packages audited across 211 security reports with 118 findings across 68 packages; discovered Schema Drift and Context Pivoting attack vectors; covers npm packages, pip packages, and AgentSkills; registry-wide average Trust Score 98/100 but 14 critical/high findings represent real exploitable vulnerabilities; agentaudit.dev
+- **Snyk Agent Scan** (February 2026) — AI agent, MCP server, and Claude Skills security scanner; detects prompt injection, tool poisoning, tool shadowing, toxic flows, rug pull attacks, malware payloads, credential handling issues, and hardcoded secrets; CLI scan + background MDM mode; **Skill Inspector free self-service website launched Feb 13, 2026** — auto-discovers Claude Code/Desktop, Cursor, Gemini CLI, and Windsurf configurations; GitHub: `snyk/agent-scan`
+- **AgentAudit** (ecap0, March 2026) — MCP server security registry using multi-agent consensus-based auditing; **270+ packages** audited with **247 vulnerabilities** found (up from 194 packages in early March); discovered Schema Drift and Context Pivoting attack vectors; covers npm packages, pip packages, and AgentSkills; registry-wide average Trust Score 98/100 but 14 critical/high findings represent real exploitable vulnerabilities; agentaudit.dev

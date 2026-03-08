@@ -298,6 +298,21 @@ When reporting mobile vulnerabilities, frame impact in terms of:
 
 ---
 
+## Active Mobile Threats (March 2026)
+
+**Qualcomm Android Zero-Day (CVE-2026-21385, CVSS 7.8):**
+- Integer overflow/wraparound in graphics/display component during memory allocation alignment
+- Affects **230+ Qualcomm chipset models** — enormous attack surface
+- Limited, targeted exploitation confirmed by Google (likely spyware/nation-state attribution)
+- Added to CISA KEV March 3, 2026; patched in Google's March 2026 Android update (129 total vulnerabilities)
+- **Hunting relevance**: test for graphics subsystem memory corruption patterns; chipset-level bugs affect all apps on the device
+
+**Google March 2026 Android Update:**
+- 129 vulnerabilities patched including critical System component RCE (CVE-2026-0006) requiring no privileges or user interaction
+- Signal for hunters: large patch cycles often contain less-publicized bugs in the same components worth investigating
+
+---
+
 ## Tools Reference
 
 ### Android

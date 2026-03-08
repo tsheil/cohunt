@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.25.0)*
+*Last updated: March 2026 (v0.32.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
@@ -255,6 +255,11 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-68145/68143/68144 (Anthropic mcp-server-git): three chained CVEs enabling RCE via indirect prompt injection through flag bypass, unvalidated paths, and argument injection
 - CVE-2026-25536 (MCP TypeScript SDK, CVSS 7.1): cross-client data leak when McpServer instance reused across multiple clients; affects SDK v1.10.0-1.25.3; fixed v1.26.0
 - MCP ecosystem crisis confirmed (March 2026): **30 CVEs in 60 days**; Enkrypt AI scan of 1,000 servers found **33% critically vulnerable** averaging **5.2 vulns per server**; compound exploit probability hits 92% at 10 plugins
+- CVE-2026-20079 + CVE-2026-20131 (Cisco Secure Firewall Management Center, both **CVSS 10.0**, March 4 2026): authentication bypass → root + Java deserialization RCE → root; affects on-premises FMC and Cisco Security Cloud Control; no workarounds — patching only
+- CVE-2026-22719 (VMware Aria Operations, CVSS 8.1): command injection during support-assisted migration; actively exploited in the wild; added to CISA KEV March 3 2026; root access → full virtual infrastructure compromise
+- CVE-2026-21385 (Qualcomm Android, CVSS 7.8): integer overflow in graphics/display component affecting 230+ chipset models; limited targeted exploitation (likely spyware/nation-state); part of Google March 2026 Android update patching 129 vulnerabilities including critical System RCE (CVE-2026-0006)
+- Image-based prompt injection (arXiv:2603.03637, March 2026): black-box attack embeds instructions in natural images invisible to humans; 64% success rate against GPT-4-turbo — new multimodal attack vector
+- Trail of Bits Comet audit (February 20, 2026): 4 prompt injection techniques against Perplexity's agentic browser exfiltrating private Gmail data; TRAIL trust zone taxonomy defines INJECTION/CTX_IN/CTX_OUT/REV_CTX_IN violation categories
 
 ---
 
@@ -276,12 +281,12 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 ## Competition Landscape
 
 Competition awareness:
-- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ zero-day submissions, running 80x faster than manual teams; raised $75M in funding; expanding APAC presence in 2026
+- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ zero-day submissions, running 80x faster than manual teams; raised **$117M total** ($75M Series B led by Altimeter/Sequoia); expanding APAC presence in 2026
 - XBOW benchmark: **75% of standard web security challenges** solved autonomously, **85% of custom-built challenges** — uses automated "validator" peer reviewers to confirm each finding
 - HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
 - XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days
 - 82% of researchers now use AI tools in hunting (Bugcrowd 2026)
-- **Shannon** emerged as GitHub's fastest-rising security project (96.15% on XBOW benchmark, fully autonomous white-box pentesting)
+- **Shannon** emerged as GitHub's fastest-rising security project (96.15% on XBOW benchmark, fully autonomous white-box pentesting; subscription pricing $0-$49.99/mo, not per-run)
 - **Strix** emerged as leading open-source autonomous AI pentest tool (~2K GitHub stars, used by Fortune 500 security teams and top 1% HackerOne hunters)
 - **NeuroSploit v3** introduced autonomous pentesting with exploit chaining and anti-hallucination safeguards
 - Programs with fewer researchers (avg 56 vs 97) tend to have higher-impact submissions
@@ -311,7 +316,7 @@ Competition awareness:
 - **ZAST.AI** raised $10M total, 119 CVEs assigned, "zero false positive" approach — new competitor for automated code scanning
 - **Trend Micro AESIR** — AI-powered zero-day discovery (21 CVEs across NVIDIA, Tencent, MLflow, MCP tooling)
 - **Semgrep AI-Powered Detection** — multimodal AppSec engine: deterministic + LLM reasoning; detects IDORs, broken auth; filters 1 in 5 false positives
-- **Novee Security** — **$51.5M** Seed + Series A; AI penetration testing platform from Unit 8200/Talpiot veterans
+- **Novee Security** — **$51.5M** Seed + Series A; AI penetration testing platform from Unit 8200/Talpiot veterans; proprietary model achieves **90% accuracy** on constrained web exploitation (55%+ better than frontier LLMs at ~65%)
 - **Maze** — **$31M** funded; AI agents model analyst workflows; proves 80-90% of findings are false positives
 - **Terra Security** raised **$38M total** (Series A $30M led by Felicis, Sep 2025) — first agentic-AI continuous pentesting platform, Fortune 100 clients
 - **DeepKeep** launched AI agent attack surface scanner (March 2026) — maps enterprise risk across Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, and Make frameworks

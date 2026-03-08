@@ -27,6 +27,7 @@ Attack patterns targeting AI agents, coding assistants, multi-agent systems, and
   - [Autonomous Jailbreak Agents](#autonomous-jailbreak-agents)
   - [SOUL.md Identity File Poisoning](#soulmd-identity-file-poisoning)
   - [Side-Channel Timing Attacks](#side-channel-timing-attacks-against-llms)
+- [Image-Based Prompt Injection](#image-based-prompt-injection)
 - [Full Schema Poisoning (FSP)](#full-schema-poisoning-fsp)
 - [Supply Chain Worm: Shai-Hulud](#supply-chain-worm-shai-hulud)
 - [Google Antigravity IDE Attack Surface](#google-antigravity-ide-attack-surface)
@@ -201,6 +202,15 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 A new attack surface emerging in early 2026 as AI agents gain autonomous web browsing capabilities:
 
 **Affected Products:** Perplexity Comet, Chrome Gemini panel, ChatGPT Atlas/Operator, and other agentic browsers.
+
+**Trail of Bits Trust Zone Taxonomy (February 2026):**
+A simplified trust zone violation model for agentic browsers, from Trail of Bits' audit of Perplexity Comet (4 prompt injection techniques found):
+- **INJECTION** — untrusted input injected into AI agent context
+- **CTX_IN** — sensitive browsing data added to chat context (e.g., Gmail contents reaching the AI)
+- **CTX_OUT** — chat context leaked into external requests (e.g., AI includes private data in web requests)
+- **REV_CTX_IN** — chat context affects browsing origins (e.g., AI modifies which pages are visited based on injected instructions)
+
+Use this taxonomy when categorizing agentic browser vulnerabilities in reports — maps directly to CWE categories and helps triagers understand the trust boundary violation.
 
 **Attack Patterns:**
 - **Zero-click agent hijacking** — Attacker-controlled web content (calendar invites, emails, documents) triggers autonomous agent execution without user interaction
@@ -483,6 +493,25 @@ A new class of inference attacks exploiting timing characteristics of language m
 4. Check if mitigations (padding, delay injection) are applied to streaming responses
 
 **Current Mitigations:** Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures. Test if target has similar protections.
+
+### Image-Based Prompt Injection
+
+A novel black-box attack embeds adversarial instructions into natural images to override multimodal LLM behavior (arXiv:2603.03637, March 2026):
+
+**How It Works:**
+- Uses segmentation-based region selection, adaptive font scaling, and background-aware rendering to hide instructions in images
+- Instructions invisible to human viewers but interpretable by vision-language models
+- Tested with COCO dataset and GPT-4-turbo across 12 adversarial prompt strategies
+- Achieves up to **64% attack success rate** under stealth constraints
+
+**Testing Approach:**
+1. If target processes images through multimodal LLMs (content moderation, captioning, analysis), test for image-embedded injection
+2. Embed adversarial text in image regions with matching background colors (low contrast = invisible to humans, readable by models)
+3. Test with different font sizes — smaller text is less visible but still parsed by vision models
+4. Check if image-based injections can override text-based system prompts
+5. Test across multiple image input channels (uploads, screenshots, camera, OCR pipelines)
+
+**Severity Guidance:** High if image-based injection overrides safety filters or extracts data from multimodal AI systems; Medium if limited to behavior modification without data access. Relevant for any system using GPT-4V, Claude vision, Gemini multimodal, or similar.
 
 ---
 
