@@ -139,6 +139,19 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
+## What's New in v0.28.0
+
+- **TypeScript runtime type erasure pattern** — New critical hunt pattern in `framework-patterns.md` for sandbox escapes via TS type confusion (CVE-2026-25049, n8n, CVSS 9.8) with code examples and audit guidance
+- **Content-Type confusion pattern** — Added n8n Ni8mare CVE-2026-21858 (CVSS 10.0) request handler exploitation pattern to framework patterns
+- **11 new IDEsaster CVEs** — Cursor CVE-2026-22708/26268, Copilot CVE-2026-21257/21523, OpenClaw CVE-2026-28485/28462/28466/28478/29610 added to agent attack patterns
+- **Claude DXT zero-click RCE** — LayerX disclosure (CVSS 10.0, Anthropic declined to fix) and AI-as-C2 proxy (Check Point Research) patterns added
+- **MCP OAuth expansion** — Root cause analysis, 6 additional affected clients, 7 new test procedures for Obsidian Security MCP OAuth CSRF findings
+- **7 new MCP vulnerability classes** — OpenClaw browser control, exec bypass, PATH hijack, symlink escape; MCP Go SDK case sensitivity (CVE-2026-27896)
+- **6 new MCP test procedures** (#47-52) — Browser control auth bypass, exec approval gating, PATH hijacking, symlink sandbox escape, DXT RCE, AI-as-C2
+- **VoidLink AI malware** — First AI-generated advanced malware (88K lines, Check Point Research) added to case studies and market context
+- **Reference file consolidation** — Merged `advanced-web-vulns.md` into `web-vulns.md` (eliminated duplicate GraphQL/JWT/OAuth/rate limiting content); SKILL.md routing updated
+- **n8n `with` sandbox escape** — CVE-2026-1470 (CVSS 9.9) JavaScript deprecated `with` statement scope chain manipulation added across case studies and framework patterns
+
 ## What's New in v0.27.0
 
 - **source-code-audit progressive disclosure** — Extracted framework-specific patterns to `reference/framework-patterns.md` (187 lines), reducing SKILL.md from 469→353 lines with room to grow

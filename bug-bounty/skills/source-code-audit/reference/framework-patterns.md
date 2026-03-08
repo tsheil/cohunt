@@ -110,6 +110,59 @@ Language and framework-specific vulnerability patterns for source code audits. R
 | `dangerouslySetInnerHTML` in React SSR with user data | Stored XSS |
 | Edge runtime (Cloudflare Workers, Vercel Edge) with `eval()` | RCE at edge |
 | Missing `Content-Security-Policy` in `next.config.js` | XSS amplification |
+| **Runtime type erasure in security-critical code** | **Sandbox escape, auth bypass** |
+| **Content-Type header not verified before body parsing** | **File upload forge, session hijack** |
+
+### TypeScript Runtime Type Erasure (Critical Hunt Pattern)
+
+TypeScript types are **erased at compilation** — they provide zero runtime enforcement. Any security-critical function that relies on TypeScript type annotations for input validation is vulnerable:
+
+**The Pattern (CVE-2026-25049, n8n, CVSS 9.8):**
+```typescript
+// DANGEROUS: TypeScript annotation says 'string' but runtime doesn't enforce it
+function sanitize(key: string): string {
+  // Assumes key is always a string — attacker passes object/array at runtime
+  return key.replace(/dangerous/g, '');
+}
+```
+
+**What to Audit:**
+1. **Sandbox/expression engines** — any function that sanitizes user input based on TypeScript type annotations alone. Look for `key: string` parameters that accept destructured values
+2. **API input validation** — functions annotated with TypeScript types but missing runtime `typeof`/`instanceof` checks
+3. **Security-critical middleware** — auth, rate limiting, or access control functions that assume parameter types
+4. **process.binding() access** — sandbox escapes via `process.binding('spawn_sync')` bypassing module restrictions
+
+**Code Patterns to Flag:**
+```typescript
+// FLAG: Security function relying on TS type only
+function validateInput(data: string): boolean { ... }
+
+// FLAG: Destructuring can bypass type assumptions
+const { key } = userInput; // key could be any type at runtime
+
+// SAFE: Explicit runtime type check
+if (typeof key !== 'string') throw new Error('Invalid type');
+```
+
+**Key Insight:** If you find a TypeScript codebase with a sandbox, expression evaluator, or any security boundary that filters based on assumed types — test with non-string values (objects, arrays, symbols). This pattern caused a CVSS 9.8 RCE in n8n affecting ~100K instances.
+
+### Content-Type Confusion in Request Handlers
+
+When request handlers don't verify `Content-Type` before parsing the body, attackers can forge file uploads and manipulate request processing:
+
+**The Pattern (CVE-2026-21858, n8n Ni8mare, CVSS 10.0):**
+```typescript
+// DANGEROUS: Processing file data without verifying Content-Type is multipart/form-data
+app.post('/webhook', (req, res) => {
+  const files = req.body.files; // Attacker controls req.body.files without actual file upload
+  processFiles(files);          // Leads to arbitrary file read, session forge, RCE
+});
+```
+
+**What to Audit:**
+1. Webhook endpoints that accept file uploads — verify `Content-Type: multipart/form-data` is checked
+2. Any endpoint where `req.body.files` or similar is accessed without content-type verification
+3. Form handlers that process file metadata from the request body rather than actual multipart data
 
 ---
 

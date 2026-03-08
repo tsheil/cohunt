@@ -75,6 +75,13 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Agentgateway Input Sanitization** | CVE-2026-29791: missing parameter sanitization in MCP-to-OpenAPI conversion — path, query, and header values from MCP tools/call requests sent unsanitized as OpenAPI requests. Fixed in 0.12.0 | Medium-High |
 | **SANDWORM_MODE MCP Injection** | npm supply chain worm (Socket, Feb 2026): 19 typosquatting packages with "McpInject" module deploys malicious MCP server into AI coding assistant configs (Claude Code, Cursor, Windsurf). Rogue MCP tools embed prompt injections to steal SSH keys, AWS credentials, .env files. 48-hour delayed activation with per-machine jitter | Critical |
 | **Pydantic AI SSRF** | CVE-2026-25580: SSRF in URL download functionality (versions 0.0.26 to <1.56.0) — when apps accept message history from untrusted sources, attackers include malicious URLs targeting internal resources. Fixed in 1.56.0 | High |
+| **OpenClaw Browser Control Auth Bypass** | CVE-2026-28485: versions 2026.1.5 to 2026.2.12 fail to enforce mandatory authentication on `/agent/act` browser-control HTTP route — unauthorized local callers invoke privileged operations | Critical |
+| **OpenClaw Browser Control Path Traversal** | CVE-2026-28462: browser control API accepts user-supplied output paths without constraining writes to temporary directories — file write to arbitrary locations | High |
+| **OpenClaw Exec Approval Bypass** | CVE-2026-28466: gateway fails to sanitize internal approval fields in `node.invoke` parameters — authenticated clients bypass exec approval gating for `system.run` commands | High |
+| **OpenClaw Webhook Handler DoS** | CVE-2026-28478: webhook handlers buffer request bodies without strict byte or time limits — remote unauthenticated attackers send oversized JSON payloads for denial of service | Medium |
+| **OpenClaw PATH Command Hijacking** | CVE-2026-29610: command hijacking via PATH environment variable manipulation — execute unintended binaries by prepending attacker-controlled directory to PATH | High |
+| **OpenClaw Symlink Sandbox Escape** | GHSA-M8V2-6WWH-R4GC: logic error in path validation — bind mounts for non-existent files within symlinked parent directories trick validation into accepting restricted host paths | Critical |
+| **MCP SDK Go Case-Insensitive JSON** | CVE-2026-27896: Go's `encoding/json.Unmarshal` matches field names case-insensitively — crafted responses with "Method" vs "method" bypass validation. Fixed in Go MCP SDK v1.3.1 | High |
 | **MCP Stdio Blacklist Bypass** | CVE-2026-30861 (CVSS 9.9): LLM-powered frameworks whitelisting `npx`/`uvx` but failing to block flag injection — `-p` flag with `npx node` bypasses command blacklist entirely. Only requires registering an account (unrestricted registration). Pattern: any MCP stdio config with command allowlists | Critical |
 | **SQL Expression Tree Bypass** | CVE-2026-30860 (CVSS 9.9): SQL injection protection that fails to recursively inspect child nodes within PostgreSQL array/row expressions — dangerous functions smuggled inside `ARRAY[]`/`ROW()` constructs chain with large object operations for full RCE. Pattern: any LLM-powered query builder with non-recursive sanitization | Critical |
 | **JavaScript `with` Sandbox Escape** | CVE-2026-1470 (CVSS 9.9): deprecated `with` statement in sandboxed JavaScript expression engines enables scope chain manipulation to break sandbox boundaries and execute arbitrary code. Pattern: workflow automation and expression engines using `with`-based scoping | Critical |
@@ -151,25 +158,39 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 44. Test for MCP stdio command blacklist bypass (WeKnora pattern): if target whitelists `npx`/`uvx` commands but allows flags, test if `-p` flag with `npx node` or similar bypasses the blacklist to execute arbitrary commands. (CVE-2026-30861, CVSS 9.9 — only requires registering an account; fixed in WeKnora v0.2.10)
 45. Test for PostgreSQL array/row expression SQL injection bypass: if target sanitizes SQL queries, test if recursive inspection covers child nodes within `ARRAY[]` and `ROW()` expressions. Smuggle dangerous functions (large object operations, library loading) inside nested PostgreSQL expressions. (CVE-2026-30860, CVSS 9.9 — chains with `lo_import`/`lo_get` for file read or `COPY ... FROM PROGRAM` for RCE; fixed in WeKnora v0.2.12)
 46. Test for MCP SDK cross-client data leak in stateless mode: if target runs a single `McpServer` instance with `StreamableHTTPServerTransport` across multiple clients, test if responses from one client are visible to another. No-auth servers in multi-client configs leak to anyone. (CVE-2026-25536, CVSS 7.1 — affects SDK v1.10.0-1.25.3; fixed v1.26.0)
+47. Test for OpenClaw browser control auth bypass: does the AI agent platform expose browser-control HTTP routes (e.g., `/agent/act`) without mandatory authentication? Can unauthenticated local callers invoke privileged browser operations? (CVE-2026-28485 — versions 2026.1.5 to 2026.2.12)
+48. Test for OpenClaw exec approval gating bypass: can authenticated clients bypass execution approval checks by injecting internal approval fields into `node.invoke` parameters? (CVE-2026-28466 — gateway fails to sanitize approval fields, allowing `system.run` without approval)
+49. Test for AI agent PATH command hijacking: can environment variable manipulation (PATH prepending) cause the AI agent to execute unintended binaries? Test by setting PATH to include attacker-controlled directory before legitimate paths. (CVE-2026-29610 — affects process execution in agent sandboxes)
+50. Test for symlink-based sandbox escape: request bind mounts for non-existent files within symlinked parent directories — does path validation resolve symlinks before checking? (GHSA-M8V2-6WWH-R4GC — validation accepts restricted host paths through symlinked parents)
+51. Test for Claude DXT zero-click RCE: if target uses Claude Desktop Extensions, can content from connected services (calendar, email, docs) trigger DXT execution without user interaction? DXT runs with full host privileges, no sandboxing. (LayerX, March 2026 — Anthropic declined to fix; 10,000+ active DXT users)
+52. Test for AI-as-C2 proxy: can the AI agent's web browsing capability be used as a bidirectional C2 channel? Post encoded commands on attacker-controlled pages, instruct AI to browse and extract them. No API keys or accounts needed — all traffic appears as normal AI browsing. (Check Point Research, January 2026)
 
 ---
 
 ## MCP OAuth Account Takeover
 
-Multiple one-click account takeover vulnerabilities in Remote MCP servers discovered by Obsidian Security. MCP servers acting as both authorization server and OAuth client created CSRF-style attacks leaking authorization codes:
+Multiple one-click account takeover vulnerabilities in Remote MCP servers discovered by Obsidian Security (expanded March 2026). MCP servers acting as both authorization server and OAuth client created CSRF-style attacks leaking authorization codes:
+
+**Root Cause:** The MCP spec treats an MCP server as a resource server, but most are implemented as API wrappers/proxies. MCP servers act as both an authorization server for MCP clients AND as a single OAuth client with one shared static `client_id` to the existing authorization server — the server can't tell who initiated the authorization request versus who completed it.
 
 **How It Works:**
 - MCP server sends user to its own authorization endpoint, then silently uses the returned code with a separate OAuth provider
 - Missing `state` parameter validation enables CSRF-style attacks against the authorization flow
-- Affected clients: Claude Desktop, VS Code, Cursor, Cline, ChatMCP, Cherry Studio
+- Attacker initiates OAuth flow, gets authorization URL, sends to victim — victim completes auth, attacker gets the tokens
+- **Affected clients:** Claude Desktop, VS Code, Cursor, Cline, ChatMCP, Cherry Studio, Gemini-CLI, MCP Inspector, Windsurf, Smithery.ai, Lutra.ai, Glue.ai
 
 **Testing Approach:**
 1. If MCP server implements OAuth, test for missing `state` parameter in authorization requests
 2. Test if authorization codes can be replayed across sessions
 3. Check if the MCP server validates redirect URIs strictly
 4. Test for mixed role confusion — server acting as both authorization server and OAuth client
+5. Check if `state` parameter is bound to a session cookie (the correct fix)
+6. Test if the consent flow can be completed by a different user than the one who initiated it (CSRF)
+7. Check if MCP server uses a shared static `client_id` — this is the architectural root cause
 
-**Timeline:** Reported July-August 2025; fixed September 2025; MCP spec updated November 25, 2025 to mandate OAuth 2.1 + PKCE.
+**Fix Pattern:** Bind the state to a session cookie — set a session cookie when user approves consent, generate state and bind it server-side, verify state matches session on callback.
+
+**Timeline:** Reported July-August 2025; fixed September 2025; MCP spec updated November 25, 2025 to mandate OAuth 2.1 + PKCE. Obsidian Security expanded disclosure March 2026 with additional affected clients.
 
 ---
 

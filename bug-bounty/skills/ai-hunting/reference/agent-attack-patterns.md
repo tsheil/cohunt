@@ -117,14 +117,23 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2026-21852 | Claude Code | API key exfiltration when opening crafted repositories | 5.3 |
 | CVE-2025-59944 | Cursor | Case-sensitivity bypass allowing file protection circumvention | -- |
 | CVE-2025-61590/91/92/93 | Cursor | Workspace file and MCP connection manipulation leading to RCE | -- |
-| CVE-2026-0830 | Kiro (AWS) | Command injection leading to RCE | -- |
+| CVE-2026-22708 | Cursor | Shell built-in bypass via environment variable poisoning in Allowlist mode | 9.8 |
+| CVE-2026-26268 | Cursor | Git hook sandbox escape — writing to `.git/hooks` for out-of-sandbox RCE | -- |
+| CVE-2026-0830 | Kiro (AWS) | Command injection in GitLab Helper via unquoted workspace paths | 8.4 |
 | CVE-2025-7656 | Chromium (Cursor/Windsurf) | 94+ Chromium vulnerabilities in AI IDEs using legacy builds | -- |
 | CVE-2026-29783 | GitHub Copilot CLI | Shell expansion arbitrary code execution via bash parameter patterns | HIGH |
+| CVE-2026-21257 | GitHub Copilot/VS | Elevation-of-privilege/security feature bypass in AI-assisted editing | 8.0 |
+| CVE-2026-21523 | GitHub Copilot/VS Code | AI-output validation failure — AI-generated suggestions become attack vectors | -- |
 | CVE-2026-22812 | OpenCode | Unauthenticated HTTP server with permissive CORS — any website can execute shell commands | 8.8 |
 | CVE-2025-64106 | Cursor | MCP installation deep-link RCE — masking malicious commands behind trusted dialog | 8.8 |
 | CVE-2026-24887 | Claude Code | Confirmation prompt bypass via `find` command | -- |
 | CVE-2026-28458 | OpenClaw | Browser Relay `/cdp` WebSocket endpoint missing authentication | 7.5 |
 | CVE-2026-28468 | OpenClaw | Sandbox browser bridge unauthenticated access | -- |
+| CVE-2026-28485 | OpenClaw | Unauthenticated `/agent/act` browser-control route — privileged ops without auth | Critical |
+| CVE-2026-28462 | OpenClaw | Path traversal in browser control API — output writes outside temp dirs | High |
+| CVE-2026-28466 | OpenClaw | Exec approval gating bypass via unsanitized `node.invoke` parameters | High |
+| CVE-2026-28478 | OpenClaw | Webhook handler DoS — unbounded JSON body buffering by unauthenticated callers | Medium |
+| CVE-2026-29610 | OpenClaw | PATH command hijacking — execute unintended binaries via env manipulation | High |
 
 **Cursor Workspace Trust Bypass (Oasis Security, 2026):**
 - Cursor ships with **Workspace Trust disabled by default** — unlike VS Code which prompts users before trusting workspaces
@@ -461,6 +470,46 @@ A new class of inference attacks exploiting timing characteristics of language m
 4. Check if mitigations (padding, delay injection) are applied to streaming responses
 
 **Current Mitigations:** Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures. Test if target has similar protections.
+
+---
+
+## Claude DXT Zero-Click RCE
+
+A critical vulnerability (CVSS 10.0) in Claude Desktop Extensions (DXT) discovered by LayerX (March 2026):
+
+**How It Works:**
+- 50+ Claude Desktop Extensions execute without sandboxing, with full host privileges
+- Malicious calendar event instructions trigger RCE via Google Calendar DXT
+- Attack chain: attacker creates calendar invite with prompt injection → victim's Claude processes calendar → DXT executes arbitrary commands on host
+- Zero-click: no user interaction required beyond having the Calendar DXT installed
+
+**Key Detail:** Anthropic declined to fix, stating it "falls outside current threat model." Affects 10,000+ active DXT users.
+
+**Testing Approach:**
+1. If target uses Claude Desktop Extensions, check if DXT execution is sandboxed
+2. Test if content from connected services (calendar, email, docs) can trigger DXT actions
+3. Check for privilege boundaries between DXT execution and host system
+4. Test if DXT tool calls are gated by user confirmation
+
+---
+
+## AI as C2 Proxy
+
+A novel attack technique using AI web-browsing capabilities as bidirectional command-and-control channels (Check Point Research, January 2026):
+
+**How It Works:**
+- Copilot and Grok web-browsing features used as C2 channels without API keys or registered accounts
+- Attacker posts encoded commands on attacker-controlled web pages
+- Compromised system instructs AI to browse the page, extract commands, execute them, then browse another page to post results
+- AI service acts as the relay — all traffic appears as normal AI browsing
+
+**Testing Approach:**
+1. If target AI agent can browse the web, test if it can be directed to attacker-controlled URLs
+2. Test if responses from browsed pages can contain instructions the agent follows
+3. Check if AI-initiated web requests are distinguishable from normal browsing (most aren't)
+4. Test if output from AI can be directed to external endpoints
+
+**Severity Guidance:** Critical if AI agent has both web browsing and code execution capabilities; High if limited to data exfiltration. This pattern bypasses traditional network monitoring because traffic originates from the AI service's infrastructure.
 
 ---
 

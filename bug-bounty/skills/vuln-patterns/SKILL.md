@@ -402,7 +402,7 @@ For specialized or high-depth testing, load the relevant reference file:
 
 - **`reference/ai-mcp-vulns.md`** — 18 AI/LLM test patterns (OWASP LLM Top 10), 63 MCP test patterns with CVE references, 8 LPCI patterns, severity guidance, bypass techniques, OWASP MCP Top 10 mapping, and 70+ real-world incident references. **Use when:** target has AI features, MCP integrations, agent workflows, AI coding tools, or LLM-powered functionality.
 
-- **`reference/advanced-web-vulns.md`** — GraphQL (10 patterns + bypasses), JWT manipulation (11 patterns including JWE-wrapped PlainJWT), OAuth 2.0/OIDC (10 patterns + redirect_uri bypasses), API rate limiting (10 patterns), and n8n/workflow automation sandbox escapes (8 patterns). **Use when:** target has GraphQL API, JWT auth, OAuth flows, rate-limited endpoints, or workflow automation platforms.
+- **`reference/web-vulns.md`** — Tech stack priority matrix, GraphQL (10 patterns + bypasses), JWT manipulation (11 patterns including JWE-wrapped PlainJWT), OAuth 2.0/OIDC (10 patterns + redirect_uri bypasses), API rate limiting (10 patterns), n8n/workflow automation sandbox escapes (8 patterns), agentic browser hijacking (5 patterns), MCP OAuth bypass (5 patterns), AI IDE config exploitation (6 patterns), ContextCrush documentation supply chain (5 patterns). **Use when:** target has GraphQL API, JWT auth, OAuth flows, rate-limited endpoints, workflow automation platforms, AI coding IDEs, agentic browsers, or MCP integrations.
 
 For deep AI/agent hunting methodology beyond test patterns, use the **ai-hunting** skill.
 
@@ -427,7 +427,7 @@ Ask as you go: "I found a URL parameter that reflects in the page — what XSS p
 |---|---|
 | AI/LLM/MCP/agent test patterns (63+ MCP, 18 AI/LLM, 8 LPCI) | `reference/ai-mcp-vulns.md` |
 | AI/LLM hunting methodology, tools, market context | `ai-hunting` skill |
-| GraphQL, JWT, OAuth, rate limiting, sandbox escape patterns | `reference/advanced-web-vulns.md` |
+| GraphQL, JWT, OAuth, rate limiting, sandbox escape, agentic browser, AI IDE, MCP OAuth patterns | `reference/web-vulns.md` |
 | OAuth, JWT, SSO, MFA bypass methodology | `auth-testing` skill |
 | HTTP smuggling, cache poisoning, race conditions | `http-desync` skill |
 | Cloud misconfiguration patterns (S3, IAM, serverless) | `cloud-security` skill |
