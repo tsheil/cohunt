@@ -142,7 +142,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## MCP & Agent Infrastructure
 
-- **30+ MCP CVEs** filed in 60 days; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI)
+- **40+ MCP CVEs** filed in Q1 2026; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI)
 - **8,000+ MCP servers** found publicly exposed (Feb 2026)
 - **Endor Labs analysis** of 2,614 MCP implementations: 82% Path Traversal, 67% Code Injection, 34% Command Injection risks
 - **MCP server audit** (March 2026): 118 findings across 68 of 194 packages audited

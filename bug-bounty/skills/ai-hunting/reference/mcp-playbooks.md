@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 55+ concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
+Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 59 concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
 
 > **Related files:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent supply chain and novel attack techniques | [ai-case-studies.md](ai-case-studies.md) for real-world MCP incident case studies
 
@@ -10,7 +10,7 @@ Actionable test procedures for hunting vulnerabilities in Model Context Protocol
 
 - [MCP Vulnerability Classes](#mcp-vulnerability-classes)
 - [OWASP MCP Top 10 (2026)](#owasp-mcp-top-10-2026)
-- [55+ MCP Test Procedures](#55-mcp-test-procedures)
+- [59 MCP Test Procedures](#59-mcp-test-procedures)
 - [MCP OAuth Account Takeover](#mcp-oauth-account-takeover)
 - [MCP Real-World Attack Examples](#mcp-real-world-attack-examples)
 - [MCP Implementation Vulnerability Stats](#mcp-implementation-vulnerability-stats)
@@ -92,6 +92,7 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **MCP Stdio Blacklist Bypass** | CVE-2026-30861 (CVSS 9.9): LLM-powered frameworks whitelisting `npx`/`uvx` but failing to block flag injection — `-p` flag with `npx node` bypasses command blacklist entirely. Only requires registering an account (unrestricted registration). Pattern: any MCP stdio config with command allowlists | Critical |
 | **SQL Expression Tree Bypass** | CVE-2026-30860 (CVSS 9.9): SQL injection protection that fails to recursively inspect child nodes within PostgreSQL array/row expressions — dangerous functions smuggled inside `ARRAY[]`/`ROW()` constructs chain with large object operations for full RCE. Pattern: any LLM-powered query builder with non-recursive sanitization | Critical |
 | **JavaScript `with` Sandbox Escape** | CVE-2026-1470 (CVSS 9.9): deprecated `with` statement in sandboxed JavaScript expression engines enables scope chain manipulation to break sandbox boundaries and execute arbitrary code. Pattern: workflow automation and expression engines using `with`-based scoping | Critical |
+| **MCPJam Inspector RCE** | CVE-2026-23744 (CVSS 9.8): unauthenticated HTTP endpoint in MCP Inspector (MCPJam) can install arbitrary MCP servers; default binding to `0.0.0.0` exposes testing infrastructure to network-level attack — any host on the network can inject malicious MCP servers into the inspector. Pattern: MCP testing/debugging tools with permissive defaults | Critical |
 
 ---
 
@@ -116,7 +117,7 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 
 ---
 
-## 55+ MCP Test Procedures
+## 59 MCP Test Procedures
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -177,6 +178,7 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 56. Test for schema drift between MCP server versions: compare `tools/list` responses across minor/patch updates — do new parameters, tools, or capabilities appear without changelog entries? Check if "patch" updates silently introduce shell command parameters or cross-server influence instructions. (ecap0/AgentAudit, March 2026)
 57. Test for context pivoting in multi-server MCP deployments: if target connects multiple MCP servers to one agent, can a poisoned response from Server A instruct the agent to call Server B's tools with attacker-controlled parameters? Test cross-server data exfiltration via shared agent context. (ecap0/AgentAudit, February 2026)
 58. Test for full schema poisoning (FSP): beyond tool description poisoning, can an attacker modify structural schema elements — hidden parameters, altered return types, malicious default values — that affect all tool invocations while passing description-only scanners? Test if `inputSchema` contains parameters not visible in the tool's UI or documentation. (Adversa AI, March 2026)
+59. Test for MCP testing infrastructure RCE: if target uses MCP Inspector or similar debugging tools, check if unauthenticated HTTP endpoints allow installing arbitrary MCP servers. Test if the inspector binds to `0.0.0.0` (network-accessible) vs `127.0.0.1` (localhost-only). Can any host on the network inject malicious MCP servers into the testing environment? (CVE-2026-23744, MCPJam Inspector, CVSS 9.8 — default `0.0.0.0` binding)
 
 ---
 
@@ -246,7 +248,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 
 ## MCP Implementation Vulnerability Stats
 
-- **30+ MCP CVEs filed in just 60 days** — MCP is now AI's fastest-growing attack surface (MCP Security Research, early 2026)
+- **40+ MCP CVEs filed in Q1 2026** — MCP is now AI's fastest-growing attack surface, with critical RCEs in testing infrastructure (MCPJam Inspector), SDKs, and production servers (MCP Security Research, early 2026)
 - **43% of MCP servers vulnerable to command execution** (Adversa AI March 2026 aggregate across 500+ servers; 3 demonstrated attack classes with PoC code: external prompt injection, tool prompt injection, cross-tool hijacking)
 - **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
 - **30% permitted unrestricted URL fetching** (SSRF-prone)

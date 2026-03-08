@@ -280,7 +280,7 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **Endor Labs MCP analysis (2,614 implementations)** -- 82% vulnerable to Path Traversal, 67% to Code Injection, 34% to Command Injection
 - **MCP auth security** -- 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth (Astrix)
 - **Adversa AI MCP Security TOP 25** -- definitive catalog of 25 MCP vulnerability categories
-- **30+ MCP CVEs in 60 days** (early 2026) -- attack surface spans three layers: MCP servers, protocol libraries (SDKs), and MCP client machines
+- **40+ MCP CVEs in Q1 2026** -- attack surface spans three layers: MCP servers, protocol libraries (SDKs), and MCP client machines
 - **eval() epidemic (Feb 2026)** -- 7 RCE CVEs in one month, all from user input reaching eval()/exec(); CVE-2026-25546, CVE-2026-0755 (CVSS 9.8), CVE-2026-0756, CVE-2026-27203
 - **CVE-2026-25536 (MCP TypeScript SDK)** -- SDK-level cross-client data leak; responses leak across client boundaries when single McpServer instance is reused
 - **ClawJacked (Feb 2026)** -- malicious websites hijack local OpenClaw AI agents via WebSocket connections; full remote control of localhost-bound agents

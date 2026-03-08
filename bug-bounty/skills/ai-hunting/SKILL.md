@@ -86,7 +86,7 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **55+ MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **59 MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -158,7 +158,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
 - **XBOW**: #1 HackerOne with 1,060 submissions; **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
-- **30+ MCP CVEs** in 60 days; 38% of servers lack auth; 43% have command injection
+- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
@@ -191,6 +191,35 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 | **Medium** | LLM08; LLM04 non-critical; LLM09 critical advice | $500-$2K | Valid but requires multiple steps or lower impact |
 | **Low** | Prompt injection with no impact; System prompt non-sensitive info | $100-$500 | Informational |
 
+### What Gets Paid vs. What Gets Rejected
+
+The #1 mistake in AI bug reports: demonstrating a capability without proving security impact. Programs pay for **cross-trust-boundary impact**, not "the AI did something unexpected."
+
+**Pays bounties (crosses a trust boundary):**
+
+| Finding | Why It Pays | Typical Severity |
+|---------|-------------|------------------|
+| Prompt injection → accessing *other users'* data | Cross-user data access | High-Critical |
+| Prompt injection → tool executes unauthorized action (send email, delete data, modify records) | Unauthorized side effects beyond attacker's session | High-Critical |
+| Indirect injection via retrieved content → exfiltrates secrets | Attacker-controlled data causes victim's agent to leak PII/tokens | Critical |
+| MCP tool poisoning → RCE or credential theft | Trust boundary violation: tool description → code execution | Critical |
+| Memory poisoning → affects future sessions or other users | Persistent compromise beyond single interaction | High-Critical |
+| Denial-of-wallet → measurable financial impact | Resource exhaustion with quantifiable cost | Medium-High |
+| System prompt leak containing API keys, internal URLs | Sensitive data exposure enabling further exploitation | High |
+
+**Does NOT pay (stays within user's own session):**
+
+| Finding | Why It's Rejected |
+|---------|-------------------|
+| "I made the AI say something bad" (pure jailbreak) | No security impact — content moderation issue, not vulnerability |
+| System prompt leak (no sensitive data) | Low/informational — most programs consider system prompts non-secret |
+| Prompt injection with no downstream effect | Capability without impact — "so what?" test fails |
+| Self-XSS via AI output in own chat | No victim — attacker can only attack themselves |
+| AI hallucinated wrong information | Inherent LLM limitation, not a vulnerability |
+| "AI follows my instructions" without privilege escalation | Expected behavior — AI is designed to follow instructions |
+
+**The "So What?" Test:** Before submitting, ask: *"If an attacker does this, who is harmed besides themselves?"* If the answer is "no one," it's not a bounty-worthy finding. Chain it with a cross-boundary impact or move on.
+
 ### Common Rejection Reasons
 
 - "AI sometimes hallucinates" — inherent limitation, not a bug
@@ -207,7 +236,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 | File | Contents | Lines |
 |------|----------|-------|
 | [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~377 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (55+), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~415 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (59), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~420 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~480 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~163 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~241 |

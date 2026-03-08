@@ -96,7 +96,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Fully autonomous white-box AI pentester for web apps and APIs by Keygraph; **powered by Claude Agent SDK**
 - Four-phase multi-agent pipeline: reconnaissance, parallel vulnerability analysis, exploitation, and reporting
 - Analyzes source code to guide attack strategy, then validates with live browser and CLI-based exploits
-- Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark
+- Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark using **Code Property Graphs (CPG)** for semantic understanding of code structure and data flows
+- **Full-loop capability**: discover → validate → exploit — handles the entire vulnerability lifecycle autonomously
 - Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
 - Automates reconnaissance (Subfinder, Amass, WhatWeb), vulnerability scanning (Nuclei, ffuf), exploit generation, and report writing
 - Handles 2FA logins and browser-based attacks without human input; runs via Docker containers
@@ -108,26 +109,25 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Landmark achievement in January 2026: discovered **12 of 12 OpenSSL zero-days** in the January 2026 coordinated release, plus 13 of 14 CVEs assigned in 2025 — **15 total** across both releases
 - CVE-2025-15467 (HIGH severity, stack buffer overflow in CMS message parsing, potentially remotely exploitable); vulnerability types include heap overflows, type confusions, NULL dereferences, and a cryptographic bug in OCB mode
 - Three of the OpenSSL bugs dated back to 1998-2000, lurking undetected for 25-27 years
-- In 5 cases, AISLE's AI directly proposed patches that were accepted into the official OpenSSL release
-- Has been assigned **100+ externally validated CVEs** across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, and NASA CryptoLib
+- Has been assigned **100+ externally validated CVEs** (including all 12 OpenSSL zero-days) across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, and NASA CryptoLib
+- **Full-loop capability**: discover → validate → patch — in 5 cases, AISLE's AI directly proposed patches accepted into official OpenSSL releases
+- **Deep C/C++ memory safety specialization**: finds heap overflows, type confusions, NULL dereferences, use-after-free, and cryptographic bugs that have lurked undetected for decades
 - Started hunting in August 2025 — reached these results in under 6 months
 - curl cancelled its bug bounty the same week AISLE's OpenSSL results were published — a stark contrast between AI-discovered quality and AI-generated slop
-- Demonstrates AI's ability to find deeply buried C/C++ memory safety bugs at scale
 
 **OpenAI Codex Security (formerly Aardvark):**
 - **Launched March 6, 2026** as research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
 - Three-stage approach: builds editable threat model, validates issues in sandboxed environments, proposes fixes with full system context
 - **92% recall** on benchmark "golden" repositories with synthetically-introduced vulnerabilities
-- Performance claims: **84% less noise**, **90% reduction in over-reported severity**, **50%+ lower false positive rates** compared to traditional scanners
-- Scanned **1.2 million commits**, finding **792 critical** and **10,561 high-severity** issues in the past month
-- Discovered **14 CVEs** across major open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh)
+- Performance claims: **84% noise reduction** vs traditional SAST, **90% reduction in over-reported severity**, **50%+ lower false positive rates** compared to traditional scanners
+- Scanned **1.2 million commits**, finding **14 CVEs** across major open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh); also flagged **792 critical** and **10,561 high-severity** issues in the past month
 - Open-source maintainers can apply via the **Codex for OSS** program; **$10M in API credits** committed for open-source security
 - Best for: continuous monitoring of large codebases; major competitive threat to human hunters on pattern-matching vulns
 
 **Anthropic Claude Code Security:**
-- Launched **February 20, 2026** as limited research preview
+- **Launched March 6, 2026** with Mozilla partnership as limited research preview
 - Claude Opus 4.6 found **500+ vulnerabilities** in production open-source codebases — bugs that had gone undetected for decades despite expert review
-- **Mozilla partnership** (March 2026): found **22 vulnerabilities in Firefox** (14 high-severity) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24); 112 total reports submitted to Mozilla
+- **Mozilla partnership**: found **22 vulnerabilities in Firefox** (14 high-severity) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24); 112 total reports submitted to Mozilla
 - Worked in a virtual machine with access to standard utilities and fuzzers; no specific instructions or specialized knowledge — "out-of-the-box" capability
 - Key technique: reasoning about code by tracing data flows and reading commit histories to find variants of partially fixed bugs
 - PoC exploit generation remains hard: ~$4,000 in API credits for exploit attempts, succeeded in only 2 cases — finding vulns is easier than exploiting them
@@ -310,7 +310,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
 
-**March 2026 Competition Escalation:** Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous vulnerability scanning within the same week (March 6, 2026). Codex Security scanned 1.2M commits finding 792 critical issues; Claude Code Security found 22 Firefox vulns in 2 weeks. These tools will flood programs with findings — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
+**March 2026 Competition Escalation:** Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous vulnerability scanning on the same day (March 6, 2026). Codex Security scanned 1.2M commits finding 14 CVEs with 84% noise reduction vs traditional SAST; Claude Code Security found 500+ vulns including 22 Firefox vulns in 2 weeks. These tools will flood programs with findings — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
 
 **Semgrep's AI Vulnerability Detection Benchmark (2025):**
 - Tested Claude Code (Sonnet 4) and OpenAI Codex (o4-mini) against 11 real-world open-source Python projects
@@ -327,8 +327,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Implication: when using AI to generate PoCs or test scripts, review for introduced vulnerabilities
 
 **The 2026 Tool Landscape:**
-- **AISLE** for deep C/C++ vulnerability discovery at scale (100+ CVEs, 13/14 OpenSSL CVEs)
-- **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark; subscription pricing $0-$49.99/mo)
+- **AISLE** for deep C/C++ memory safety vulnerability discovery at scale (100+ CVEs including all 12 OpenSSL zero-days; full-loop: discover → validate → patch)
+- **Shannon** for autonomous white-box web app pentesting (96.15% on XBOW benchmark via CPG semantic understanding; full-loop: discover → validate → exploit; subscription $0-$49.99/mo)
 - **ZAST.AI** for zero-false-positive source code scanning (119 CVEs, $10M funded)
 - **AESIR** (Trend Micro) for zero-day discovery in AI infrastructure (21 CVEs including NVIDIA, MCP tooling)
 - **Strix** for autonomous web app testing with browser + proxy + terminal
@@ -341,8 +341,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Assail Ares** for continuous API/web/mobile pentesting with co-evolutionary AI agents
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
-- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched publicly March 6, 2026**; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium
-- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding (Feb 2026 launch)
+- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched March 6, 2026**; 1.2M commits scanned, 14 CVEs found, 84% noise reduction vs traditional SAST
+- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
 - **Hadrian** for attack-surface-driven 24/7 autonomous pentesting
