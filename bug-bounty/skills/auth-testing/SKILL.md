@@ -1,6 +1,6 @@
 ---
 name: auth-testing
-description: Test authentication and authorization — OAuth, JWT, session management, IDOR, privilege escalation, BOLA, BFLA, SSO bypass, MFA bypass, and access control patterns that consistently earn top payouts.
+description: Test authentication and authorization flaws — BOLA, BFLA, privilege escalation, IDOR, SSO bypass, MFA bypass, session management, and access control patterns. Use when testing who-can-access-what, role boundaries, or multi-tenant isolation. For protocol-level API testing (GraphQL, gRPC, WebSocket), use api-security. For OAuth/JWT token format bugs, use vuln-patterns reference/advanced-web-vulns.md.
 ---
 
 # Authentication & Authorization Testing

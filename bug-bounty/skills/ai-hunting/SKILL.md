@@ -86,7 +86,8 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **43 detailed MCP test patterns, real-world incidents, and OWASP framework mapping:** See [reference/attack-surface.md](reference/attack-surface.md)
+> **43+ MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
 
@@ -106,7 +107,8 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 
 **OMNI-LEAK**: single injection cascades through orchestrator → 82.4% of LLMs compromised via inter-agent trust. **CORBA**: 79-100% of agents blocked within 1.6 turns. **ZombieAgent**: zero-click self-propagating memory corruption via email.
 
-> **All detailed attack patterns, novel techniques, OWASP frameworks, testing procedures, and 16+ real-world incidents:** See [reference/attack-surface.md](reference/attack-surface.md)
+> **Agent supply chain, IDEsaster, agentic browsers, novel techniques, OWASP Agentic Top 10:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ---
 
@@ -204,7 +206,9 @@ This skill uses progressive disclosure. Detailed reference material is available
 | File | Contents | Lines |
 |------|----------|-------|
 | [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~360 |
-| [reference/attack-surface.md](reference/attack-surface.md) | MCP attack patterns (43 test procedures), agent supply chain, IDEsaster, agentic browsers, novel techniques, OWASP frameworks, 16+ real-world incidents | ~950 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (43+), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, implementation stats, scanning tools | ~390 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, IDEsaster, agentic browsers, multi-agent attacks, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~380 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~250 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~400 |
 | [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~140 |
 

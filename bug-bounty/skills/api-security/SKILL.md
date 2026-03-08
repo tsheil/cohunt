@@ -1,6 +1,6 @@
 ---
 name: api-security
-description: API-specific security testing patterns for REST, GraphQL, WebSocket, and gRPC architectures. Goes beyond individual vulnerability classes to cover API design flaws, versioning gaps, batch/bulk abuse, and protocol-specific attack surfaces. Trigger with "test this API", "GraphQL security", "REST API bugs", "WebSocket testing", "API versioning", "batch endpoint", "rate limiting bypass", "API abuse", "test this endpoint", or when target recon reveals API-heavy architecture.
+description: API architecture security — design flaws in REST, GraphQL, WebSocket, and gRPC that create unique attack surfaces. Covers versioning gaps, batch/bulk abuse, schema introspection, subscription hijacking, and protocol-specific misconfigurations. Use when testing API design rather than individual vuln classes. For auth bugs (BOLA, BFLA, access control), use auth-testing. For vuln class checklists (SSRF, IDOR, XSS), use vuln-patterns.
 ---
 
 # API Security

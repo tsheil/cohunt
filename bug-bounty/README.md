@@ -15,6 +15,16 @@ Explicit workflows you invoke with a slash command:
 | Command | Description |
 |---|---|
 | `/hunt-plan` | Build a hunting plan for a target — combine recon and program intel into a prioritized action plan |
+| `/recon` | Run reconnaissance on a target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, map attack surface |
+| `/scope-check` | Verify if a target, vulnerability type, or finding is in scope before investing time |
+| `/compare-programs` | Compare bug bounty programs side-by-side — rewards, scope, response times, competition |
+| `/write-report` | Write a submission-ready bug bounty report — structured, scored, and formatted for the platform |
+| `/quick-test` | Rapid single-vulnerability check — focused test plan with exact requests to send |
+| `/chain` | Document and score a vulnerability chain — combine findings into a higher-severity attack path |
+| `/triage-findings` | Rank bugs by reportability, estimate severity and payout, decide what to report first |
+| `/asset-inventory` | Track discovered assets during a hunting session — subdomains, endpoints, technologies, findings |
+| `/session-notes` | Track findings, observations, and progress during a hunt session |
+| `/methodology` | Generate a testing methodology checklist tailored to a target's tech stack |
 
 All commands work **standalone** (web search + bash tools) and get **supercharged** with MCP connectors.
 
@@ -25,16 +35,25 @@ Domain knowledge Claude uses automatically when relevant:
 | Skill | Description |
 |---|---|
 | `target-recon` | Recon a web target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, map the attack surface |
-| `program-research` | Research a bug bounty program — scope, rewards, response times, disclosed reports, and what gets paid |
-| `ai-hunting` | AI-assisted hunting workflows and AI/LLM vulnerability patterns — use AI tools to accelerate testing, and hunt bugs in AI-powered features |
-| `vuln-patterns` | Vulnerability testing patterns and checklists for common bug classes including AI/LLM vulnerabilities |
+| `program-research` | Research a bug bounty program — scope, rewards, duplicate patterns, competition, go/no-go recommendation |
+| `ai-hunting` | AI-assisted hunting workflows and AI/LLM vulnerability patterns — MCP, agents, IDE extensions, prompt injection |
+| `vuln-patterns` | Web vulnerability testing patterns — IDOR, XSS, SSRF, auth bypass, injection, business logic by vertical |
 | `source-code-audit` | Audit source code for security vulnerabilities — trace data flows, find auth gaps, spot injection sinks |
-| `api-security` | API-specific security testing for REST, GraphQL, WebSocket, and gRPC architectures |
-| `auth-testing` | Authentication and authorization testing — OAuth, JWT, BOLA, BFLA, privilege escalation |
+| `api-security` | API architecture security — design flaws in REST, GraphQL, WebSocket, and gRPC |
+| `auth-testing` | Authentication and authorization flaws — BOLA, BFLA, privilege escalation, IDOR, SSO/MFA bypass |
 | `report-writing` | Write high-quality bug bounty reports that get triaged fast and paid well |
 | `cloud-security` | Cloud misconfiguration patterns for AWS, GCP, and Azure |
 | `mobile-security` | Mobile application security testing for iOS and Android |
 | `http-desync` | HTTP request smuggling, web cache poisoning, and race condition testing |
+
+## Agents
+
+Autonomous workflows that run multi-step hunting tasks:
+
+| Agent | Description |
+|---|---|
+| `hunt-session` | End-to-end hunting orchestrator — prioritizes targets, runs recon, tests vulnerabilities, validates findings |
+| `report-review` | Pre-submission quality assurance — validates PoC, checks for AI slop, assesses duplicate risk, platform-specific formatting |
 
 ## Example Workflows
 
@@ -120,13 +139,12 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
-## What's New in v0.16.0
+## What's New in v0.26.0
 
-- **IDEsaster campaign coverage** — 30+ AI coding IDE vulnerabilities (24 CVEs), extension recommendation attacks, Chromium flaws in Cursor/Windsurf
-- **Supply chain worm patterns** — Shai-Hulud npm supply chain worm, dependency cooldown defenses, 454K malicious packages
-- **Cross-agent privilege escalation** — Second-order prompt injection patterns (ServiceNow Now Assist), multi-agent exploitation
-- **React2Shell (CVE-2025-55182)** — CVSS 10.0 React Server Components RCE, Flight protocol deserialization
-- **Microsoft Entra ID (CVE-2025-55241)** — CVSS 10.0 Global Admin takeover via Actor Tokens
-- **Expanded tool coverage** — Burp AI features (Explore Issue, Explainer, BAC filtering), ZAP-MCP integration
-- **Updated market intelligence** — Exploitation speed data, API security detection gap stats, updated program payouts
-- **36 vulnerability test patterns** — Added AI IDE supply chain, cross-agent injection, supply chain worms, cloud identity token abuse
+- **Eliminated skill overlap** — Removed AI/LLM/MCP content from `vuln-patterns` (912→445 lines), routing to `ai-hunting` instead. Each skill now owns a distinct domain.
+- **Business logic playbooks by vertical** — SaaS/DevTools, e-commerce/marketplace, and fintech/payments playbooks added to `vuln-patterns` with payout-oriented test cases
+- **Duplicate avoidance guidance** — `program-research` now includes high-duplicate patterns, N/A patterns, and differentiation guidance to avoid wasted reports
+- **attack-surface.md split** — 953-line monolith replaced with 3 task-focused reference files: `mcp-playbooks.md` (326 lines), `agent-attack-patterns.md` (502 lines), `ai-case-studies.md` (217 lines)
+- **Sharpened trigger descriptions** — `vuln-patterns`, `program-research`, `api-security`, and `auth-testing` descriptions now clearly route to the right skill with "Use when..." language
+- **hunt-session trimmed** — 326→294 lines; 46 edge case rules compressed into compact routing table
+- **program-research restructured** — 671→369 lines; market data moved to `reference/market-context.md` (391 lines)
