@@ -134,6 +134,10 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 | CVE-2026-28466 | OpenClaw | Exec approval gating bypass via unsanitized `node.invoke` parameters | High |
 | CVE-2026-28478 | OpenClaw | Webhook handler DoS — unbounded JSON body buffering by unauthenticated callers | Medium |
 | CVE-2026-29610 | OpenClaw | PATH command hijacking — execute unintended binaries via env manipulation | High |
+| CVE-2026-28484 | OpenClaw | Option injection RCE in git-hooks/pre-commit — attacker-controlled options lead to arbitrary code execution | High |
+| CVE-2026-28479 | OpenClaw | SHA-1 collision attack on sandbox identifier cache keys — cache poisoning enables unsafe sandbox state reuse | 7.5 |
+| CVE-2026-29609 | OpenClaw | `fetchWithGuard` memory exhaustion DoS — allocates entire response payloads before enforcing size limits | 7.5 |
+| CVE-2026-21518 | GitHub Copilot/VS Code | Security feature bypass via command injection (CWE-77) — unauthorized network attacker bypasses workspace trust | High |
 
 **Cursor Workspace Trust Bypass (Oasis Security, 2026):**
 - Cursor ships with **Workspace Trust disabled by default** — unlike VS Code which prompts users before trusting workspaces
@@ -151,6 +155,12 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 - Attack uses hidden HTML comments in GitHub issues to inject prompts when a Codespace is opened
 - Exploits VS Code's `json.schemaDownload.enable` setting to exfiltrate tokens to external servers
 - Patched by Microsoft — test for similar patterns in other IDE integrations
+
+**CamoLeak (Legit Security, March 2026):**
+- Critical vulnerability enabling **private source code exfiltration** from GitHub Copilot
+- Attacker crafts repository content that triggers Copilot to leak private code from other repositories the victim has access to
+- Exploits Copilot's code completion context — suggestions can include code from private repos
+- Test for: context leakage in AI coding assistants that access multiple repositories
 
 **PromptPwnd (Aikido Security, 2026):**
 - Prompt injection in **GitHub Actions and GitLab CI/CD pipelines** exploits AI agents (Gemini CLI, Claude Code, OpenAI Codex)

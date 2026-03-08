@@ -306,7 +306,7 @@ Competition awareness:
 ## AI Security Tools & Startups
 
 - **AISLE** found all 12 OpenSSL zero-days (Jan 2026), 100+ CVEs across 30+ projects including all 14 OpenSSL CVEs in 2025; demonstrated full-loop capability (discover, validate, patch) — sets new bar for AI-discovered bugs
-- **Codex Security** (OpenAI, formerly Aardvark) — launched publicly **March 6, 2026**; 1.2M commits scanned, 792 critical findings; 84% noise reduction; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh; available to ChatGPT Enterprise/Business/Edu
+- **Codex Security** (OpenAI, formerly Aardvark) — launched publicly **March 6, 2026**; **92% recall** on golden benchmarks; 1.2M commits scanned, 792 critical findings; 84% noise reduction; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh; **$10M in API credits** committed for open-source security; available to ChatGPT Enterprise/Business/Edu
 - **Claude Code Security** launched Feb 20, 2026 — found 14 high-severity bugs and 22 CVEs in Firefox (fixes in Firefox 148); 500+ vulnerabilities total in production open-source codebases; Mozilla Firefox partnership; bugs undetected for decades
 - **ZAST.AI** raised $10M total, 119 CVEs assigned, "zero false positive" approach — new competitor for automated code scanning
 - **Trend Micro AESIR** — AI-powered zero-day discovery (21 CVEs across NVIDIA, Tencent, MLflow, MCP tooling)

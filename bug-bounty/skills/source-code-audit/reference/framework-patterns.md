@@ -31,6 +31,7 @@ Language and framework-specific vulnerability patterns for source code audits. R
 | Missing `helmet()` or security headers | Various |
 | `express.static()` serving sensitive directories | Information disclosure |
 | `child_process.exec()` with string interpolation | Command injection |
+| API data processing with unsanitized input (CWE-94) | Code injection — CVE-2026-25888 (Chartbrew, CVSS 8.8): improperly sanitized input in API data processing enables arbitrary code execution |
 
 ---
 
@@ -52,7 +53,7 @@ Language and framework-specific vulnerability patterns for source code audits. R
 | Pattern | Risk |
 |---------|------|
 | `$_GET`/`$_POST` in SQL without binding | SQL injection |
-| `unserialize()` on user input | Object injection / RCE |
+| `unserialize()` on user input without class restrictions | Object injection / RCE — CVE-2026-3452 (Concrete CMS, CVSS 8.9): admin-stored serialized data passed to `unserialize()` without `allowed_classes` |
 | `include()`/`require()` with user input | LFI/RFI |
 | Missing `csrf_field()` in forms | CSRF |
 | `{!! $var !!}` in Blade templates | XSS |

@@ -100,6 +100,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
 - Automates reconnaissance (Subfinder, Amass, WhatWeb), vulnerability scanning (Nuclei, ffuf), exploit generation, and report writing
 - Handles 2FA logins and browser-based attacks without human input; runs via Docker containers
+- **Cost**: ~$50 per run using Claude 3.5 Sonnet, completing in 1-1.5 hours
 - Rapidly growing: GitHub's fastest-rising security project in early 2026
 - GitHub: `KeygraphHQ/shannon`
 
@@ -116,6 +117,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 **OpenAI Codex Security (formerly Aardvark):**
 - **Launched March 6, 2026** as research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
 - Three-stage approach: builds editable threat model, validates issues in sandboxed environments, proposes fixes with full system context
+- **92% recall** on benchmark "golden" repositories with synthetically-introduced vulnerabilities
 - Performance claims: **84% less noise**, **90% reduction in over-reported severity**, **50%+ lower false positive rates** compared to traditional scanners
 - Scanned **1.2 million commits**, finding **792 critical** and **10,561 high-severity** issues in the past month
 - Discovered **14 CVEs** across major open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh)
@@ -281,7 +283,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Raised $75M** in funding (led by Altimeter Capital, with Sequoia Capital and NFDG)
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings, though costs are expected to drop
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
-- **XBOW Pentest On-Demand** launched late 2025 — fully automated pentest service delivering results within 5 business days
+- **XBOW Pentest On-Demand** launched late 2025 — fully automated pentest service delivering results within 5 business days at **$6,000 per engagement**
+- **XBOW Public API** launched February 1, 2026 in Public Preview — programmatic access to start, pause, resume, cancel pentests and retrieve findings; enables running dozens of pentests in parallel; pricing starts at $6K
 - Appointed Databricks CRO to board; expanding APAC presence through customer deployments and partnerships in 2026
 - HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
