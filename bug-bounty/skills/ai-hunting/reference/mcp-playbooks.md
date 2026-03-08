@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 43+ concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
+Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 55+ concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
 
 > **Related files:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent supply chain and novel attack techniques | [ai-case-studies.md](ai-case-studies.md) for real-world MCP incident case studies
 
@@ -10,7 +10,7 @@ Actionable test procedures for hunting vulnerabilities in Model Context Protocol
 
 - [MCP Vulnerability Classes](#mcp-vulnerability-classes)
 - [OWASP MCP Top 10 (2026)](#owasp-mcp-top-10-2026)
-- [55+ MCP Test Procedures](#43-mcp-test-procedures)
+- [55+ MCP Test Procedures](#55-mcp-test-procedures)
 - [MCP OAuth Account Takeover](#mcp-oauth-account-takeover)
 - [MCP Real-World Attack Examples](#mcp-real-world-attack-examples)
 - [MCP Implementation Vulnerability Stats](#mcp-implementation-vulnerability-stats)
@@ -237,6 +237,8 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 10. **DockerDash Meta-Context Injection (February 2026):** Noma Security disclosed that a single malicious metadata label in a Docker image could compromise the entire Docker environment through Docker's Ask Gordon AI assistant. Noma coined "Meta-Context Injection" for this class where MCP gateways cannot distinguish descriptive metadata from pre-authorized instructions.
 
 11. **Copilot CLI Malware Download (March 2026):** Two days after GitHub Copilot CLI hit general availability, PromptArmor demonstrated `env curl | env sh` bypasses all protections — downloading and executing malware with zero human approval. CVE-2026-29783.
+
+12. **Azure MCP Server RCE Chain (RSAC 2026):** Token Security demonstrated a real-world RCE chain against the official Azure MCP server implementation — first demonstrated RCE against a major cloud vendor's MCP server. Presented at RSAC 2026 Innovation Sandbox.
 
 > **Full incident table with 50+ entries:** See [ai-case-studies.md](ai-case-studies.md)
 

@@ -107,7 +107,8 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 
 **OMNI-LEAK**: single injection cascades through orchestrator → 82.4% of LLMs compromised via inter-agent trust. **CORBA**: 79-100% of agents blocked within 1.6 turns. **ZombieAgent**: zero-click self-propagating memory corruption via email.
 
-> **Agent supply chain, IDEsaster, agentic browsers, novel techniques, OWASP Agentic Top 10:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **Agent supply chain, agentic browsers, novel techniques, OWASP Agentic Top 10:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **IDEsaster (28+ CVEs), Claude DXT, AI-as-C2, Google Antigravity:** See [reference/ide-supply-chain.md](reference/ide-supply-chain.md)
 > **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ---
@@ -205,12 +206,13 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~373 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~377 |
 | [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (55+), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~415 |
-| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, IDEsaster, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~591 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~480 |
+| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~163 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~241 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~406 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~152 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~161 |
 
 ---
 

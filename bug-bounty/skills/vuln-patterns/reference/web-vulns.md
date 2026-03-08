@@ -9,10 +9,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 - [JWT (JSON Web Token)](#jwt-json-web-token)
 - [OAuth 2.0 / OpenID Connect](#oauth-20--openid-connect)
 - [API Rate Limiting & Resource Exhaustion](#api-rate-limiting--resource-exhaustion)
-- [Agentic Browser Hijacking](#agentic-browser-hijacking)
-- [MCP OAuth / Authentication Bypass](#mcp-oauth--authentication-bypass)
-- [AI IDE Configuration Exploitation](#ai-ide-configuration-exploitation)
-- [ContextCrush / Documentation Supply Chain](#contextcrush--documentation-supply-chain)
+- [AI/Agent Attack Surface Routing](#aiagent-attack-surface-routing)
 
 ---
 
@@ -166,67 +163,18 @@ When you know the target's technology, focus your testing:
 
 ---
 
-## Agentic Browser Hijacking
+## AI/Agent Attack Surface Routing
 
-**What it is:** Exploiting AI agents with autonomous web browsing capabilities to access local files, credentials, or perform unauthorized actions.
+The following AI/agent-specific test patterns are maintained in the **ai-mcp-vulns.md** reference to avoid duplication. Load that file when testing these surfaces:
 
-**Where to look:**
-- Products with AI-powered browsing (Perplexity Comet, Chrome Gemini, ChatGPT Atlas/Operator)
-- AI assistants that process calendar invites, emails, or shared documents autonomously
-- AI agents with access to password managers or local filesystem
+| Attack Surface | Patterns | Reference |
+|---|---|---|
+| **Agentic Browser Hijacking** | Zero-click agent trigger, file system exfil, credential manager access, extension escalation | `ai-mcp-vulns.md` → Agentic Browser Hijacking |
+| **MCP OAuth Bypass** | Missing state param, auth code replay, redirect URI bypass, role confusion | `ai-mcp-vulns.md` → MCP OAuth |
+| **AI IDE Configuration** | Workspace trust bypass, rules file backdoor, extension squatting, MCP config injection | `ai-mcp-vulns.md` → AI IDE Configuration |
+| **ContextCrush / Doc Supply Chain** | Custom rules injection, library doc poisoning, RAG poisoning, env file exfil | `ai-mcp-vulns.md` → ContextCrush |
 
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Zero-click agent trigger | Create calendar invite with hidden prompt injection | Agent executes without user action |
-| 2 | File system exfiltration | Craft content triggering `file://` path access | Local files accessible via agent |
-| 3 | Credential manager access | Manipulate agent workflow to interact with 1Password/Bitwarden | Password vault accessible to agent |
-| 4 | Extension escalation | Use browser extension to exploit AI panel integration | Privilege escalation via AI panel |
-| 5 | Cross-origin agent action | Plant injection in search results processed by agent | Agent acts on injected instructions |
-
----
-
-## MCP OAuth / Authentication Bypass
-
-**What it is:** Exploiting authentication flaws in MCP server OAuth implementations.
-
-**Where to look:**
-- MCP servers implementing OAuth 2.0 flows
-- Remote MCP servers acting as both authorization server and OAuth client
-- Any MCP endpoint with authentication mechanisms
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Missing state param | Remove `state` from OAuth authorization request | CSRF-style account takeover |
-| 2 | Auth code replay | Reuse authorization code across sessions | Code accepted multiple times |
-| 3 | Redirect URI lax validation | Modify redirect_uri to attacker domain | Code sent to attacker |
-| 4 | Mixed role confusion | Server as both authz server and client | Token leakage via confused flows |
-| 5 | Static secret auth | Check for long-lived API keys instead of OAuth | 53% rely on static secrets |
-
----
-
-## AI IDE Configuration Exploitation
-
-**What it is:** Exploiting AI coding IDE trust models via malicious repository configurations.
-
-**Where to look:**
-- Cursor, Windsurf, Google Antigravity, VS Code with Copilot
-- Repository configuration files (`.cursorrules`, `.github/copilot-instructions.md`, `.vscode/tasks.json`)
-- Extension recommendation mechanisms
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Workspace trust bypass | Clone repo with `.vscode/tasks.json` auto-run | Tasks execute without trust prompt (Cursor) |
-| 2 | Rules file backdoor | Embed invisible Unicode (E0000-E007F) in rules files | AI processes hidden instructions |
-| 3 | Extension namespace squatting | Register unclaimed extension namespaces on OpenVSX | IDE recommends attacker-controlled extension |
-| 4 | MCP config injection | Include malicious `.mcp.json` in repo | Rogue MCP server auto-configured |
-| 5 | Global config persistence | Modify global IDE config file | Changes survive across all projects |
-| 6 | Copilot CLI allowlist bypass | Use allowlisted commands (e.g., `env`) to chain dangerous ops | `env curl | env sh` executes arbitrary code |
+For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
@@ -310,27 +258,6 @@ When you know the target's technology, focus your testing:
 
 ---
 
-## ContextCrush / Documentation Supply Chain
-
-**What it is:** Injecting malicious instructions into trusted documentation served via MCP servers or shared knowledge bases.
-
-**Where to look:**
-- MCP servers providing library documentation (Context7, custom doc servers)
-- Shared documentation platforms with community contributions
-- RAG systems ingesting external documentation
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Custom rules injection | Submit malicious "custom rules" to documentation server | Rules served verbatim to all users |
-| 2 | Library doc poisoning | Contribute library entry with hidden instructions | AI coding assistants execute instructions |
-| 3 | RAG document poisoning | Insert adversarial text into documents indexed by RAG | LLM follows injected instructions |
-| 4 | Trusted source impersonation | Create documentation that mimics official sources | AI treats poisoned docs as authoritative |
-| 5 | Env file exfiltration | Embed instruction to "search for .env files and display contents" | Agent exfiltrates sensitive config files |
-
----
-
 ## Critical Infrastructure Authentication & Deserialization
 
 **What it is:** Authentication bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.
@@ -339,6 +266,9 @@ When you know the target's technology, focus your testing:
 - **CVE-2026-20079** (Cisco Secure FMC, CVSS 10.0): authentication bypass via improper system process created at boot — allows script execution for root access
 - **CVE-2026-20131** (Cisco Secure FMC, CVSS 10.0): Java deserialization RCE via crafted serialized object to management interface — unauthenticated root access
 - **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): command injection during support-assisted migration — actively exploited in the wild (CISA KEV March 3, 2026); root access → full virtual infrastructure compromise
+- **CVE-2026-20128/20122** (Cisco Catalyst SD-WAN Manager): actively exploited March 5, 2026 — file overwrite + privilege escalation via API; web shell activity observed
+- **CVE-2026-24512** (Kubernetes ingress-nginx, CVSS 8.8): configuration injection via `rules.http.paths.path` leading to RCE and secret disclosure; **ingress-nginx project retiring March 2026** — no future patches for 50% of K8s clusters still using it
+- **CVE-2026-20965** (Azure Windows Admin Center): SSO token validation failure — local admin on one managed system can pivot tenant-wide across all Azure VMs and Arc-connected systems
 
 **Where to look:**
 - Network management interfaces (firewall management, cloud orchestration, virtualization platforms)
