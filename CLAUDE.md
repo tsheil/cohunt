@@ -14,7 +14,9 @@ bug-bounty/
 │   ├── vuln-patterns/            # Testing patterns for 50+ vuln classes
 │   ├── program-research/         # Bug bounty program intelligence
 │   ├── target-recon/             # Web target reconnaissance
-│   ├── source-code-audit/        # Security code review
+│   ├── source-code-audit/        # Security code review (progressive disclosure)
+│   │   ├── SKILL.md              # Core methodology (<500 lines)
+│   │   └── reference/            # Framework-specific patterns
 │   ├── api-security/             # API-specific testing (REST, GraphQL, gRPC)
 │   ├── auth-testing/             # Auth & authorization testing
 │   ├── cloud-security/           # Cloud misconfigurations (AWS, GCP, Azure)

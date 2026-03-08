@@ -75,6 +75,9 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Agentgateway Input Sanitization** | CVE-2026-29791: missing parameter sanitization in MCP-to-OpenAPI conversion — path, query, and header values from MCP tools/call requests sent unsanitized as OpenAPI requests. Fixed in 0.12.0 | Medium-High |
 | **SANDWORM_MODE MCP Injection** | npm supply chain worm (Socket, Feb 2026): 19 typosquatting packages with "McpInject" module deploys malicious MCP server into AI coding assistant configs (Claude Code, Cursor, Windsurf). Rogue MCP tools embed prompt injections to steal SSH keys, AWS credentials, .env files. 48-hour delayed activation with per-machine jitter | Critical |
 | **Pydantic AI SSRF** | CVE-2026-25580: SSRF in URL download functionality (versions 0.0.26 to <1.56.0) — when apps accept message history from untrusted sources, attackers include malicious URLs targeting internal resources. Fixed in 1.56.0 | High |
+| **MCP Stdio Blacklist Bypass** | CVE-2026-30861 (CVSS 9.9): LLM-powered frameworks whitelisting `npx`/`uvx` but failing to block flag injection — `-p` flag with `npx node` bypasses command blacklist entirely. Only requires registering an account (unrestricted registration). Pattern: any MCP stdio config with command allowlists | Critical |
+| **SQL Expression Tree Bypass** | CVE-2026-30860 (CVSS 9.9): SQL injection protection that fails to recursively inspect child nodes within PostgreSQL array/row expressions — dangerous functions smuggled inside `ARRAY[]`/`ROW()` constructs chain with large object operations for full RCE. Pattern: any LLM-powered query builder with non-recursive sanitization | Critical |
+| **JavaScript `with` Sandbox Escape** | CVE-2026-1470 (CVSS 9.9): deprecated `with` statement in sandboxed JavaScript expression engines enables scope chain manipulation to break sandbox boundaries and execute arbitrary code. Pattern: workflow automation and expression engines using `with`-based scoping | Critical |
 
 ---
 
@@ -145,6 +148,9 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 41. Test for chain-of-thought hijacking: if target uses reasoning models with visible thinking, can the intermediate reasoning be redirected to bypass safety refusals? (H-CoT, arXiv:2502.12893 — o1 rejection rate drops from 99% to <2%)
 42. Test for AI framework SSRF via redirect: does the AI framework's URL loader follow HTTP redirects to internal resources? Supply a benign URL that passes validation, then redirects to cloud metadata (169.254.169.254). (CVE-2026-27795, LangChain — RecursiveUrlLoader redirect bypass)
 43. Test for identity file poisoning (SOUL.md pattern): can processed documents instruct the AI agent to modify its own configuration/personality files, creating persistent compromise across all future sessions?
+44. Test for MCP stdio command blacklist bypass (WeKnora pattern): if target whitelists `npx`/`uvx` commands but allows flags, test if `-p` flag with `npx node` or similar bypasses the blacklist to execute arbitrary commands. (CVE-2026-30861, CVSS 9.9 — only requires registering an account; fixed in WeKnora v0.2.10)
+45. Test for PostgreSQL array/row expression SQL injection bypass: if target sanitizes SQL queries, test if recursive inspection covers child nodes within `ARRAY[]` and `ROW()` expressions. Smuggle dangerous functions (large object operations, library loading) inside nested PostgreSQL expressions. (CVE-2026-30860, CVSS 9.9 — chains with `lo_import`/`lo_get` for file read or `COPY ... FROM PROGRAM` for RCE; fixed in WeKnora v0.2.12)
+46. Test for MCP SDK cross-client data leak in stateless mode: if target runs a single `McpServer` instance with `StreamableHTTPServerTransport` across multiple clients, test if responses from one client are visible to another. No-auth servers in multi-client configs leak to anyone. (CVE-2026-25536, CVSS 7.1 — affects SDK v1.10.0-1.25.3; fixed v1.26.0)
 
 ---
 

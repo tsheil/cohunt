@@ -102,6 +102,10 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **Notion AI Data Exfiltration** | PromptArmor: hidden white text prompt injection causes Notion AI to exfiltrate salary/HR data | AI workspace data exfiltration |
 | **ChainLeak (Chainlit)** | CVE-2026-22218 + CVE-2026-22219: chained for full cloud compromise; no user interaction | AI framework -> infrastructure access |
 | **ContextCrush (Context7)** | Noma Labs: poisoned library docs via MCP server; patched Feb 23, 2026 | Documentation supply chain attack |
+| **WeKnora MCP Stdio RCE (CVE-2026-30861)** | CVSS 9.9: LLM-powered document framework; MCP stdio blacklist bypass via `-p` flag with `npx node`; only requires account registration (unrestricted). Fixed v0.2.10 | MCP command blacklist bypass |
+| **WeKnora Database RCE (CVE-2026-30860)** | CVSS 9.9: SQL injection protection bypassed via PostgreSQL array/row expression tree — recursive inspection failure allows smuggling dangerous functions. Chains with `lo_import`/`lo_get` for file read or `COPY FROM PROGRAM` for RCE. Fixed v0.2.12 | SQL expression tree bypass |
+| **Hacktron AI vs BeyondTrust (CVE-2026-1731)** | CVSS 9.9: AI-powered research team found pre-auth RCE in BeyondTrust Remote Support; demonstrates AI-augmented team model for high-value bounties | AI team finds critical pre-auth RCE |
+| **Anthropic mcp-server-git RCE chain** | CVE-2025-68145/68143/68144: three chained vulns in Anthropic's first-party Git MCP server — `--repository` bypass + unvalidated `git_init` paths + `--output` flag injection in `git_diff`. Combined with Filesystem MCP for full RCE via smudge/clean filters. Attack vector: indirect prompt injection via malicious README | First-party MCP server compromise |
 
 ---
 

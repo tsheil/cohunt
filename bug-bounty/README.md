@@ -139,12 +139,13 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
-## What's New in v0.26.0
+## What's New in v0.27.0
 
-- **Eliminated skill overlap** — Removed AI/LLM/MCP content from `vuln-patterns` (912→445 lines), routing to `ai-hunting` instead. Each skill now owns a distinct domain.
-- **Business logic playbooks by vertical** — SaaS/DevTools, e-commerce/marketplace, and fintech/payments playbooks added to `vuln-patterns` with payout-oriented test cases
-- **Duplicate avoidance guidance** — `program-research` now includes high-duplicate patterns, N/A patterns, and differentiation guidance to avoid wasted reports
-- **attack-surface.md split** — 953-line monolith replaced with 3 task-focused reference files: `mcp-playbooks.md` (326 lines), `agent-attack-patterns.md` (502 lines), `ai-case-studies.md` (217 lines)
-- **Sharpened trigger descriptions** — `vuln-patterns`, `program-research`, `api-security`, and `auth-testing` descriptions now clearly route to the right skill with "Use when..." language
-- **hunt-session trimmed** — 326→294 lines; 46 edge case rules compressed into compact routing table
-- **program-research restructured** — 671→369 lines; market data moved to `reference/market-context.md` (391 lines)
+- **source-code-audit progressive disclosure** — Extracted framework-specific patterns to `reference/framework-patterns.md` (187 lines), reducing SKILL.md from 469→353 lines with room to grow
+- **WeKnora CVE patterns** — Added MCP stdio blacklist bypass (CVE-2026-30861, CVSS 9.9) and PostgreSQL array expression SQLi bypass (CVE-2026-30860, CVSS 9.9) test procedures to `mcp-playbooks.md`
+- **New MCP vulnerability classes** — MCP Stdio Blacklist Bypass, SQL Expression Tree Bypass, JavaScript `with` Sandbox Escape (CVE-2026-1470) added to playbooks and framework patterns
+- **Hacktron AI BeyondTrust RCE** — CVE-2026-1731 (CVSS 9.9) pre-auth RCE discovery added to case studies, tools landscape, and program-research
+- **Anthropic mcp-server-git chain** — CVE-2025-68145/68143/68144 RCE chain added to case studies and disclosed vulnerabilities
+- **MCP SDK cross-client data leak** — New test procedure (#46) for stateless mode session isolation failures
+- **TOC and cross-references** — Added Table of Contents to `tools-landscape.md` and related-files headers across reference files
+- **XBOW stats reconciled** — Clarified "1,060 reports in ~90 days" vs "cumulative 1,400+" across all references

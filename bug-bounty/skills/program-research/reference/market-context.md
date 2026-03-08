@@ -251,6 +251,10 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-21516/21523/21256 (GitHub Copilot, Feb 2026 Patch Tuesday): prompt injection -> command injection chain across Copilot IDE extensions
 - CVE-2026-1470 (n8n `with` statement, CVSS 9.9): deprecated JavaScript `with` feature enables sandbox escape and arbitrary code execution
 - ContextCrush (Noma Labs, Feb 2026): Context7 MCP server custom rules served verbatim to AI coding assistants; environment file theft via supply chain poisoning
+- CVE-2026-1731 (BeyondTrust Remote Support, CVSS 9.9): pre-auth RCE discovered by Hacktron AI — AI-augmented research team model for critical findings
+- CVE-2025-68145/68143/68144 (Anthropic mcp-server-git): three chained CVEs enabling RCE via indirect prompt injection through flag bypass, unvalidated paths, and argument injection
+- CVE-2026-25536 (MCP TypeScript SDK, CVSS 7.1): cross-client data leak when McpServer instance reused across multiple clients; affects SDK v1.10.0-1.25.3; fixed v1.26.0
+- MCP ecosystem crisis confirmed (March 2026): **30 CVEs in 60 days**; Enkrypt AI scan of 1,000 servers found **33% critically vulnerable** averaging **5.2 vulns per server**; compound exploit probability hits 92% at 10 plugins
 
 ---
 

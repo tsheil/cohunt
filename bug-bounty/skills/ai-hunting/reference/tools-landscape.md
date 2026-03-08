@@ -2,6 +2,20 @@
 
 Comprehensive catalog of AI-powered security tools for bug bounty hunting. Reference file for the ai-hunting skill.
 
+> **Related files:** [mcp-playbooks.md](mcp-playbooks.md) for MCP test procedures and scanning tools | [ai-case-studies.md](ai-case-studies.md) for real-world incident case studies
+
+---
+
+## Table of Contents
+
+- [Code Audit Tools (Vulnhalla, Hound, CAI, HexStrike, Shannon, AISLE, Codex Security, Claude Code Security)](#vulnhalla-pattern-codeql--llm-guided-questioning)
+- [Autonomous Pentesting (Strix, NeuroSploit, PentAGI, Reaper, Shannon, AISLE, Codex Security)](#strix-autonomous-ai-pentesters)
+- [Red Teaming Frameworks (AgentFence, Augustus, Garak)](#agentfence-ai-agent-security-testing)
+- [AI-Powered Subdomain Enumeration](#ai-powered-subdomain-enumeration)
+- [AI-Assisted Fuzzing & Payload Generation](#ai-assisted-fuzzing--payload-generation)
+- [The XBOW/Autonomous Agent Reality Check](#the-xbowautonomous-agent-reality-check)
+- [The 2026 Tool Landscape (40+ tools)](#the-2026-tool-landscape)
+
 ---
 
 **Vulnhalla Pattern** (CodeQL + LLM-guided questioning):
@@ -258,8 +272,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 ### The XBOW/Autonomous Agent Reality Check
 
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
-- Submitted **1,400+ zero-day vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
-- 130 resolved, 303 triaged, 33 new, 125 pending review, 208 duplicates, 209 informative, 36 N/A
+- Submitted **1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+- 132 fixes confirmed by companies, 303 triaged awaiting resolution
 - Runs up to **80x faster** than manual teams
 - Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
 - **Benchmark performance:** handled **75% of standard web security challenges** entirely on its own, plus **85% of custom-built, never-before-seen vulnerabilities** that would stump skilled human researchers
@@ -349,6 +363,6 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **MCPTox Benchmark** — first benchmark for evaluating LLM agent vulnerability to tool poisoning on real-world MCP servers; 45 live MCP servers, 353 tools, 1,312 malicious test cases across 10 risk categories; attack success rates exceed 60% on GPT-4o-mini, o1-mini, DeepSeek-R1, Phi-4; GitHub: `zhiqiangwang4/MCPTox-Benchmark`
 - **Palo Alto Networks Cortex AgentiX** — embeds agentic AI across the security platform from code to cloud to SOC; redefines SOC operations with agentic response
 - **Cecuro AI** (DeFi Security Agent) — purpose-built AI agent for smart contract vulnerability detection; detected vulnerabilities in **92% of 90 exploited DeFi contracts** ($96.8B exploit value) vs 34% for baseline GPT-5.1; performance gap from domain-specific security methodology, not model capability; best for: DeFi/Web3 bug bounty programs
-- **Hacktron AI** (Bug Bounty Research Team) — AI-powered research team earning bounties across AI IDEs; $10,000 for Google Antigravity RCE; findings in Cursor, Windsurf, Perplexity Comet, OpenAI Atlas; demonstrates AI-augmented bug bounty team model
+- **Hacktron AI** (Bug Bounty Research Team) — AI-powered research team earning bounties across AI IDEs; $10,000 for Google Antigravity RCE; CVE-2026-1731 (CVSS 9.9) pre-auth RCE in BeyondTrust Remote Support; findings in Cursor, Windsurf, Perplexity Comet, OpenAI Atlas; demonstrates AI-augmented bug bounty team model — currently in private beta
 - **Cisco MCP Scanner v4.0.1** (Open Source, March 2026) — three scanning engines: YARA static analysis, LLM-as-judge semantic evaluation, and Cisco AI Defense integration; contextual/semantic analysis of tool definitions and implementations; partnership with AWS for MCP registry/gateway integration; also covers A2A protocol and agentic skill scanning; GitHub: `cisco-ai-defense/mcp-scanner`
 - **Snyk Agent Scan** (February 2026) — AI agent, MCP server, and Claude Skills security scanner; detects prompt injection, tool poisoning, tool shadowing, toxic flows, rug pull attacks, malware payloads, credential handling issues, and hardcoded secrets; CLI scan + background MDM mode; Skill Inspector for community use; GitHub: `snyk/agent-scan`

@@ -238,102 +238,18 @@ Review:
 
 ### Step 5: Check for Framework-Specific Issues
 
-```
-Language/framework-specific patterns to look for:
-```
+Look for language/framework-specific anti-patterns. Common high-risk patterns across all stacks:
 
-**Node.js / Express:**
+| Category | Examples | Risk |
+|----------|----------|------|
+| **Dynamic execution** | `eval()`, `exec()`, `Function()`, `system()` with user input | RCE |
+| **Unsafe deserialization** | `pickle.loads()`, `unserialize()`, `ObjectInputStream.readObject()` | RCE |
+| **Template injection** | `render_template_string()`, `render inline:`, `v-html` with user data | SSTI/XSS |
+| **SQL via string concat** | `f"SELECT ... {user_input}"`, `$_GET` in raw queries | SQLi |
+| **Path manipulation** | File paths from user input without validation or symlink resolution | Path traversal |
+| **Prototype/mass assignment** | `Object.assign()`, `_.merge()`, `params.permit!` | Various |
 
-| Pattern | Risk |
-|---------|------|
-| `eval()`, `Function()` with user input | RCE |
-| Prototype pollution via `Object.assign`, `_.merge` | Various |
-| `req.query` used directly in MongoDB queries | NoSQL injection |
-| Missing `helmet()` or security headers | Various |
-| `express.static()` serving sensitive directories | Information disclosure |
-| `child_process.exec()` with string interpolation | Command injection |
-
-**Python / Django / Flask:**
-
-| Pattern | Risk |
-|---------|------|
-| `os.system()`, `subprocess.call(shell=True)` | Command injection |
-| `pickle.loads()` on untrusted data | RCE |
-| `render_template_string()` with user input | SSTI |
-| `DEBUG = True` in production settings | Information disclosure |
-| Missing CSRF middleware | CSRF |
-| `mark_safe()` with user-controlled content | XSS |
-
-**PHP / Laravel:**
-
-| Pattern | Risk |
-|---------|------|
-| `$_GET`/`$_POST` in SQL without binding | SQL injection |
-| `unserialize()` on user input | Object injection / RCE |
-| `include()`/`require()` with user input | LFI/RFI |
-| Missing `csrf_field()` in forms | CSRF |
-| `{!! $var !!}` in Blade templates | XSS |
-| `env()` values in client-exposed config | Secret leakage |
-
-**Ruby / Rails:**
-
-| Pattern | Risk |
-|---------|------|
-| `params.permit!` or weak strong params | Mass assignment |
-| `.where("name = '#{params[:name]}'")` | SQL injection |
-| `render inline:` with user input | SSTI |
-| `send(params[:method])` | Arbitrary method call |
-| Missing `protect_from_forgery` | CSRF |
-
-**Java / Spring:**
-
-| Pattern | Risk |
-|---------|------|
-| String concatenation in JPQL/HQL | Injection |
-| `ObjectInputStream.readObject()` on untrusted data | Deserialization RCE |
-| XML parsing without disabling external entities | XXE |
-| `@RequestMapping` without method restriction | Method confusion |
-| SpEL expressions with user input | RCE |
-
-**Go:**
-
-| Pattern | Risk |
-|---------|------|
-| `fmt.Sprintf` in SQL queries | SQL injection |
-| `os/exec.Command` with user input | Command injection |
-| `template.HTML()` to bypass auto-escaping | XSS |
-| Missing error checks (unchecked `err`) | Various |
-| Race conditions from shared state without mutex | Data corruption, auth bypass |
-
-**TypeScript / Node (type-specific issues):**
-
-| Pattern | Risk |
-|---------|------|
-| `as any` type assertions bypassing type safety | Type confusion, injection |
-| `@ts-ignore` / `@ts-expect-error` hiding security issues | Various suppressed warnings |
-| Zod/Yup schema too permissive (`.passthrough()`, loose unions) | Input validation bypass |
-| `express.Request` with unvalidated `req.params` types | Type mismatch exploitation |
-| Server Actions (Next.js) without auth checks | Unauthorized server-side execution |
-| tRPC procedures missing `.input()` validation | Unvalidated API input |
-| Prisma raw queries: `$queryRaw` with template interpolation | SQL injection despite ORM |
-| `dangerouslySetInnerHTML` in React SSR with user data | Stored XSS |
-| Edge runtime (Cloudflare Workers, Vercel Edge) with `eval()` | RCE at edge |
-| Missing `Content-Security-Policy` in `next.config.js` | XSS amplification |
-
-**Rust (web frameworks — Actix, Axum, Rocket):**
-
-| Pattern | Risk |
-|---------|------|
-| `unsafe` blocks with user-controlled data | Memory corruption, UB |
-| `.unwrap()` on user input parsing | DoS via panic |
-| `format!()` in SQL queries instead of parameterized | SQL injection |
-| Missing CSRF protection on state-changing handlers | CSRF |
-| `std::process::Command` with user input | Command injection |
-| Deserialization of untrusted data via `serde` without validation | Object injection |
-| `include_str!()` / `include_bytes!()` with relative paths | Path traversal at build |
-| Missing rate limiting on auth endpoints in Actix/Axum | Brute force |
-| `tokio::spawn` without proper error propagation | Silent auth failures |
-| Shared mutable state via `Arc<Mutex<>>` without deadlock prevention | DoS, race conditions |
+> **Full framework-specific patterns (10 languages/frameworks + AI/LLM + MCP patterns):** See [reference/framework-patterns.md](reference/framework-patterns.md)
 
 ### Step 6: Review Dependencies
 
@@ -395,57 +311,14 @@ Focus on: Security implications of changes, newly introduced sinks, removed prot
 Focus on: Everything — data flows, auth, dependencies, configuration, logic. Best for: new codebases, pre-launch reviews, bounty targets with source access.
 
 ### AI/LLM Integration Audit
-Focus on: How the application integrates with LLM APIs and AI services. Best for: apps using OpenAI, Anthropic, Google AI APIs, or any LLM-backed features.
+Focus on: How the application integrates with LLM APIs and AI services. Best for: apps using OpenAI, Anthropic, Google AI APIs, or any LLM-backed features. Check for: prompt construction injection, output trust (LLM output → eval/exec/SQL/HTML), API key handling, multi-tenant isolation, tool call validation, RAG/memory poisoning.
 
-**What to Check:**
-
-| Pattern | What to Look For | Severity |
-|---------|-----------------|----------|
-| **Prompt construction** | User input concatenated directly into prompts without sanitization | High — enables prompt injection |
-| **Output trust** | LLM output passed to `eval()`, `exec()`, SQL queries, or rendered as HTML without escaping | Critical — enables RCE, SQLi, XSS via LLM output |
-| **API key handling** | OpenAI/Anthropic/Google API keys hardcoded, in env vars without rotation, or leaked in frontend bundles | High — credential exposure |
-| **System prompt exposure** | System prompts stored in client-accessible files, frontend code, or version control | Medium — information disclosure |
-| **Token/cost controls** | No rate limiting on LLM API calls, no max token limits, no cost caps | Medium — economic DoS |
-| **Multi-tenant isolation** | Shared conversation context between users, no per-user session isolation | Critical — cross-user data leakage |
-| **Tool call validation** | LLM tool/function calls executed without parameter validation or allowlist enforcement | Critical — arbitrary action execution |
-| **Memory/RAG poisoning** | Vector database ingestion from user-controlled sources without sanitization | High — persistent prompt injection (LPCI) |
-
-**Code Patterns to Flag:**
-
-```
-# DANGEROUS: User input directly in prompt
-prompt = f"Summarize this: {user_input}"
-response = openai.chat.completions.create(messages=[{"role": "user", "content": prompt}])
-
-# DANGEROUS: LLM output trusted and executed
-result = llm.generate(user_query)
-eval(result)  # or subprocess.run(result) or cursor.execute(result)
-
-# DANGEROUS: No output sanitization before HTML rendering
-return render_template("result.html", content=llm_response)
-
-# FLAG: Check if API keys are in source
-OPENAI_API_KEY = "sk-..."  # hardcoded key
-```
+> **Full AI/LLM integration checklist with code patterns:** See [reference/framework-patterns.md](reference/framework-patterns.md#aillm-integration-patterns)
 
 ### MCP Server Implementation Audit
-Focus on: Security of MCP server code — input validation, authentication, command injection. Best for: reviewing custom MCP servers or auditing MCP server dependencies.
+Focus on: Security of MCP server code — input validation, authentication, command injection. Best for: reviewing custom MCP servers or auditing MCP server dependencies. Check for: eval()/exec() epidemic (67% of servers), path traversal (82% have file ops), missing auth (38% lack auth), tool poisoning, OAuth endpoint injection, symlink escape, command blacklist bypass (WeKnora `-p` flag pattern), PostgreSQL expression bypass.
 
-**What to Check:**
-
-| Pattern | What to Look For | Severity |
-|---------|-----------------|----------|
-| **Command injection** | User-supplied arguments passed to `exec()`, `spawn()`, `system()` without sanitization | Critical — 67% of MCP servers have Code Injection risks (Endor Labs) |
-| **Path traversal** | File paths from MCP tool parameters not validated — `../` traversal | Critical — 82% use file system operations prone to Path Traversal |
-| **Authentication** | No auth on MCP endpoints, or static tokens without rotation | High — 38% of scanned MCP servers lack auth entirely |
-| **Tool description poisoning** | Tool descriptions loaded from external/user-controlled sources | High — enables invisible manipulation of AI behavior |
-| **Rug pull potential** | Tool definitions mutable between sessions without re-approval | High — post-deployment behavior modification |
-| **OAuth endpoint validation** | Authorization endpoints accepted without URL validation (CVE-2025-6514 pattern) | Critical — RCE via malicious auth endpoint |
-| **Case sensitivity in JSON parsing** | Field name handling differs from specification (CVE-2026-27896 pattern in Go SDK) | Medium — validation bypass |
-| **Symlink handling** | File operations don't resolve symlinks before access checks | Critical — sandbox escape |
-| **React Server Component deserialization** | Flight protocol deserialization of untrusted data in RSC implementations (React2Shell pattern, CVE-2025-55182) | Critical — pre-auth RCE, CVSS 10.0 |
-| **Extension/plugin loading** | AI IDE extension recommendations loading from unvalidated registries; namespace squatting risk | High — IDEsaster: malicious code served to 1.8M+ developers |
-| **Cloud identity token flows** | Actor Token, managed identity, or token exchange mechanisms without proper authorization checks | Critical — CVE-2025-55241: Global Admin via Actor Tokens |
+> **Full MCP audit checklist with 13 patterns:** See [reference/framework-patterns.md](reference/framework-patterns.md#mcp-server-implementation-patterns)
 
 ---
 
@@ -461,9 +334,20 @@ Focus on: Security of MCP server code — input validation, authentication, comm
 
 ---
 
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/framework-patterns.md](reference/framework-patterns.md) | Language-specific anti-patterns (10 languages/frameworks), AI/LLM integration audit patterns, MCP server audit patterns | ~200 |
+
+---
+
 ## Pairing with Other Skills
 
 - **target-recon** — Recon the running instance, then audit the source to confirm findings
 - **vuln-patterns** — Get testing patterns for vulnerability classes found in code review
 - **report-writing** — Write up code-level findings with source references and fix suggestions
 - **program-research** — Check if source code auditing is rewarded by the program
+- **ai-hunting** — For AI/LLM-specific vulnerability patterns beyond code review (prompt injection testing, MCP test procedures)
