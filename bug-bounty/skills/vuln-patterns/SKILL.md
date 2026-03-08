@@ -425,7 +425,7 @@ Ask as you go: "I found a URL parameter that reflects in the page — what XSS p
 
 | If you need... | Go to... |
 |---|---|
-| AI/LLM/MCP/agent test patterns (63+ MCP, 18 AI/LLM, 8 LPCI) | `reference/ai-mcp-vulns.md` |
+| AI/LLM/MCP/agent test patterns (70+ MCP, 18 AI/LLM, 8 LPCI) | `reference/ai-mcp-vulns.md` |
 | AI/LLM hunting methodology, tools, market context | `ai-hunting` skill |
 | GraphQL, JWT, OAuth, rate limiting, sandbox escape, agentic browser, AI IDE, MCP OAuth patterns | `reference/web-vulns.md` |
 | OAuth, JWT, SSO, MFA bypass methodology | `auth-testing` skill |

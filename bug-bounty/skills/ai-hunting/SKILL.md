@@ -67,7 +67,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 ### MCP (Model Context Protocol)
 
-MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of servers lack authentication, 43% have command injection flaws.
+MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of servers lack authentication, 43% have command injection flaws. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners).
 
 **Top vulnerability classes:**
 
@@ -86,7 +86,7 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **43+ MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **55+ MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -205,12 +205,12 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~360 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (43+), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, implementation stats, scanning tools | ~390 |
-| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, IDEsaster, agentic browsers, multi-agent attacks, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~380 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~250 |
-| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~400 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~140 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~373 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (55+), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~415 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, IDEsaster, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~591 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~241 |
+| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~406 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~152 |
 
 ---
 

@@ -27,6 +27,7 @@ Attack patterns targeting AI agents, coding assistants, multi-agent systems, and
   - [Autonomous Jailbreak Agents](#autonomous-jailbreak-agents)
   - [SOUL.md Identity File Poisoning](#soulmd-identity-file-poisoning)
   - [Side-Channel Timing Attacks](#side-channel-timing-attacks-against-llms)
+- [Full Schema Poisoning (FSP)](#full-schema-poisoning-fsp)
 - [Supply Chain Worm: Shai-Hulud](#supply-chain-worm-shai-hulud)
 - [Google Antigravity IDE Attack Surface](#google-antigravity-ide-attack-surface)
 
@@ -522,6 +523,33 @@ A novel attack technique using AI web-browsing capabilities as bidirectional com
 4. Test if output from AI can be directed to external endpoints
 
 **Severity Guidance:** Critical if AI agent has both web browsing and code execution capabilities; High if limited to data exfiltration. This pattern bypasses traditional network monitoring because traffic originates from the AI service's infrastructure.
+
+---
+
+## Full Schema Poisoning (FSP)
+
+An evolution beyond tool description poisoning where attackers compromise entire tool schema definitions at the structural level (Adversa AI, March 2026):
+
+**How FSP Differs from Tool Poisoning:**
+- Traditional tool poisoning hides instructions in tool **descriptions** — FSP modifies the **schema structure itself**
+- Hidden parameters, altered return types, or malicious default values affect all subsequent tool invocations
+- Poisoned schemas appear legitimate to monitoring systems that only scan descriptions
+- Description-only scanners (most current MCP security tools) miss FSP entirely
+
+**Attack Vectors:**
+1. **Hidden parameters** — Add undocumented parameters to `inputSchema` that the LLM discovers and uses (e.g., a `command` parameter accepting shell input not shown in documentation)
+2. **Altered return types** — Modify response schemas to include fields that instruct the LLM to take additional actions
+3. **Malicious defaults** — Set default parameter values that execute dangerous operations when the LLM calls the tool without specifying all parameters
+4. **Type confusion** — Change parameter types (e.g., string → object) to enable injection through structured data
+
+**Testing for FSP:**
+1. Inspect `inputSchema` fields for parameters not visible in tool documentation or UI
+2. Compare schema definitions to tool documentation — undocumented parameters are suspicious
+3. Check default values for dangerous operations (file paths, shell commands, URLs)
+4. Test if schema modifications survive across tool invocations without re-approval
+5. Verify if the target's MCP scanner checks schema structure, not just descriptions
+
+**Severity Guidance:** High-Critical when FSP enables code execution or data exfiltration through structural schema manipulation that bypasses description-only security tools. Maps to MCP06 (Tool Poisoning) in OWASP MCP Top 10.
 
 ---
 

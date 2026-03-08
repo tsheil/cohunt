@@ -350,3 +350,8 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **AWS CodeBuild vulnerability** (Wiz) -- critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
 - **Notion AI indirect prompt injection** -- attacker plants instructions in shared workspace content; Notion AI processes them as trusted
 - **MCP attack surface acceleration** (March 2026) -- Adversa AI published MCP Security TOP 25 with red team guides and defensive playbooks
+- **Schema Drift** (ecap0/AgentAudit, March 2026) -- Silent expansion of MCP tool schemas between version updates without changelog entries; previous audits become outdated; 194 packages audited with 118 findings across 68 packages
+- **Context Pivoting** (ecap0/AgentAudit, Feb 2026) -- MCP lateral movement via shared agent context in multi-server deployments; malicious server manipulates agent into calling other servers' tools with attacker-controlled parameters
+- **Full Schema Poisoning (FSP)** (Adversa AI, March 2026) -- Structural compromise of tool schema definitions beyond description poisoning — hidden parameters, altered return types, malicious default values bypass description-only scanners
+- **ICON defense** (March 2026) -- two-stage indirect prompt injection defense via attention collapse detection + Mitigating Rectifier; significantly reduces attack success rates; emerging defense to test against
+- **Check Point Claude Code Hooks** (CVE-2025-59536 / CVE-2026-21852, Feb 2026) -- hooks auto-execute shell commands on session launch; `ANTHROPIC_BASE_URL` setting redirects API keys to attacker server before trust prompt

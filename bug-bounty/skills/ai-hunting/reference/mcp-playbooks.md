@@ -10,7 +10,7 @@ Actionable test procedures for hunting vulnerabilities in Model Context Protocol
 
 - [MCP Vulnerability Classes](#mcp-vulnerability-classes)
 - [OWASP MCP Top 10 (2026)](#owasp-mcp-top-10-2026)
-- [43+ MCP Test Procedures](#43-mcp-test-procedures)
+- [55+ MCP Test Procedures](#43-mcp-test-procedures)
 - [MCP OAuth Account Takeover](#mcp-oauth-account-takeover)
 - [MCP Real-World Attack Examples](#mcp-real-world-attack-examples)
 - [MCP Implementation Vulnerability Stats](#mcp-implementation-vulnerability-stats)
@@ -18,6 +18,8 @@ Actionable test procedures for hunting vulnerabilities in Model Context Protocol
 - [Cursor Rogue MCP Browser Takeover](#cursor-rogue-mcp-browser-takeover)
 - [Security MCP Servers for Bug Bounty Workflows](#security-mcp-servers-for-bug-bounty-workflows)
 - [MCP Security Scanning Tools](#mcp-security-scanning-tools)
+- [Schema Drift: Silent MCP Attack Surface Expansion](#schema-drift-silent-mcp-attack-surface-expansion)
+- [Context Pivoting: Lateral Movement via Shared Agent Context](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Where to Hunt MCP Vulnerabilities](#where-to-hunt-mcp-vulnerabilities)
 
 ---
@@ -48,6 +50,9 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Exec-Approvals Shell Expansion Gap** | CVE-2026-28463: allowlist checks validate pre-expansion argv tokens, but execution uses real shell expansion — safe bins like `head`, `tail`, `grep` can read arbitrary files via glob patterns. Pattern: any AI tool validating commands before executing them has a gap between validation input and execution input | High |
 | **ClawJacked (WebSocket Hijacking)** | Malicious websites hijack local AI agent instances (e.g., OpenClaw) via WebSocket connections. Attacker page connects to localhost-bound WebSocket, gains remote control of local agent with all its permissions and tool access | Critical |
 | **"Rug Pull" Attacks** | MCP servers modify tool definitions between sessions, presenting different capabilities than initially approved. Exploits dynamic nature of MCP tool definitions for post-deployment modification | High |
+| **Schema Drift** | Silent expansion of MCP server attack surface between version updates — new parameters, tools, or capabilities added in patch releases without changelog entries; previous audits become outdated (ecap0/AgentAudit, March 2026) | High |
+| **Full Schema Poisoning (FSP)** | Structural compromise of tool schema definitions — hidden parameters, altered return types, malicious default values that affect all tool invocations while appearing legitimate to description-only scanners (Adversa AI, March 2026) | High-Critical |
+| **Context Pivoting** | MCP lateral movement via shared agent context — a malicious server manipulates the agent into calling other connected servers' tools with attacker-controlled parameters; MCP equivalent of network pivoting (ecap0/AgentAudit, February 2026) | Critical |
 | **Command Injection in MCP Packages** | CVE-2025-6514: critical OS command injection in `mcp-remote` (437K+ downloads) — malicious MCP servers send booby-trapped authorization_endpoint for RCE. Effectively a supply-chain backdoor | Critical |
 | **Sandbox Escape** | Anthropic's own Filesystem-MCP server had sandbox escape + symlink bypass enabling arbitrary file access and code execution | Critical |
 | **Token Passthrough Anti-Pattern** | MCP server accepts tokens from client without validating they were properly issued to the server — fundamental auth architecture flaw | High |
@@ -111,7 +116,7 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 
 ---
 
-## 43+ MCP Test Procedures
+## 55+ MCP Test Procedures
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -169,6 +174,9 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 53. Test for MCP tool name collision: does the MCP client use `{service}_{tool}` naming without namespace isolation? Can an attacker register a tool that overwrites a legitimate one (e.g., `tavily_extract`) to redirect LLM execution flow? Test for system prompt exfiltration and context theft via colliding tool names. (CVE-2026-30856, WeKnora, CVSS 5.9 — CWE-706; fixed v0.3.0)
 54. Test for exec-approvals shell expansion gap: if the AI tool validates commands against an allowlist before executing, does validation use pre-expansion argv tokens while execution uses real shell expansion? Test if safe binaries like `head`, `tail`, `grep` can read arbitrary files via glob patterns. (CVE-2026-28463, OpenClaw — allowlist checks pre-expansion, execution uses shell expansion)
 55. Test for voice webhook verification bypass: if the AI agent has voice/call integration, can attacker forge forwarded headers (e.g., `X-Forwarded-For`) to bypass caller allowlist verification? (CVE-2026-28465, OpenClaw — voice-call plugin webhook bypass)
+56. Test for schema drift between MCP server versions: compare `tools/list` responses across minor/patch updates — do new parameters, tools, or capabilities appear without changelog entries? Check if "patch" updates silently introduce shell command parameters or cross-server influence instructions. (ecap0/AgentAudit, March 2026)
+57. Test for context pivoting in multi-server MCP deployments: if target connects multiple MCP servers to one agent, can a poisoned response from Server A instruct the agent to call Server B's tools with attacker-controlled parameters? Test cross-server data exfiltration via shared agent context. (ecap0/AgentAudit, February 2026)
+58. Test for full schema poisoning (FSP): beyond tool description poisoning, can an attacker modify structural schema elements — hidden parameters, altered return types, malicious default values — that affect all tool invocations while passing description-only scanners? Test if `inputSchema` contains parameters not visible in the tool's UI or documentation. (Adversa AI, March 2026)
 
 ---
 
@@ -273,6 +281,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 - **Comprehensive MCP server audit** (March 2026): 194 packages audited across 211 independent security reports — **118 findings across 68 packages**. Most common patterns: command injection via unsanitized `child_process.exec()`, credential leakage in error messages/logs/LLM context, excessive filesystem permissions, and missing input validation
 - **Elastic Security Labs**: published MCP attack/defense recommendations covering tool poisoning, orchestration injection, and rug-pull redefinitions — actionable defensive guidance for understanding target mitigations
 - **Microsoft Spotlighting technique**: protecting against indirect prompt injection in MCP by using delimiters and data marking to help models distinguish instructions from data — potential defense to test against
+- **ICON defense mechanism** (March 2026): two-stage defense for indirect prompt injection — detects injection via attention collapse patterns, then uses a Mitigating Rectifier to steer attention away from adversarial tokens. Significantly reduces attack success rates. Test if target deployments use ICON or similar attention-based defenses
 - **n8n 6-CVE batch disclosure** (February 2026): six CVEs in a single day covering RCE, command injection, arbitrary file access, and XSS
 - **MINJA** (Memory Injection Attack): research demonstrating **95%+ injection success rates** against production AI agents with persistent memory
 
@@ -346,9 +355,54 @@ A rogue MCP server can inject JavaScript into Cursor's built-in browser, replaci
 | **MCPGuard** (VirtueAI) | Agent-based | Purpose-built fine-tuned models for MCP-specific patterns; analyzed 700+ servers, found critical vulns in 78% | Maintains scan memory across codebase |
 | **BlueRock MCP Trust Registry** | Web platform | Security analysis of 7,000+ MCP servers; SSRF, auth, and tool poisoning detection; provides trust scores | mcp-trust.com |
 | **Akto** | Platform | 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; MCP discovery | Enterprise deployment |
+| **AgentAudit** (ecap0) | Registry + CLI | MCP server security registry; multi-agent consensus-based auditing; schema drift detection; 194 packages audited, 118 findings across 68 packages; covers npm, pip, and AgentSkills | agentaudit.dev |
 | **Agent-Wiz** (Repello AI) | CLI | Threat modeling and visualization for LangGraph, AutoGen, CrewAI agents | GitHub: `Repello-AI/Agent-Wiz` |
 
 **MCP Security Tools:** mcp-scan v0.4.2 (Invariant Labs, acquired by Snyk Feb 2026 — standard MCP scanner for tool poisoning, rug pulls, cross-origin escalation; static + proxy modes), MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+
+---
+
+## Schema Drift: Silent MCP Attack Surface Expansion
+
+A new MCP attack vector identified by ecap0 (AgentAudit, February-March 2026) where tool schemas silently expand between version updates:
+
+**How It Works:**
+- With each MCP server update, tool schemas (descriptions, parameters, capabilities) can change without changelog mention
+- v1.0.0 ships with 3 clean tools; v1.0.1 "patch" silently adds a `command` parameter accepting shell commands "for advanced search"
+- v1.1.0 adds an `execute_script` tool with descriptions containing instructions that influence LLM behavior with other connected servers
+- Previous security audits become outdated with each silent update — organizations running audited MCP servers may unknowingly have expanded attack surfaces
+
+**Testing for Schema Drift:**
+1. Compare tool definitions between MCP server versions — diff `tools/list` responses across minor/patch updates
+2. Look for new parameters that accept arbitrary strings, shell commands, or file paths added in patch releases
+3. Check if new tool descriptions contain cross-server influence instructions
+4. Test if "patch" updates introduce entirely new tools with dangerous capabilities
+5. Verify if the target has version-pinning or schema validation for MCP servers
+
+**Related Concepts:**
+- **Full Schema Poisoning (FSP)**: attackers compromise entire tool schema definitions at the structural level — injecting hidden parameters, altered return types, or malicious default values that affect all subsequent tool invocations while appearing legitimate to monitoring systems. Goes beyond description-only tool poisoning by modifying the schema structure itself
+- Maps to MCP06 (Tool Poisoning) + MCP04 (Supply Chain) in OWASP MCP Top 10
+
+---
+
+## Context Pivoting: Lateral Movement via Shared Agent Context
+
+A new MCP attack vector (ecap0/AgentAudit, February 2026) — the MCP equivalent of network lateral movement:
+
+**How It Works:**
+- When multiple MCP servers connect to the same AI agent, they share the same execution context — same conversation, same model, same trust boundary
+- A malicious MCP server doesn't need to compromise other servers directly — it manipulates the agent into using them
+- One poisoned tool response can instruct the agent to call tools from other connected MCP servers with attacker-controlled parameters
+- Pattern: `Malicious Server A → poisons agent context → agent calls Server B's tools with attacker input → data exfiltration via Server A`
+
+**Testing for Context Pivoting:**
+1. If target connects multiple MCP servers to one agent, test if one server's responses can influence tool calls to other servers
+2. Inject instructions in Tool A's response that direct the agent to call Tool B with attacker-controlled parameters
+3. Test cross-server data exfiltration: can data from Server B be returned through Server A's channel?
+4. Check if servers have isolated execution contexts or share a single trust boundary
+5. Verify if the agent validates that tool call parameters match the original user intent, not injected instructions
+
+**Severity Guidance:** Critical in multi-server enterprise deployments where MCP servers have different trust levels (e.g., public documentation server + private database server). Maps to ASI07 (Insecure Inter-Agent Communication) + MCP06 (Tool Poisoning).
 
 ---
 
