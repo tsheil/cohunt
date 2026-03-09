@@ -258,6 +258,122 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
+## Edge Framework Path Normalization Bypass
+
+**What it is:** Exploiting URL decoding inconsistencies between routers and static file handlers in edge/serverless frameworks (Hono, Deno Fresh, etc.) to bypass middleware-based authentication.
+
+**Key CVE:** CVE-2026-29045 (Hono, High severity) — `decodeURI` in router vs `decodeURIComponent` in `serveStatic` allows encoded slashes to bypass route-based middleware protections (e.g., `/admin/*` auth checks) while still resolving to protected filesystem paths. Fixed in v4.12.4.
+
+**Where to look:**
+- Applications using edge/serverless frameworks (Hono, Deno Fresh, Bun, Cloudflare Workers)
+- Static file handlers behind authentication middleware
+- Any route-based access control relying on path matching
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Encoded slash bypass | Request `/admin%2Fsecret-file` to bypass `/admin/*` middleware | Static file served without auth middleware executing |
+| 2 | Double encoding | Request `/%252Fadmin/config` to bypass path-based rules | Path resolves after second decode round |
+| 3 | Mixed encoding | Use `%2F` for slashes but normal characters otherwise | Router and file handler disagree on resolved path |
+| 4 | Cookie attribute injection | Inject `\r\n` or `;` into cookie domain/path parameters | Session fixation or cookie poisoning (CVE-2026-29086, Hono) |
+| 5 | SSE field injection | Inject CR/LF into `event`, `id`, `retry` fields of Server-Sent Events | Additional SSE fields injected into stream (CVE-2026-29085, Hono) |
+
+**Severity Guidance:** High when path normalization bypass enables authentication bypass to protected resources. The root cause — decoder mismatch between components — is a recurring pattern across frameworks.
+
+---
+
+## GraphQL WebSocket Subscription Depth Bypass
+
+**What it is:** GraphQL query depth limits enforced on HTTP queries/mutations but not on WebSocket subscriptions, allowing DoS via unbounded subscription nesting.
+
+**Key CVE:** CVE-2026-30241 (Mercurius/Fastify, severity pending) — `queryDepth` limit not applied to WebSocket subscription operations. Allows arbitrarily deep subscription queries causing exponential data resolution. Fixed in v16.8.0.
+
+**Where to look:**
+- GraphQL APIs using Mercurius, Apollo Subscriptions, or any library with separate HTTP and WebSocket transports
+- Applications with `queryDepth` or `depthLimit` configured
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | WebSocket depth bypass | Send deeply nested subscription over WebSocket that would be rejected over HTTP | Subscription accepted without depth check |
+| 2 | Transport comparison | Send identical deep query over HTTP (blocked) and WebSocket (allowed) | Different enforcement per transport |
+| 3 | Subscription DoS | Deeply nested subscription triggering exponential resolver calls | Server resource exhaustion, timeout, or crash |
+
+**Severity Guidance:** High for DoS if depth limits are the only protection against query complexity attacks. Critical if subscription resolvers access sensitive data without per-field auth.
+
+---
+
+## SSRF via Webhook, Notification, and Import Endpoints
+
+**What it is:** Server-Side Request Forgery through webhook URL validators, notification testers, and asset import features that perform incomplete IP validation.
+
+**Recent CVE cluster (March 2026):**
+- **CVE-2026-30832** (Soft Serve Git, CVSS 9.1): blind SSRF via LFS endpoint in repo import → full read via malicious LFS server chain
+- **CVE-2026-28680** (Ghostfolio, CVSS 9.3): full-read SSRF via manual asset import → AWS IMDS credential exfiltration
+- **CVE-2026-30840** (Wallos, CVSS 8.8): authenticated SSRF via notification tester endpoints
+- **CVE-2026-30242** (Plane, CVSS 8.5): webhook URL serializer only checks `is_loopback`, not RFC 1918 ranges
+- **CVE-2026-30834** (PinchTab, CVSS 7.5): API-accessible SSRF via `/download` endpoint
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Incomplete IP validation | Use `10.0.0.1`, `172.16.0.1`, `192.168.1.1` when only loopback is blocked | Access to internal network when only 127.0.0.1 is validated |
+| 2 | Webhook URL test | Set webhook URL to `http://169.254.169.254/latest/meta-data/` | Cloud metadata accessible via webhook test |
+| 3 | Notification tester | Use notification test/preview features with internal URLs | Response body or timing reveals internal service access |
+| 4 | Asset import SSRF | Import asset/URL/feed from `http://internal-service:port/` | Import fetches internal resources |
+| 5 | LFS/Git import chain | Configure repo with malicious LFS server pointing to internal targets | SSRF triggered during git LFS fetch operations |
+| 6 | DNS rebinding | Use DNS rebinding to bypass IP validation at resolution time | Initial DNS resolves to allowed IP, subsequent resolve to internal |
+
+**Severity Guidance:** Critical when full response read-back enables credential theft (cloud metadata, internal APIs). High for blind SSRF. The "only checks loopback" pattern is the most common validation gap — always test RFC 1918 ranges.
+
+---
+
+## OAuth First-Party App Trust Abuse (ConsentFix)
+
+**What it is:** Abusing trusted first-party application status in OAuth/SSO implementations to bypass MFA and Conditional Access policies.
+
+**Key disclosure:** ConsentFix (Push Security, March 2026) — Azure CLI's first-party trust status allows it to obtain OAuth tokens that bypass MFA and Conditional Access entirely. Attacker phishes victim into pasting a URL containing OAuth key material.
+
+**Where to look:**
+- Microsoft Entra ID / Azure AD environments with first-party apps
+- Any SSO implementation with implicitly trusted applications excluded from consent restrictions
+- OAuth flows where first-party apps are exempt from security policies
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | First-party token abuse | Use first-party client IDs (e.g., Azure CLI) in OAuth flows | Token obtained without MFA/Conditional Access |
+| 2 | Admin consent bypass | First-party apps excluded from admin consent restrictions | Elevated permissions granted without admin approval |
+| 3 | Cross-tenant token use | Use token from first-party app flow across tenants | Token valid in unintended tenant |
+
+**Severity Guidance:** Critical — bypasses MFA entirely. Relevant for any enterprise using Microsoft Entra ID. Maps to Fortinet CVE-2026-24858 (FortiCloud SSO auth bypass, CISA KEV) as part of a broader SSO trust model abuse pattern.
+
+---
+
+## HTTP/3 Race Conditions (QUICker)
+
+**What it is:** Race condition testing extended to HTTP/3 (QUIC transport), a previously untestable attack surface.
+
+**Tool:** QUICker — first race condition exploitation tool for HTTP/3 (academic research, ScienceDirect 2026).
+
+**Why it matters:** Many applications migrating to HTTP/3 assumed race condition attacks only applied to HTTP/1.1 and HTTP/2. QUIC's multiplexed streams create new timing windows.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | H3 single-packet attack | Send multiple requests in a single QUIC Initial packet | Requests processed simultaneously, bypassing serialization |
+| 2 | Transport comparison | Test identical race condition on HTTP/1.1, HTTP/2, and HTTP/3 | Different race windows across transports |
+| 3 | Stream multiplexing abuse | Use QUIC stream multiplexing for tighter timing windows | Sub-millisecond race windows exploitable |
+
+**Severity Guidance:** Same as equivalent HTTP/1.1-2 race conditions. The novelty is that HTTP/3-only targets previously considered immune to race conditions are now testable.
+
+---
+
 ## Critical Infrastructure Authentication & Deserialization
 
 **What it is:** Authentication bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.

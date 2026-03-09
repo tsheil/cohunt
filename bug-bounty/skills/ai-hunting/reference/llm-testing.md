@@ -304,6 +304,45 @@ General hallucinations ("LLM occasionally makes stuff up") are not reportable.
 
 ---
 
+## Advanced Jailbreak & Injection Techniques (March 2026)
+
+### Jailbreak Foundry (JBF) — Papers to Runnable Attacks
+
+Multi-agent system that automatically translates academic jailbreak papers into executable attack modules (arXiv:2602.24009, updated March 5, 2026). Immediately testable against AI targets using the latest published techniques.
+
+### TAO-Attack — Two-Stage Optimization Jailbreak
+
+A next-generation optimization-based jailbreak (arXiv:2603.03081, March 2026):
+- **Stage 1**: Suppresses refusals to maintain harmful prefixes
+- **Stage 2**: Penalizes pseudo-harmful outputs, pushes toward genuinely harmful completions
+- Addresses a known limitation of prior GCG-style attacks where models produce safe-looking responses that appear harmful
+
+### Large Reasoning Models as Autonomous Jailbreak Agents (97.14% Success)
+
+Nature Communications (March 2026, DOI: s41467-026-69010-1):
+- DeepSeek-R1, Gemini 2.5 Flash, Grok 3 Mini, Qwen3 235B tested as autonomous adversaries
+- **97.14% success rate** across 9 target models in multi-turn conversations with zero human supervision
+- Demonstrates that reasoning models convert jailbreaking from specialized skill to inexpensive, accessible activity
+- Direct implications for AI bounty programs — the bar for safety testing has dropped significantly
+
+### Unit42 In-the-Wild Indirect Prompt Injection Catalog (22 Techniques)
+
+First systematic analysis of real-world IDPI attacks from production telemetry (Palo Alto Unit42, March 2026):
+- **22 distinct attacker payload techniques** observed in the wild (not theoretical)
+- Documented intents: data destruction, credential leakage, SEO manipulation, **ad review evasion** (first documented case)
+- Move from theoretical to in-the-wild — these techniques are being actively used against production AI systems
+- Key testing implications: AI content processing systems (ad review, moderation, triage) are confirmed active targets
+
+### Zscaler Enterprise AI Failure Rates
+
+Zscaler ThreatLabz 2026 AI Security Report:
+- **100% of enterprise AI systems** had critical flaws in red team testing
+- **Median time to first critical failure: 16 minutes**; 90% compromised in under 90 minutes; one system in 1 second
+- AI/ML activity surged 91% YoY across 3,400+ applications
+- Validates that enterprise AI deployments are universally vulnerable — use this stat when pitching AI security testing
+
+---
+
 ## Practical Testing Workflows
 
 ### System Prompt Extraction Checklist

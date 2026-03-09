@@ -126,6 +126,10 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 | 65 | WeKnora-style command bypass | When tool whitelists certain executables (npx, uvx), test `-p` flag and alternative execution modes | Execution of arbitrary code through whitelisted command wrappers; CVE-2026-30861 (CVSS 9.9) |
 | 66 | SQL injection via array/row expressions | In MCP servers with database access, use PostgreSQL array/row syntax to bypass validation | Validation fails to recursively inspect nested SQL expressions; chains with large object operations for full RCE; CVE-2026-30860 (CVSS 9.9) |
 | 67 | Tool name collision | Register tool with ambiguous naming pattern (mcp_{service}_{tool}) matching existing tool namespace | System prompt exfiltration or tool execution redirection via name confusion; CVE-2026-30856 (CVSS 5.9) |
+| 68 | Hardcoded dangerous defaults in LLM frameworks | Audit LLM framework code nodes for `allow_dangerous_code=True`, `sandbox=False`, or similar hardcoded permissive settings | Prompt injection → arbitrary code execution via trusted framework defaults; CVE-2026-27966 (Langflow CSV Agent, CVSS 9.8): hardcoded `allow_dangerous_code=True` exposes Python REPL |
+| 69 | OpenClaw approval gating bypass | If target uses human-in-the-loop approval for agent actions, test if approval fields can be manipulated in gateway requests | Safety mechanism circumvented — agent executes without human approval; CVE-2026-28466: gateway fails to sanitize approval fields |
+| 70 | OpenClaw UI pairing bypass | If target uses device pairing for control interfaces, test if node-role authenticated sessions can skip pairing | Unpaired control interface connects directly, bypassing operator role requirement; OpenClaw March 2026, fixed v2026.2.25 |
+| 71 | MCP server webhook DoS | Test MCP server webhook handlers with oversized request bodies | Unbounded memory allocation causing OOM crash; CVE-2026-28478: OpenClaw webhooks buffer without size limits |
 
 **OWASP MCP Top 10 Mapping:** Map MCP findings to MCP01-MCP10 risk IDs for stronger reports -- Token Mismanagement (MCP01), Privilege Escalation (MCP02), Command Injection (MCP03), Supply Chain (MCP04), Auth (MCP05), Tool Poisoning (MCP06), Shadow Servers (MCP07), Insecure Data (MCP08), Input Validation (MCP09), Logging (MCP10).
 
@@ -339,7 +343,9 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **n8n Ni8mare** (CVE-2026-21858, CVSS 10.0) -- unauthenticated RCE in ~100K n8n servers via Content-Type confusion in Form Webhook
 - **Operation Bizarre Bazaar** (Pillar Security, Jan 2026) -- 35,000 LLMjacking sessions; 60% of traffic shifted to MCP reconnaissance
 - **Exploitation speed** -- 28.96% of KEVs exploited on or before CVE publication day in 2025; vulnerability exploitation #1 cause of incidents at 40% (IBM X-Force)
+- **30 MCP CVEs filed in 60 days** (Adversa AI March 2026) — fastest-growing AI attack surface
 - **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
+- **40.71% average attack success rate** across 9 LLM models in MCP Security Bench (MSB, ICLR 2026); stronger models MORE vulnerable due to superior tool-calling compliance
 - **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching
 - **Cursor Workspace Trust disabled** (Oasis Security) -- Cursor ships with Workspace Trust disabled by default; `.vscode/tasks.json` auto-executes without user confirmation
 - **Copilot CLI shell RCE (CVE-2026-29783)** -- bash parameter expansion patterns (`${var@P}`, `${!var}`) bypass safety layer that misclassified dangerous commands as "read-only"
@@ -355,3 +361,10 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **Full Schema Poisoning (FSP)** (Adversa AI, March 2026) -- Structural compromise of tool schema definitions beyond description poisoning — hidden parameters, altered return types, malicious default values bypass description-only scanners
 - **ICON defense** (March 2026) -- two-stage indirect prompt injection defense via attention collapse detection + Mitigating Rectifier; significantly reduces attack success rates; emerging defense to test against
 - **Check Point Claude Code Hooks** (CVE-2025-59536 / CVE-2026-21852, Feb 2026) -- hooks auto-execute shell commands on session launch; `ANTHROPIC_BASE_URL` setting redirects API keys to attacker server before trust prompt
+- **CVE-2026-27966** (Langflow CSV Agent, CVSS 9.8) -- hardcoded `allow_dangerous_code=True` enables prompt injection → RCE via Python REPL; no auth required; fixed v1.8.0. Pattern: search LLM framework code for hardcoded permissive defaults
+- **CVE-2026-3680** (biome-mcp-server, CVSS 5.3) -- command injection via `child_process` wrapping CLI tool; unauthenticated. Pattern: MCP servers wrapping CLI tools without input sanitization
+- **CVE-2026-28466** (OpenClaw gateway approval bypass) -- gateway fails to sanitize approval fields, allowing clients to bypass human-in-the-loop execution gating
+- **OpenClaw privacy breach** (March 2026) -- 42,000+ exposed instances, 1.5M leaked API tokens, 35K leaked emails; 93% of exposed instances had critical auth bypass; minimum safe version 2026.2.26
+- **Zscaler 2026 AI Security Report** -- 100% enterprise AI failure in red team testing; median 16 minutes to first critical failure; 90% compromised in under 90 minutes
+- **Unit42 In-the-Wild IDPI** (March 2026) -- first systematic catalog of 22 distinct indirect prompt injection techniques observed in real-world telemetry; includes ad review evasion (first documented case)
+- **MCP Security Bench (MSB, ICLR 2026)** -- 12 attack types, 2,000 instances, 9 LLM agents tested; stronger models MORE vulnerable due to superior tool-calling compliance; 40.71% average attack success

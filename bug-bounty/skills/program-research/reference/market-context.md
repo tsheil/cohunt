@@ -401,3 +401,17 @@ Competition awareness:
 - **AISLE AI CVE discoveries**: 100+ CVEs across 30+ projects; 13/14 OpenSSL CVEs in 2025
 - **Codex Security refined performance**: discovered 14 CVEs across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh
 - **Agent skill supply chain threat**: ToxicSkills study found 36% of ClawHub skills contain prompt injection
+- **Bugcrowd FedRAMP Moderate** (March 2026): first crowdsourced security platform cleared for U.S. federal agencies, sponsored by CISA
+- **HackerOne AI Research Safe Harbor** (January 2026): platform-wide opt-in for AI system testing, separate from Gold Standard Safe Harbor
+- **Intigriti Global Hacker Ambassador Program** (March 4, 2026): early access to private programs; 125,000+ ethical hackers
+- **NVIDIA private AI bounty on Intigriti**: explicit AI-focused private program + public VDP for all NVIDIA assets
+- **Zscaler 2026 AI Security Report**: 100% enterprise failure rate; median 16 min to first critical; AI/ML activity +91% YoY
+- **Unit42 in-the-wild IDPI catalog**: 22 distinct payload techniques in production telemetry; first documented ad review evasion
+- **Langflow CSV Agent RCE** (CVE-2026-27966, CVSS 9.8): hardcoded `allow_dangerous_code=True` → prompt injection to RCE
+- **Joseph Thacker (rez0) critical window**: 2026 is "massively important" — 2x submissions predicted; internal AI code review will commoditize external bug bounty in 1-2 years
+- **curl ended bug bounty** (January 2026): first shutdown from AI slop — 8x submission spike, 5% genuine, 0 AI-only real findings in 6 years
+- **Wallarm API ThreatStats 2026**: AI-related API threats +400% YoY; 36% of AI vulns are also API vulns
+- **Cisco State of AI Security 2026**: AI vulnerabilities from research now materializing in production incidents
+- **OpenClaw privacy breach scale**: 42K+ exposed instances, 1.5M leaked API tokens; 93% had critical auth bypass
+- **Penetrify autonomous red team** (March 3, 2026): first fully autonomous AI red team; CI/CD integration; from $50/mo
+- **GHOSTCREW MCP-based toolkit** (January 2026): open-source, integrates Metasploit/Nmap/SQLMap; 450+ GitHub stars

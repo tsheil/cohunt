@@ -25,6 +25,7 @@ Attack patterns targeting AI agents, coding assistants, multi-agent systems, and
   - [H-CoT: Chain-of-Thought Hijacking](#h-cot-hijacking-chain-of-thought)
   - [GRP-Obliteration: Safety Alignment Removal](#grp-obliteration-single-prompt-safety-alignment-removal)
   - [ZombieAgent: Zero-Click Memory Poisoning](#zombieagent-zero-click-memory-poisoning-via-email)
+  - [Unit42 In-the-Wild IDPI Catalog](#unit42-in-the-wild-indirect-prompt-injection-catalog)
   - [Autonomous Jailbreak Agents](#autonomous-jailbreak-agents)
   - [SOUL.md Identity File Poisoning](#soulmd-identity-file-poisoning)
   - [Side-Channel Timing Attacks](#side-channel-timing-attacks-against-llms)
@@ -135,6 +136,7 @@ Use this taxonomy when categorizing agentic browser vulnerabilities in reports �
 - **File system access via agents** — Agents with `file://` access can be tricked into reading and exfiltrating local files
 - **Credential manager access** — Manipulated agent workflows access password managers through legitimate agent-browser integration
 - **Extension escalation** — Malicious browser extensions exploit AI panel integration points (CVE-2026-0628)
+- **PleaseFix zero-click exfiltration** — Zenity Labs (March 2026): two exploit paths in Perplexity Comet: (1) zero-click file system exfiltration via calendar invite triggers, (2) credential theft via 1Password manipulation through agent-authorized workflows. Initial fix bypassed with `view-source:file:///`. Pattern: routine workflow triggers (calendar invites) can weaponize agentic browsers without user interaction
 
 **Testing Approach:**
 1. Identify if target has agentic browsing features (autonomous web access, scheduled browsing)
@@ -383,6 +385,21 @@ A zero-click exploit chain against ChatGPT demonstrating self-propagating memory
 5. Verify if poisoned memory entries are visible to the user (most are not)
 
 **Severity Guidance:** Critical — zero-click, self-propagating, persistent. Maps to ASI06 (Memory Poisoning) and enables ASI07 (Insecure Inter-Agent Communication) via propagation. OpenAI patched December 2025.
+
+### Unit42 In-the-Wild Indirect Prompt Injection Catalog
+
+First systematic analysis of web-based indirect prompt injection (IDPI) attacks observed in real-world telemetry (Palo Alto Unit42, March 2026):
+
+**Key Findings:**
+- **22 distinct attacker payload techniques** cataloged from real-world telemetry — not theoretical research
+- Documented intents: data destruction, credential leakage, SEO manipulation, ad review evasion
+- **First observed case of AI-based ad review evasion** — attackers embed hidden instructions to bypass AI content moderation
+- Techniques include visual concealment, obfuscation, dynamic execution, and multi-step chains
+
+**Testing Implications:**
+- AI-powered content processing systems (ad review, content moderation, automated triage) are active targets
+- Test for IDPI using all 22 documented techniques (concealment, encoding, role-play, multi-turn)
+- Ad review / content moderation bypass is a novel business logic vulnerability class worth testing
 
 ### Autonomous Jailbreak Agents
 

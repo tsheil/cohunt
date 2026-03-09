@@ -201,4 +201,14 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Cloudflare public bug bounty** launched: high-value target covering CDN, DNS, Workers, R2, zero trust
 - **NEAR Intents bridge** bug bounty (March 3, 2026): cross-chain MPC infrastructure; bridges historically yield top payouts
 - **Microsoft "In Scope by Default"** expanded to include third-party and open source code impacting Microsoft online services
+- **Bugcrowd FedRAMP Moderate Authorization** (March 2026): sponsored by CISA; first crowdsourced security platform cleared for U.S. federal agencies; opens government programs to researchers
+- **HackerOne AI Research Safe Harbor** (January 2026): platform-wide opt-in specifically for AI system testing; reduces legal risk for AI security researchers; signals programs welcoming AI-focused submissions
+- **Intigriti Global Hacker Ambassador Program** (March 4, 2026): early access to private programs, rewards, community building; 125,000+ ethical hackers in the community
+- **NVIDIA private AI bounty on Intigriti**: private program specifically covering NVIDIA AI products and infrastructure; public VDP for all NVIDIA assets
+- **Zscaler 100% enterprise AI failure rate**: median 16 minutes to first critical failure; 90% compromised in under 90 minutes; validates universal enterprise AI vulnerability
+- **80% of organizations** reported risky AI agent behaviors (unauthorized system access, improper data exposure); only 21% of executives have complete visibility into agent permissions; 97% of AI security incidents lacked proper access controls (Gravitee March 2026)
+- **Cisco State of AI Security 2026**: AI vulnerabilities from research labs now materializing in production incidents; agentic AI risk and AI supply chain as major themes
+- **Joseph Thacker (rez0) critical window prediction**: 2026 is "massively important" — 2x bug submissions predicted; 1-2 years before internal AI code review commoditizes external bug bounty; Anthropic's Firefox exploitation cost $4K in API credits vs $3K-$20K typical bounty payouts
+- **curl ended bug bounty** (January 2026): first program shutdown attributed to AI slop — submission volume spiked 8x, only 5% genuine; zero AI-only submissions found real vulns in 6 years
+- **Wallarm 2026 API ThreatStats**: AI-related API threats surged 400% YoY (439 to 2,185 disclosed vulns); 36% of AI vulns also qualify as API vulns; MCP predicted as central 2026 attack vector
 
