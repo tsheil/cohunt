@@ -123,17 +123,23 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Key CVEs (Ivanti EPMM, Jan-Feb 2026):** CVE-2026-1281 (CVSS 9.8, pre-auth RCE via `/mifs/c/appstore/fob/`, public PoC, mass exploitation) and CVE-2026-1340 (CVSS 9.8, companion RCE via `/mifs/c/aftstore/fob/`).
 
+**Root cause:** Improper handling of attacker-controlled input within Bash scripts — specifically **bash arithmetic expansion** in the `map-appstore-url` script. Attackers inject OS commands via HTTP GET parameters that are processed by Bash's `$((...))` arithmetic evaluation. Both endpoints (`/mifs/c/appstore/fob/` and `/mifs/c/aftstore/fob/`) share the same root cause.
+
+**Mass exploitation scope (March 2026):** CISA KEV addition. Observed across US, Germany, Australia, Canada. Sectors: state/local government, healthcare, manufacturing, professional/legal services, high technology. Post-exploitation: webshell deployment, reverse shells on TCP/443, secondary payload retrieval via curl/wget, database export/staging, anti-forensic cleanup.
+
 **Where to look:** Ivanti EPMM/MobileIron, ManageEngine, VMware Workspace ONE, Microsoft Intune. Search Shodan: `"MobileIron"`, `"/mifs/"` paths.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Unauthenticated endpoints | Fuzz MDM admin paths without credentials | Admin functions accessible pre-auth |
-| 2 | File upload via enrollment | Use device enrollment endpoints to upload arbitrary files | Web shell deployment via enrollment flow |
-| 3 | API version mismatch | Test legacy API versions alongside current ones | Older APIs may lack auth checks |
+| 1 | Bash arithmetic expansion | Send GET requests to `/mifs/c/appstore/fob/` with arithmetic expansion payloads in parameters | OS command execution via `$((...))` evaluation |
+| 2 | Companion endpoint | Test `/mifs/c/aftstore/fob/` with same payloads (same root cause, different feature) | Command execution via Android File Transfer endpoint |
+| 3 | Unauthenticated endpoints | Fuzz MDM admin paths without credentials | Admin functions accessible pre-auth |
+| 4 | File upload via enrollment | Use device enrollment endpoints to upload arbitrary files | Web shell deployment via enrollment flow |
+| 5 | API version mismatch | Test legacy API versions alongside current ones | Older APIs may lack auth checks |
 
-**Severity Guidance:** Critical — compromised MDM = full mobile fleet control (push configs, install apps, wipe devices).
+**Severity Guidance:** Critical — compromised MDM = full mobile fleet control (push configs, install apps, wipe devices). The **bash arithmetic expansion** pattern is a variant worth hunting for in any web app that passes user input to shell scripts — test arithmetic contexts `$((...))` not just standard command injection `$(...)`.
 
 ---
 

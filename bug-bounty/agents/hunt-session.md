@@ -49,7 +49,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 3. **Analyze scope** — Cross-reference recon findings against program scope. Flag any gray areas or out-of-scope assets discovered during recon.
 
 4. **Assess competition & duplicate risk** — Check what autonomous tools have likely tested. Key competitive landscape (March 2026):
-   - **XBOW**: completed HackerOne mission (#1 with 1,400+ reports, $117M funded); **pivoting to pre-production scanning** — reduces program competition but enterprises increasingly scan pre-deployment
+   - **XBOW**: completed HackerOne mission (#1 with 1,400+ reports, $117M funded); **pivoting to pre-production scanning** — reduces direct program competition; 85% solve rate on custom never-before-seen challenges; still operating at loss (compute > bounties)
    - **Wiz Cyber Model Arena**: 257-challenge benchmark confirmed Claude Code + Opus 4.6 as #1 offensive AI; but AI fails at broad enumeration, creative pivots, and searching external sources — **human direction is essential**
    - **Shannon**: open-source 96.15% benchmark ($0-$49.99/mo); **AISLE**: all 12 OpenSSL zero-days; **Novee**: 90% constrained web exploitation
    - **Codex Security + Claude Code Security**: both launched March 6, 2026 for enterprise scanning (pattern-matching vulns are AI territory)
@@ -114,6 +114,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Vibe-coded apps** | Supabase RLS bypass, Firebase open storage, client-side API key extraction (1.5M keys exposed in Moltbook), missing auth — **2,000+ vulns in 5,600 apps** (Escape.tech) | vuln-patterns/reference/web-vulns.md |
 | **Workflow automation** | n8n Ni8mare (CVE-2026-21858 CVSS 10.0, ~100K servers), content-type bypass, workflow expression injection (CVE-2026-25049 CVSS 9.9) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Cloud SSO trust abuse** | Cross-tenant auth bypass (CVE-2026-24858 FortiOS CVSS 9.4), first-party trust abuse (ConsentFix), SSO token scope validation | vuln-patterns/reference/infrastructure-vulns.md |
+| **MDM/enterprise mgmt** | Ivanti EPMM bash arithmetic expansion (CVE-2026-1281/1340 CVSS 9.8, mass exploitation), SolarWinds WHD multi-stage RCE (CVE-2025-40551), VMware Aria migration path (CVE-2026-22719 CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:
