@@ -265,6 +265,8 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | React RSC / Next.js | Deserialization in Flight protocol (React2Shell) | vuln-patterns SKILL.md |
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
 | Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
+| Claude Desktop Extensions (DXT) | Zero-click RCE, AppleScript injection, API whitelist exfiltration | ai-hunting/reference/ide-supply-chain.md |
+| SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains | vuln-patterns/reference/infrastructure-vulns.md |
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

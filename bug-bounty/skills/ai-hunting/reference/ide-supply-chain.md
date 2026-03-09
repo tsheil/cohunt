@@ -10,6 +10,7 @@ Attack patterns targeting AI coding IDEs, desktop extensions, and software suppl
 
 - [IDEsaster: AI Coding IDE Attack Surface](#idesaster-ai-coding-ide-attack-surface)
 - [Claude DXT Zero-Click RCE](#claude-dxt-zero-click-rce)
+- [Claude Cowork File Exfiltration](#claude-cowork-file-exfiltration)
 - [AI as C2 Proxy](#ai-as-c2-proxy)
 - [Google Antigravity IDE Attack Surface](#google-antigravity-ide-attack-surface)
 
@@ -123,11 +124,37 @@ A critical vulnerability (CVSS 10.0) in Claude Desktop Extensions (DXT) discover
 
 **Key Detail:** Anthropic declined to fix, stating it "falls outside current threat model." Affects 10,000+ active DXT users.
 
+**PromptJacking (Koi AI, CVSS 8.9):** Separate from LayerX finding — three official Claude Desktop MCP extensions for Chrome, iMessage, and Apple Notes had **AppleScript command injection**. User-controlled data inserted directly into AppleScript commands without escaping. A malicious web page + prompt injection turned a normal Claude question ("Where can I play paddle in Brooklyn?") into arbitrary code execution. SSH keys, AWS credentials, browser passwords all exposed. Fixed in DXT v0.1.9. Root cause: classic unsanitized command injection across all three extensions.
+
 **Testing Approach:**
 1. If target uses Claude Desktop Extensions, check if DXT execution is sandboxed
 2. Test if content from connected services (calendar, email, docs) can trigger DXT actions
 3. Check for privilege boundaries between DXT execution and host system
 4. Test if DXT tool calls are gated by user confirmation
+5. Test if DXT extensions pass user-controlled data to shell/AppleScript commands without escaping
+6. Test cross-DXT chaining: can one DXT's output trigger another DXT's code execution?
+
+---
+
+## Claude Cowork File Exfiltration
+
+A prompt injection vulnerability enabling file theft via Anthropic's own whitelisted API (PromptArmor/Johann Rehberger, Jan 2026):
+
+**How It Works:**
+- Attacker uploads document containing hidden prompt injection to shared workspace
+- When Claude Cowork analyzes the file, the injected prompt triggers automatically
+- Injection instructs Claude to execute `curl` to Anthropic's file upload API using the **attacker's API key** (not the victim's)
+- Code executed by Claude runs in a VM that restricts outbound network requests to most domains — **but the Anthropic API is whitelisted** as trusted, enabling exfiltration
+
+**Key Detail:** Originally disclosed to Anthropic via HackerOne in October 2025 — closed within one hour as "out of scope." Anthropic shipped Claude Cowork on January 12, 2026 with the vulnerability unpatched. Affects Claude Haiku and Claude Opus 4.5. Demonstrates the risk of internal API whitelisting in sandboxed environments.
+
+**Testing Approach:**
+1. Identify which network endpoints are whitelisted in AI agent sandboxes
+2. Test if whitelisted APIs can be used with attacker-controlled credentials
+3. Embed prompt injection in documents that trigger file read + API upload chains
+4. Check if the sandbox's own vendor API can serve as an exfiltration channel
+
+**Severity Guidance:** High-Critical — enables zero-click file exfiltration from shared workspaces. The API whitelist bypass pattern is generalizable: any sandboxed AI system that whitelists its vendor's API creates an exfiltration channel.
 
 ---
 

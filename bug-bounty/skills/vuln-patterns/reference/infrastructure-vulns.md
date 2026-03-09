@@ -21,6 +21,8 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [Workflow Automation Platform RCE](#workflow-automation-platform-rce)
 - [Enterprise Management Platform RCE](#enterprise-management-platform-rce)
 - [Appliance Hardcoded Credentials](#appliance-hardcoded-credentials)
+- [Network Infrastructure Auth Bypass](#network-infrastructure-auth-bypass)
+- [March 2026 Zero-Day Cluster (Microsoft)](#march-2026-zero-day-cluster-microsoft)
 
 ---
 
@@ -355,3 +357,53 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 3 | Network interface enumeration | Check for ephemeral network interfaces or unusual NIC creation/deletion patterns | Ghost NIC lateral movement technique |
 
 **Severity Guidance:** Critical (CVSS 10.0). Backup/DR appliances have access to all protected data and often lack endpoint security monitoring. The Ghost NIC technique — creating temporary virtual interfaces for lateral movement and deleting them — is a novel evasion pattern worth documenting in reports.
+
+---
+
+## Network Infrastructure Auth Bypass
+
+**What it is:** Authentication bypass in network management planes — SD-WAN controllers, EoL routers, VPN gateways — enabling unauthenticated administrative access to devices managing entire network fabrics.
+
+**Key CVEs (Feb-March 2026):**
+- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 (sophisticated APT) **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root access via software downgrade-then-restore technique. CISA KEV, 24-hour patch mandate for federal agencies
+- **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` endpoint — unauthenticated DNS modification ("DNSChanger") on EoL devices (DSL-2740R, DSL-2640B, DSL-2780B, DSL-526B). Exploited in the wild since November 2025. **No patch available** — devices EoL since 2020
+
+**Where to look:** Cisco SD-WAN (vSmart/vManage), EoL routers still in production, Fortinet/Ivanti VPN gateways. Shodan: `Cisco SD-WAN`, `vManage`, `D-Link DSL`.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Peering auth bypass | Send crafted requests to SD-WAN peering endpoints | Administrative access without credentials |
+| 2 | NETCONF config push | After auth bypass, test NETCONF for fabric-wide config changes | Routing modification, unauthorized peer connections |
+| 3 | DNS settings injection | Probe `dnscfg.cgi` or similar DNS config endpoints on consumer routers | Command injection via DNS server parameters |
+| 4 | Software downgrade chain | Check version management endpoints for downgrade capability | CVE chain: auth bypass → downgrade → privesc → restore |
+
+**Severity Guidance:** Critical. SD-WAN controllers manage entire network fabrics — compromising one yields fabric-wide access. EoL devices with no patch represent permanent risk. The UAT-8616 downgrade technique is a novel chaining pattern: bypass auth → downgrade software → exploit old privesc → restore to original version.
+
+---
+
+## March 2026 Zero-Day Cluster (Microsoft)
+
+**What it is:** Microsoft's March 2026 Patch Tuesday addressed 67 vulnerabilities including 4 actively exploited zero-days affecting Windows kernel, NTFS, FAT, and MMC. All 4 added to CISA KEV with 21-day patch deadline.
+
+**Key CVEs:**
+
+| CVE | CVSS | Component | Type | Vector |
+|-----|------|-----------|------|--------|
+| CVE-2026-24983 | 7.8 | Win32 Kernel Subsystem | EoP → SYSTEM | Use-after-free; post-compromise chains |
+| CVE-2026-24984 | 4.6 | Windows NTFS | Info Disclosure | Physical access + crafted USB → heap memory read; espionage operations |
+| CVE-2026-24985 | 6.8 | Fast FAT File System | RCE | Heap buffer overflow via malicious VHD files; email/shares delivery |
+| CVE-2026-24993 | 7.8 | Microsoft Management Console | RCE | Malformed .msc files → code execution; email/web delivery |
+
+**Where to look:** Windows endpoints in scope, especially those with USB exposure (CVE-2026-24984) or that process VHD/MSC files. Follows February 2026's unprecedented 6 actively exploited zero-days.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | VHD file processing | Craft malicious VHD files targeting FAT filesystem handling | Crash or code execution when VHD is mounted |
+| 2 | MSC file delivery | Create .msc files with embedded payloads; test email/web delivery | Code execution when .msc opened by target |
+| 3 | USB-based exfiltration | Test NTFS heap memory disclosure via crafted USB device | Heap memory contents leaked to attacker device |
+
+**Severity Guidance:** Medium-High individually, but the cluster pattern is significant — 4 zero-days in one month following 6 in February indicates active campaign(s). The VHD + MSC delivery vectors are commonly used in phishing chains. Report as part of broader attack surface assessment.

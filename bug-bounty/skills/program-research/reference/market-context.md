@@ -441,3 +441,12 @@ Competition awareness:
 - **CyberStrikeAI threat intel**: AI tool weaponized to breach 600+ FortiGate devices across 55 countries; CrowdStrike reports 89% increase in AI-enabled attacks
 - **Healthcare AI $14M breach**: patient records exfiltrated via prompt injection over 3 months (Moltwire); only 17% of enterprises adopted agentic AI
 - **Apple bounty evolution**: max payout now $5M+ (base $2M + Lockdown Mode bonus); iPhone 17 Security Research Device with Memory Integrity Enforcement
+- **HackerOne hackbot policy** (Feb 2026): mandated "hacker-in-the-loop" for all AI tools; split leaderboard into humans vs AI collectives; HackerOne does not train models on researcher submissions
+- **XBOW enterprise pivot**: completed HackerOne mission; GA product now working with large banks and tech firms on pre-production scanning; $75M Series B ($117M total)
+- **30 MCP CVEs in 60 days** (Feb-Mar 2026): MCP is AI's fastest-growing attack surface; 38% of 500+ scanned servers lack auth entirely
+- **Claude DXT zero-click RCE** (LayerX, CVSS 10.0): 50+ DXT extensions run unsandboxed; Anthropic declined to fix; PromptJacking (Koi AI, CVSS 8.9) found AppleScript injection in 3 official extensions
+- **Claude Cowork shipped with known vuln**: file exfiltration via Anthropic API whitelist bypass; disclosed Oct 2025, launched unpatched Jan 2026
+- **Cisco SD-WAN CVE-2026-20127** (CVSS 10.0): auth bypass exploited since 2023 by UAT-8616 APT; novel software downgrade chaining technique
+- **Microsoft March 2026**: 4 zero-days (kernel UAF, NTFS USB, FAT VHD, MMC .msc); follows February's 6 zero-days — 10 actively exploited zero-days in 2 months
+- **Android/Qualcomm CVE-2026-21385**: integer overflow affecting 200+ chipsets; targeted exploitation; CISA KEV
+- **D-Link CVE-2026-0625** (CVSS 9.3): DNSChanger zero-day on EoL routers; no patch; exploited since Nov 2025

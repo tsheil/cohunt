@@ -242,7 +242,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 
 ## MCP Implementation Vulnerability Stats
 
-- **40+ MCP CVEs filed in Q1 2026** — MCP is now AI's fastest-growing attack surface, with critical RCEs in testing infrastructure (MCPJam Inspector), SDKs, and production servers (MCP Security Research, early 2026)
+- **30 MCP CVEs filed in 60 days** (Feb-March 2026), **40+ total in Q1 2026** — MCP is AI's fastest-growing attack surface, with critical RCEs in testing infrastructure (MCPJam Inspector), SDKs, and production servers
 - **43% of MCP servers vulnerable to command execution** (Adversa AI March 2026 aggregate across 500+ servers; 3 demonstrated attack classes with PoC code: external prompt injection, tool prompt injection, cross-tool hijacking)
 - **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
 - **30% permitted unrestricted URL fetching** (SSRF-prone)
