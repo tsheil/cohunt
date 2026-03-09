@@ -95,7 +95,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Agentic browser exploitation** | Zero-click hijacking of autonomous browsing agents | PleaseFix/PerplexedBrowser: calendar invites → file system exfiltration |
 | **Promptware kill chains** | Multi-stage prompt injection traversing 4+ kill chain stages | Injection → persistence → lateral movement → exfiltration chains |
 | **Documentation supply chain** | Poisoned library docs/custom rules served via MCP to AI agents | ContextCrush: trusted docs → env file theft, file deletion |
-| **Exposed agent infrastructure** | Scanning for unsecured MCP gateways, admin panels, agent configs | Clawdbot: 2,000+ exposed gateways with API keys, OAuth tokens, conversation histories |
+| **Exposed agent infrastructure** | Scanning for unsecured MCP gateways, admin panels, agent configs | Clawdbot: 2,000+ exposed gateways; Krebs: OpenClaw admin panels exposing full credential configs; 42,665+ exposed instances |
 | **Salami slicing (gradual bypass)** | Multi-week constraint drift via incremental interactions | Procurement agent fraud: $5M in false POs after 3 weeks of gradual manipulation |
 | **WebSocket agent hijacking** | Cross-origin WebSocket connection to localhost AI agents | ClawJacked: any webpage could control local OpenClaw agent with full permissions |
 | **MCP tool name collision** | Register tool that overwrites legitimate one via namespace ambiguity | CVE-2026-30856: `mcp_{service}_{tool}` naming hijacks execution flow for prompt/context theft |
@@ -155,6 +155,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools:
 | **Chain-of-thought hijacking** | Redirect visible reasoning traces in reasoning models to bypass safety refusals | H-CoT: o1 rejection drops from 99% to <2% under attack |
 | **AI framework SSRF via redirect** | Supply benign URL → HTTP 302 redirects to internal resources (cloud metadata, localhost services) | CVE-2026-27795 (LangChain): RecursiveUrlLoader redirect bypass → AWS metadata theft |
 | **Identity/config file poisoning** | Test if processed documents can instruct AI agent to modify its own SOUL.md or .cursorrules | Persistent compromise: all future sessions controlled by attacker-modified config |
+| **Windows MotW bypass chain** | Test URL validation in Windows components (MSHTML, Shell, Word) for Mark-of-the-Web bypass → SmartScreen defeat → code execution | CVE-2026-21513 (APT28); 3 MotW bypasses in Feb 2026 Patch Tuesday; recurring pattern across `ieframe.dll`, Windows Shell, Office |
+| **Exposed AI agent admin panels** | Scan for internet-exposed AI agent management interfaces leaking credentials and configurations | Krebs: OpenClaw admin panels exposing API keys, OAuth secrets; 42,665 exposed instances; pattern extends to any self-hosted AI agent platform |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -296,6 +298,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Multi-agent system | Cascade injection, cross-agent privilege escalation | ai-hunting/reference/agent-attack-patterns.md |
 | React RSC / Next.js | Deserialization in Flight protocol (React2Shell) | vuln-patterns SKILL.md |
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
+| Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

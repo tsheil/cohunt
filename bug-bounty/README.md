@@ -140,6 +140,16 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
+## What's New in v0.46.0
+
+- **web-vulns.md structural split** — Split critically oversized `web-vulns.md` (498 lines, 2-line buffer) into `web-vulns.md` (329 lines, API/web patterns) + new `infrastructure-vulns.md` (229 lines, platform/infrastructure patterns), creating ~170 lines of headroom for future growth
+- **MSHTML Mark-of-the-Web bypass chain** — CVE-2026-21513 (CVSS 8.8, APT28 active exploitation) + CVE-2026-21510/21514/21519/21533 cluster; 5 test patterns for MotW bypass detection in new `infrastructure-vulns.md`
+- **3 new AI security tools** — Repello AI SkillCheck (browser-based skill security scanner), Noma MCP Server Security (MCP deployment discovery), Crust (agent security infrastructure with runtime behavioral analysis) added to `tools-landscape.md`
+- **Krebs on Security OpenClaw exposure** — 42,665 exposed admin interfaces; pattern: scan for exposed admin → credential harvest → lateral movement; added to case studies and hunt-session agent
+- **Apple iOS zero-day** — CVE-2026-20700 (CVSS 7.8, Google TAG discovery) dyld zero-day exploit chain added to case studies and market context
+- **Hunt-session agent updated** — Windows MotW bypass chain and exposed AI agent admin panel vectors added to human-vs-AI edge matrix; infrastructure-vulns.md routing added
+- **Market intelligence** — Cycode 62% exploitable LLM code stat, February 2026 Windows MotW bypass cluster, 4 new notable incident entries
+
 ## What's New in v0.44.0
 
 - **Advanced recon techniques** — Favicon hash enumeration (Shodan/Censys infrastructure discovery), origin IP discovery via Certificate Transparency logs (WAF bypass), copyright notice mining for related domains, and virtual host fuzzing for hidden services in `target-recon`

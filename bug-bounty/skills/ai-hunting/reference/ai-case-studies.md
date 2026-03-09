@@ -304,6 +304,15 @@ Two major studies quantified MCP risk at scale:
 
 **Bug Bounty Relevance:** MCP plugin stacks are now quantifiably the most dangerous enterprise AI attack surface. Target companies with 5+ MCP plugins for near-certain exploitation paths. Cross-plugin chains (untrusted input → sensitive capability) are the highest-value findings.
 
+**Krebs on Security: OpenClaw Admin Exposure (March 8, 2026):**
+OpenClaw web admin interfaces found exposed to the internet, revealing full credential configurations including API keys, OAuth secrets, and signing keys. Combined with the ClawHavoc supply chain attack (1,184 malicious skills) and 42,665 exposed instances, this confirms OpenClaw deployments as a consistently high-value attack surface. Pattern: scan for exposed admin interfaces → credential harvest → lateral movement to connected services.
+
+**Apple iOS Zero-Day Targeted Attack (March 2026):**
+CVE-2026-20700 (CVSS 7.8) — memory corruption in `dyld` (Dynamic Link Editor) used in "extremely sophisticated attack against specific targeted individuals." Discovered by Google Threat Intelligence Group. Part of exploit chain with CVE-2025-14174 and CVE-2025-43529 (WebKit). Patched in iOS 26.3 and macOS Tahoe 26.3. Demonstrates continued nation-state interest in mobile zero-days — Apple's $2M bounty for zero-click remote exploits reflects the threat level.
+
+**February 2026 Windows MotW Bypass Cluster:**
+Three separate Mark-of-the-Web bypasses actively exploited in February 2026 Patch Tuesday — CVE-2026-21510 (Windows Shell), CVE-2026-21513 (MSHTML, attributed to APT28), CVE-2026-21514 (Microsoft Word). This concentration indicates MotW bypass is a hot vulnerability class being actively researched by both APT groups and independent researchers. MotW bypass defeats SmartScreen, Protected View, and macro-blocking — the primary trust mechanisms for files downloaded from the internet.
+
 ---
 
 ## Critical Warning: AI Slop Reports

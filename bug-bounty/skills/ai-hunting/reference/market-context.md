@@ -111,7 +111,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Non-human identities** (AI agents, service accounts) represent **higher risk (52%)** than human users (37%) in cloud (Tenable 2026)
 - **48% of cybersecurity professionals** identify agentic AI as the #1 attack vector heading into 2026 (Dark Reading)
 - **Gartner** (2026): **40% of enterprise apps** will embed task-specific AI agents by end of 2026 (up from <5% in 2025)
-- **Cycode 2026**: **100% of surveyed organizations** have AI-generated code in their codebases; **81% lack visibility** into AI usage across the SDLC
+- **Cycode 2026**: **100% of surveyed organizations** have AI-generated code in their codebases; **81% lack visibility** into AI usage across the SDLC; **62% of code from latest LLMs** has at least one exploitable vulnerability; 97% using or piloting AI coding assistants
 - **Aikido 2026**: **1 in 5 organizations** experienced a serious security incident from AI-generated code
 - **PwC 2025**: 79% of companies have deployed agentic AI, but security lags adoption
 - **Tenable Cloud & AI Risk Report**: 70% of organizations integrated AI/MCP packages without centralized security oversight; 18% granted AI services admin permissions
@@ -251,6 +251,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **OpenAnt (Knostic, March 6, 2026)**: open-source LLM vulnerability scanner with two-stage detect + exploit pipeline; supports 6 languages; Apache 2.0
 - **Claude Code macOS keychain fix** (March 2026): keychain corruption when using multiple OAuth MCP servers; large OAuth metadata overflows security buffer leaving stale credentials; trust dialog bug silently enabled all `.mcp.json` servers on first run
 - **March 2026 Patch Tuesday preview**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's unprecedented 6 actively exploited zero-days
+- **Krebs on Security OpenClaw exposure** (March 8, 2026): OpenClaw web admin interfaces exposed to internet with full credential configurations (API keys, OAuth secrets, signing keys); Meta AI safety director lost 200+ emails after agent ignored STOP commands
+- **Apple CVE-2026-20700** (iOS dyld zero-day, CVSS 7.8): "extremely sophisticated attack" against specific individuals; discovered by Google Threat Intelligence; chained with WebKit CVEs; patched iOS 26.3
+- **MSHTML CVE-2026-21513** (CVSS 8.8, APT28): MotW bypass via `ieframe.dll` URL validation → code execution; part of February 2026's 6 zero-day Patch Tuesday; 3 separate MotW bypasses indicate hot vulnerability class
 - **Android March 2026 security bulletin**: 129 vulnerabilities patched including critical RCE CVE-2026-0006 and actively exploited Qualcomm zero-day CVE-2026-21385 (234 chipsets)
 - **Unit 42 MCP Sampling attacks** (March 2026): 3 new attack vectors — resource theft, conversation hijacking, covert tool invocation via MCP sampling mechanism; servers become active prompt authors
 - **WeKnora 5-CVE multi-tenant compromise** (March 7, 2026): CVE-2026-30855 (CVSS 8.8) broken access control + CVE-2026-30858 (DNS rebinding SSRF) + CVE-2026-30857 (cross-tenant KB cloning); open registration → unauthenticated full ATO; LLM API key leakage from tenant configs. Pattern: multi-tenant AI platforms with open registration are goldmines

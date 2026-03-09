@@ -430,7 +430,8 @@ This skill uses progressive disclosure. Detailed reference material is available
 |------|----------|-------|
 | [reference/business-logic.md](reference/business-logic.md) | Payment flow exploitation, state machine mapping, subscription bypass, multi-tenant isolation, race conditions, monetary impact quantification, validation gate | ~300 |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns 11-18, LPCI, real-world incidents, OWASP MCP Top 10 mapping | ~360 |
-| [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT manipulation, OAuth/OIDC, API rate limiting, n8n/workflow sandbox escapes | ~290 |
+| [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
+| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass | ~220 |
 
 ---
 
