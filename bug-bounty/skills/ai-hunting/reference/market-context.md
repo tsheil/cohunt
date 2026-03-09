@@ -92,6 +92,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Claude Opus 4.6 found 500+ vulnerabilities** across production OSS codebases; **22 Firefox vulns** in 2 weeks
 - **OpenAI Codex Security** (March 6, 2026): 1.2M commits scanned, 14 CVEs found; $10M in API credits for OSS
 - **Novee Security benchmark**: proprietary model outperformed Gemini 2.5 Pro and Claude 4 Sonnet by 55%+, achieving up to 90% accuracy
+- **Shannon** (Keygraph): open-source autonomous pentester achieving **96.15%** on hint-free XBOW benchmark (100/104 exploits); source-code-aware testing
+- **Terra Security** ($30M Series A): agentic AI continuous PTaaS with human-in-the-loop; hybrid AI + human supervision model validated by Felicis
 - **March 2026 escalation**: Both Anthropic and OpenAI launched enterprise scanning the same week (March 6)
 
 ---
@@ -106,6 +108,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **97% of organizations** with AI breaches lacked basic access controls; 63% pasted sensitive data into chatbots
 - **Non-human identities** (AI agents, service accounts) represent **higher risk (52%)** than human users (37%) in cloud (Tenable 2026)
 - **48% of cybersecurity professionals** identify agentic AI as the #1 attack vector heading into 2026 (Dark Reading)
+- **Gartner** (2026): **40% of enterprise apps** will embed task-specific AI agents by end of 2026 (up from <5% in 2025)
+- **Cycode 2026**: **100% of surveyed organizations** have AI-generated code in their codebases; **81% lack visibility** into AI usage across the SDLC
+- **Aikido 2026**: **1 in 5 organizations** experienced a serious security incident from AI-generated code
 - **PwC 2025**: 79% of companies have deployed agentic AI, but security lags adoption
 - **Tenable Cloud & AI Risk Report**: 70% of organizations integrated AI/MCP packages without centralized security oversight; 18% granted AI services admin permissions
 
@@ -233,4 +238,14 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Apple Security Research Device 2026**: iPhone 17 devices with Memory Integrity Enforcement; expanded bounty categories; "Target Flags" for objective exploitability demonstration
 - **Malicious Postmark MCP server** (Enkrypt AI): discovered during 1,000-server scan — silently exfiltrated every email it processed; demonstrates supply chain risk in MCP ecosystem
 - **PentAGI multi-agent pentesting** (2026): fully autonomous system with researcher/developer/executor roles; Graphiti knowledge graph (Neo4j); sandboxed Docker; supports OpenAI, Claude, Gemini, local models; open-source
+- **FastMCP 1M+ daily downloads** — powers ~70% of all MCP servers as the dominant framework; MCP SDK reaches **97 million monthly downloads** across 10,000+ active servers adopted by OpenAI, Microsoft, Google
+- **OWASP Red Teaming Vendor Evaluation v1.0** (March 6, 2026): first standard for evaluating AI red teaming providers; distinguishes chatbot-level from agent-level testing; warns against vendors treating MCP/multi-agent architectures as simple chatbots
+- **100% AI IDE prompt injection rate** (March 2026): all tested AI IDEs (Copilot, Cursor, Windsurf, Claude Code) vulnerable to prompt injection enabling RCE; 24 CVEs, 1.8M developers at risk; novel vulnerability class
+- **OX Security 94 Chromium CVEs**: Cursor and Windsurf ship legacy Chromium builds — 94+ known vulnerabilities exploitable against 1.8M developers; CVE-2025-7656 weaponized against latest versions
+- **Agents of Chaos (arXiv:2602.20021)**: first autonomous agent red-team study — 11 failure modes over 2 weeks including synonym-based PII bypass, self-destructive actions, 9-day infinite loops, false completion reporting
+- **Aikido Infinite new CVEs** (March 2026): autonomous agents found CVE-2026-25545 (Astro SSRF), CVE-2026-27148 (Storybook WebSocket hijack → supply chain), in addition to 7 Coolify CVEs
+- **Keysight MCP confused deputy** (January 2026): documented MCP command injection taxonomy — STDIO transport servers run with user privileges, creating confused deputy scenario; detection signatures added to ATI-2025-25 StrikePack
+- **Contrast Security MCP Server**: defensive MCP server bridging IAST vulnerability data with AI agents for context-aware remediation; provides complete taint-flow trace from source to sink
+- **OpenAnt (Knostic, March 6, 2026)**: open-source LLM vulnerability scanner with two-stage detect + exploit pipeline; supports 6 languages; Apache 2.0
+- **Claude Code macOS keychain fix** (March 2026): keychain corruption when using multiple OAuth MCP servers; large OAuth metadata overflows security buffer leaving stale credentials; trust dialog bug silently enabled all `.mcp.json` servers on first run
 

@@ -161,3 +161,21 @@ Google's AI coding IDE launched in early 2026 has rapidly accumulated a signific
 2. Check if extension recommendations can be manipulated via namespace squatting
 3. Test for web-triggered RCE via malicious page interaction
 4. Audit the trust model for workspace files and project configurations
+
+---
+
+## Universal AI IDE Prompt Injection (March 2026)
+
+A six-month security research project reveals a **novel vulnerability class affecting 100% of tested AI IDEs** (GBHackers/Aikido Security):
+
+**Key Findings:**
+- All tested IDEs — GitHub Copilot, Cursor, Windsurf, Claude Code — vulnerable to prompt injection attacks that combine with legacy IDE features to enable RCE and data exfiltration
+- **24 CVEs assigned**, 1.8M developers at risk
+- Attack vector: prompt injection in GitHub Actions and GitLab CI/CD workflows exploits AI agents running in pipelines
+- **OX Security Chromium exposure**: Cursor and Windsurf ship legacy Chromium builds with **94+ known vulnerabilities** — CVE-2025-7656 weaponized against latest versions
+
+**Testing Approach:**
+1. Test for prompt injection in CI/CD pipelines where AI agents process untrusted input (issues, PRs, comments, workflow logs)
+2. Check if the AI IDE uses an embedded Chromium browser — test for known unpatched CVEs
+3. Verify Chromium version in `process.versions.chrome` or about:version and cross-reference against known CVEs
+4. Test prompt injection → legacy IDE feature chains (e.g., injection → task.json auto-execution → RCE)

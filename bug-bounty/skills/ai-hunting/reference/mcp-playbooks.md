@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 59 concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
+Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 65 concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
 
 > **Related files:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent supply chain and novel attack techniques | [ai-case-studies.md](ai-case-studies.md) for real-world MCP incident case studies
 
@@ -10,7 +10,7 @@ Actionable test procedures for hunting vulnerabilities in Model Context Protocol
 
 - [MCP Vulnerability Classes](#mcp-vulnerability-classes)
 - [OWASP MCP Top 10 (2026)](#owasp-mcp-top-10-2026)
-- [59 MCP Test Procedures](#59-mcp-test-procedures)
+- [65 MCP Test Procedures](#65-mcp-test-procedures)
 - [MCP OAuth Account Takeover](#mcp-oauth-account-takeover)
 - [MCP Real-World Attack Examples](#mcp-real-world-attack-examples)
 - [MCP Implementation Vulnerability Stats](#mcp-implementation-vulnerability-stats)
@@ -298,41 +298,17 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 
 ## Denial-of-Wallet via MCP Overthinking Loops
 
-A new attack class exploiting MCP tool interactions to cause severe financial damage without obvious malicious behavior (arXiv:2602.14798):
+Attack class (arXiv:2602.14798) exploiting MCP tools to amplify token consumption up to **142.4x**. Three loop types: repetition (agent repeats calls), forced refinement (responses demand "improvements"), distraction (tangential tasks). No single step looks abnormal.
 
-**How It Works:**
-- Attacker registers 14 malicious tools across 3 MCP servers
-- Tools trigger three loop types: **repetition loops** (agent repeats same tool calls), **forced refinement loops** (tool responses demand "improvements"), and **distraction loops** (introduce tangential tasks)
-- Amplifies token consumption up to **142.4x** and dramatically increases latency
-- No single step looks abnormal — each tool call appears legitimate, making detection extremely difficult
-- Creates severe financial risk for pay-per-token AI deployments
-
-**Testing for Denial-of-Wallet:**
-1. If target uses MCP servers with pay-per-token billing, test if tool responses can trigger repeated agent calls
-2. Craft tool outputs that request "refinement" or "additional analysis" — does the agent loop?
-3. Test if distraction tools can redirect the agent away from its primary task, consuming tokens on irrelevant work
-4. Check if token budgets or call limits exist for MCP tool interactions
-5. Measure cost amplification: what's the ratio of attacker cost (registering tools) to victim cost (token consumption)?
-
-**Severity Guidance:** High-Critical if target has no token budgets and uses production billing; Medium if testing/sandbox environments with spending caps. Maps to ASI05 (Excessive Agency) in OWASP Agentic Top 10.
+**Testing:** Check if tool responses trigger repeated agent calls; craft outputs requesting "refinement"; test for distraction tools; verify token budgets/call limits exist; measure cost amplification ratio. **Severity:** High-Critical without token budgets; Medium with spending caps. Maps to ASI05.
 
 ---
 
 ## Cursor Rogue MCP Browser Takeover
 
-A rogue MCP server can inject JavaScript into Cursor's built-in browser, replacing login pages with phishing interfaces (CSO Online, 2026):
+Rogue MCP server injects JavaScript into Cursor's embedded browser, replacing login pages with phishing interfaces while URLs remain unchanged (CSO Online, 2026). Unlike VS Code, Cursor does not perform integrity checks on its own files. Propagates automatically with each new tab.
 
-**How It Works:**
-- Unlike VS Code, Cursor does not perform integrity checks on its own files
-- A rogue MCP server injects malicious JavaScript into Cursor's embedded browser
-- Login pages are replaced with phishing interfaces while URLs remain unchanged
-- The attack propagates automatically with each new browser tab opened
-
-**Testing Approach:**
-1. If target uses Cursor with MCP servers, test if MCP server can modify Cursor's browser behavior
-2. Check if Cursor validates integrity of its embedded browser files
-3. Test if malicious JavaScript injected via MCP persists across browser tabs
-4. Compare with VS Code's integrity check behavior as a baseline
+**Testing:** Test if MCP server can modify Cursor's browser behavior; check for file integrity validation; test JavaScript persistence across tabs; compare with VS Code's integrity checks.
 
 ---
 
@@ -375,45 +351,17 @@ A rogue MCP server can inject JavaScript into Cursor's built-in browser, replaci
 
 ## Schema Drift: Silent MCP Attack Surface Expansion
 
-A new MCP attack vector identified by ecap0 (AgentAudit, February-March 2026) where tool schemas silently expand between version updates:
+MCP tool schemas silently expand between version updates (ecap0/AgentAudit, Feb-March 2026). v1.0.1 "patch" adds a `command` parameter; v1.1.0 adds `execute_script` with cross-server influence instructions. Previous audits become outdated.
 
-**How It Works:**
-- With each MCP server update, tool schemas (descriptions, parameters, capabilities) can change without changelog mention
-- v1.0.0 ships with 3 clean tools; v1.0.1 "patch" silently adds a `command` parameter accepting shell commands "for advanced search"
-- v1.1.0 adds an `execute_script` tool with descriptions containing instructions that influence LLM behavior with other connected servers
-- Previous security audits become outdated with each silent update — organizations running audited MCP servers may unknowingly have expanded attack surfaces
-
-**Testing for Schema Drift:**
-1. Compare tool definitions between MCP server versions — diff `tools/list` responses across minor/patch updates
-2. Look for new parameters that accept arbitrary strings, shell commands, or file paths added in patch releases
-3. Check if new tool descriptions contain cross-server influence instructions
-4. Test if "patch" updates introduce entirely new tools with dangerous capabilities
-5. Verify if the target has version-pinning or schema validation for MCP servers
-
-**Related Concepts:**
-- **Full Schema Poisoning (FSP)**: attackers compromise entire tool schema definitions at the structural level — injecting hidden parameters, altered return types, or malicious default values that affect all subsequent tool invocations while appearing legitimate to monitoring systems. Goes beyond description-only tool poisoning by modifying the schema structure itself
-- Maps to MCP06 (Tool Poisoning) + MCP04 (Supply Chain) in OWASP MCP Top 10
+**Testing:** Diff `tools/list` responses across versions; look for new parameters accepting shell commands/file paths in patch releases; check for cross-server influence in descriptions; verify version-pinning. **Related:** Full Schema Poisoning (FSP) — structural schema compromise with hidden parameters, altered return types, malicious defaults (Adversa AI). Maps to MCP06 + MCP04.
 
 ---
 
 ## Context Pivoting: Lateral Movement via Shared Agent Context
 
-A new MCP attack vector (ecap0/AgentAudit, February 2026) — the MCP equivalent of network lateral movement:
+MCP equivalent of network lateral movement (ecap0/AgentAudit, Feb 2026). Multiple MCP servers sharing one agent context enables: poisoned tool response → agent calls other servers' tools with attacker parameters → data exfiltration. Pattern: `Malicious Server A → poisons context → agent calls Server B → exfiltration via Server A`.
 
-**How It Works:**
-- When multiple MCP servers connect to the same AI agent, they share the same execution context — same conversation, same model, same trust boundary
-- A malicious MCP server doesn't need to compromise other servers directly — it manipulates the agent into using them
-- One poisoned tool response can instruct the agent to call tools from other connected MCP servers with attacker-controlled parameters
-- Pattern: `Malicious Server A → poisons agent context → agent calls Server B's tools with attacker input → data exfiltration via Server A`
-
-**Testing for Context Pivoting:**
-1. If target connects multiple MCP servers to one agent, test if one server's responses can influence tool calls to other servers
-2. Inject instructions in Tool A's response that direct the agent to call Tool B with attacker-controlled parameters
-3. Test cross-server data exfiltration: can data from Server B be returned through Server A's channel?
-4. Check if servers have isolated execution contexts or share a single trust boundary
-5. Verify if the agent validates that tool call parameters match the original user intent, not injected instructions
-
-**Severity Guidance:** Critical in multi-server enterprise deployments where MCP servers have different trust levels (e.g., public documentation server + private database server). Maps to ASI07 (Insecure Inter-Agent Communication) + MCP06 (Tool Poisoning).
+**Testing:** Test if one server's responses influence tool calls to other connected servers; inject cross-server instructions; test data exfiltration across server boundaries; verify context isolation. **Severity:** Critical in multi-server deployments with different trust levels. Maps to ASI07 + MCP06.
 
 ---
 
@@ -509,3 +457,43 @@ Enkrypt AI scanned 1,000+ MCP servers across GitHub, enterprise registries, and 
 4. For self-hosted servers: deploy Enkrypt Secure MCP Gateway for runtime AI safety filtering
 
 **Maps to:** MCP03 (Insecure MCP Server Design) + MCP07 (Supply Chain)
+
+---
+
+## New MCP Patterns (March 2026)
+
+### Keysight Confused Deputy MCP Command Injection
+
+Keysight ATI (January 2026) documented a confused deputy pattern where MCP servers bridge natural-language input to privileged system actions. In STDIO transport deployments, tools run with the same privileges as the launching user — malicious MCP servers need not break isolation since they already operate inside the trusted boundary.
+
+**Test Procedure (#63): Confused Deputy via STDIO MCP Server**
+1. Identify MCP servers using STDIO transport (local execution, not remote HTTP/SSE)
+2. Check if exposed tools accept parameters that reach shell execution paths
+3. Test if the LLM can be induced to pass attacker-controlled parameters to privileged tools
+4. Verify: does the MCP server run with the same privileges as the user? (Most STDIO servers do)
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-441 (Unintended Proxy or Intermediary)
+
+### MCP Health/Debug Endpoint Reconnaissance
+
+CVE-2026-29787 (mcp-memory-service): health endpoints expose OS version, Python version, CPU count, memory, disk usage, and database paths without authentication. Pattern: MCP servers with HTTP transport expose debug/health endpoints that leak system reconnaissance data.
+
+**Test Procedure (#64): MCP Health Endpoint Info Disclosure**
+1. Enumerate HTTP endpoints on MCP servers: `/api/health`, `/api/health/detailed`, `/health`, `/status`, `/debug`
+2. Check if endpoints respond without authentication (especially when `MCP_ALLOW_ANONYMOUS_ACCESS=true`)
+3. Verify if binding is `0.0.0.0` (network-exposed) vs `127.0.0.1` (localhost-only)
+4. Catalog leaked information: OS version, installed packages, file paths, memory layout
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-200 (Information Exposure)
+
+### MCP Kubernetes Command Injection (GHSA-gjv4-ghm7-q58q)
+
+mcp-server-kubernetes: command injection in several kubectl-wrapping tools via unsanitized parameters. Pattern repeats across MCP servers that wrap CLI tools using `child_process.exec()` with string interpolation.
+
+**Test Procedure (#65): CLI-Wrapping MCP Server Command Injection**
+1. Identify MCP servers that wrap CLI tools (kubectl, nmap, git, biome, ffuf)
+2. Check if tool parameters pass through `child_process.exec()` or `subprocess.run(shell=True)`
+3. Inject shell metacharacters: `; id`, `$(whoami)`, `` `id` ``, `| cat /etc/passwd`
+4. Test across all tool parameters, not just the primary input — secondary/optional parameters often lack sanitization
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-78 (OS Command Injection)
