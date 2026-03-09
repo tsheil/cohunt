@@ -156,7 +156,11 @@ Use this taxonomy when categorizing agentic browser vulnerabilities in reports �
 - **File system access via agents** — Agents with `file://` access can be tricked into reading and exfiltrating local files
 - **Credential manager access** — Manipulated agent workflows access password managers through legitimate agent-browser integration
 - **Extension escalation** — Malicious browser extensions exploit AI panel integration points (CVE-2026-0628)
-- **PleaseFix zero-click exfiltration** — Zenity Labs (March 2026): two exploit paths in Perplexity Comet: (1) zero-click file system exfiltration via calendar invite triggers, (2) credential theft via 1Password manipulation through agent-authorized workflows. Initial fix bypassed with `view-source:file:///`. Pattern: routine workflow triggers (calendar invites) can weaponize agentic browsers without user interaction
+- **PleaseFix zero-click exfiltration** — Zenity Labs (March 2026): two exploit paths in Perplexity Comet: (1) zero-click file system exfiltration via calendar invite triggers, (2) credential theft via 1Password manipulation through agent-authorized workflows. Initial fix bypassed with `view-source:file:///`. Pattern: routine workflow triggers (calendar invites) can weaponize agentic browsers without user interaction. Key insight: no exploit, no user clicks, no explicit request for sensitive actions — the agent's own permissions are the attack surface
+- **OpenAI Lockdown Mode** (February 2026): OpenAI acknowledged prompt injection in AI browsers "may never be fully patched" and launched Lockdown Mode for ChatGPT — confirms the fundamental architectural vulnerability
+
+**Adaptive Prompt Injection (March 2026):**
+Research demonstrates adaptive attacks bypass 12 recent prompt injection defenses with **90%+ success** using gradient descent, RL, random search, and human-guided exploration. Techniques: cross-modal attacks (hidden instructions in images accompanying benign text), context poisoning (gradual manipulation of conversation history for delayed activation), steganographic injection (invisible text in metadata fields). Implication: any defense relying on static filtering or pattern matching will be bypassed.
 
 **Testing Approach:**
 1. Identify if target has agentic browsing features (autonomous web access, scheduled browsing)
@@ -164,6 +168,7 @@ Use this taxonomy when categorizing agentic browser vulnerabilities in reports �
 3. Test if the agent acts on injected instructions without user confirmation
 4. Check if agent has access to local filesystem, password managers, or other sensitive browser state
 5. Test if browser extensions can interact with and manipulate the AI agent panel
+6. Test adaptive injection: embed instructions in images, metadata, and conversation context — not just text
 
 ---
 

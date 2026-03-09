@@ -242,6 +242,25 @@ In microservice architectures:
 | 3 | Header injection via URL | `/api/users%0d%0aX-Admin:%20true` | CRLF in URL becomes header at backend |
 | 4 | Trailing slash mismatch | Gateway routes `/api/users` but not `/api/users/` | Access endpoints not covered by gateway rules |
 | 5 | Wildcard route abuse | Gateway allows `/api/*` but backend has `/api/../admin` | Path traversal through gateway wildcard |
+| 6 | Version routing bypass | `/api/v2/users` protected, `/api/v1/users` unprotected | Old API version lacks gateway auth rules |
+| 7 | Host header confusion | `Host: internal-api.corp.com` through public gateway | Access internal services via host routing |
+| 8 | Chunk transfer bypass | Chunked encoding confuses gateway but backend processes | Request smuggling past API gateway (CVE-2023-25690 pattern) |
+
+### Gateway-Specific Attack Surface
+
+**AWS API Gateway:**
+- Lambda authorizer bypass via malformed JWT — authorizer returns `Allow` on parsing errors
+- Usage plan key leakage in `x-api-key` header logged by CloudWatch
+- REST vs HTTP API behavior differences — HTTP API lacks certain validation
+
+**Kong Gateway:**
+- Plugin ordering exploitation — auth plugin bypassed if placed after a plugin that modifies the request
+- Admin API exposure on port 8001 (default) — full gateway configuration access
+- JWT plugin `conf.claims_to_verify` misconfigured → accepts expired tokens
+
+**Cloudflare API Shield:**
+- Schema validation bypass via content-type confusion — send `application/x-www-form-urlencoded` when schema expects JSON
+- Rate limiting scope mismatch — per-endpoint vs per-origin differences
 
 ---
 

@@ -313,6 +313,24 @@ CVE-2026-20700 (CVSS 7.8) — memory corruption in `dyld` (Dynamic Link Editor) 
 **February 2026 Windows MotW Bypass Cluster:**
 Three separate Mark-of-the-Web bypasses actively exploited in February 2026 Patch Tuesday — CVE-2026-21510 (Windows Shell), CVE-2026-21513 (MSHTML, attributed to APT28), CVE-2026-21514 (Microsoft Word). This concentration indicates MotW bypass is a hot vulnerability class being actively researched by both APT groups and independent researchers. MotW bypass defeats SmartScreen, Protected View, and macro-blocking — the primary trust mechanisms for files downloaded from the internet.
 
+**PleaseFix Agentic Browser Hijack (March 2026):**
+Zenity Labs disclosed PleaseFix — a zero-click agent hijack family affecting Perplexity Comet (applicable to all agentic browsers). A calendar invite triggers autonomous agent execution that exfiltrates local files and steals 1Password credentials. No exploit, no user clicks, no explicit request for sensitive actions. Demonstrates that routine data sources (calendar, email) can weaponize AI browsing agents.
+
+**Chrome CSS Zero-Day CVE-2026-2441 (February 2026):**
+Actively exploited CSS zero-day using `@property` + `paint()` worklet to trigger use-after-free in Chrome. Patched February 13. Demonstrates browser rendering engine as a live attack surface.
+
+**Chrome Sandbox Escape CVE-2026-3545 (March 2026):**
+Critical (CVSS 9.6) sandbox escape via insufficient data validation in Chrome's Navigation component. High-value pattern for variant analysis.
+
+**FIRST CVE Forecast 2026:**
+Median **~59,427 CVEs** predicted for 2026 (90% CI: 30,012–117,673). First year to exceed 50,000. Realistic upper-bound scenarios reach 70,000–100,000. Bug bounty hunters face increasing competition from automated tools scanning these at scale.
+
+**Android March 2026 Bulletin:**
+129 vulnerabilities patched including critical RCE CVE-2026-0006 (CVSS 9.8, heap buffer overflow, no user interaction) and actively exploited Qualcomm zero-day CVE-2026-21385 (234 chipsets).
+
+**OpenAI Lockdown Mode (February 2026):**
+OpenAI launched Lockdown Mode for ChatGPT and acknowledged prompt injection in AI browsers "may never be fully patched." Adaptive attacks bypass 12 recent defenses with 90%+ success using gradient descent, RL, random search, and human-guided exploration.
+
 ---
 
 ## Critical Warning: AI Slop Reports

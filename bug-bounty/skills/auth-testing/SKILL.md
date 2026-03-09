@@ -163,7 +163,86 @@ Higher severity than BOLA — accessing admin or privileged functions, not just 
 
 ---
 
-## 5. Reporting Auth Bugs
+## 5. SAML & Enterprise SSO Attacks
+
+Enterprise targets with SSO are high-value — SAML bypasses often mean access to entire corporate applications.
+
+### SAML Attack Patterns
+
+```
+□ Signature removal — Strip signature; check if IdP response accepted unsigned
+□ Signature wrapping — Move signed assertion, insert attacker assertion in unsigned position
+□ NameID injection — comment injection: user<!---->admin@corp.com parsed differently by IdP vs SP
+□ XML entity injection — XXE in SAML response parsing (CVE-2024-45409, Ruby SAML CVSS 10.0)
+□ Assertion replay — Capture valid SAML assertion, replay after session expires
+□ Audience restriction bypass — Modify Audience field to different SP
+□ Recipient manipulation — Change AssertionConsumerServiceURL to attacker-controlled
+□ InResponseTo bypass — Remove or modify InResponseTo validation
+□ Condition time window — Manipulate NotBefore/NotOnOrAfter for expired assertions
+```
+
+### Real-World SAML CVEs
+
+| CVE | Product | Impact |
+|-----|---------|--------|
+| CVE-2024-45409 | Ruby SAML | Signature wrapping → admin access (CVSS 10.0) |
+| CVE-2025-25291/25292 | ruby-saml | Parser differentials enable auth bypass |
+| CVE-2023-22515 | Atlassian Confluence | Broken access control → admin account creation |
+| CVE-2026-1868 | GitLab AI Gateway | Auth bypass via JWT validation flaw |
+
+---
+
+## 6. API Key & Token Lifecycle Testing
+
+Often overlooked — API key management is a growing attack surface, especially with AI/ML integrations proliferating API keys.
+
+### Testing Checklist
+
+```
+□ Key rotation — Are old keys invalidated immediately on rotation?
+□ Key scoping — Can a read-only key perform write operations?
+□ Key revocation — Is the key usable after revocation? (test within seconds)
+□ Key enumeration — Are API keys sequential or predictable?
+□ Key leakage paths — Check error messages, logs, client-side JS, git history
+□ Cross-environment keys — Do staging keys work in production?
+□ Orphaned keys — Keys for deleted users/services still active?
+□ Rate limiting per key — Or can one key make unlimited requests?
+□ Key in URL — API key passed as query parameter (logged in server/proxy logs)?
+□ Bearer vs API key confusion — Swapping auth mechanisms accepted?
+```
+
+### Where Keys Leak
+
+- **Git history** — `git log --all -p -- '*.env'` or trufflehog/gitleaks scans
+- **Client-side JavaScript** — Search bundles for `api_key`, `apiKey`, `Authorization`, `Bearer`
+- **Error responses** — Verbose errors revealing internal keys or tokens
+- **OpenClaw/MCP configs** — AI agent configurations often embed API keys in plaintext (CVE-2026-21852)
+- **Public Postman collections** — Search Postman public API network for target's collections
+
+---
+
+## 7. Multi-Tenant Isolation Testing
+
+Growing attack surface as SaaS platforms proliferate. IDOR/IAC has shown 116% 5-year growth and 29% YoY increase.
+
+### Cross-Tenant Attack Patterns
+
+```
+□ Tenant ID in JWT claims — Modify org/tenant claim, replay token
+□ Shared database queries — tenant_id parameter omitted → access all tenants
+□ Subdomain confusion — tenant-b.app.com session used on tenant-a
+□ Webhook cross-contamination — Receive events from other tenants
+□ File storage isolation — S3/blob paths predictable across tenants?
+□ Search index leakage — Elasticsearch/Algolia returning cross-tenant results
+□ Invitation token reuse — Accept invite for wrong tenant
+□ GraphQL federation — Query federated service without tenant context
+□ Shared infrastructure — Redis/cache keys colliding across tenants
+□ AI agent context isolation — Multi-tenant AI platforms leaking context between tenants (CVE-2026-30855 WeKnora CVSS 8.8)
+```
+
+---
+
+## 8. Reporting Auth Bugs
 
 ### Impact Framing
 

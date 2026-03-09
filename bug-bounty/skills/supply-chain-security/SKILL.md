@@ -322,3 +322,4 @@ Ask about any specific attack class and I will provide the full methodology, tes
 - **api-security** — API-level testing for webhook endpoints and registry APIs
 - **vuln-patterns** — SSRF patterns for webhook abuse, injection patterns for CI script attacks
 - **target-recon** — Discover CI/CD infrastructure, public workflow files, container registries
+- **ai-hunting** → `reference/ide-supply-chain.md` — IDE extension supply chain attacks (VS Code marketplace, JetBrains plugin poisoning, RoguePilot, 24 AI IDE CVEs)

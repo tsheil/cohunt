@@ -227,3 +227,37 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 5 | Cross-zone navigation | Craft URLs that transition from Internet zone to Local Machine zone via parser confusion | Elevated privileges for web content |
 
 **Severity Guidance:** High-Critical. MotW bypasses are consistently rated CVSS 7.8-8.8 and are actively exploited by nation-state actors. The pattern recurs because Windows has multiple independent URL parsing/validation paths (Shell, MSHTML, Word, Explorer) that can disagree on trust. Any application that invokes Windows URL handling is a potential target. Check if target applications pass external URLs to Windows Shell functions without independent validation.
+
+---
+
+## Chrome Sandbox Escape via Navigation (March 2026)
+
+**Key CVE:** CVE-2026-3545 (CVSS 9.6) — sandbox escape via insufficient data validation in Chrome's Navigation component.
+
+**Why it matters:** Chrome sandbox escapes are rare and extremely high value ($100K+ in Google's VRP). This CVE demonstrates that Navigation component data validation is an active variant analysis target.
+
+**Where to look:** Applications embedding Chromium (Electron, CEF-based apps) may inherit navigation validation flaws. AI IDEs like Cursor and Windsurf ship legacy Chromium builds with 94+ known vulnerabilities (OX Security research).
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Navigation data validation | Craft navigation events with malformed or unexpected data types | Sandbox boundary crossed during navigation |
+| 2 | Embedded Chromium version check | Identify Chromium version in Electron/CEF apps | Unpatched versions vulnerable to known sandbox escapes |
+| 3 | Cross-origin navigation abuse | Test navigation flows between different origin contexts | Privilege escalation across origin boundaries |
+
+**Severity Guidance:** Critical. Sandbox escapes enable full system compromise from a web page. Variant analysis across Chromium navigation code paths is high-value.
+
+---
+
+## Industrial Control System RCE (March 2026)
+
+**Key CVEs:**
+- **CVE-2026-3630** (Delta Electronics COMMGR2, CVSS 9.8): stack buffer overflow enabling unauthenticated remote RCE in industrial communication gateway
+- **CVE-2026-20079/20131** (Cisco FMC, dual CVSS 10.0): unauthenticated remote root access on Cisco Firepower Management Center
+
+**Why it matters:** ICS/OT targets are increasingly in scope for enterprise bug bounty programs. Critical infrastructure vendors like Cisco and Delta have VDPs and some run bounty programs.
+
+**Where to look:** Internet-exposed management interfaces for network appliances, SCADA gateways, and industrial controllers. Use Shodan/Censys to identify exposed instances.
+
+**Severity Guidance:** Critical (CVSS 9.8-10.0). These represent the highest-severity bug class. Report with clear network exposure evidence.

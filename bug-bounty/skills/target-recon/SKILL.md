@@ -328,7 +328,17 @@ When running external recon tools via shell, follow these rules to avoid blowing
 
 ---
 
+## Cloud Asset Discovery During Recon
+
+When recon reveals cloud indicators, route to **cloud-security** skill for deeper testing:
+
+- **S3 buckets** — Subdomain patterns like `assets.example.com` → check CNAME for `s3.amazonaws.com`; test `https://example-assets.s3.amazonaws.com` for public listing
+- **Azure blobs** — Look for `*.blob.core.windows.net` CNAMEs; test container enumeration
+- **GCS objects** — `storage.googleapis.com/example-*` patterns from subdomain/cert data
+- **Cloud metadata** — Internal IPs (`169.254.169.254`) in DNS records suggest cloud infrastructure → test for SSRF to metadata endpoints
+
 ## Related Skills
 
 - **program-research** — Research the bug bounty program before hunting
+- **cloud-security** — Deep cloud misconfig testing when recon reveals cloud infrastructure
 - **hunt-plan** (command) — Turn recon into a prioritized hunting plan

@@ -277,4 +277,14 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Cursor Automations** (March 2026): Cursor launched agentic automation triggered by codebase changes, Slack messages, or timers — enables automated security audits; AI IDEs shifting from reactive assistants to proactive autonomous agents
 - **Teramind AI Governance** (March 2026): behavioral oversight platform for AI agents with full activity capture; first enterprise solution for AI agent audit trails and behavioral monitoring at scale
 - **ArmorCode $81M AI AppSec** (March 2026): raised $16M (total $81M) to expand Agentic AI Platform for application security management; growing AI-native AppSec vendor category
+- **FIRST CVE Forecast 2026**: median ~59,427 CVEs predicted (90% CI: 30,012–117,673); first year to exceed 50,000; realistic upper-bound scenarios reach 70,000–100,000; 2027 forecast: ~51,018; 2028: ~53,289
+- **PleaseFix agentic browser hijack** (Zenity Labs, March 2026): zero-click agent hijack family — calendar invite triggers autonomous execution, exfiltrates local files and 1Password credentials; applicable to all agentic browsers (Perplexity Comet, ChatGPT Atlas, Chrome Gemini)
+- **OpenAI Lockdown Mode** (February 2026): acknowledged prompt injection in AI browsers "may never be fully patched"; adaptive attacks bypass 12 recent defenses with 90%+ success using gradient descent, RL, random search
+- **Chrome CVE-2026-3545** (CVSS 9.6): sandbox escape via insufficient data validation in Navigation component; high-value variant analysis target
+- **Chrome CVE-2026-2441**: CSS zero-day (@property + paint() worklet use-after-free) actively exploited; patched February 13
+- **Shannon Lite 96.15%**: hit 100/104 on hint-free, source-aware XBOW benchmark variant using Code Property Graphs; subscription model ($0–$49.99/mo)
+- **Anthropic + Mozilla partnership** (March 6, 2026): Claude Opus 4.6 found 22 Firefox CVEs (14 high-severity) in 2 weeks scanning ~6,000 C++ files; 112 bug reports filed; fixes shipped in Firefox 148; PoC exploit generation cost ~$4,000 in API credits, succeeded in only 2 cases
+- **Codex Security research preview** (March 6, 2026): same-day launch as Claude Code Security; free 30 days for Enterprise/Business/Edu; both tools create major competitive pressure on pattern-matching vulns
+- **Bionic hacker dominance**: 67% of HackerOne researchers use AI tools; hackbots submitted 560 valid reports (primarily surface-level XSS); human + AI collaboration is the winning model
+- **Barracuda agentic AI threat study**: identified 43 agent framework components with embedded supply chain vulnerabilities; AI offense compresses attack lifecycle — recon, exploitation, lateral movement run continuously in parallel
 

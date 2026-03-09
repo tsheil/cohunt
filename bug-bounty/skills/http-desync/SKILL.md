@@ -7,6 +7,20 @@ description: HTTP request smuggling, web cache poisoning, and race condition tes
 
 Protocol-level and timing-based vulnerability classes that consistently pay high bounties. These bugs exploit how infrastructure components — proxies, caches, load balancers — interpret HTTP differently from the origin server.
 
+### Key CVEs & Real-World Examples
+
+| CVE | Product | Type | Impact |
+|-----|---------|------|--------|
+| CVE-2023-25690 | Apache mod_proxy | CL.TE smuggling | Request splitting → cache poisoning (CVSS 9.8) |
+| CVE-2023-44487 | HTTP/2 (widespread) | Rapid Reset DoS | Stream cancellation abuse across all HTTP/2 implementations |
+| CVE-2023-46809 | Node.js | HTTP pipeline desync | Smuggling via malformed Transfer-Encoding in undici |
+| CVE-2024-24795 | Apache HTTP Server | HTTP response splitting | CRLF injection via multiple Content-Type headers |
+| CVE-2025-32681 | Envoy Proxy | HTTP/1 codec | Request smuggling via chunked encoding edge case |
+| CVE-2026-27127 | Craft CMS | DNS rebinding SSRF | TOCTOU in SSRF validation → metadata access |
+| CVE-2026-23864 | React Server Components | DoS via RSC payloads | Server crash/OOM via malformed Server Function args (CVSS 7.5) |
+
+> **James Kettle (PortSwigger)** has published the foundational research on most smuggling variants. His Black Hat talks and labs on portswigger.net are the primary reference for testing methodology.
+
 ## HTTP Request Smuggling
 
 ### What It Is

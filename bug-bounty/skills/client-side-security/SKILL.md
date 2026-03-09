@@ -7,6 +7,28 @@ description: Browser and client-side vulnerability testing — DOM-based XSS, pr
 
 Client-side vulnerabilities are consistently undervalued by automated scanners yet pay well in bug bounties. Most modern applications are JavaScript-heavy SPAs where the real attack surface lives in the browser — DOM manipulation, message passing, storage APIs, and client-side routing.
 
+### Key CVEs & Real-World Examples
+
+| CVE | Product | Type | Impact |
+|-----|---------|------|--------|
+| CVE-2026-2441 | Chrome | CSS @property + paint() worklet UAF | Actively exploited zero-day (patched Feb 13, 2026) |
+| CVE-2026-3545 | Chrome | Navigation data validation | Sandbox escape (CVSS 9.6) |
+| CVE-2025-43714 | ChatGPT | SVG-based XSS | Arbitrary HTML/JS in AI preview window |
+| CVE-2026-29183 | SiYuan | Reflected XSS | Unauthenticated session token theft (CVSS 9.3) |
+| CVE-2025-55182 | React (RSC) | React2Shell deser-to-RCE | Pre-auth RCE in Server Components (CVSS 10.0) |
+| CVE-2024-38472 | Apache HTTP Server | SSRF via encoded `?` | Origin confusion with mod_rewrite |
+| CVE-2023-49103 | ownCloud | DOM-based info disclosure | GraphQL endpoint leaking credentials |
+
+### Framework-Specific Dangerous Patterns
+
+| Framework | Dangerous Pattern | Test Vector |
+|-----------|------------------|-------------|
+| React | `dangerouslySetInnerHTML={{__html: userInput}}` | `<img src=x onerror=alert(1)>` |
+| Vue | `v-html="userInput"` | Same as above — Vue v-html renders raw HTML |
+| Angular | `bypassSecurityTrustHtml(userInput)` | Any HTML payload — Angular sanitizer explicitly bypassed |
+| Next.js | SSR/CSR hydration mismatch | Content rendered server-side differs from client — inject in SSR |
+| Svelte | `{@html userInput}` | Raw HTML rendering, same risk as v-html |
+
 ## Quick Reference: What Pays
 
 | Bug Class | Typical Severity | Avg Payout Range | Duplicate Risk |

@@ -301,7 +301,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | MCP integrations | Tool poisoning, SSRF, credential scope, sampling attacks | ai-hunting/reference/mcp-playbooks.md |
 | AI agent with tools | Excessive agency, cross-agent escalation, goal hijacking | ai-hunting/reference/agent-attack-patterns.md |
 | AI coding IDE | Supply chain via configs, extension squatting, Chromium flaws | ai-hunting/reference/agent-attack-patterns.md |
-| Agentic browser | Zero-click hijacking, credential theft, file exfiltration | ai-hunting/reference/agent-attack-patterns.md |
+| Agentic browser | PleaseFix zero-click hijack, credential theft, file exfiltration, adaptive injection | ai-hunting/reference/agent-attack-patterns.md |
 | CI/CD with AI bots | Pipeline injection via issues/PRs, secret exfiltration | ai-hunting/reference/agent-attack-patterns.md |
 | RAG / retrieval | Zero-click indirect injection, vector DB poisoning | ai-hunting/reference/mcp-playbooks.md |
 | Multi-agent system | Cascade injection, cross-agent privilege escalation | ai-hunting/reference/agent-attack-patterns.md |
