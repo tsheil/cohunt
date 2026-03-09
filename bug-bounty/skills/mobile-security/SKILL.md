@@ -258,6 +258,66 @@ When reporting mobile vulnerabilities, frame impact in terms of:
 
 ---
 
+## Firebase / Supabase / BaaS Client-Side Leaks
+
+Backend-as-a-Service (BaaS) misconfigurations are a **rapidly growing mobile attack surface** — 20+ data breaches traced to client-side Firebase/Supabase misconfigs since 2025 (Barrack.ai tracker). Mobile apps are the primary vector because API keys and project URLs are embedded in the client.
+
+### Firebase Misconfigurations
+
+| # | Pattern | Test | Impact |
+|---|---------|------|--------|
+| 1 | Open Realtime Database | `curl https://{project-id}.firebaseio.com/.json` — check for data without auth | Full database read (PII, credentials, business data) |
+| 2 | Open Firestore | Query collections without auth token via REST API | Document-level data exposure |
+| 3 | Storage bucket open | `curl https://firebasestorage.googleapis.com/v0/b/{bucket}/o` | File listing and download |
+| 4 | Weak security rules | Rules like `".read": true` or `allow read: if true` | Any user can read all data |
+| 5 | Auth-only rules (no owner check) | Rules check `auth != null` but not `auth.uid == resource.data.userId` | Any authenticated user reads all data |
+| 6 | Cloud Functions unauthenticated | Call function endpoints without auth headers | Direct function invocation |
+| 7 | Service account key in client | Search binary for `"type": "service_account"` | Full project admin access |
+| 8 | Firestore rules bypass via REST | Use REST API directly instead of SDK (different rule evaluation) | SDK-enforced rules not applied |
+
+**Finding Firebase project ID:**
+- `google-services.json` (Android) or `GoogleService-Info.plist` (iOS)
+- JavaScript bundle: search for `firebaseConfig` or `firebaseio.com`
+- Network traffic: watch for `firestore.googleapis.com` or `firebaseio.com` calls
+
+### Supabase Misconfigurations
+
+| # | Pattern | Test | Impact |
+|---|---------|------|--------|
+| 1 | Exposed anon key | Extract `supabaseUrl` and `supabaseAnonKey` from client | Direct API access with anonymous role |
+| 2 | Service role key in client | Search for `service_role` key (should never be in client) | Full database admin access |
+| 3 | Missing RLS policies | Query tables via `supabase.from('table').select('*')` with anon key | Read all rows without auth |
+| 4 | RLS bypass via direct SQL | Use `rpc()` to call functions that bypass RLS | Circumvent row-level security |
+| 5 | Storage bucket public | List and download from public storage buckets | File exposure |
+| 6 | Auth bypass | Test password reset, magic link, and OAuth flows for bypasses | Account takeover |
+
+**Finding Supabase URLs:**
+- Network traffic: `*.supabase.co` requests
+- JavaScript/binary: search for `supabase.co`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`
+
+### In-App Purchase Manipulation
+
+| # | Pattern | Test | Impact |
+|---|---------|------|--------|
+| 1 | Receipt validation client-side only | Intercept purchase verification — modify receipt or skip validation | Free premium features |
+| 2 | Server-side receipt validation bypass | Replay valid receipts, use sandbox receipts in production | Unauthorized purchases |
+| 3 | Subscription status check bypass | Modify `isSubscribed` response from API | Free premium access |
+| 4 | Consumable item duplication | Race condition on consuming in-app items | Unlimited consumables |
+| 5 | Price tier manipulation | Change product ID to cheaper tier at purchase time | Discounted premium features |
+
+### Severity Guidelines (BaaS)
+
+| Finding | Typical Severity | Notes |
+|---------|-----------------|-------|
+| Open Firebase database with PII | Critical | Report immediately — active data exposure |
+| Supabase service_role key in client | Critical | Full admin access to database |
+| Open storage bucket with user files | High-Critical | Depends on file sensitivity |
+| Missing RLS with authenticated access | High | Any user reads all data |
+| In-app purchase bypass (premium features) | Medium-High | Financial impact to vendor |
+| Client-side subscription check bypass | Medium | Limited to the device |
+
+---
+
 ## Active Mobile Threats (March 2026)
 
 **Qualcomm Android Zero-Day (CVE-2026-21385, CVSS 7.8):**

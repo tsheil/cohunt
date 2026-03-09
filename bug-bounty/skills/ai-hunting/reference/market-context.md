@@ -56,6 +56,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **curl shut down its bug bounty** (January 2026) — first program shutdown attributed to AI slop
 - **65% of hackers chose NOT to disclose** a vulnerability because the company lacked a clear reporting pathway (Bugcrowd 2026)
 - **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity; AI-induced job scarcity driving new influx
+- **Bugcrowd team collaboration**: 72% believe teams yield better results; **61% find more critical vulnerabilities** when collaborating; 40% currently work in teams, 44% want to but haven't found partners
+- **Microsoft Zero Day Quest live event**: spring 2026 at Redmond campus (invite-only); flash challenges running through **March 18, 2026**; +50% bounty multiplier for critical-severity findings in Azure, Copilot, Dynamics 365, M365
+- **Agentic security gap**: no single tool category (EDR, WAF, SIEM, AI-SPM) provides complete coverage against agentic threats; **48% of cybersecurity professionals** identify agentic AI as the top attack vector heading into 2026 (Dark Reading poll)
 
 ---
 

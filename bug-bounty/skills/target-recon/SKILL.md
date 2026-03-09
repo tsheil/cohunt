@@ -219,6 +219,33 @@ If asset discovery tools available:
 6. Generate next steps
 ```
 
+### Step 7: JavaScript Analysis (Always for SPAs)
+
+```
+For any SPA target (React, Angular, Vue, Next.js):
+1. Extract all JavaScript file URLs from page source
+2. Check each JS file for .map source maps (append .map to URL)
+3. Run secret patterns against all JS files (API keys, tokens, internal URLs)
+4. Extract API endpoints from fetch/axios/XHR calls
+5. Map SPA routes for hidden/admin pages
+6. Check for __NEXT_DATA__, window.__CONFIG__, Redux state exposure
+7. Enumerate webpack chunks for lazy-loaded modules
+```
+
+**Why this matters:** JavaScript recon is yielding $5K-$25K payouts for hidden endpoints and exposed credentials. Every SPA ships its attack surface to the browser.
+
+> **Full JavaScript analysis methodology, tools, secret patterns, and framework techniques:** See [reference/javascript-analysis.md](reference/javascript-analysis.md)
+
+---
+
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~200 |
+
 ---
 
 ## Recon Variations
