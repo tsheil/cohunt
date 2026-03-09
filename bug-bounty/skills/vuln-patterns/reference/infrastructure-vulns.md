@@ -17,6 +17,8 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [Webmail RCE — 48-Hour Weaponization Pattern](#webmail-rce--48-hour-weaponization-pattern)
 - [Critical Infrastructure Authentication & Deserialization](#critical-infrastructure-authentication--deserialization)
 - [MSHTML Mark-of-the-Web Bypass Chain](#mshtml-mark-of-the-web-bypass-chain)
+- [Cloud SSO Trust Model Abuse](#cloud-sso-trust-model-abuse)
+- [Workflow Automation Platform RCE](#workflow-automation-platform-rce)
 
 ---
 
@@ -261,3 +263,47 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 **Where to look:** Internet-exposed management interfaces for network appliances, SCADA gateways, and industrial controllers. Use Shodan/Censys to identify exposed instances.
 
 **Severity Guidance:** Critical (CVSS 9.8-10.0). These represent the highest-severity bug class. Report with clear network exposure evidence.
+
+---
+
+## Cloud SSO Trust Model Abuse
+
+**What it is:** Exploiting trust relationships in cloud SSO/management platforms where one authenticated account can access resources belonging to other accounts. Combines multi-tenant trust boundary failures with SSO implementation flaws.
+
+**Key CVEs:**
+- **CVE-2026-24858** (Fortinet FortiOS SSO, CVSS 9.4, CISA KEV): FortiCloud SSO auth bypass — attacker with one FortiCloud account accessed FortiGate devices registered to other accounts; created local admin accounts on victim firewalls; actively exploited Jan 2026; affects FortiOS, FortiManager, FortiAnalyzer, FortiProxy, FortiWeb
+- Related to **ConsentFix** (Azure CLI first-party trust abuse, see OAuth section) as both exploit SSO trust models
+
+**Where to look:** Any multi-tenant cloud management platform with SSO: FortiCloud, Azure AD/Entra ID, AWS SSO, Cisco Meraki, Palo Alto Panorama, SaaS admin panels with federated auth.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Cross-tenant device access | Authenticate to cloud management portal; enumerate device IDs from other tenants | Device access granted across tenant boundaries |
+| 2 | SSO token scope validation | Obtain SSO token; test if it grants access to resources outside your assigned scope | Token accepted for cross-account operations |
+| 3 | Local admin creation | After SSO auth, attempt to create local admin accounts on managed devices | Admin account persists after SSO session ends |
+
+**Severity Guidance:** Critical — SSO auth bypass with cross-tenant access is consistently CVSS 9.0+. CISA added CVE-2026-24858 to KEV within days. Pattern: cloud management platforms with multi-tenant SSO are high-value targets.
+
+---
+
+## Workflow Automation Platform RCE
+
+**What it is:** Unauthenticated or low-privilege RCE in workflow automation platforms (n8n, Make, Zapier, Power Automate) — these platforms execute arbitrary code by design, making any auth bypass critical.
+
+**Key CVEs (n8n, Jan-Feb 2026):**
+- **CVE-2026-21858** (Ni8mare, CVSS 10.0): unauthenticated RCE via content-type bypass → `req.body.files` override → credential extraction → admin session forging → workflow RCE; ~100K servers globally
+- **CVE-2026-25049** (CVSS 9.9): authenticated RCE via crafted workflow expressions enabling arbitrary system commands
+
+**Where to look:** Self-hosted n8n, Make, Huginn, Windmill, Activepieces, Apache Airflow, Temporal. Search Shodan: `n8n`, `X-n8n-Version`, port 5678.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Content-type bypass | Send requests without `multipart/form-data` to file handling endpoints | `req.body.files` override enabling file path manipulation |
+| 2 | Workflow expression injection | Craft workflow expressions with system command payloads | Command execution via workflow runtime |
+| 3 | Credential extraction | Access configuration/database files after initial foothold | Admin credentials, encryption keys in plaintext |
+
+**Severity Guidance:** Critical — workflow platforms run arbitrary code by design. Any auth bypass = immediate RCE. n8n's 100K+ instances make this a high-volume target.

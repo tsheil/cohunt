@@ -68,6 +68,11 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **HackerOne Hai Replay**: dashboard feature turning historical vulnerability data into actionable insights for future testing
 - **Microsoft "In Scope by Default"**: all online services now covered including third-party and OSS components; new services in scope from day one; up to $100K for third-party/OSS vulns impacting Microsoft
 - **HackerOne top 100 all-time earners**: $31.8M total; top hunters report $300K+ annually
+- **XBOW mission completed** (March 2026): declared HackerOne mission concluded; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface for bounty hunters
+- **Vibe-coded app attack surface** (2026): Escape.tech found 2,000+ vulns in 5,600 vibe-coded apps (Lovable, Bolt.new, Replit); Moltbook breach exposed 1.5M API keys via misconfigured Supabase; 10% of Lovable apps leaked PII — new class of systematically vulnerable targets for bounty programs
+- **Wiz Cyber Model Arena** (March 2026): 257 offensive security challenges, 25 agent-model combinations tested; Claude Code + Opus 4.6 #1; AI solved 9/10 directed challenges at under $50 but fails at broad enumeration; human direction + AI execution confirmed as winning model
+- **Google AI VRP**: dedicated AI Vulnerability Reward Program covering Search, Gemini Apps, Workspace — up to $30K per finding; moved AI issues from Abuse VRP
+- **XBOW $75M raised** (March 2026): Series B led by Altimeter Capital with Sequoia; $117M total funding; but still operating at a loss (compute costs exceed bounty earnings)
 
 ---
 

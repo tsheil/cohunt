@@ -335,6 +335,30 @@ Median **~59,427 CVEs** predicted for 2026 (90% CI: 30,012–117,673). First yea
 **OpenAI Lockdown Mode (February 2026):**
 OpenAI launched Lockdown Mode for ChatGPT and acknowledged prompt injection in AI browsers "may never be fully patched." Adaptive attacks bypass 12 recent defenses with 90%+ success using gradient descent, RL, random search, and human-guided exploration.
 
+**Fortinet FortiOS SSO Auth Bypass CVE-2026-24858 (January 2026):**
+Critical (CVSS 9.4) auth bypass in FortiCloud SSO — attacker with one FortiCloud account accessed devices registered to other accounts. Actively exploited from Jan 20 (new local admin accounts created on victim FortiGate firewalls). CISA KEV Jan 28. Affects FortiOS, FortiManager, FortiAnalyzer, FortiProxy, FortiWeb. Pattern: SSO trust model abuse across multi-tenant cloud management platforms.
+
+**n8n Ni8mare CVE-2026-21858 (January 2026):**
+CVSS 10.0 unauthenticated RCE in n8n workflow platform (~100K servers globally). Content-type bypass → `req.body.files` override → credential extraction → admin session forging → arbitrary workflow execution. Second critical n8n CVE (CVE-2026-25049, CVSS 9.9) enables auth'd RCE via crafted expressions. Workflow automation platforms are goldmines.
+
+**Moltbook AI Social Network Breach (February 2026):**
+Wiz discovered misconfigured Supabase database exposing 1.5M API keys (OpenAI, Anthropic, AWS, GitHub, Google Cloud), 35K emails, and private agent messages. Root cause: missing Row Level Security + vibe-coding development practices. Secured within hours. Pattern: AI startups using vibe coding consistently ship critical misconfigurations.
+
+**Vibe-Coded App Epidemic (2026):**
+Escape.tech scanned 5,600 vibe-coded apps: 2,000+ vulnerabilities, 400+ exposed secrets, 175 PII instances. 10% of Lovable platform apps had open databases. Tea dating app exposed 72K images including 13K government IDs. AI agents commonly suggest `USING (true)` RLS policies. New systematically vulnerable target class for bug bounty.
+
+**Wiz Cyber Model Arena (March 2026):**
+257-challenge offensive security benchmark tested 25 agent-model combos. Claude Code + Opus 4.6 ranked #1; Gemini 3 Pro second. AI agents solved 9/10 directed challenges at under $50 total cost but failed when requiring external source searches or creative pivots. In one test, AI made ~500 tool calls in ~1 hour without finding the issue; human found it in ~5 minutes. Key conclusion: human direction + AI execution is the winning model.
+
+**XBOW Mission Completed (March 2026):**
+XBOW declared HackerOne primary mission concluded after reaching #1 globally with 1,060+ reports. Pivoting to pre-production scanning for enterprise customers. Raised $75M Series B ($117M total) but still operating at a loss. HackerOne split leaderboards in response.
+
+**Microsoft "In Scope by Default" (December 2025, effective immediately):**
+All Microsoft online services now in scope for bug bounty including third-party and open-source code. New services in scope from day one. Up to $100K for third-party/OSS vulns impacting Microsoft services. $17M paid out in 2025. Largest single expansion of a major bug bounty program.
+
+**Google AI VRP Launch (2026):**
+Dedicated AI Vulnerability Reward Program covering Search, Gemini Apps, Gmail, Drive, Sheets, Calendar — up to $30K per finding. Simplifies reporting process for AI-specific issues.
+
 ---
 
 ## Critical Warning: AI Slop Reports

@@ -27,6 +27,7 @@ For deep dives, route to the specialized skill or reference file:
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
+| **Vibe-coded apps (Supabase RLS, Firebase, API key exposure)** | [reference/web-vulns.md](reference/web-vulns.md#vibe-coded-application-attack-surface) |
 
 The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
 

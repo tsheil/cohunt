@@ -325,15 +325,18 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **HackerOne leaderboard split** (March 2026): HackerOne responded by **splitting leaderboards** into individual researchers vs AI-powered collectives. New transparency framework distinguishes human vs machine contributions — reflects industry acknowledgment that autonomous agents compete at a fundamentally different scale
 - **HackerOne Hai Insight Agent** (March 2026): launched to combat AI hallucination in hackbot reports — addresses "more false or hallucinated vulnerabilities" that appear legitimate because LLMs generate them. Positions validation as core platform capability. Implication: programs using Hai Insight may auto-filter low-quality AI submissions
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
+- **XBOW mission completed** (March 2026): declared HackerOne mission "has reached its conclusion" — pivoting to **pre-production scanning** where customers run XBOW before changes are exposed externally; implication: XBOW reduces program-level competition but enterprise pre-production contracts reduce surface available to external hunters
 - **XBOW #1 globally** confirmed at Black Hat 2026 with live demo — ran real-time on HackerOne programs finding vulnerabilities on stage; nominated #6 in Enterprise Tech 30 Early Stage
 - **Notable finding**: discovered a previously unknown vulnerability in **Palo Alto GlobalProtect VPN** affecting 2,000+ hosts — demonstrates autonomous agents finding high-impact network infrastructure bugs, not just web vulns
 - Architecture detail: built infrastructure on top of XBOW core to **identify high-value targets and prioritize** for maximum return — target selection is as important as exploitation
 
 **Wiz Research AI Agent Benchmarks (2025-2026):**
-- Tested Claude Sonnet 4.5, GPT-5, Gemini 2.5 Pro on 10 lab challenges
-- Agents were proficient in **directed tasks** (clear target, well-documented surface), but less effective in realistic, unstructured environments
+- **Cyber Model Arena** (March 2026): **257 real-world offensive security challenges** across 5 domains (zero-day discovery, CVE detection, API security, web security, cloud security); tested **25 agent-model combinations** (4 agents × 8 models: Claude Code, Gemini CLI, OpenCode, Codex); each challenge attempted 3 times (pass@3)
+- **Winner: Claude Code + Claude Opus 4.6** — topped the benchmark; Gemini 3 Pro placed second; key finding: **offensive capability is jointly determined by model AND agent scaffold** — same model swings dramatically depending on the scaffold, and performance is highly domain-specific
+- **AI Agents vs Humans** (March 2026): tested on 10 lab challenges modeled after real-world high-value vulnerabilities — AI solved **9 of 10** at under $50 total cost; AI excels at pattern recognition (identifying tech stacks from subtle clues and knowing which misconfigurations to check)
+- **Critical limitations**: AI failed when challenges required searching external sources (e.g., public repo history for exposed credentials) — agents only attacked the target directly, never expanding search space. In a real incident, **AI made ~500 tool calls in ~1 hour** without finding the issue; human found it in **~5 minutes** with broader enumeration
+- **Key conclusion**: human direction + AI execution is the winning model — reinforces bionic hacker approach. AI agents are proficient in directed tasks but less effective in realistic, unstructured environments
 - Without clear success indicators, AI agents **produce false positives, exaggerate severity, and struggle to distinguish meaningful access from noise**
-- Best result: Gemini 2.5 Pro discovered developer documentation → found app creation endpoint → used session token → accessed protected endpoint, all in 23 steps
 
 **Horizon3 NodeZero (Autonomous Pentesting at Scale):**
 - Surpassed **100,000 pentests** by 3,000+ customers; projecting **400,000 by end of 2026**
@@ -436,3 +439,4 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Crust** (February 2026) — agent security infrastructure intercepting and blocking dangerous agent behaviors pre-execution; runtime behavioral analysis with kill-switch capability; best for: real-time agent threat prevention
 - **Cursor Automations** (March 2026) — agentic coding automation triggered by codebase additions, Slack messages, or timers; enables automated security audits and code reviews; demonstrates AI IDE shift from reactive to proactive agents
 - **Teramind AI Governance** (March 2026) — workforce intelligence platform providing behavioral oversight for AI agents and tools; text capture, screen recording, OCR, and full transcripts of agentic activity; best for: AI agent audit trail and behavioral monitoring
+- **Levo.ai MCP Security** (2026) — unified security platform covering AI agents, MCP servers, APIs, LLMs, and vector stores; 5 modules: runtime visibility, monitoring/governance, threat detection, threat protection, AI red teaming; eBPF-based runtime observability extending from API security to AI application security; identifies MCP servers as fastest-growing automation layer for defenders and red teams

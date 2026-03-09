@@ -17,6 +17,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 - [HTTP/3 Race Conditions (QUICker)](#http3-race-conditions-quicker)
 - [DNS Rebinding SSRF Bypass (TOCTOU)](#dns-rebinding-ssrf-bypass-toctou)
 - [React Server Components DoS](#react-server-components-dos)
+- [Vibe-Coded Application Attack Surface](#vibe-coded-application-attack-surface)
 
 > **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
 
@@ -350,3 +351,37 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 3 | Deserialization boundary | Test if arguments are validated before deserialization | Code execution or type confusion |
 
 **Severity Guidance:** DoS = Medium-High (CVSS 7.5). Deser-to-RCE = Critical (CVSS 10.0). React2Shell remains actively exploited — verify patching on any Next.js target.
+
+---
+
+## Vibe-Coded Application Attack Surface
+
+**What it is:** Applications built using AI-assisted "vibe coding" platforms (Lovable, Bolt.new, Replit, Create.xyz, Base44, Vibe Studio) consistently ship with critical security flaws — misconfigured databases, exposed API keys, and missing access controls. This represents a rapidly growing, systematically vulnerable attack surface.
+
+**Scale of the problem (2026):**
+- **Escape.tech scan**: 2,000+ vulnerabilities in 5,600 vibe-coded apps; 400+ exposed secrets; 175 PII instances (medical records, IBANs, emails)
+- **Moltbook breach** (Wiz, Feb 2026): misconfigured Supabase RLS exposed **1.5M API keys** (OpenAI, Anthropic, AWS, GitHub, Google Cloud), 35K emails, and private agent messages
+- **Lovable platform**: 10% of 1,645 apps leaked sensitive user data; **170 apps with open databases**
+- **Tea dating app**: 72K images including 13K government ID photos via open Firebase storage
+- Only **10% of AI-generated code is secure** (Endor Labs 2026); **62% of LLM-generated code** contains exploitable vulnerabilities (Cycode 2026)
+
+**Why it matters for bug bounty:** Startups using vibe-coding platforms often run bug bounty programs (especially crypto/Web3). The vulnerabilities are trivial to find and consistently high-severity. AI coding agents commonly suggest permissive policies like `USING (true)` to fix permission errors — making entire databases public.
+
+**Where to look:**
+- Applications built on Supabase, Firebase, or similar BaaS platforms
+- Startups that launched recently with small teams (likely vibe-coded)
+- Applications with `.env` or API key exposure in client-side JavaScript bundles
+- Any target using Lovable, Bolt.new, Replit Agent, or similar AI builders
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Supabase RLS bypass | Extract `anon` key from client JS; query `rest/v1/` endpoint directly with `select=*` | Full table data returned without authentication — RLS disabled or `USING (true)` |
+| 2 | Firebase open storage | Check Firebase Storage rules: `gs://<project>.appspot.com` | Public read/write access to user uploads (photos, documents) |
+| 3 | Client-side API key extraction | Search JS bundles for `SUPABASE_KEY`, `FIREBASE_API_KEY`, `OPENAI_API_KEY`, `sk-` prefixes | Hardcoded secrets in frontend code — use to access backend services |
+| 4 | Supabase service role key leak | Check for `service_role` key (bypasses all RLS) in client code or error messages | Full database admin access |
+| 5 | Missing RLS on specific tables | Even with RLS enabled globally, test individual tables — AI often enables RLS on `auth.users` but misses custom tables | Selective data exposure on unprotected tables |
+| 6 | Firebase Realtime DB rules | Access `<project>.firebaseio.com/.json` | Full database dump if rules allow public read |
+
+**Severity Guidance:** Critical when API keys grant paid service access or PII is exposed. High for database read access without authentication. The Supabase `anon` key in client code is **safe only if RLS is properly configured** — testing RLS is the key step. Report as broken access control (CWE-284) or sensitive data exposure (CWE-200).
