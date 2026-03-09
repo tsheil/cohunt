@@ -67,7 +67,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 ### MCP (Model Context Protocol)
 
-MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of servers lack authentication, 43% have command injection flaws. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners).
+MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of servers lack authentication, 43% have command injection flaws. **Pynt quantified the risk**: 10 MCP plugins = **92% exploit probability** (281 configs analyzed); Enkrypt AI scanned 1,000+ servers and found **33% had critical vulnerabilities**. ChatGPT can now connect to any remote MCP server, expanding the attack surface to all Enterprise/Business users. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners).
 
 **Top vulnerability classes:**
 
@@ -86,7 +86,7 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **59 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **62 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -159,7 +159,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
 - **XBOW**: #1 HackerOne with 1,060 submissions; **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
-- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection
+- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt)
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
@@ -236,13 +236,13 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~384 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (59), OWASP MCP Top 10, Checkmarx 11 risks, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~460 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks, Pynt/Noma research | ~388 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (62), OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting | ~511 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~538 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~163 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 55+ real-world incidents, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~277 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~295 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~445 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (130+ data points) | ~218 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (140+ data points) | ~236 |
 
 ---
 

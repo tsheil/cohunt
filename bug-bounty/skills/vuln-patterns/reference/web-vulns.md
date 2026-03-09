@@ -402,3 +402,31 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 4 | Management interface exposure | Check if management interfaces are accessible from untrusted networks | Admin consoles reachable without network segmentation |
 
 **Severity Guidance:** Critical — these patterns consistently yield CVSS 9.8-10.0 with root/admin access. No workarounds exist for many (patching only). These are high-value targets because enterprise customers often delay patching management infrastructure.
+
+---
+
+## React Server Components DoS
+
+**What it is:** Denial-of-service via specially crafted HTTP requests to Server Function endpoints in React Server Components (RSC), causing server crashes, out-of-memory exceptions, or excessive CPU usage.
+
+**Recent examples:**
+- **CVE-2026-23864** (React Server Components DoS, CVSS 7.5): multiple DoS vectors in RSC endpoints; affects Next.js and other React metaframeworks using Server Functions (January 2026)
+- **CVE-2025-55182** (React2Shell, CVSS 10.0): pre-auth RCE in RSC via insecure deserialization — #1 on HackerOne; **RondoDox botnet** mass-exploiting this against IoT and web servers
+
+**Where to look:**
+- Any Next.js application using Server Actions or Server Functions
+- React metaframeworks (Remix, Hydrogen, custom RSC implementations)
+- Server Function endpoints exposed at `/_next/` or framework-specific paths
+- Applications that upgraded to RSC without reviewing serialization boundaries
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Malformed RSC payloads | Send specially crafted HTTP requests to Server Function endpoints with oversized or malformed serialized data | Server crash, OOM error, or excessive CPU spike |
+| 2 | Recursive object serialization | Craft deeply nested object structures in Server Function arguments | Memory exhaustion or stack overflow |
+| 3 | Concurrent request flooding | Send multiple crafted RSC requests simultaneously | Server becomes unresponsive or crashes under load |
+| 4 | Deserialization boundary test | Test if Server Function arguments are properly validated before deserialization | Unexpected code execution or type confusion |
+| 5 | Version check | Verify React and Next.js versions against patched releases | Unpatched versions vulnerable to CVE-2026-23864 and CVE-2025-55182 |
+
+**Severity Guidance:** DoS vectors are typically Medium-High (CVSS 7.5). Deserialization-to-RCE vectors are Critical (CVSS 10.0). The React2Shell pattern remains actively exploited — verify patching status on any Next.js target.

@@ -59,6 +59,11 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Bugcrowd team collaboration**: 72% believe teams yield better results; **61% find more critical vulnerabilities** when collaborating; 40% currently work in teams, 44% want to but haven't found partners
 - **Microsoft Zero Day Quest live event**: spring 2026 at Redmond campus (invite-only); flash challenges running through **March 18, 2026**; +50% bounty multiplier for critical-severity findings in Azure, Copilot, Dynamics 365, M365
 - **Agentic security gap**: no single tool category (EDR, WAF, SIEM, AI-SPM) provides complete coverage against agentic threats; **48% of cybersecurity professionals** identify agentic AI as the top attack vector heading into 2026 (Dark Reading poll)
+- **Vercel React2Shell WAF Bypass program**: **$1M total bounty** — $50K per unique bypass technique; 116 researchers, 156 reports, 20 unique techniques validated; Vercel blocked 6M+ exploit attempts
+- **Intigriti hourly payout model**: new feature paying hunters based on hours (like pentesting) in addition to per-vulnerability rewards — hybrid model
+- **HackerOne Hai Replay**: dashboard feature turning historical vulnerability data into actionable insights for future testing
+- **Microsoft "In Scope by Default"**: all online services now covered including third-party and OSS components; new services in scope from day one; up to $100K for third-party/OSS vulns impacting Microsoft
+- **HackerOne top 100 all-time earners**: $31.8M total; top hunters report $300K+ annually
 
 ---
 
@@ -158,6 +163,11 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **ICON defense** (March 2026): two-stage indirect injection defense — emerging defense to test against
 - **AgentAudit MCP registry**: 270+ packages audited, 247 vulnerabilities found; Schema Drift discovery
 - **n8n multi-CVE** (Feb-Mar 2026): 7+ CVEs including CVSS 10.0, 9.9, 9.4 — workflow platforms are goldmines
+- **Pynt MCP exploit probability** (March 2026): 10 MCP plugins = **92% exploit probability**; 1 plugin = 9%, 2 = 36%, 3 = 50%+; 72% of MCPs expose sensitive capabilities (code execution, file system, privileged APIs); 13% accept untrusted inputs (web scraping, Slack, email, RSS); 9% intersection = direct attack paths; 281 configurations analyzed (VentureBeat/Pynt)
+- **Enkrypt AI 1,000 MCP server scan** (March 2026): **33% had critical vulnerabilities**, averaged 5.2 vulns each; K8s MCP server: 26 vulns including 6 CVSS 9.8; malicious Postmark MCP server silently exfiltrated every email it processed
+- **ChatGPT MCP integration** (March 2026): ChatGPT can now connect to any remote MCP server, triggering tools autonomously; malicious MCP servers = most immediate threat vector; expands attack surface to all ChatGPT Enterprise/Business users
+- **Knostic exposed MCP servers**: 1,862 MCP servers found with zero authentication; every server tested responded without credentials
+- **Noma x OWASP Red Team Playbook** (March 2026): comprehensive agentic AI red team playbook covering prompt injection, tool misuse, excessive agency, multi-agent coordination failures; continuously updated attack library from Noma Labs
 
 ---
 
@@ -218,4 +228,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Microsoft "AI as Tradecraft"** (March 6, 2026): first documentation of state-sponsored agentic AI experimentation; Coral Sleet fully AI-enabled malware workflow (lure dev → infrastructure → payload testing); LLM jailbreaking for malicious code generation; AI code fingerprints (emojis as markers, conversational comments)
 - **Checkmarx 11 MCP Risks** (March 2026): comprehensive taxonomy covering prompt injection, tool poisoning, confused deputy, supply chain, malicious servers, cross-agent context abuse, privilege escalation, insecure deserialization, context leakage, insecure clients, dependency confusion
 - **OWASP Agentic AI Top 10** (finalized 2026): ASI01-ASI10 covering agent goal hijacking, tool misuse, privilege escalation, supply chain, excessive agency, memory poisoning, inter-agent comms, cascading failures, trust exploitation, rogue agents; input from 100+ security researchers; BleepingComputer published real-world examples mapping to each risk
+- **CVE-2026-23864** (React Server Components DoS, CVSS 7.5): specially crafted HTTP requests to Server Function endpoints cause server crashes, OOM, or excessive CPU; affects Next.js and React metaframeworks (January 2026)
+- **RondoDox botnet** exploiting React2Shell (CVE-2025-55182) to hijack IoT devices and web servers — demonstrates botnet adoption of web framework RCE
+- **Apple Security Research Device 2026**: iPhone 17 devices with Memory Integrity Enforcement; expanded bounty categories; "Target Flags" for objective exploitability demonstration
+- **Malicious Postmark MCP server** (Enkrypt AI): discovered during 1,000-server scan — silently exfiltrated every email it processed; demonstrates supply chain risk in MCP ecosystem
+- **PentAGI multi-agent pentesting** (2026): fully autonomous system with researcher/developer/executor roles; Graphiti knowledge graph (Neo4j); sandboxed Docker; supports OpenAI, Claude, Gemini, local models; open-source
 

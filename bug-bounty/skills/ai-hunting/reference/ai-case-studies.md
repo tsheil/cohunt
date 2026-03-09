@@ -259,6 +259,24 @@ NIST's Center for AI Standards and Innovation (CAISI) launched a formal initiati
 
 ---
 
+## MCP Ecosystem Risk Quantification (March 2026)
+
+Two major studies quantified MCP risk at scale:
+
+**Pynt Research (281 configurations):** 10 MCP plugins = 92% exploit probability. Live exploits observed: HTML→shell execution, crafted emails→code interpreter→RCE, Slack messages→terminal commands. 72% of MCPs expose sensitive capabilities, 13% accept untrusted inputs.
+
+**Enkrypt AI (1,000+ servers):** 33% had critical vulnerabilities, averaging 5.2 per server. K8s MCP server: 26 vulns (6 CVSS 9.8). Malicious Postmark MCP server silently exfiltrated every processed email.
+
+**ChatGPT MCP Integration:** ChatGPT can now connect to any remote MCP server, triggering tools autonomously. Malicious MCP servers are the most immediate threat — affects all ChatGPT Enterprise/Business users.
+
+**Knostic Exposure Scan:** 1,862 MCP servers found on public internet with zero authentication; every server tested responded without credentials.
+
+**Noma x OWASP Red Team Playbook:** Comprehensive agentic AI red team framework aligned with OWASP; dynamic attack generation covering prompt injection, tool misuse, excessive agency, multi-agent coordination failures; continuously updated by Noma Labs.
+
+**Bug Bounty Relevance:** MCP plugin stacks are now quantifiably the most dangerous enterprise AI attack surface. Target companies with 5+ MCP plugins for near-certain exploitation paths. Cross-plugin chains (untrusted input → sensitive capability) are the highest-value findings.
+
+---
+
 ## Critical Warning: AI Slop Reports
 
 AI slop reports are now a **major industry problem** that has caused the first program shutdowns. In January 2026, **curl ended its bug bounty program** after AI-generated submissions overwhelmed the security team — by July 2025 submission volume spiked to 8x the normal rate, with only 5% of 2025 submissions being genuine vulnerabilities. In six years, not a single AI-only-generated submission discovered a genuine vulnerability.

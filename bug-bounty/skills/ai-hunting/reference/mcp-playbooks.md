@@ -458,3 +458,54 @@ A new MCP attack vector (ecap0/AgentAudit, February 2026) — the MCP equivalent
 4. Verify unsanitized values reach the backend
 
 **Maps to:** MCP03 (Insecure MCP Server Design) + CWE-20 (Improper Input Validation)
+
+---
+
+## Quantified MCP Risk Model (Pynt Research, March 2026)
+
+Pynt analyzed 281 MCP configurations from real-world agent frameworks and plugin stacks. The findings quantify compounding risk:
+
+| MCP Plugins | Exploit Probability | Risk Level |
+|-------------|-------------------|------------|
+| 1 | 9% | Low — but non-trivial |
+| 2 | 36% | Medium — risk compounds |
+| 3 | 50%+ | High — more likely than not |
+| 5 | ~75% | Very High |
+| 10 | **92%** | Near-certain exploitation |
+
+**Why it compounds:** 72% of MCPs expose sensitive capabilities (code execution, file system access, privileged API calls). 13% accept untrusted inputs (web scraping, Slack messages, email, RSS). The 9% intersection — plugins that both expose sensitive capabilities AND accept untrusted inputs — creates direct exploitation paths.
+
+**Real-world exploit chains observed by Pynt:**
+1. Attacker-supplied HTML → shell plugin execution
+2. Crafted emails → email-ingestion plugin → code interpreter → RCE
+3. Crafted Slack messages → automation plugin → terminal command execution
+
+**Test Procedure (#61): MCP Plugin Stack Risk Assessment**
+1. Enumerate all MCP plugins connected to the target agent
+2. Classify each as "sensitive capability" (code exec, file access, API calls) or "untrusted input" (web, email, Slack, RSS)
+3. Identify intersections where untrusted inputs can reach sensitive capabilities
+4. Test cross-plugin chains: inject via untrusted-input plugin, observe if sensitive-capability plugin executes
+5. Calculate approximate exploit probability using Pynt's model
+
+**Maps to:** MCP01 (Token Mismanagement) + MCP02 (Tool Poisoning) + MCP06 (Excessive Permissions)
+
+---
+
+## Enkrypt AI MCP Scanner Findings (March 2026)
+
+Enkrypt AI scanned 1,000+ MCP servers across GitHub, enterprise registries, and open-source deployments:
+
+| Metric | Value |
+|--------|-------|
+| Servers with critical vulnerabilities | **33%** |
+| Average vulnerabilities per server | 5.2 |
+| Worst case (K8s MCP server) | 26 vulns, 6 CVSS 9.8 |
+| Malicious server detected | Postmark MCP silently exfiltrated all emails |
+
+**Test Procedure (#62): MCP Server Vulnerability Scan**
+1. Submit target MCP server to Enkrypt AI MCP Scanner (enkryptai.com/mcp-scan) or Cisco MCP Scanner
+2. Review severity scores and line-level vulnerability references
+3. Cross-reference against known MCP CVE patterns (command injection, path traversal, SSRF)
+4. For self-hosted servers: deploy Enkrypt Secure MCP Gateway for runtime AI safety filtering
+
+**Maps to:** MCP03 (Insecure MCP Server Design) + MCP07 (Supply Chain)

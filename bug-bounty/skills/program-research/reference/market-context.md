@@ -162,6 +162,11 @@ Notable new programs and expansions (2025-2026):
 - **Google AI VRP** (Oct 2025): dedicated AI bug bounty covering Search, Gemini Apps, Workspace core apps; up to $30K per report with novelty bonuses; $430K+ paid for AI bugs; prompt injection/jailbreaks excluded from scope but encouraged as research
 - **HackerOne Hai AI validation agent** (Feb 2026): 56% reduction in vulnerability validation time; updated AI policy confirms no training on researcher submissions
 - **Intigriti retesting feature**: New submission retesting for validating fixes across all program types with one click
+- **Vercel React2Shell WAF Bypass program**: **$1M total bounty** ($50K per unique bypass technique); 116 researchers, 156 reports, 20 unique bypass techniques validated; Vercel blocked 6M+ exploit attempts. One of the fastest public HackerOne programs ever launched
+- **Intigriti hourly payout model** (2026): new hybrid compensation paying hunters based on hours (like pentesting) in addition to per-vulnerability rewards — signals industry shift toward valuing researcher time, not just findings
+- **HackerOne Hai Replay** (2026): dashboard feature turning historical vulnerability data into actionable insights for future testing
+- **Apple Security Research Device 2026**: iPhone 17 with Memory Integrity Enforcement; expanded bounty categories; "Target Flags" for objective exploitability demonstration; max $5M+ with bonuses
+- **NVIDIA private AI bounty on Intigriti**: explicit AI-focused private program + public VDP for all NVIDIA assets; high-value AI infrastructure target
 
 ---
 
@@ -182,6 +187,10 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2025-9074: Docker Desktop access control failure — locally running Linux containers access Docker Engine API without authentication
 - GitHub MCP server prompt injection breach: public GitHub issues used to hijack AI assistants and exfiltrate private repos
 - Supabase Cursor agent breach: privileged agent processed support tickets as commands, attackers exfiltrated integration tokens via SQL injection
+- **HackerOne Export Feature Information Disclosure ($10K)**: "Export as .zip" feature allowed downloading private comments from partially disclosed reports — new feature deployed Monday, patched Tuesday. Pattern: test every new feature against existing access control models
+- **SmarterMail Authentication Bypass (WT-2026-0001)**: WatchTowr Labs — admin password reset chain to OS command execution; in-the-wild exploitation triggered emergency patch. Pattern: password reset flows remain high-value targets
+- **Instagram Private Post Data Leak**: authorization failure returned private post data when specific mobile headers were used — pattern: test API endpoints with mobile-specific headers to bypass web access controls
+- **Argo CD DoS (CVE-2025-59538/59531, $8,500)**: unauthenticated DoS in Kubernetes GitOps tool via HackerOne IBB; pattern: K8s ecosystem infrastructure components are underexplored
 - Anthropic Filesystem-MCP: sandbox escape + symlink bypass enabling arbitrary file access and code execution
 - Microsoft MarkItDown MCP server: unpatched SSRF that can compromise AWS EC2 instances via metadata service exploitation
 - OpenSSL: 12 zero-day vulnerabilities discovered by AISLE AI system, including CVE-2025-15467 (stack buffer overflow, remotely exploitable); three bugs dated back to 1998-2000
@@ -415,3 +424,10 @@ Competition awareness:
 - **OpenClaw privacy breach scale**: 42K+ exposed instances, 1.5M leaked API tokens; 93% had critical auth bypass
 - **Penetrify autonomous red team** (March 3, 2026): first fully autonomous AI red team; CI/CD integration; from $50/mo
 - **GHOSTCREW MCP-based toolkit** (January 2026): open-source, integrates Metasploit/Nmap/SQLMap; 450+ GitHub stars
+- **Pynt MCP exploit probability** (March 2026): 10 MCP plugins = 92% exploit probability; 72% of MCPs expose sensitive capabilities; 281 configs analyzed; real exploits observed: HTML→shell, email→code exec, Slack→terminal (VentureBeat/Pynt)
+- **Enkrypt AI 1,000 MCP server scan** (March 2026): 33% critical vulns, 5.2 avg per server; K8s MCP server: 26 vulns (6 CVSS 9.8); malicious Postmark MCP exfiltrated emails
+- **ChatGPT MCP integration** (March 2026): ChatGPT connects to any remote MCP server; malicious servers are most immediate threat for Enterprise/Business users
+- **CVE-2026-23864** (React Server Components DoS, CVSS 7.5): crafted HTTP requests crash Next.js servers via OOM/CPU exhaustion
+- **RondoDox botnet**: mass exploitation of React2Shell CVE-2025-55182 against IoT and web servers
+- **Apple SRD 2026**: iPhone 17 with Memory Integrity Enforcement; "Target Flags" for objective exploitability; expanded categories
+- **Noma x OWASP Red Team Playbook** (March 2026): agentic AI red team framework with dynamic attack generation
