@@ -165,6 +165,34 @@ The classic high-payout pattern:
 3. Exchange stolen code for access token
 4. Access victim's account
 
+### OAuth Silent Redirect Abuse (March 2026)
+
+A new technique documented by Microsoft Defender targeting government and public-sector orgs:
+
+```
+□ Silent error redirect
+  Test: Add prompt=none&scope=invalid to authorization request
+  Effect: Forces silent error redirect bypassing login page — phishing defenses don't trigger
+  Test: Check if error redirect preserves authorization parameters
+  Test: Check if error redirect URL can be attacker-controlled
+
+□ First-party app trust abuse (ConsentFix)
+  Test: Use first-party client IDs (Azure CLI, VS Code, Teams PowerShell) in OAuth flows
+  Effect: Bypasses MFA and Conditional Access entirely — tokens obtained without 2FA
+  Test: Use Azure CLI client ID to obtain tokens for other tenants
+  Test: Check if admin consent restrictions apply to first-party apps
+  Applies to: Microsoft Entra ID environments (most enterprises)
+  Defense: Entra ID Token Protection with WAM broker
+
+□ JWE-wrapped PlainJWT bypass (CVE-2026-29000, CVSS 10.0)
+  Test: If target uses encrypted JWTs (JWE), wrap PlainJWT (alg=none) inside JWE
+  Effect: Signature verification completely skipped — forge any user's token
+  Applies to: pac4j-jwt library; any target using JWE with RSA public key
+  Only requires knowledge of server's RSA public key (often publicly available)
+```
+
+> **Deep dive on OAuth/JWT format-level bugs:** See vuln-patterns [reference/web-vulns.md](../vuln-patterns/reference/web-vulns.md)
+
 ---
 
 ## 4. JWT (JSON Web Tokens)

@@ -88,9 +88,21 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Best for: autonomous pentesting workflows requiring cross-tool coordination and persistent memory
 - GitHub: `vxcontrol/pentagi`
 
-**Reaper (Ghost Security):**
-- Open-source agentic web app security testing and tampering tool
-- Designed for AI-driven web application testing workflows
+**Ghost Security Agent (Claude Code Plugin):**
+- Claude Code plugin for application security: find, validate, fix loop
+- Secret scanner (dual-engine pattern matching + entropy analysis)
+- Dependency scanner (OSV database, 500K+ known CVEs)
+- MITM HTTPS proxy for live vulnerability validation
+- AI-powered code analysis covering **89 vulnerability types**
+- Also ships Reaper — open-source agentic web app testing and tampering tool
+- Best for: integrated Claude Code security workflows with live validation
+
+**RAPTOR (Recursive Autonomous Pentesting):**
+- Claude Code-based security research framework
+- Automatically generates both vulnerability exploits AND patches
+- Recursive approach: finds vuln → generates exploit → validates → generates patch → verifies fix
+- Best for: end-to-end vulnerability lifecycle management within Claude Code
+- GitHub: `gadievron/raptor`
 
 **Shannon (Autonomous AI Pentester):**
 - Fully autonomous white-box AI pentester for web apps and APIs by Keygraph; **powered by Claude Agent SDK**
@@ -314,6 +326,11 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Agents were proficient in **directed tasks** (clear target, well-documented surface), but less effective in realistic, unstructured environments
 - Without clear success indicators, AI agents **produce false positives, exaggerate severity, and struggle to distinguish meaningful access from noise**
 - Best result: Gemini 2.5 Pro discovered developer documentation → found app creation endpoint → used session token → accessed protected endpoint, all in 23 steps
+
+**Horizon3 NodeZero (Autonomous Pentesting at Scale):**
+- Surpassed **100,000 pentests** by 3,000+ customers; projecting **400,000 by end of 2026**
+- Healthcare provider case study: replaced annual pentesting with monthly NodeZero; reduced MTTR by **65%**, closing high-risk exposures **10x faster**
+- Validates the shift from periodic to continuous autonomous pentesting as mainstream practice
 
 **Where Autonomous Agents Excel:**
 - Mass SSRF scanning, subdomain enumeration, simple SQLi/XSS

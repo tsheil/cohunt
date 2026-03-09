@@ -325,6 +325,8 @@ All integrate with Claude Desktop/Code: **Burp Suite MCP** (PortSwigger — HTTP
 
 **Also:** mcp-scan v0.4.2 (Invariant Labs/Snyk — standard scanner), MCPTox (tool poisoning benchmark), MCP Golf Testing (offensive toolkit), Escape ASM (discovers unauthenticated endpoints)
 
+**Defense Frameworks (test if target implements):** ETDI (Enhanced Tool Definition Interface, arXiv:2506.01333) — cryptographic identity + immutable versioned definitions + OAuth 2.0; proposed as PR to MCP Python SDK. SAFE-MCP — adapts MITRE ATT&CK methodology with 14 tactical categories for MCP threat modeling. Adversa AI MCP Security TOP 25 — definitive 25-class taxonomy with red team guides and defensive playbooks; use to systematically enumerate attack surface.
+
 ---
 
 ## Schema Drift: Silent MCP Attack Surface Expansion

@@ -263,11 +263,7 @@ Published by CSA (Cloud Security Alliance) in February 2026 and documented in ar
 
 Attack class (Repello AI) where 10+ incremental requests over 1-3 weeks gradually drift an agent's constraint model — each request slightly redefines "normal" until unauthorized actions are accepted. Unlike prompt injection (single payload), exploits the agent's adaptation mechanisms.
 
-**Testing:** Target agents with learning/adaptation (customer service, procurement, approval workflows). Submit incrementally escalating requests; track if responses gradually shift; test if drift survives session boundaries; measure minimum interactions for constraint bypass.
-
-**Real-World:** Manufacturing procurement agent manipulated over 3 weeks via "clarification" messages — approved $5M in fraudulent purchase orders across 10 transactions.
-
-**Severity:** High-Critical if drift enables financial transactions or privilege changes. Maps to ASI06 + ASI09.
+**Testing:** Target agents with learning/adaptation (customer service, procurement, approval workflows). Submit incrementally escalating requests; track if responses gradually shift; test if drift survives session boundaries. **Real-World:** Manufacturing procurement agent manipulated over 3 weeks — approved $5M in fraudulent POs across 10 transactions. Maps to ASI06 + ASI09.
 
 ### AI Recommendation Poisoning
 
@@ -299,42 +295,15 @@ CVSS 9.4; CRM data exfiltration via Web-to-Lead form prompt injection + agent ov
 
 ### Invisible Unicode Prompt Injection
 
-A stealth injection technique using Unicode tag characters (range E0000-E007F) that are invisible to humans but processed by AI models:
+Uses Unicode tag characters (E0000-E007F) invisible to humans but processed by AI. Successfully used against HackerOne Hai triage (Cyrex). Also test: zero-width spaces (U+200B), joiners (U+200D), bidirectional overrides (U+202A-U+202E).
 
-**How It Works:**
-- Attacker encodes malicious instructions using Unicode tag characters within seemingly normal text
-- Text appears completely benign to human reviewers — no visible difference
-- AI models read and execute the hidden instructions as if they were regular text
-- Used successfully against HackerOne's Hai AI triage assistant (Cyrex disclosure)
-
-**Testing Approach:**
-1. Encode prompt injection payloads using Unicode tag characters (E0000-E007F range)
-2. Submit encoded text through normal input channels (chat, forms, comments)
-3. Check if AI processes the hidden instructions — does behavior change?
-4. Test other invisible Unicode ranges: zero-width spaces (U+200B), zero-width joiners (U+200D), bidirectional overrides (U+202A-U+202E)
-5. If target has AI-powered content moderation, test if invisible instructions can bypass filters
-
-**Severity Guidance:** High if invisible injection can manipulate AI triage, content moderation, or automated decision-making; Medium if limited to chat-level manipulation.
+**Testing:** Encode payloads with invisible Unicode; submit via normal channels; check if AI behavior changes; test against content moderation. **Severity:** High for triage/moderation manipulation; Medium for chat-only.
 
 ### Semantic Chaining Jailbreak
 
-A new multimodal jailbreak technique (NeuralTrust, February 2026) where attackers chain semantically "safe" individual instructions that converge on a forbidden result:
+Chain semantically "safe" individual instructions that converge on a forbidden result (NeuralTrust, February 2026). Each instruction passes content filters individually; the sequence produces forbidden output. Notably simple — no technical expertise required. Affected: Grok 4, Gemini Nano Banana Pro, Seedance 4.5.
 
-**How It Works:**
-- Unlike traditional jailbreaks using a single harmful prompt, semantic chaining exploits models' compositional reasoning
-- Each individual instruction appears benign and passes content filters
-- The sequence of instructions converges on a forbidden output that no single prompt would produce
-- Notably simple — requires no technical expertise
-
-**Affected Models:** Grok 4, Gemini Nano Banana Pro, Seedance 4.5
-
-**Testing Approach:**
-1. Decompose a forbidden request into multiple benign-sounding sub-tasks
-2. Chain them in sequence within a single conversation
-3. Test if the model produces the forbidden output through composition
-4. Particularly effective against multimodal models processing text + images
-
-**Severity Guidance:** High if semantic chaining bypasses content moderation to produce harmful outputs; Medium if limited to edge cases. Critical differentiator: this bypasses both input filtering and output filtering.
+**Testing:** Decompose forbidden request into benign sub-tasks; chain in sequence; test if model produces forbidden output through composition. Bypasses both input and output filtering.
 
 ### H-CoT: Hijacking Chain-of-Thought
 
@@ -437,11 +406,31 @@ Attackers trick AI agents into writing malicious instructions into their identit
 3. Verify if configuration changes persist across sessions
 4. Test the full chain: document -> identity file modification -> persistent compromise
 
+### SpAIware: Persistent Memory Exfiltration
+
+Exploits persistent memory in LLM applications to inject malicious instructions that persist across ALL future chat sessions, enabling continuous data exfiltration (ScienceDirect, 2026). Demonstrated on ChatGPT. Related: MemoryGraft (arXiv:2512.16962) plants malicious experiences in agent long-term memory.
+
+**How It Differs from ZombieAgent:** ZombieAgent uses zero-click email for one-time poisoning; SpAIware targets the persistent memory feature directly, creating an ongoing surveillance capability.
+
+**Testing:** 1. Inject instructions via processed content that target the memory save mechanism. 2. Verify if injected memories persist across sessions. 3. Test if persistent memories can instruct the AI to exfiltrate data from future conversations. 4. Check if users can audit/delete injected memories. Maps to ASI06.
+
+### Poisoned GGUF Model Templates
+
+Attackers embed malicious instructions in GGUF model files (1.5M+ files on Hugging Face), compromising AI outputs when processed (Pillar Security, January 2026). Chat templates in GGUF format can contain Jinja2 code executing during inference.
+
+**Testing:** If target loads user-supplied or community GGUF models, test: 1. Inject instructions in GGUF chat template metadata. 2. Check if template code executes during model loading. 3. Test Jinja2 SSTI payloads in template fields. 4. Verify if model provenance is validated before loading. Maps to ASI04.
+
+### RAG Pipeline Poisoning at Scale
+
+Just **5 carefully crafted documents** can manipulate AI responses **90% of the time** in RAG-augmented systems (academic research, 2026). Poisoned documents are retrieved alongside legitimate content and override the model's behavior.
+
+**Testing:** 1. Identify if target uses RAG (retrieval-augmented generation). 2. Contribute or upload documents to the knowledge base with embedded instructions. 3. Query the system to verify if poisoned documents influence responses. 4. Test if poisoned content overrides system prompt instructions. Maps to ASI06 + ASI01.
+
 ### Side-Channel Timing Attacks Against LLMs
 
-Two attack types exploit timing characteristics: **Whisper Leak** analyzes packet size/timing in streaming responses (>98% AUPRC across 28 LLMs); **speculative decoding attacks** fingerprint queries with >75% accuracy via token generation timing.
+**Whisper Leak** analyzes packet size/timing in streaming responses (>98% AUPRC across 28 LLMs); **speculative decoding attacks** fingerprint queries with >75% accuracy.
 
-**Testing:** Analyze streaming response timing for information leakage; check for speculative decoding/caching side channels; test if timing varies by query sensitivity; verify mitigations (padding, delay injection). Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures — test if target has similar protections.
+**Testing:** Analyze streaming response timing for information leakage; test if timing varies by query sensitivity; verify mitigations (padding, delay injection). Cloudflare, OpenAI, Mistral, Microsoft, and xAI have deployed countermeasures.
 
 ### Image-Based Prompt Injection
 

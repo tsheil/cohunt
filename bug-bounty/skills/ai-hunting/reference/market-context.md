@@ -56,7 +56,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **curl shut down its bug bounty** (January 2026) — first program shutdown attributed to AI slop
 - **65% of hackers chose NOT to disclose** a vulnerability because the company lacked a clear reporting pathway (Bugcrowd 2026)
 - **Bugcrowd 2026**: 98% of hackers proud of their work; 56% say geopolitics outweighs curiosity; AI-induced job scarcity driving new influx
+- **Bugcrowd payout economics**: 100% increase in payouts led to only 20% more total submissions, but a **tripling of critical reports** — higher rewards effectively incentivize researchers to focus on serious vulnerabilities (eWeek 2026)
 - **Bugcrowd team collaboration**: 72% believe teams yield better results; **61% find more critical vulnerabilities** when collaborating; 40% currently work in teams, 44% want to but haven't found partners
+- **Microsoft expanded bounty to third-party/OSS code** impacting Microsoft services; AI Copilot bounty up to **$30K**
 - **Microsoft Zero Day Quest live event**: spring 2026 at Redmond campus (invite-only); flash challenges running through **March 18, 2026**; +50% bounty multiplier for critical-severity findings in Azure, Copilot, Dynamics 365, M365
 - **Agentic security gap**: no single tool category (EDR, WAF, SIEM, AI-SPM) provides complete coverage against agentic threats; **48% of cybersecurity professionals** identify agentic AI as the top attack vector heading into 2026 (Dark Reading poll)
 - **Vercel React2Shell WAF Bypass program**: **$1M total bounty** — $50K per unique bypass technique; 116 researchers, 156 reports, 20 unique techniques validated; Vercel blocked 6M+ exploit attempts

@@ -340,41 +340,29 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ## Self-Hosted Remote Desktop Pre-Auth Attack Chains
 
-**What it is:** Exploiting authentication bypass and SSRF vulnerabilities in self-hosted remote desktop solutions (RustDesk, Apache Guacamole, MeshCentral) that are commonly exposed to the internet.
+**What it is:** Authentication bypass and SSRF in self-hosted remote desktop (RustDesk, Guacamole, MeshCentral) commonly exposed to the internet.
 
-**Key CVE cluster (RustDesk, March 5, 2026):**
-- **CVE-2026-30789**: authentication bypass via session replay (Client ≤1.4.5)
-- **CVE-2026-30784**: missing authorization for critical functions — privilege abuse (Server ≤1.7.5)
-- **CVE-2026-30797**: missing authorization allowing API message manipulation via MitM
-- **CVE-2026-30796**: cleartext transmission of sensitive information
-- **CVE-2026-30791**: broken/risky cryptographic algorithm
-- **Pre-auth SSRF** (Matt Andreko): unauthenticated SSRF fires before password verification, enabling internal port scanning
+**Key CVE cluster (RustDesk, March 2026):** CVE-2026-30789 (session replay auth bypass, Client ≤1.4.5), CVE-2026-30784 (missing authz, Server ≤1.7.5), CVE-2026-30797 (API MitM), CVE-2026-30796 (cleartext creds), CVE-2026-30791 (weak crypto), plus pre-auth SSRF before password verification.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
 | 1 | Session replay | Capture and replay authentication session tokens | Access granted with replayed credentials (CVE-2026-30789) |
-| 2 | Pre-auth SSRF | Send requests to internal IPs via the remote desktop service before authenticating | Internal port scan results returned before password check |
-| 3 | API message manipulation | Intercept and modify API messages between client and server | Unauthorized operations executed via modified messages |
-| 4 | Cleartext credential capture | Monitor traffic for unencrypted credential transmission | Credentials visible in network capture |
+| 2 | Pre-auth SSRF | Send requests to internal IPs before authenticating | Internal port scan results returned before password check |
+| 3 | API message manipulation | Intercept and modify API messages between client and server | Unauthorized operations via modified messages |
 
-**Severity Guidance:** High-Critical for pre-auth chains (SSRF + session replay = full infrastructure access). Many self-hosted RustDesk instances are exposed on Shodan — scan for `rustdesk` on ports 21115-21119.
+**Severity Guidance:** High-Critical for pre-auth chains (SSRF + session replay = full infrastructure access). Scan Shodan for `rustdesk` on ports 21115-21119.
 
 ---
 
 ## Mobile Device Management Pre-Auth RCE
 
-**What it is:** Exploiting unauthenticated endpoints in enterprise MDM/EMM platforms to achieve remote code execution. These targets are high-value because MDM servers control thousands of devices and often run with elevated privileges.
+**What it is:** Unauthenticated RCE in enterprise MDM platforms — high-value because MDM servers control thousands of devices with elevated privileges.
 
-**Key CVE cluster (Ivanti EPMM, January-February 2026):**
-- **CVE-2026-1281** (CVSS 9.8): pre-auth RCE via malicious HTTP GET to `/mifs/c/appstore/fob/`. Public PoC available Jan 30, 2026. Widespread automated exploitation deploying web shells, cryptominers, and backdoors within days
-- **CVE-2026-1340** (CVSS 9.8): companion pre-auth RCE via `/mifs/c/aftstore/fob/` (Android File Transfer endpoint)
+**Key CVEs (Ivanti EPMM, Jan-Feb 2026):** CVE-2026-1281 (CVSS 9.8, pre-auth RCE via `/mifs/c/appstore/fob/`, public PoC, mass exploitation) and CVE-2026-1340 (CVSS 9.8, companion RCE via `/mifs/c/aftstore/fob/`).
 
-**Where to look:**
-- Ivanti EPMM (MobileIron), ManageEngine MDM, VMware Workspace ONE, Microsoft Intune
-- Any MDM management console exposed to the internet (common due to mobile device enrollment requirements)
-- Search Shodan: `http.favicon.hash` for MDM platforms, `"MobileIron"`, `"/mifs/"` paths
+**Where to look:** Ivanti EPMM/MobileIron, ManageEngine, VMware Workspace ONE, Microsoft Intune. Search Shodan: `"MobileIron"`, `"/mifs/"` paths.
 
 **Test patterns:**
 
@@ -383,9 +371,8 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 1 | Unauthenticated endpoints | Fuzz MDM admin paths without credentials | Admin functions accessible pre-auth |
 | 2 | File upload via enrollment | Use device enrollment endpoints to upload arbitrary files | Web shell deployment via enrollment flow |
 | 3 | API version mismatch | Test legacy API versions alongside current ones | Older APIs may lack auth checks |
-| 4 | SSRF via device check-in | Manipulate device check-in URLs to target internal services | Internal network access via MDM trust |
 
-**Severity Guidance:** Critical — MDM servers manage enterprise device fleets and often have access to push configurations, install apps, and wipe devices across the entire organization. A compromised MDM server = full mobile fleet control.
+**Severity Guidance:** Critical — compromised MDM = full mobile fleet control (push configs, install apps, wipe devices).
 
 ---
 
@@ -412,6 +399,46 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
+## Webmail RCE — 48-Hour Weaponization Pattern
+
+**What it is:** Critical RCE/XSS in webmail platforms weaponized within days, targeting ~84,000+ internet-facing instances.
+
+**Key CVEs (Roundcube, Feb 2026):** CVE-2025-49113 (CVSS 9.9, RCE weaponized in 48h, CISA KEV) and CVE-2025-68461 (stored XSS in message rendering).
+
+**Where to look:** Self-hosted webmail (Roundcube, Zimbra, Horde), enterprise email gateways, Roundcube < 1.6.10 / < 1.5.10.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Version fingerprint | Check `/program/lib/Roundcube/rcube.php` or server headers | Unpatched Roundcube version |
+| 2 | Stored XSS via email | Send crafted email with malicious HTML/JS in body or headers | Script execution in victim's webmail session |
+| 3 | MIME parsing abuse | Send email with malformed MIME structure | Parser confusion leading to code execution |
+
+**Severity Guidance:** Critical — webmail accesses all email content and contacts. 48-hour weaponization means unpatched instances are likely compromised.
+
+---
+
+## Admin Panel Logic Errors — Typo-to-RCE Pattern
+
+**What it is:** Simple comparison operator or logic errors in admin panels that disable security validation entirely, chaining to full RCE.
+
+**Key CVE:** CVE-2026-26279 (Froxlor, CVSS 9.1) — single-character typo (`==` instead of `=`) disabled email validation → admin account creation → cron injection → root RCE.
+
+**Where to look:** Self-hosted management panels (Froxlor, Webmin, ISPConfig, Plesk), admin panels with email verification, any auth flow with bypassable validation steps.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Validation bypass | Create admin account — does email verification actually block access? | Account usable without email confirmation |
+| 2 | Cron injection | If admin access achieved, test cron job creation with injected commands | Commands execute as root via cron |
+| 3 | Comparison confusion | Test numeric vs string comparison in login/validation flows | `0 == "string"` evaluates true in PHP |
+
+**Severity Guidance:** Critical when chaining to root RCE. These bugs are human-only (Tier A) — automated scanners don't understand the business logic chain from typo to root access. Froxlor has ~15K installations on Shodan.
+
+---
+
 ## HTTP/3 Race Conditions (QUICker)
 
 **What it is:** Race condition testing extended to HTTP/3 (QUIC transport), a previously untestable attack surface.
@@ -434,57 +461,38 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ## Critical Infrastructure Authentication & Deserialization
 
-**What it is:** Authentication bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.
+**What it is:** Auth bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.
 
-**Recent examples:**
-- **CVE-2026-20079** (Cisco Secure FMC, CVSS 10.0): authentication bypass via improper system process created at boot — allows script execution for root access
-- **CVE-2026-20131** (Cisco Secure FMC, CVSS 10.0): Java deserialization RCE via crafted serialized object to management interface — unauthenticated root access
-- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): command injection during support-assisted migration — actively exploited in the wild (CISA KEV March 3, 2026); root access → full virtual infrastructure compromise
-- **CVE-2026-20128/20122** (Cisco Catalyst SD-WAN Manager): actively exploited March 5, 2026 — file overwrite + privilege escalation via API; web shell activity observed
-- **CVE-2026-24512** (Kubernetes ingress-nginx, CVSS 8.8): configuration injection via `rules.http.paths.path` leading to RCE and secret disclosure; **ingress-nginx project retiring March 2026** — no future patches for 50% of K8s clusters still using it
-- **CVE-2026-20965** (Azure Windows Admin Center): SSO token validation failure — local admin on one managed system can pivot tenant-wide across all Azure VMs and Arc-connected systems
+**Recent examples:** CVE-2026-20079/20131 (Cisco FMC, CVSS 10.0 pair: boot-time auth bypass + Java deser RCE → root), CVE-2026-22719 (VMware Aria, CVSS 8.1, CISA KEV, actively exploited), CVE-2026-20128/20122 (Cisco SD-WAN, actively exploited March 2026), CVE-2026-24512 (K8s ingress-nginx, CVSS 8.8, project retiring — no future patches for 50% of clusters), CVE-2026-20965 (Azure WAC, SSO pivot tenant-wide).
 
-**Where to look:**
-- Network management interfaces (firewall management, cloud orchestration, virtualization platforms)
-- Java-based management consoles with serialization endpoints
-- Migration/upgrade workflows with elevated privileges
-- Boot-time processes that create persistent service accounts
+**Where to look:** Network management consoles, Java-based management APIs, migration/upgrade workflows, boot-time service processes.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Boot process auth bypass | Identify services started at boot time with improper authentication initialization | Admin access without credentials via race condition or misconfigured startup sequence |
-| 2 | Java deser on management interfaces | Send crafted serialized Java objects to management API endpoints (ysoserial payloads) | RCE or unexpected behavior indicating deserialization processing |
-| 3 | Migration workflow injection | Test migration/upgrade endpoints for command injection in path/hostname parameters | Command execution during privileged migration operations |
-| 4 | Management interface exposure | Check if management interfaces are accessible from untrusted networks | Admin consoles reachable without network segmentation |
+| 1 | Boot process auth bypass | Identify boot-time services with improper auth initialization | Admin access without credentials |
+| 2 | Java deser on management APIs | Send crafted serialized objects (ysoserial payloads) to management endpoints | RCE indicating deserialization processing |
+| 3 | Migration workflow injection | Test migration/upgrade endpoints for command injection | Command execution during privileged operations |
 
-**Severity Guidance:** Critical — these patterns consistently yield CVSS 9.8-10.0 with root/admin access. No workarounds exist for many (patching only). These are high-value targets because enterprise customers often delay patching management infrastructure.
+**Severity Guidance:** Critical — consistently CVSS 9.8-10.0 with root access. High-value because enterprises delay patching management infrastructure.
 
 ---
 
 ## React Server Components DoS
 
-**What it is:** Denial-of-service via specially crafted HTTP requests to Server Function endpoints in React Server Components (RSC), causing server crashes, out-of-memory exceptions, or excessive CPU usage.
+**What it is:** DoS and RCE via crafted requests to Server Function endpoints in React Server Components (RSC).
 
-**Recent examples:**
-- **CVE-2026-23864** (React Server Components DoS, CVSS 7.5): multiple DoS vectors in RSC endpoints; affects Next.js and other React metaframeworks using Server Functions (January 2026)
-- **CVE-2025-55182** (React2Shell, CVSS 10.0): pre-auth RCE in RSC via insecure deserialization — #1 on HackerOne; **RondoDox botnet** mass-exploiting this against IoT and web servers
+**Key CVEs:** CVE-2026-23864 (RSC DoS, CVSS 7.5, multiple vectors, Jan 2026) and CVE-2025-55182 (React2Shell, CVSS 10.0, pre-auth RCE via insecure deser — #1 on HackerOne, **RondoDox botnet** mass-exploiting).
 
-**Where to look:**
-- Any Next.js application using Server Actions or Server Functions
-- React metaframeworks (Remix, Hydrogen, custom RSC implementations)
-- Server Function endpoints exposed at `/_next/` or framework-specific paths
-- Applications that upgraded to RSC without reviewing serialization boundaries
+**Where to look:** Next.js Server Actions/Functions, React metaframeworks (Remix, Hydrogen), `/_next/` endpoints, any RSC implementation.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Malformed RSC payloads | Send specially crafted HTTP requests to Server Function endpoints with oversized or malformed serialized data | Server crash, OOM error, or excessive CPU spike |
-| 2 | Recursive object serialization | Craft deeply nested object structures in Server Function arguments | Memory exhaustion or stack overflow |
-| 3 | Concurrent request flooding | Send multiple crafted RSC requests simultaneously | Server becomes unresponsive or crashes under load |
-| 4 | Deserialization boundary test | Test if Server Function arguments are properly validated before deserialization | Unexpected code execution or type confusion |
-| 5 | Version check | Verify React and Next.js versions against patched releases | Unpatched versions vulnerable to CVE-2026-23864 and CVE-2025-55182 |
+| 1 | Malformed RSC payloads | Send oversized/malformed serialized data to Server Function endpoints | Server crash, OOM, or CPU spike |
+| 2 | Recursive object nesting | Deeply nested objects in Server Function arguments | Memory exhaustion or stack overflow |
+| 3 | Deserialization boundary | Test if arguments are validated before deserialization | Code execution or type confusion |
 
-**Severity Guidance:** DoS vectors are typically Medium-High (CVSS 7.5). Deserialization-to-RCE vectors are Critical (CVSS 10.0). The React2Shell pattern remains actively exploited — verify patching status on any Next.js target.
+**Severity Guidance:** DoS = Medium-High (CVSS 7.5). Deser-to-RCE = Critical (CVSS 10.0). React2Shell remains actively exploited — verify patching on any Next.js target.
