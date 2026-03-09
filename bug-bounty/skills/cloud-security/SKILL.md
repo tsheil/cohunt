@@ -3,7 +3,7 @@ name: cloud-security
 description: Cloud security misconfiguration patterns for AWS, GCP, and Azure. Use when a target is cloud-hosted, uses cloud services (S3, GCS, Azure Blob, Lambda, Cloud Functions), or when recon reveals cloud infrastructure. Trigger with "cloud misconfig", "S3 bucket", "AWS security", "GCP security", "Azure security", "cloud enumeration", "serverless security", "metadata endpoint", "cloud storage", "IAM", or when target-recon identifies cloud hosting. Also activates when SSRF testing reveals cloud metadata endpoints, or when storage URLs (s3.amazonaws.com, storage.googleapis.com, blob.core.windows.net) appear in scope.
 ---
 
-Cloud misconfiguration patterns for bug bounty hunting. Covers storage, compute, identity, serverless, and metadata attack surfaces across AWS, GCP, and Azure. Works standalone with curl and web search; supercharged with asset discovery connectors for comprehensive cloud enumeration.
+Cloud misconfiguration patterns for bug bounty hunting. Covers storage, compute, identity, serverless, and metadata attack surfaces across AWS, GCP, and Azure.
 
 ## Execution Flow
 
@@ -269,17 +269,6 @@ When reporting cloud misconfigurations, frame impact in terms of:
 | Public storage listing (no sensitive data) | Low–Medium | Still worth reporting |
 | Subdomain pointing to deprovisioned cloud resource | Medium | Subdomain takeover |
 | Exposed Kubernetes Dashboard | High–Critical | Cluster compromise |
-
-## Standalone vs. Supercharged
-
-| What You Can Do | Standalone | Supercharged With |
-|-----------------|------------|-------------------|
-| Enumerate storage buckets | crt.sh, DNS, JS analysis | ~~asset discovery for comprehensive inventory |
-| Test storage permissions | curl | ~~asset discovery for port/service scanning |
-| Check metadata endpoints | curl via SSRF | ~~web scanner for automated SSRF testing |
-| Find exposed secrets | Web search, repo search | ~~code search for cross-repo scanning |
-| Map cloud infrastructure | DNS, HTTP fingerprinting | ~~asset discovery + ~~dns intelligence |
-| Test IAM misconfigs | curl, web search | ~~vulnerability database for known CVE mapping |
 
 ## Related Skills
 

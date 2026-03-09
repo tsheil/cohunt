@@ -5,8 +5,6 @@ argument-hint: "<target domain>"
 
 # /recon
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Run full external reconnaissance on a web target. This command triggers the `target-recon` skill and produces a structured recon report.
 
 ## Usage
@@ -31,8 +29,6 @@ Runs a complete external recon workflow against the target:
 6. **WAF/CDN detection** — provider identification, bypass potential
 
 Use the `target-recon` skill to execute this recon. Follow its full execution flow and output format.
-
-If asset discovery or DNS intelligence connectors are available, use them to supercharge the results.
 
 ---
 

@@ -7,18 +7,6 @@ description: Audit source code for security vulnerabilities — trace data flows
 
 Find vulnerabilities by reading code — trace data flows from user input to dangerous sinks, spot authentication and authorization gaps, identify injection points, and flag logic flaws. Works on any code you can share or point to: files, repos, snippets, or diffs.
 
-## Connectors (Optional)
-
-Connect your tools to supercharge this skill:
-
-| Connector | What It Adds |
-|-----------|--------------|
-| **Code search** | Cross-repo pattern matching, commit history for vuln introduction/fixes |
-| **Vulnerability database** | CVE data for detected dependencies and frameworks |
-| **Web scanner** | Validate code-level findings against a running instance |
-
-> **No connectors?** No problem. Code analysis works entirely from the source you share.
-
 ---
 
 ## Output Format

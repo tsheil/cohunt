@@ -5,8 +5,6 @@ argument-hint: "<vuln type> [context/constraints]"
 
 # /generate-payload
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Generate security testing payloads tailored to your target's stack, WAF, and constraints. Outputs ready-to-paste payloads with encoding strategies and injection points.
 
 ## Usage

@@ -7,28 +7,24 @@ This is a **file-based Claude Code plugin** with no code or infrastructure. All 
 ```
 bug-bounty/
 ├── .claude-plugin/plugin.json    # Plugin metadata and version
-├── skills/                        # 11 domain knowledge modules (SKILL.md files)
+├── skills/                        # 13 domain knowledge modules (SKILL.md files)
 │   ├── ai-hunting/               # AI-assisted hunting + LLM vuln patterns (progressive disclosure)
-│   │   ├── SKILL.md              # Core methodology (<500 lines)
-│   │   └── reference/            # Detailed catalogs loaded on demand
 │   ├── vuln-patterns/            # Testing patterns for 50+ vuln classes
 │   ├── program-research/         # Bug bounty program intelligence
 │   ├── target-recon/             # Web target reconnaissance
 │   ├── source-code-audit/        # Security code review (progressive disclosure)
-│   │   ├── SKILL.md              # Core methodology (<500 lines)
-│   │   └── reference/            # Framework-specific patterns
 │   ├── api-security/             # API-specific testing (REST, GraphQL, gRPC)
 │   ├── auth-testing/             # Auth & authorization testing
 │   ├── cloud-security/           # Cloud misconfigurations (AWS, GCP, Azure)
 │   ├── mobile-security/          # Mobile app testing (iOS, Android)
 │   ├── http-desync/              # HTTP smuggling, cache poisoning, race conditions
+│   ├── client-side-security/     # Browser/frontend security (DOM XSS, CSP, XS-Leaks)
+│   ├── supply-chain-security/    # CI/CD, dependency confusion, GitHub Actions
 │   └── report-writing/           # Bug bounty report structure
 ├── agents/                        # 2 autonomous workflow agents (flat .md files)
 │   ├── hunt-session.md           # End-to-end hunting orchestrator
 │   └── report-review.md          # Pre-submission quality assurance
-├── commands/                      # 11 slash commands
-├── CONNECTORS.md                  # MCP connector reference
-└── .mcp.json                      # MCP server configs (all disabled by default)
+└── commands/                      # 14 slash commands
 ```
 
 ## Key Conventions

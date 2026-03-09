@@ -1,23 +1,11 @@
 ---
 name: target-recon
-description: Recon a web target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, map the attack surface. Works standalone with curl/dig and web search, supercharged with asset discovery connectors. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of".
+description: Recon a web target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, map the attack surface. Works with curl/dig and web search. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of".
 ---
 
 # Target Recon
 
-Get a complete external view of any web target before hunting. This skill always works with curl, dig, and web search, and gets significantly better with asset discovery connectors.
-
-## Connectors (Optional)
-
-Connect your tools to supercharge this skill:
-
-| Connector | What It Adds |
-|-----------|--------------|
-| **Asset discovery** | Full subdomain inventory, open ports, service banners, historical data |
-| **DNS intelligence** | DNS history, zone data, related domains, passive DNS |
-| **Vulnerability database** | Known CVEs mapped to detected technology stack |
-
-> **No connectors?** No problem. curl, dig, and web search provide solid recon for any target.
+Get a complete external view of any web target before hunting using curl, dig, and web search.
 
 ---
 
@@ -27,7 +15,7 @@ Connect your tools to supercharge this skill:
 # Target Recon: [domain]
 
 **Generated:** [Date]
-**Sources:** curl + dig + Web Search [+ Asset Discovery] [+ DNS Intel]
+**Sources:** curl + dig + Web Search
 
 ---
 
@@ -198,17 +186,7 @@ Check for WAF/CDN:
 5. Note rate limiting behavior
 ```
 
-### Step 5: Asset Discovery (If Connected)
-
-```
-If asset discovery tools available:
-1. Full subdomain enumeration → Comprehensive inventory
-2. Port scanning → Open services beyond HTTP
-3. Service detection → Banner grabbing
-4. Historical data → Previously seen subdomains/services
-```
-
-### Step 6: Synthesize
+### Step 5: Synthesize
 
 ```
 1. Combine all sources
@@ -320,7 +298,7 @@ Focus on: Attack surface mapping tied to program scope
 
 ## CLI Execution Rules
 
-When running external recon tools via MCP connectors or shell, follow these rules to avoid blowing up the context window with raw output:
+When running external recon tools via shell, follow these rules to avoid blowing up the context window with raw output:
 
 | Tool | Use This Flag | Why |
 |------|--------------|-----|

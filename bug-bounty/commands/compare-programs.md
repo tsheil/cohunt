@@ -5,8 +5,6 @@ argument-hint: "<program 1> vs <program 2>"
 
 # /compare-programs
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Compare two or more bug bounty programs side-by-side to decide where to invest your hunting time. Evaluates rewards, scope breadth, response metrics, competition level, and historical payouts.
 
 ## Usage
@@ -25,7 +23,6 @@ Compare: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                   COMPARE PROGRAMS                            │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Research each program via web search                      │
 │  ✓ Side-by-side comparison matrix                            │
 │  ✓ Reward range comparison by severity tier                  │
@@ -33,9 +30,6 @@ Compare: $ARGUMENTS
 │  ✓ Response time and triage quality assessment               │
 │  ✓ Competition and saturation estimate                       │
 │  ✓ ROI recommendation based on hunter profile                │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: live stats, recent activity, exact payouts  │
 └──────────────────────────────────────────────────────────────┘
 ```
 

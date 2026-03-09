@@ -5,8 +5,6 @@ argument-hint: "<describe your finding>"
 
 # /write-report
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Write a complete, submission-ready bug bounty report from a finding description. Produces a structured report with clear title, reproduction steps, CVSS scoring, impact assessment, and remediation — formatted for the target platform.
 
 ## Usage
@@ -25,7 +23,6 @@ Write report for: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                      WRITE REPORT                             │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Structure finding into submission-ready format            │
 │  ✓ Generate specific, scannable title                        │
 │  ✓ Write unambiguous step-by-step reproduction               │
@@ -34,10 +31,6 @@ Write report for: $ARGUMENTS
 │  ✓ Map to CWE identifier                                     │
 │  ✓ Suggest remediation with code examples                    │
 │  ✓ Format for target platform (HackerOne, Bugcrowd, etc.)   │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: auto-submit, check for duplicates           │
-│  + Vulnerability DB: CWE/CVE references, CVSS validation     │
 └──────────────────────────────────────────────────────────────┘
 ```
 

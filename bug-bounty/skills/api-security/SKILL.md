@@ -284,15 +284,6 @@ Common API vulnerability chains that elevate severity:
 
 ---
 
-## Standalone vs. Supercharged
-
-| Capability | Standalone | Supercharged With |
-|------------|------------|-------------------|
-| Endpoint discovery | JS analysis, docs, error probing | ~~asset discovery for comprehensive crawling |
-| Schema extraction | Introspection, doc URLs, manual mapping | ~~code search for API routes in source |
-| Version detection | Path probing, header testing | ~~asset discovery for historical versions |
-| Vulnerability mapping | Built-in patterns per framework | ~~vulnerability database for CVE-informed testing |
-
 ## Related Skills & Commands
 
 - `vuln-patterns` — Individual vulnerability class patterns (IDOR, XSS, SSRF, etc.)

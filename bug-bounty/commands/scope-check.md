@@ -5,8 +5,6 @@ argument-hint: "<target or finding> for <program>"
 
 # /scope-check
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Quickly verify whether a target, vulnerability type, or specific finding is in scope before you spend time testing or writing a report.
 
 ## Usage
@@ -25,15 +23,11 @@ Check scope for: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                       SCOPE CHECK                            │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Web search for program scope page                         │
 │  ✓ Match target against in-scope assets                      │
 │  ✓ Check vulnerability type against program policy           │
 │  ✓ Flag out-of-scope exclusions and restrictions             │
 │  ✓ Identify gray areas and recommend caution                 │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: live scope data (catches recent changes)    │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -123,16 +117,7 @@ For vulnerability type checks:
 4. Self-only impact: Is self-XSS / self-CSRF excluded?
 ```
 
-### Step 4: Check Platform Data (If Connected)
-
-```
-If bug bounty platform connected:
-1. Get live scope → May differ from cached web results
-2. Check recent scope changes → Assets added/removed
-3. Get program policy → Current rules of engagement
-```
-
-### Step 5: Deliver Verdict
+### Step 4: Deliver Verdict
 
 ```
 Classify as:

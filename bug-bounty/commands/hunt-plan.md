@@ -5,8 +5,6 @@ argument-hint: "<target or program>"
 
 # /hunt-plan
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Build a prioritized hunting plan by combining target recon and program intelligence into actionable test cases.
 
 ## Usage
@@ -25,18 +23,12 @@ Build a hunting plan for: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                        HUNT PLAN                             │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Gather or reuse target recon data                         │
 │  ✓ Gather or reuse program research data                     │
 │  ✓ Map scope boundaries (in/out)                             │
 │  ✓ Prioritize by reward × likelihood ÷ competition           │
 │  ✓ Generate specific test cases to run first                 │
 │  ✓ Allocate time budget across targets                       │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform: live scope and reward data                      │
-│  + Asset discovery: comprehensive attack surface             │
-│  + Vulnerability DB: CVE-informed test prioritization        │
 └──────────────────────────────────────────────────────────────┘
 ```
 

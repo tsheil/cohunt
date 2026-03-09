@@ -5,8 +5,6 @@ argument-hint: "[findings summary or 'review session']"
 
 # /triage-findings
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Rank and prioritize your bug bounty findings before writing reports. Helps you decide what to report first, what needs more work, and what to skip.
 
 ## Usage
@@ -25,17 +23,12 @@ Triage findings: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                    TRIAGE FINDINGS                            │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Classify each finding by vulnerability type and CWE       │
 │  ✓ Estimate severity (CVSS range) for each finding           │
 │  ✓ Assess reportability (strong PoC vs needs more work)      │
 │  ✓ Flag duplicate risk based on common patterns              │
 │  ✓ Rank findings by expected payout ÷ report effort          │
 │  ✓ Recommend report order and next steps                     │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: check for existing reports, recent trends   │
-│  + Vulnerability DB: accurate CWE mapping, CVSS validation   │
 └──────────────────────────────────────────────────────────────┘
 ```
 

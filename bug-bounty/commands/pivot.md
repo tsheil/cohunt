@@ -5,8 +5,6 @@ argument-hint: "[what failed or where you're stuck]"
 
 # /pivot
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Mid-hunt pivot advisor. When a test path hits a wall, describe what failed and I'll give you the next 3 highest-value angles to try.
 
 ## Usage

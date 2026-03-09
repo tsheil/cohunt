@@ -155,16 +155,6 @@ Step 6: Add tool recommendations for each phase
 - 8–20 hours → Phases 1–5
 - 20+ hours → Full methodology
 
-## Standalone vs. Supercharged
-
-| Capability | Standalone | Supercharged With |
-|------------|------------|-------------------|
-| Tech stack detection | curl, page source | ~~asset discovery for comprehensive fingerprinting |
-| Endpoint mapping | Manual + JS analysis | ~~web scanner for automated crawling |
-| Vulnerability prioritization | Heuristic-based | ~~vulnerability database for CVE-informed ordering |
-| Scope validation | Web search | ~~bug bounty platform for live scope data |
-| Tool configuration | Generic recommendations | ~~web scanner for pre-configured scanning templates |
-
 ## Related Skills & Commands
 
 - `target-recon` — Provides tech stack and attack surface data

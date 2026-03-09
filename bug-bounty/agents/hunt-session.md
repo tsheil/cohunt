@@ -272,19 +272,6 @@ Update the checklist as each step completes. This gives the hunter clear visibil
 - If target has AI features, map to OWASP Agentic Top 10 (ASI01-ASI10) and suggest AIVSS scoring
 - Use the Promptware Kill Chain framework for agent targets — findings reaching stage 5+ are significantly more severe
 
-**Connectors (Optional):**
-
-This agent works standalone with web search and curl. Connect your tools to supercharge it:
-
-| Connector | What It Adds |
-|-----------|--------------|
-| **Bug bounty platform** | Live scope, real-time stats, disclosed report data |
-| **Asset discovery** | Pre-enumerated subdomains and services |
-| **Vulnerability database** | CVE mapping for detected technologies |
-| **Web scanner** | Automated validation of detected patterns |
-
-> **No connectors?** No problem. The full workflow runs on web search + curl alone.
-
 **Error Handling:**
 
 - **Program research returns no results:** Fall back to searching the company's security page directly (`[company].com/security`, `[company].com/.well-known/security.txt`). If no bounty program exists, note this clearly and suggest VDP or responsible disclosure.

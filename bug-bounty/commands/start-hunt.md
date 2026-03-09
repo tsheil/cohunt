@@ -5,8 +5,6 @@ argument-hint: "[target or situation]"
 
 # /start-hunt
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 New to the plugin or starting a fresh session? Tell me what you're working on and I'll route you to the right skill, command, or agent.
 
 ## Usage

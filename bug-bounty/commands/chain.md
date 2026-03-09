@@ -9,8 +9,6 @@ arguments:
 
 # /chain
 
-> If you see unfamiliar placeholders or need to check which tools are connected, see [CONNECTORS.md](../CONNECTORS.md).
-
 Document a multi-step attack chain — map individual findings into a cohesive attack path, score the chain correctly, and produce a single report that maximizes payout.
 
 ## Usage
@@ -35,7 +33,6 @@ Chaining is how medium-severity findings become criticals. Two individually weak
 ┌──────────────────────────────────────────────────────────────┐
 │                     VULNERABILITY CHAIN                       │
 ├──────────────────────────────────────────────────────────────┤
-│  STANDALONE (always works)                                   │
 │  ✓ Map individual findings into attack flow                  │
 │  ✓ Identify the critical path (minimal steps to max impact)  │
 │  ✓ Score the chain as a single finding (CVSS 3.1 + 4.0)     │
@@ -43,10 +40,6 @@ Chaining is how medium-severity findings become criticals. Two individually weak
 │  ✓ Produce chain diagram showing attack flow                 │
 │  ✓ Generate a single cohesive report                         │
 │  ✓ Flag weak links that could break the chain                │
-├──────────────────────────────────────────────────────────────┤
-│  SUPERCHARGED (when you connect your tools)                  │
-│  + Platform API: check if individual links already reported  │
-│  + Vulnerability DB: CWE mapping for each link               │
 └──────────────────────────────────────────────────────────────┘
 ```
 

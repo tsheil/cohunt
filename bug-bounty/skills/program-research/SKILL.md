@@ -5,19 +5,7 @@ description: Research a bug bounty program before hunting — scope, rewards, di
 
 # Program Research
 
-Get complete intelligence on any bug bounty program before you start hunting. This skill always works with web search, and gets significantly better with bug bounty platform connectors.
-
-## Connectors (Optional)
-
-Connect your tools to supercharge this skill:
-
-| Connector | What It Adds |
-|-----------|--------------|
-| **Bug bounty platform** | Live scope, real-time reward tables, report statistics, response metrics |
-| **Vulnerability database** | CVE data mapped to program's technology stack |
-| **Asset discovery** | Pre-enumerated subdomains and services for in-scope targets |
-
-> **No connectors?** No problem. Web search provides solid program intelligence from public disclosures, write-ups, and platform pages.
+Get complete intelligence on any bug bounty program before you start hunting using web search.
 
 ---
 
@@ -27,7 +15,7 @@ Connect your tools to supercharge this skill:
 # Program Research: [Company/Program Name]
 
 **Generated:** [Date]
-**Sources:** Web Search [+ Platform API] [+ Vuln DB]
+**Sources:** Web Search
 
 ---
 
@@ -212,26 +200,7 @@ From public disclosures:
 6. Identify which scope areas get most reports
 ```
 
-### Step 4: Platform Data (If Connected)
-
-```
-If bug bounty platform connected:
-1. Get live program scope → Current in/out of scope
-2. Get reward table → Real-time bounty ranges
-3. Get program statistics → Response times, resolved count
-4. Get recent activity → Trending focus areas
-```
-
-### Step 5: Vulnerability Mapping (If Connected)
-
-```
-If vulnerability database connected:
-1. Map detected technologies to known CVEs
-2. Check for recently disclosed vulns in scope tech
-3. Identify unpatched or commonly misconfigured components
-```
-
-### Step 6: Assess AI & Automation Landscape
+### Step 4: Assess AI & Automation Landscape
 
 Check for AI-specific program features:
 1. Search for "AI" or "LLM" in program scope and policy
