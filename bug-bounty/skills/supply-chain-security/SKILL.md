@@ -169,7 +169,7 @@ Even scoped packages (`@company/pkg`) are vulnerable if:
 3. Inspect lockfiles for `resolved` URLs pointing outside expected registries
 4. Check if lockfile integrity hashes (`integrity` field) match published package hashes
 
-**CVE references**: ua-parser-js hijack (CVE-2021-43831, 8M weekly downloads compromised), event-stream incident (CVE-2018-16492), colors.js sabotage.
+**CVE references**: ua-parser-js hijack (CVE-2021-43831, 8M weekly downloads compromised), event-stream incident (CVE-2018-16492), colors.js sabotage. **Feb 2026 wave**: StripeApi.Net (Feb 16, NuGet typosquat of Stripe.net), Cline CLI NPM compromise (Feb 17, stolen publish token → postinstall installing OpenClaw on dev machines). Group-IB 2026: 68% of severe incidents now linked to supply chain compromise — nearly double from prior years.
 
 ---
 

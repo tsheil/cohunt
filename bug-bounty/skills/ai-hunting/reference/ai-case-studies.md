@@ -359,6 +359,24 @@ All Microsoft online services now in scope for bug bounty including third-party 
 **Google AI VRP Launch (2026):**
 Dedicated AI Vulnerability Reward Program covering Search, Gemini Apps, Gmail, Drive, Sheets, Calendar — up to $30K per finding. Simplifies reporting process for AI-specific issues.
 
+**Claude Code Security Launch (February 20, 2026):**
+Anthropic's limited research preview using Claude Opus 4.6 found 500+ vulnerabilities in production open-source codebases — some undetected for decades. Focus: memory corruption, injection, auth bypass, complex logic errors. Open-source GitHub Action for automated PR security scanning. Same-day launch as Codex Security creates "AI code security race." Human-in-the-loop approach distinguishes from fully autonomous tools.
+
+**CyberStrikeAI FortiGate Campaign (Jan-Feb 2026):**
+AI-native Go platform with 100+ security tools adopted by threat actors to compromise 500+ FortiGate devices across 55 countries in 5 weeks. 21 unique IPs used the tool. No zero-days needed — just exposed management ports and weak authentication with AI-generated attack plans. Linked to Chinese developer alias "Ed1s0nZ." First major AI-orchestrated mass exploitation campaign. Dual-use concern: tools built for defense weaponized at scale.
+
+**SolarWinds WHD Multi-Stage RCE (CVE-2025-40551, Feb 2026):**
+Unauthenticated RCE (CVSS 9.8) exploited as initial access, then lateral movement via Zoho Meetings and Cloudflare tunnels for persistence, plus Velociraptor for C2. Microsoft documented the full attack lifecycle. Pattern: management platform → initial access → legitimate cloud services for persistence → dedicated C2.
+
+**Supply Chain Package Compromise Wave (Feb 2026):**
+StripeApi.Net malicious package (Feb 16) masquerading as legitimate Stripe.net NuGet library. Cline CLI NPM compromise (Feb 17) via stolen publish token — postinstall script installing OpenClaw on developer machines. Group-IB finding: 68% of severe incidents now linked to supply chains, nearly double from prior years.
+
+**Semgrep Secure 2026 (February 25):**
+First multimodal AppSec engine combining deterministic SAST with LLM reasoning for zero false positives. Signals industry shift from rule-only to hybrid analysis. Major implications for code audit skill — AI-augmented static analysis becoming standard.
+
+**Equixly MCP Pentesting (EUR10M Series A):**
+First autonomous penetration testing tool specifically targeting MCP servers via discovery mechanism enumeration. Uses reinforcement learning. Addresses the 30 MCP CVEs in 60 days surge and 38% of servers lacking authentication.
+
 ---
 
 ## Critical Warning: AI Slop Reports

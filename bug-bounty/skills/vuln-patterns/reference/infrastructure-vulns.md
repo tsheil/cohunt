@@ -19,6 +19,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [MSHTML Mark-of-the-Web Bypass Chain](#mshtml-mark-of-the-web-bypass-chain)
 - [Cloud SSO Trust Model Abuse](#cloud-sso-trust-model-abuse)
 - [Workflow Automation Platform RCE](#workflow-automation-platform-rce)
+- [Enterprise Management Platform RCE](#enterprise-management-platform-rce)
 
 ---
 
@@ -307,3 +308,23 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 3 | Credential extraction | Access configuration/database files after initial foothold | Admin credentials, encryption keys in plaintext |
 
 **Severity Guidance:** Critical — workflow platforms run arbitrary code by design. Any auth bypass = immediate RCE. n8n's 100K+ instances make this a high-volume target.
+
+## Enterprise Management Platform RCE
+
+**What it is:** Unauthenticated or low-privilege RCE in IT management and operations platforms that manage large fleets of devices — compromising these platforms yields control over entire infrastructure.
+
+**Key CVEs (Feb-March 2026):**
+- **CVE-2025-40551** (SolarWinds Web Help Desk, CVSS 9.8): unauthenticated RCE enabling multi-stage attack chains — lateral movement via Zoho Meetings + Cloudflare tunnels for persistence + Velociraptor for C2; actively exploited by state-level actors
+- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): command injection during migration operations — unauthenticated RCE when migration services are exposed; added to CISA KEV March 2026
+
+**Where to look:** SolarWinds WHD, VMware Aria/vRealize, ServiceNow instances, ManageEngine products. Search Shodan for management port exposure on 8443, 8787, 443.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Unauthenticated RCE | Probe management API endpoints without credentials | Command execution, error messages revealing internal paths |
+| 2 | Migration/upgrade path exploitation | Test upgrade/migration endpoints that may bypass auth | CVE-2026-22719 pattern: migration services with reduced auth requirements |
+| 3 | Post-exploitation lateral movement | After initial foothold, probe for C2 tunnel capability | Cloud service tunnels (Cloudflare, ngrok), legitimate remote access tools for persistence |
+
+**Severity Guidance:** Critical — management platforms control device fleets. CVE-2025-40551 demonstrates full attack lifecycle from initial unauthenticated access through C2 establishment.
