@@ -263,6 +263,7 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **CVE-2026-27825 (mcp-atlassian)** -- critical unauthenticated RCE and SSRF in MCP server
 - **CVE-2026-30861 (WeKnora Stdio RCE, CVSS 9.9)** -- blacklisted args bypassed via `-p` flag with `npx node`; unrestricted user registration allows unauthenticated access
 - **CVE-2026-30860 (WeKnora DB Query RCE, CVSS 9.9)** -- SQL injection via PostgreSQL array/row expressions bypasses validation; chains with large object operations for full RCE
+- **CVE-2026-30855 (WeKnora Multi-Tenant Auth Bypass, CVSS 8.8)** -- broken access control in tenant management endpoints; any authenticated user reads/modifies/deletes any tenant; open registration means unauthenticated attacker registers → full cross-tenant ATO + LLM API key leakage from tenant configs. Related: CVE-2026-30858 (DNS rebinding SSRF), CVE-2026-30857 (cross-tenant knowledge base cloning). Pattern: multi-tenant AI platforms with open registration are goldmines. Fixed v0.3.2
 - **CVE-2026-30856 (MCP Tool Name Collision, CVSS 5.9)** -- ambiguous `mcp_{service}_{tool}` naming enables system prompt exfiltration via tool name confusion
 - **CVE-2026-1470 (n8n Expression Engine, CVSS 9.9)** -- deprecated JavaScript `with` statement bypasses constructor/prototype blocking in expression sandbox
 - **CVE-2026-0863 (n8n Python Code Node, CVSS 8.5)** -- sandbox escape for arbitrary Python execution on "Internal" configuration mode

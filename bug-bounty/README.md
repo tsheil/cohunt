@@ -139,6 +139,15 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
+## What's New in v0.43.0
+
+- **WeKnora 5-CVE multi-tenant compromise** — CVE-2026-30855 (CVSS 8.8) broken access control in Tencent's LLM framework; open registration → cross-tenant ATO + LLM API key leakage from tenant configs; plus DNS rebinding SSRF (CVE-2026-30858) and cross-tenant KB cloning (CVE-2026-30857). Pattern: multi-tenant AI platforms with open registration are goldmines
+- **RustDesk 7+ CVE cluster** — Session replay auth bypass (CVE-2026-30789), missing authorization, MitM, cleartext transmission, broken crypto, plus pre-auth SSRF enabling internal port scanning before password verification. New self-hosted remote desktop attack section in `web-vulns.md`
+- **Trail of Bits Claude Code security skills** — Battle-tested audit methodology from Testing Handbook as Claude Code plugin marketplace; `claude-code-config` for opinionated sandboxing defaults. Added to `tools-landscape.md`
+- **Cisco Skill Scanner** — Companion to MCP Scanner; static + behavioral analysis for AI agent skill files (OpenClaw, Claude Skills, Codex skills); VirusTotal integration
+- **Adversa AI MCP ecosystem growth** — 1,412 MCP servers indexed (232% increase in 6 months); updated in market context
+- **6 new case study entries** — WeKnora multi-tenant, RustDesk cluster, Trail of Bits skills marketplace, plus market intelligence updates across both market-context files and program-research
+
 ## What's New in v0.38.0
 
 - **OWASP Agentic Top 10 test procedures** — 19 concrete test procedures (T1-T19) for ASI01-ASI10 risks in `agent-attack-patterns.md`, covering goal hijacking, tool misuse, privilege escalation, memory poisoning, inter-agent impersonation, cascading failures, trust exploitation, and rogue agent detection

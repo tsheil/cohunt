@@ -331,6 +331,31 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
+## Self-Hosted Remote Desktop Pre-Auth Attack Chains
+
+**What it is:** Exploiting authentication bypass and SSRF vulnerabilities in self-hosted remote desktop solutions (RustDesk, Apache Guacamole, MeshCentral) that are commonly exposed to the internet.
+
+**Key CVE cluster (RustDesk, March 5, 2026):**
+- **CVE-2026-30789**: authentication bypass via session replay (Client ≤1.4.5)
+- **CVE-2026-30784**: missing authorization for critical functions — privilege abuse (Server ≤1.7.5)
+- **CVE-2026-30797**: missing authorization allowing API message manipulation via MitM
+- **CVE-2026-30796**: cleartext transmission of sensitive information
+- **CVE-2026-30791**: broken/risky cryptographic algorithm
+- **Pre-auth SSRF** (Matt Andreko): unauthenticated SSRF fires before password verification, enabling internal port scanning
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Session replay | Capture and replay authentication session tokens | Access granted with replayed credentials (CVE-2026-30789) |
+| 2 | Pre-auth SSRF | Send requests to internal IPs via the remote desktop service before authenticating | Internal port scan results returned before password check |
+| 3 | API message manipulation | Intercept and modify API messages between client and server | Unauthorized operations executed via modified messages |
+| 4 | Cleartext credential capture | Monitor traffic for unencrypted credential transmission | Credentials visible in network capture |
+
+**Severity Guidance:** High-Critical for pre-auth chains (SSRF + session replay = full infrastructure access). Many self-hosted RustDesk instances are exposed on Shodan — scan for `rustdesk` on ports 21115-21119.
+
+---
+
 ## OAuth First-Party App Trust Abuse (ConsentFix)
 
 **What it is:** Abusing trusted first-party application status in OAuth/SSO implementations to bypass MFA and Conditional Access policies.

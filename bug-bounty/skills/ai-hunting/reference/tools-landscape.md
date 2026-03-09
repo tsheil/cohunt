@@ -170,6 +170,21 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Terminal and web interfaces; best for: multi-phase pentesting with agent specialization
 - GitHub: `yohannesgk/blacksmith`
 
+**Trail of Bits Claude Code Security Skills (March 2026):**
+- Published security-focused Claude Code plugin marketplace with battle-tested audit methodology
+- Key skills: audit context building (line-by-line analysis, invariant tracking, cross-function flow tracing), static analysis (CodeQL, Semgrep, SARIF parsing), variant analysis, fix commit verification, security-focused diff review
+- Also released `claude-code-config` — opinionated defaults for sandboxing, permissions, hooks, and MCP servers reflecting professional audit workflows
+- Based on the Trail of Bits Testing Handbook methodology
+- Best for: structured security code audits; complementary to Cohunt's source-code-audit skill
+- GitHub: `trailofbits/skills`
+
+**Cisco Skill Scanner (March 2026):**
+- Companion to MCP Scanner — static + behavioral analysis for AI agent skill files (OpenClaw, Claude Skills, OpenAI Codex skills)
+- Includes VirusTotal integration for malware detection
+- Built in response to the ClawHub supply chain crisis (824+ malicious skills)
+- Best for: scanning third-party agent skills before installation; defensive auditing
+- GitHub: `cisco-ai-defense/skill-scanner`
+
 **AgentShield Benchmark (AI Agent Security Testing):**
 - First open benchmark testing 6 commercial AI agent security tools with **537 test cases**
 - Key finding: providers catching 95%+ of prompt injections miss most unauthorized tool calls — weak tool abuse detection across the board

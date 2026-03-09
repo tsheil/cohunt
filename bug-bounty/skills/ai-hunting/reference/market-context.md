@@ -156,7 +156,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## MCP & Agent Infrastructure
 
-- **40+ MCP CVEs** filed in Q1 2026; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI)
+- **40+ MCP CVEs** filed in Q1 2026; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI); **1,412 MCP servers indexed** (232% increase in 6 months, Adversa AI March 2026 digest)
 - **8,000+ MCP servers** found publicly exposed (Feb 2026)
 - **Endor Labs analysis** of 2,614 MCP implementations: 82% Path Traversal, 67% Code Injection, 34% Command Injection risks
 - **MCP server audit** (March 2026): 118 findings across 68 of 194 packages audited
@@ -251,6 +251,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **March 2026 Patch Tuesday preview**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's unprecedented 6 actively exploited zero-days
 - **Android March 2026 security bulletin**: 129 vulnerabilities patched including critical RCE CVE-2026-0006 and actively exploited Qualcomm zero-day CVE-2026-21385 (234 chipsets)
 - **Unit 42 MCP Sampling attacks** (March 2026): 3 new attack vectors — resource theft, conversation hijacking, covert tool invocation via MCP sampling mechanism; servers become active prompt authors
+- **WeKnora 5-CVE multi-tenant compromise** (March 7, 2026): CVE-2026-30855 (CVSS 8.8) broken access control + CVE-2026-30858 (DNS rebinding SSRF) + CVE-2026-30857 (cross-tenant KB cloning); open registration → unauthenticated full ATO; LLM API key leakage from tenant configs. Pattern: multi-tenant AI platforms with open registration are goldmines
+- **RustDesk 7+ CVE cluster** (March 5, 2026): session replay, missing auth, MitM, cleartext, broken crypto, pre-auth SSRF; popular self-hosted remote desktop (Client ≤1.4.5, Server ≤1.7.5); many instances on Shodan
+- **Trail of Bits Claude Code security skills** (March 2026): battle-tested audit methodology from Testing Handbook as Claude Code plugin; `claude-code-config` for opinionated sandboxing; professional audit firm entering plugin ecosystem
 - **AuthZed MCP breach timeline** (March 2026): systematic breach analysis — WhatsApp, GitHub, Asana MCP servers; root cause across all: authorization failures (over-privileged tokens, missing access controls)
 - **CyberStrikeAI weaponization** (March 2026): open-source AI tool used to breach 600+ FortiGate devices across 55 countries; 21 unique IPs observed; CrowdStrike: 89% increase in AI-enabled adversary attacks YoY
 - **Healthcare AI agent $14M breach** (Moltwire, March 2026): patient records exfiltrated via prompt injection over 3 months; only 17% of enterprises have adopted agentic AI; ACM identified 4 critical knowledge gaps
