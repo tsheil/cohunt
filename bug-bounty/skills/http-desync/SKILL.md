@@ -222,6 +222,107 @@ When the back-end sends responses in a different order than the front-end expect
 
 ---
 
+## Reverse Proxy-Specific Patterns
+
+Different proxy/CDN combinations have unique parsing behaviors that create exploitable desync opportunities:
+
+### Parser Quirks by Proxy
+
+| Proxy | Known Quirk | Test |
+|-------|-------------|------|
+| **NGINX** | Accepts `Transfer-Encoding: chunked\r\nTransfer-Encoding: ` (double TE with trailing space) | Send double TE header; check if NGINX forwards only one while back-end sees the other |
+| **Apache** | `mod_proxy` may ignore `Transfer-Encoding` entirely when `Content-Length` present | Send both CL and TE; Apache may forward CL only, back-end may use TE |
+| **HAProxy** | Strict HTTP parsing but `option http-tunnel` mode skips body validation | Check if target uses HAProxy tunnel mode; body-less requests may be forwarded raw |
+| **AWS ALB** | HTTP/2 → HTTP/1.1 downgrade; may inject `:authority` as `Host` | Send H2 request with mismatched `:authority` and `Host` pseudo-headers |
+| **Envoy** | Path normalization differs from back-end (`%2F` handling) | Send `GET /path%2F..%2Fadmin` and check how proxy vs back-end resolve the path |
+| **Traefik** | Header case sensitivity varies between versions | Send `transfer-encoding: chunked` (lowercase) to test case-insensitive handling |
+| **Caddy** | Strict parsing by default but plugins may relax it | Test TE obfuscation variants; Caddy rejects most but plugin chains may differ |
+
+### Multi-Layer Stack Exploitation
+
+```
+Client → [CDN] → [Load Balancer] → [Reverse Proxy] → [Origin]
+```
+
+Each layer adds desync opportunities. Test between EACH pair:
+- CDN ↔ LB: CDN may strip headers LB needs
+- LB ↔ Proxy: Different HTTP parsing implementations
+- Proxy ↔ Origin: Classic CL.TE/TE.CL surface
+
+**Detection:** Add unique marker headers at each request (`X-Test-Layer: cdn`, `X-Test-Layer: origin`). Compare which headers arrive at each layer to map the processing pipeline.
+
+---
+
+## Post-Exploitation Chaining
+
+Smuggling a request is the beginning — the real bounty value comes from chaining to high-impact outcomes:
+
+### Smuggle → Cache Poison → Stored XSS
+
+```
+1. Identify a smuggling desync (CL.TE, TE.CL, etc.)
+2. Smuggle a request that injects XSS payload into a cached response
+3. The poisoned cache serves the XSS payload to all subsequent visitors
+4. Result: persistent XSS via infrastructure-level bug (high/critical severity)
+```
+
+### Smuggle → Session Hijacking
+
+```
+1. Smuggle a partial request that captures the NEXT user's request
+2. The victim's request (including cookies) is appended to your smuggled prefix
+3. Store or reflect the captured session token
+4. Result: account takeover without direct interaction
+```
+
+### Smuggle → Access Control Bypass → Admin Panel
+
+```
+1. Front-end proxy blocks /admin routes
+2. Smuggle a request to /admin that the front-end doesn't inspect
+3. Back-end serves the admin panel to the smuggled request
+4. Result: authentication bypass via protocol-level desync
+```
+
+### Smuggle → Internal API Access
+
+```
+1. Front-end restricts access to internal APIs (/internal/*, /api/admin/*)
+2. Smuggle request targeting internal endpoints
+3. Back-end processes the smuggled request as if it came from the proxy
+4. Result: SSRF-equivalent via request smuggling (often higher severity)
+```
+
+**Severity Impact:** A basic smuggling detection is typically Medium. Chaining to cache poisoning, session hijacking, or access control bypass elevates to High or Critical. Always demonstrate the chain in your report.
+
+---
+
+## Advanced CL.0 & Server-Side Desync
+
+### CL.0 Deep Dive
+
+CL.0 occurs when the back-end ignores the request body entirely on certain endpoints, treating excess bytes as the start of a new request:
+
+| Scenario | How to find | Impact |
+|----------|-------------|--------|
+| **GET endpoints** | Send POST-like body on GET endpoints; check if body persists on connection | Most common CL.0 surface |
+| **Health check endpoints** | `/health`, `/ping`, `/status` — often skip body parsing | Low-value endpoints that enable high-value attacks on shared connections |
+| **Static file handlers** | Requests for `.js`, `.css`, `.png` — body ignored | Attack on static asset requests |
+| **WebSocket upgrades** | After failed WebSocket upgrade, body may be treated as new request | Persistent connection hijacking |
+
+### Server-Side Request Smuggling
+
+When two internal services communicate over HTTP with connection reuse, a desync between them can be exploited even without external attacker access to the front-end:
+
+```
+External request → [App server] → [Internal API via keep-alive HTTP]
+                                      ↑ desync here
+```
+
+**Testing:** Look for applications that proxy requests to internal services. Manipulate the proxied request to inject a smuggled prefix that the internal service processes as a separate request.
+
+---
+
 ## Using This Skill
 
 ### With Recon Data

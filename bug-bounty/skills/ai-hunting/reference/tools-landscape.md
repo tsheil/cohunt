@@ -165,8 +165,9 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Best for: continuous API/web/mobile security testing
 
 **BlacksmithAI (Multi-Agent Pentesting):**
-- Open-source AI pentesting framework using multiple AI agents for different stages of security assessment (March 2026)
-- Each agent specializes in a different phase: recon, vulnerability analysis, exploitation
+- Open-source AI pentesting framework (GPL-3.0, March 2, 2026) with multi-agent architecture: orchestrator + specialized sub-agents (recon, scanning, exploitation, post-exploitation)
+- Supports OpenRouter, vLLM, custom LLM backends; uses mini-kali Docker container for professional pentesting tools
+- Terminal and web interfaces; best for: multi-phase pentesting with agent specialization
 - GitHub: `yohannesgk/blacksmith`
 
 **AgentShield Benchmark (AI Agent Security Testing):**

@@ -248,4 +248,12 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Contrast Security MCP Server**: defensive MCP server bridging IAST vulnerability data with AI agents for context-aware remediation; provides complete taint-flow trace from source to sink
 - **OpenAnt (Knostic, March 6, 2026)**: open-source LLM vulnerability scanner with two-stage detect + exploit pipeline; supports 6 languages; Apache 2.0
 - **Claude Code macOS keychain fix** (March 2026): keychain corruption when using multiple OAuth MCP servers; large OAuth metadata overflows security buffer leaving stale credentials; trust dialog bug silently enabled all `.mcp.json` servers on first run
+- **March 2026 Patch Tuesday preview**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's unprecedented 6 actively exploited zero-days
+- **Android March 2026 security bulletin**: 129 vulnerabilities patched including critical RCE CVE-2026-0006 and actively exploited Qualcomm zero-day CVE-2026-21385 (234 chipsets)
+- **Unit 42 MCP Sampling attacks** (March 2026): 3 new attack vectors — resource theft, conversation hijacking, covert tool invocation via MCP sampling mechanism; servers become active prompt authors
+- **AuthZed MCP breach timeline** (March 2026): systematic breach analysis — WhatsApp, GitHub, Asana MCP servers; root cause across all: authorization failures (over-privileged tokens, missing access controls)
+- **CyberStrikeAI weaponization** (March 2026): open-source AI tool used to breach 600+ FortiGate devices across 55 countries; 21 unique IPs observed; CrowdStrike: 89% increase in AI-enabled adversary attacks YoY
+- **Healthcare AI agent $14M breach** (Moltwire, March 2026): patient records exfiltrated via prompt injection over 3 months; only 17% of enterprises have adopted agentic AI; ACM identified 4 critical knowledge gaps
+- **Dell RecoverPoint CVE-2026-22769 (CVSS 10.0)**: hardcoded credentials exploited by China-nexus UNC6201 since mid-2024; pattern: enterprise backup appliance hardcoded creds
+- **HackerOne Report #3000510**: $25K bounty for HackerOne's own `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token; fixed in 2 days
 

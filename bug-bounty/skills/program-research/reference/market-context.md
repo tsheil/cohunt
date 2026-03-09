@@ -431,3 +431,11 @@ Competition awareness:
 - **RondoDox botnet**: mass exploitation of React2Shell CVE-2025-55182 against IoT and web servers
 - **Apple SRD 2026**: iPhone 17 with Memory Integrity Enforcement; "Target Flags" for objective exploitability; expanded categories
 - **Noma x OWASP Red Team Playbook** (March 2026): agentic AI red team framework with dynamic attack generation
+- **March 2026 Patch Tuesday**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's 6 actively exploited zero-days
+- **Android March 2026**: 129 vulnerabilities patched; Qualcomm zero-day CVE-2026-21385 under active exploitation (234 chipsets)
+- **HackerOne $25K self-vuln** (Report #3000510): `.json` endpoint leaked reporters' emails, OTP codes, phone numbers, graphql tokens; fixed in 2 days
+- **Dell RecoverPoint CVE-2026-22769** (CVSS 10.0): hardcoded credentials exploited by UNC6201 (China-nexus) since mid-2024
+- **BlacksmithAI** (March 2, 2026): open-source multi-agent AI pentesting framework (GPL-3.0); Docker-based with mini-kali container
+- **CyberStrikeAI threat intel**: AI tool weaponized to breach 600+ FortiGate devices across 55 countries; CrowdStrike reports 89% increase in AI-enabled attacks
+- **Healthcare AI $14M breach**: patient records exfiltrated via prompt injection over 3 months (Moltwire); only 17% of enterprises adopted agentic AI
+- **Apple bounty evolution**: max payout now $5M+ (base $2M + Lockdown Mode bonus); iPhone 17 Security Research Device with Memory Integrity Enforcement

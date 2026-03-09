@@ -1,26 +1,17 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-Actionable test procedures for hunting vulnerabilities in Model Context Protocol (MCP) implementations. Covers vulnerability classes, OWASP MCP Top 10 mapping, 65 concrete test patterns, OAuth attack vectors, SDK-level flaws, and MCP-specific tooling.
+68 test procedures for MCP vulnerabilities: OWASP MCP Top 10, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
 
-> **Related files:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent supply chain and novel attack techniques | [ai-case-studies.md](ai-case-studies.md) for real-world MCP incident case studies
+> **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
 ---
 
 ## Table of Contents
 
-- [MCP Vulnerability Classes](#mcp-vulnerability-classes)
-- [OWASP MCP Top 10 (2026)](#owasp-mcp-top-10-2026)
-- [65 MCP Test Procedures](#65-mcp-test-procedures)
-- [MCP OAuth Account Takeover](#mcp-oauth-account-takeover)
-- [MCP Real-World Attack Examples](#mcp-real-world-attack-examples)
-- [MCP Implementation Vulnerability Stats](#mcp-implementation-vulnerability-stats)
-- [Denial-of-Wallet via MCP Overthinking Loops](#denial-of-wallet-via-mcp-overthinking-loops)
-- [Cursor Rogue MCP Browser Takeover](#cursor-rogue-mcp-browser-takeover)
-- [Security MCP Servers for Bug Bounty Workflows](#security-mcp-servers-for-bug-bounty-workflows)
-- [MCP Security Scanning Tools](#mcp-security-scanning-tools)
-- [Schema Drift: Silent MCP Attack Surface Expansion](#schema-drift-silent-mcp-attack-surface-expansion)
-- [Context Pivoting: Lateral Movement via Shared Agent Context](#context-pivoting-lateral-movement-via-shared-agent-context)
-- [Where to Hunt MCP Vulnerabilities](#where-to-hunt-mcp-vulnerabilities)
+- [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [68 Test Procedures](#68-mcp-test-procedures)
+- [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples) | [Implementation Stats](#mcp-implementation-vulnerability-stats)
+- [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
+- [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026)
 
 ---
 
@@ -120,7 +111,7 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 
 ---
 
-## 59 MCP Test Procedures
+## 68 MCP Test Procedures
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -288,11 +279,10 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 - **Gravitee State of AI Agent Security 2026**: **3+ million AI agents** operating in corporations; **88% of organizations** reported security incidents; **47% of agents** not actively monitored
 - **Endor Labs MCP shell=True pattern**: 34% of 2,614 studied MCP implementations use APIs prone to command injection (CWE-78)
 - **Comprehensive MCP server audit** (March 2026): 194 packages audited across 211 independent security reports — **118 findings across 68 packages**. Most common patterns: command injection via unsanitized `child_process.exec()`, credential leakage in error messages/logs/LLM context, excessive filesystem permissions, and missing input validation
-- **Elastic Security Labs**: published MCP attack/defense recommendations covering tool poisoning, orchestration injection, and rug-pull redefinitions — actionable defensive guidance for understanding target mitigations
-- **Microsoft Spotlighting technique**: protecting against indirect prompt injection in MCP by using delimiters and data marking to help models distinguish instructions from data — potential defense to test against
-- **ICON defense mechanism** (March 2026): two-stage defense for indirect prompt injection — detects injection via attention collapse patterns, then uses a Mitigating Rectifier to steer attention away from adversarial tokens. Significantly reduces attack success rates. Test if target deployments use ICON or similar attention-based defenses
-- **n8n 6-CVE batch disclosure** (February 2026): six CVEs in a single day covering RCE, command injection, arbitrary file access, and XSS
-- **MINJA** (Memory Injection Attack): research demonstrating **95%+ injection success rates** against production AI agents with persistent memory
+- **Elastic Security Labs**: MCP attack/defense recommendations covering tool poisoning, orchestration injection, rug-pull redefinitions
+- **Microsoft Spotlighting + ICON defense** (March 2026): defenses against indirect prompt injection via delimiters/data marking (Spotlighting) and attention collapse detection with adversarial token steering (ICON). Test if target uses these
+- **n8n 6-CVE batch** (Feb 2026): RCE, command injection, arbitrary file access, XSS in single day
+- **MINJA**: **95%+ injection success** against production AI agents with persistent memory
 
 ---
 
@@ -314,19 +304,7 @@ Rogue MCP server injects JavaScript into Cursor's embedded browser, replacing lo
 
 ## Security MCP Servers for Bug Bounty Workflows
 
-| MCP Server | Purpose | Integration |
-|---|---|---|
-| **Burp Suite MCP** (PortSwigger) | Official extension — automated HTTP request crafting, proxy history analysis, scanner issue retrieval | Claude Desktop, Claude Code |
-| **Snyk MCP** | Integrated security scanning via Snyk CLI; standardized AI-agent interface to Snyk's vulnerability database | Claude Desktop, Claude Code |
-| **Semgrep MCP** | Bridges Semgrep SAST scanning with AI-assisted workflows | Claude Desktop, Claude Code |
-| **Levo MCP** | Runtime security intelligence — API specs, runtime traces, vulnerabilities, exploit data, auth states | Claude Desktop, Claude Code |
-| **Nmap MCP** | Natural language network reconnaissance via Nmap | Claude Desktop, Claude Code |
-| **SQLMap MCP** | AI-guided SQL injection testing via SQLMap | Claude Desktop, Claude Code |
-| **FFUF MCP** | AI-driven web fuzzing | Claude Desktop, Claude Code |
-| **MobSF MCP** | Mobile app security testing via Mobile Security Framework | Claude Desktop, Claude Code |
-| **Kali Linux MCP** (`mcp-kali-server`) | SSH bridge to Kali box — Claude turns natural-language prompts into security tool commands | Claude Desktop, Claude Code |
-
-**Popular Combined Workflow:** Claude Code + Kali Linux MCP — connect via SSH to a Kali box, use natural-language prompts to orchestrate nmap, gobuster, curl, etc. for automated security assessments
+All integrate with Claude Desktop/Code: **Burp Suite MCP** (PortSwigger — HTTP crafting, proxy history, scanner issues), **Snyk MCP** (vulnerability database), **Semgrep MCP** (SAST scanning), **Levo MCP** (runtime API security intelligence), **Nmap/SQLMap/FFUF MCP** (network recon, SQLi, fuzzing), **MobSF MCP** (mobile testing), **Kali Linux MCP** (SSH bridge to Kali — `nmap`, `gobuster`, `curl` via natural language)
 
 ---
 
@@ -345,7 +323,7 @@ Rogue MCP server injects JavaScript into Cursor's embedded browser, replacing lo
 | **Javelin Ramparts** | CLI (Rust) | High-performance MCP scanner; tool poisoning, tool shadowing, rug pulls; maps findings to OWASP/MITRE; includes runtime guardrails | Docker Hub (2-min deploy); Mozilla Ventures-backed |
 | **Cycode MCP Server** | MCP integration | SAST, SCA, IaC, and secrets scanning integrated into AI coding workflows; scans generated/modified code with contextual remediation | Cycode CLI v3.2.0+; works with Cursor, Windsurf, Copilot |
 
-**MCP Security Tools:** mcp-scan v0.4.2 (Invariant Labs, acquired by Snyk Feb 2026 — standard MCP scanner for tool poisoning, rug pulls, cross-origin escalation; static + proxy modes), MCPTox (tool poisoning benchmark), MCPGuard (automated vuln detection), MCP Golf Testing (offensive toolkit), Semgrep MCP Server (code scanning via MCP), Escape ASM (discovers unauthenticated MCP endpoints)
+**Also:** mcp-scan v0.4.2 (Invariant Labs/Snyk — standard scanner), MCPTox (tool poisoning benchmark), MCP Golf Testing (offensive toolkit), Escape ASM (discovers unauthenticated endpoints)
 
 ---
 
@@ -367,11 +345,7 @@ MCP equivalent of network lateral movement (ecap0/AgentAudit, Feb 2026). Multipl
 
 ## Where to Hunt MCP Vulnerabilities
 
-- Any product that integrates MCP servers (Claude Desktop, Cursor, Windsurf, VS Code extensions)
-- Enterprise AI agent platforms connecting to internal tools
-- Open-source MCP server implementations (check GitHub for `mcp-server-*` repos)
-- huntr platform specifically accepts AI/ML vulnerability reports
-- VulnerableMCP.info for known MCP-specific vulnerabilities and affected implementations
+Products integrating MCP (Claude Desktop, Cursor, Windsurf), enterprise AI agent platforms, open-source `mcp-server-*` repos on GitHub, huntr platform (AI/ML reports), VulnerableMCP.info (CVE tracker).
 
 ---
 
@@ -441,20 +415,12 @@ Pynt analyzed 281 MCP configurations from real-world agent frameworks and plugin
 
 ## Enkrypt AI MCP Scanner Findings (March 2026)
 
-Enkrypt AI scanned 1,000+ MCP servers across GitHub, enterprise registries, and open-source deployments:
-
-| Metric | Value |
-|--------|-------|
-| Servers with critical vulnerabilities | **33%** |
-| Average vulnerabilities per server | 5.2 |
-| Worst case (K8s MCP server) | 26 vulns, 6 CVSS 9.8 |
-| Malicious server detected | Postmark MCP silently exfiltrated all emails |
+Enkrypt AI scanned 1,000+ MCP servers: **33% had critical vulnerabilities** (avg 5.2 per server), worst case K8s MCP server had 26 vulns (6 CVSS 9.8). Malicious Postmark MCP silently exfiltrated every email it processed.
 
 **Test Procedure (#62): MCP Server Vulnerability Scan**
-1. Submit target MCP server to Enkrypt AI MCP Scanner (enkryptai.com/mcp-scan) or Cisco MCP Scanner
-2. Review severity scores and line-level vulnerability references
-3. Cross-reference against known MCP CVE patterns (command injection, path traversal, SSRF)
-4. For self-hosted servers: deploy Enkrypt Secure MCP Gateway for runtime AI safety filtering
+1. Submit target to Enkrypt AI MCP Scanner (enkryptai.com/mcp-scan) or Cisco MCP Scanner
+2. Review severity scores and cross-reference against known MCP CVE patterns
+3. For self-hosted: deploy Enkrypt Secure MCP Gateway for runtime AI safety filtering
 
 **Maps to:** MCP03 (Insecure MCP Server Design) + MCP07 (Supply Chain)
 
@@ -464,7 +430,7 @@ Enkrypt AI scanned 1,000+ MCP servers across GitHub, enterprise registries, and 
 
 ### Keysight Confused Deputy MCP Command Injection
 
-Keysight ATI (January 2026) documented a confused deputy pattern where MCP servers bridge natural-language input to privileged system actions. In STDIO transport deployments, tools run with the same privileges as the launching user — malicious MCP servers need not break isolation since they already operate inside the trusted boundary.
+Keysight ATI (January 2026): STDIO transport MCP servers run with user privileges — malicious servers already operate inside the trusted boundary without needing to break isolation.
 
 **Test Procedure (#63): Confused Deputy via STDIO MCP Server**
 1. Identify MCP servers using STDIO transport (local execution, not remote HTTP/SSE)
@@ -476,24 +442,52 @@ Keysight ATI (January 2026) documented a confused deputy pattern where MCP serve
 
 ### MCP Health/Debug Endpoint Reconnaissance
 
-CVE-2026-29787 (mcp-memory-service): health endpoints expose OS version, Python version, CPU count, memory, disk usage, and database paths without authentication. Pattern: MCP servers with HTTP transport expose debug/health endpoints that leak system reconnaissance data.
+CVE-2026-29787: health endpoints expose OS version, Python version, CPU count, memory, disk usage, database paths without auth. Pattern: HTTP-transport MCP servers expose debug/health endpoints leaking recon data.
 
 **Test Procedure (#64): MCP Health Endpoint Info Disclosure**
-1. Enumerate HTTP endpoints on MCP servers: `/api/health`, `/api/health/detailed`, `/health`, `/status`, `/debug`
-2. Check if endpoints respond without authentication (especially when `MCP_ALLOW_ANONYMOUS_ACCESS=true`)
-3. Verify if binding is `0.0.0.0` (network-exposed) vs `127.0.0.1` (localhost-only)
-4. Catalog leaked information: OS version, installed packages, file paths, memory layout
+1. Enumerate: `/api/health`, `/api/health/detailed`, `/health`, `/status`, `/debug`
+2. Check if endpoints respond without auth (especially `MCP_ALLOW_ANONYMOUS_ACCESS=true`)
+3. Verify binding: `0.0.0.0` (network-exposed) vs `127.0.0.1` (localhost-only)
 
-**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-200 (Information Exposure)
+**Maps to:** MCP03 + CWE-200 (Information Exposure)
 
 ### MCP Kubernetes Command Injection (GHSA-gjv4-ghm7-q58q)
 
-mcp-server-kubernetes: command injection in several kubectl-wrapping tools via unsanitized parameters. Pattern repeats across MCP servers that wrap CLI tools using `child_process.exec()` with string interpolation.
+mcp-server-kubernetes: command injection via unsanitized parameters in kubectl-wrapping tools. Pattern repeats across CLI-wrapping MCP servers using `child_process.exec()` with string interpolation.
 
 **Test Procedure (#65): CLI-Wrapping MCP Server Command Injection**
-1. Identify MCP servers that wrap CLI tools (kubectl, nmap, git, biome, ffuf)
-2. Check if tool parameters pass through `child_process.exec()` or `subprocess.run(shell=True)`
-3. Inject shell metacharacters: `; id`, `$(whoami)`, `` `id` ``, `| cat /etc/passwd`
-4. Test across all tool parameters, not just the primary input — secondary/optional parameters often lack sanitization
+1. Identify MCP servers wrapping CLI tools (kubectl, nmap, git, biome, ffuf)
+2. Check if parameters pass through `child_process.exec()` or `subprocess.run(shell=True)`
+3. Inject: `; id`, `$(whoami)`, `` `id` ``, `| cat /etc/passwd` — test secondary/optional parameters too
 
-**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-78 (OS Command Injection)
+**Maps to:** MCP03 + CWE-78 (OS Command Injection)
+
+### MCP Sampling Attack Vectors (Unit 42, March 2026)
+
+Palo Alto Unit 42 identified three attack vectors through MCP sampling — the mechanism letting MCP servers request LLM completions from the client. A compromised server becomes an active prompt author:
+
+**1. Resource Theft** — Hidden instructions in sampling requests cause the LLM to generate unauthorized content, consuming victim's API credits. The server pockets completions while the user pays.
+
+**2. Conversation Hijacking** — Compromised server injects persistent instructions via sampling affecting the entire session — not just the current tool call.
+
+**3. Covert Tool Invocation** — Sampling requests instruct the LLM to invoke other tools (filesystem, code execution) without user awareness.
+
+**Test Procedure (#66): MCP Sampling Resource Theft**
+1. Identify MCP servers that use sampling capabilities (`sampling/createMessage`)
+2. Monitor token consumption during tool calls — compare expected vs actual usage
+3. Intercept sampling requests and check for hidden instructions unrelated to the tool's purpose
+4. Verify if the server receives completed content that the user never sees
+
+**Test Procedure (#67): MCP Sampling Session Hijacking**
+1. Connect a test MCP server that injects persistent instructions via sampling requests
+2. After the sampling completes, test if injected instructions affect subsequent non-MCP interactions
+3. Check if sampling-injected context survives across tool call boundaries
+4. Verify if users can detect or revoke sampling-injected instructions
+
+**Test Procedure (#68): MCP Sampling Covert Tool Invocation**
+1. Monitor all tool invocations during MCP sampling requests
+2. Check if sampling responses trigger tool calls the user didn't explicitly request
+3. Test if filesystem, network, or code execution tools activate without confirmation
+4. Verify audit logs capture tool calls initiated through sampling chains
+
+**Maps to:** MCP02 (Tool Poisoning) + MCP06 (Excessive Permissions) + ASI05 (Excessive Agency)
