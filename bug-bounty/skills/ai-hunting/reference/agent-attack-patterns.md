@@ -458,7 +458,9 @@ A novel black-box attack embeds adversarial instructions into natural images to 
 4. Check if image-based injections can override text-based system prompts
 5. Test across multiple image input channels (uploads, screenshots, camera, OCR pipelines)
 
-**Severity Guidance:** High if image-based injection overrides safety filters or extracts data from multimodal AI systems; Medium if limited to behavior modification without data access. Relevant for any system using GPT-4V, Claude vision, Gemini multimodal, or similar.
+**Brave: Unseeable Prompt Injections in Screenshots (March 2026):** Hidden text (faint font, near-transparent colors) passes OCR in AI agentic browsers but is invisible to humans. Enables hijacking of authenticated sessions (banking, email). Key vector for any AI browser that processes screenshots or page content visually.
+
+**Severity Guidance:** High if image-based or screenshot-based injection overrides safety filters or extracts data from multimodal AI systems; Medium if limited to behavior modification without data access. Relevant for any system using GPT-4V, Claude vision, Gemini multimodal, agentic browsers, or OCR pipelines.
 
 ---
 

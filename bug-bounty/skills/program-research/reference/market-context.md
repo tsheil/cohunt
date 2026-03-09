@@ -450,3 +450,7 @@ Competition awareness:
 - **Microsoft March 2026**: 4 zero-days (kernel UAF, NTFS USB, FAT VHD, MMC .msc); follows February's 6 zero-days — 10 actively exploited zero-days in 2 months
 - **Android/Qualcomm CVE-2026-21385**: integer overflow affecting 200+ chipsets; targeted exploitation; CISA KEV
 - **D-Link CVE-2026-0625** (CVSS 9.3): DNSChanger zero-day on EoL routers; no patch; exploited since Nov 2025
+- **Cisco FMC dual CVSS 10.0** (CVE-2026-20079 + CVE-2026-20131): unauthenticated RCE as root via Java deserialization; affects FMC 6.4.0-10.0.0; no workaround
+- **ingress-nginx EOL RCE** (CVE-2026-3288, CVSS 8.8): annotation injection at project end-of-life; 50%+ of K8s clusters affected; no patch at advisory
+- **Brave unseeable prompt injection**: hidden near-transparent text passes OCR in AI browsers; hijacks authenticated sessions; novel agentic browser attack class
+- **48% of respondents** believe agentic AI will be top attack vector by end of 2026 (DarkReading); only 29% report readiness to secure agentic AI

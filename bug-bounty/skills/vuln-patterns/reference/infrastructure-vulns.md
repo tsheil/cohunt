@@ -23,6 +23,8 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [Appliance Hardcoded Credentials](#appliance-hardcoded-credentials)
 - [Network Infrastructure Auth Bypass](#network-infrastructure-auth-bypass)
 - [March 2026 Zero-Day Cluster (Microsoft)](#march-2026-zero-day-cluster-microsoft)
+- [Kubernetes Ingress Controller RCE at EOL](#kubernetes-ingress-controller-rce-at-eol)
+- [Firewall Management RCE](#firewall-management-rce)
 
 ---
 
@@ -407,3 +409,47 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 3 | USB-based exfiltration | Test NTFS heap memory disclosure via crafted USB device | Heap memory contents leaked to attacker device |
 
 **Severity Guidance:** Medium-High individually, but the cluster pattern is significant — 4 zero-days in one month following 6 in February indicates active campaign(s). The VHD + MSC delivery vectors are commonly used in phishing chains. Report as part of broader attack surface assessment.
+
+---
+
+## Kubernetes Ingress Controller RCE at EOL
+
+**What it is:** Annotation injection enabling RCE and Kubernetes secret disclosure in ingress-nginx — published March 9, 2026, coinciding with the project reaching end-of-life. No patch available at time of advisory.
+
+**Key CVEs:**
+- **CVE-2026-3288** (ingress-nginx, CVSS 8.8): annotation injection in `rewrite-target` enabling RCE and K8s secret disclosure
+- Related: CVE-2026-1580, CVE-2026-24512, CVE-2026-24513, CVE-2026-24514
+
+**Where to look:** Any Kubernetes cluster using ingress-nginx (extremely common — default ingress controller for many K8s deployments). Check `kubectl get pods -n ingress-nginx`.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Annotation injection | Craft Ingress resources with malicious `rewrite-target` annotations | Command execution in nginx controller pod |
+| 2 | Secret disclosure | After injection, attempt to read K8s secrets mounted in controller | TLS certificates, service account tokens |
+| 3 | EOL version detection | Check ingress-nginx version; if EOL, no patch is coming | Unpatched annotation injection vectors |
+
+**Severity Guidance:** High-Critical. The EOL timing makes this especially dangerous — many clusters will never receive a fix. K8s secret disclosure can yield cluster-wide compromise. Recommend migration to alternatives (e.g., NGINX Gateway API, Traefik, Istio).
+
+---
+
+## Firewall Management RCE
+
+**What it is:** Unauthenticated RCE as root in firewall management consoles — Java deserialization and input validation flaws that grant complete control over network security infrastructure.
+
+**Key CVEs:**
+- **CVE-2026-20131** (Cisco Secure FMC, CVSS 10.0): unauthenticated RCE as root via crafted Java byte stream. Exploits Apache Commons Collections/Spring gadget chains. Affects versions 6.4.0-10.0.0; no workaround
+- **CVE-2026-20079** (Cisco Secure FMC, CVSS 10.0): paired with CVE-2026-20131 — dual CVSS 10.0 in the same product
+
+**Where to look:** Cisco FMC/FTD management consoles (ports 443, 8305), Palo Alto Panorama, FortiManager, Check Point SmartConsole. Shodan: `Cisco Firepower`.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Java deserialization probe | Send crafted serialized Java objects to management endpoints | ClassNotFoundException or execution indicators |
+| 2 | Gadget chain detection | Test for Commons Collections, Spring, and other known gadget chains | Deserialization-triggered behavior (DNS, HTTP callbacks) |
+| 3 | Version fingerprinting | Identify FMC version via login page, API responses, or HTTP headers | Versions 6.4.0-10.0.0 are vulnerable |
+
+**Severity Guidance:** Critical (CVSS 10.0). Firewall management consoles control all network security policies. Unauthenticated RCE as root = complete network compromise. Two CVSS 10.0s in the same product is extremely rare — indicates fundamental architecture issues.
