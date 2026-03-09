@@ -186,6 +186,9 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **Froxlor typo-to-root-RCE (CVE-2026-26279)** | March 2026: single-character typo (`==` instead of `=` in SQL) disabled email validation → admin account creation → cron command injection → root RCE. CVSS 9.1. ~15K instances on Shodan. Pattern: operator errors in admin panels cascading to critical chains | Logic error cascading to root compromise |
 | **Bugcrowd payout economics study** | January 2026: 100% increase in bounty payouts led to only 20% more total submissions, but a **tripling of critical reports** — higher rewards effectively incentivize focus on serious vulnerabilities | Economics of vulnerability quality |
 | **Big Sleep foils live exploitation** | 2025-2026: Google Big Sleep (DeepMind + Project Zero) discovered CVE-2025-6965 (CVSS 7.2, SQLite memory corruption) before threat actors could exploit it — first AI agent to foil active exploitation in the wild. Researchers could not reproduce the finding with 150 CPU hours of fuzzing | AI preempts active exploitation |
+| **Blackbox AI VS Code RCE** | March 2026: indirect prompt injection in Blackbox AI extension (30M+ users, 4.8M VS Code installs). Malicious instructions embedded in PNG files → OCR → code execution. ERNW disclosure; vendor unresponsive for 2+ months. Demonstrates image-based prompt injection now weaponized against AI coding tools | Image-based prompt injection → RCE in production AI IDE |
+| **MCP Overthinking Loops** | arXiv:2602.14798: malicious MCP tool servers induce cyclic loops in LLM agents — repetition, forced refinement, distraction. **142.4x token amplification**, each step looks individually normal. Decoding-time concision controls don't prevent loop induction. Defenses must reason about tool-call structure, not tokens | Economic DoS via MCP tool manipulation |
+| **CoSAI MCP Security White Paper** | January 2026: Coalition for Secure AI published taxonomy of **~40 threats across 12 categories** with concrete mitigations. Key recommendations: end-to-end agent identity traceability, least privilege with fine-grained authorization, sandboxing/isolation for MCP servers, TEE-based credential protection. MCP spec update formalized OAuth Resource Server roles and Resource Indicators (RFC 8707) | Industry-standard MCP threat taxonomy |
 
 ---
 
@@ -195,7 +198,8 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 - **Hai Triage** (July 2025): AI-powered vulnerability triage combining AI agents with human expertise; **90% adoption** by HackerOne customers by end of 2025
 - **AI Policy Update** (February 2026): Clarified that researcher submissions are NOT used to train AI models
 - **Good Faith AI Research Safe Harbor** (January 20, 2026): Clarifies legal protections for researchers conducting authorized AI testing
-- **Leaderboard split**: New system to distinguish human vs machine contributions (separating individuals from companies/agents like XBOW)
+- **Leaderboard split** (March 2026): Split into individual researchers vs AI-powered collectives; new transparency framework distinguishes human vs machine contributions
+- **Hai Insight Agent** (March 2026): launched to combat AI hallucination in hackbot reports — filters "false or hallucinated vulnerabilities" that appear legitimate because LLMs generate them
 - **210% spike** in AI vulnerability reports; **70% of researchers** now using AI tools
 
 **Bugcrowd:**

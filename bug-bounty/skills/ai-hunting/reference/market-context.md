@@ -39,6 +39,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **560+ valid reports** submitted by autonomous AI agents on HackerOne
 - **HackerOne Hai Triage** adopted by 90% of customers; **Bugcrowd AI Triage Assistant** achieves 98% P1 accuracy
 - **HackerOne Hai** AI validation agent launched February 2026 — 56% reduction in vulnerability validation time
+- **HackerOne leaderboard split** (March 2026): separated individual researchers vs AI-powered collectives; new transparency framework distinguishes human vs machine contributions
+- **HackerOne Hai Insight Agent** (March 2026): launched to combat hackbot hallucination — filters false/hallucinated vulnerabilities that appear legitimate because LLMs generate them; positions validation as core platform capability
 - **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026)
 - **HackerOne Agentic PTaaS** (January 2026): continuous testing with **88% accuracy**, fix-verified findings; trained on proprietary exploit intelligence
 - **IBM Granite AI Bug Bounty** (HackerOne): up to **$100K** to test Granite models with Granite Guardian guardrails; focus on jailbreaks in enterprise environments
@@ -90,7 +92,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## Autonomous Agents & Competition
 
-- **XBOW** reached #1 on HackerOne with 1,400+ zero-days; **$117M total funding** ($75M Series B, Altimeter + Sequoia)
+- **XBOW** reached **#1 on HackerOne US leaderboard** in 90 days, submitting ~1,060 vulns (54 critical, 242 high, 524 medium); cumulative 1,400+ zero-days; **$75M Series B** ($117M total, Altimeter + Sequoia)
 - **XBOW Public API** launched Feb 2026 ($6K per pentest, 5-day turnaround)
 - **78% local XBOW benchmark**: fully local agent via feedback-driven iteration — cloud infrastructure no longer required
 - **AISLE discovered all 12 OpenSSL zero-days** in January 2026, including bugs dating back 25-27 years
@@ -287,4 +289,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Codex Security research preview** (March 6, 2026): same-day launch as Claude Code Security; free 30 days for Enterprise/Business/Edu; both tools create major competitive pressure on pattern-matching vulns
 - **Bionic hacker dominance**: 67% of HackerOne researchers use AI tools; hackbots submitted 560 valid reports (primarily surface-level XSS); human + AI collaboration is the winning model
 - **Barracuda agentic AI threat study**: identified 43 agent framework components with embedded supply chain vulnerabilities; AI offense compresses attack lifecycle — recon, exploitation, lateral movement run continuously in parallel
+- **Blackbox AI VS Code RCE** (ERNW, March 2026): indirect prompt injection in Blackbox AI extension (30M+ users, 4.8M VS Code installs); malicious instructions in PNG files → OCR → code execution; vendor unresponsive 2+ months — image-based prompt injection weaponized against AI coding tools
+- **CoSAI MCP Security White Paper** (January 2026): taxonomy of ~40 threats across 12 categories with concrete mitigations; key: agent identity traceability, least privilege, MCP server sandboxing, TEE-based credential protection; MCP spec updated with OAuth Resource Server roles and RFC 8707 Resource Indicators
+- **Endor Labs AURI** (March 3, 2026): AI-native security intelligence for agentic development; addresses "vibe coding" security risks; free developer tier (MCP server, CLI, Skills plugin); found 7 OpenClaw vulns
 

@@ -197,6 +197,20 @@ Check for WAF/CDN:
 6. Generate next steps
 ```
 
+### Step 6: Google Dorking & OSINT
+
+```
+Search for exposed assets and data:
+1. site:[target] filetype:pdf OR filetype:xlsx OR filetype:doc → Sensitive documents
+2. site:[target] inurl:admin OR inurl:dashboard OR inurl:panel → Admin interfaces
+3. site:[target] inurl:api OR inurl:swagger OR inurl:graphql → API documentation
+4. site:[target] "password" OR "secret" OR "api_key" → Leaked credentials in pages
+5. site:[target] ext:env OR ext:yml OR ext:conf → Configuration files
+6. "[target]" site:pastebin.com OR site:github.com → Leaked data on third parties
+7. intitle:"index of" site:[target] → Directory listings
+8. inurl:".git" site:[target] → Exposed git repositories
+```
+
 ### Step 7: JavaScript Analysis (Always for SPAs)
 
 ```
@@ -278,6 +292,19 @@ Discover hidden virtual hosts on the same IP:
 
 **Why:** Virtual hosts on the same IP often share the same server but have different access controls. Internal vhosts may lack authentication entirely.
 
+### ASN & CIDR Enumeration
+
+```
+Map the target's full network footprint:
+1. Find ASN: dig TXT [target].origin.asn.cymru.com +short → Get ASN number
+2. Get CIDR ranges: whois -h whois.radb.net -- '-i origin AS[number]' → All IP ranges
+3. Web search: "[company name]" site:bgp.he.net → BGP routing info
+4. Reverse DNS on CIDR: for ip in range; dig -x $ip +short → Find hostnames
+5. Cross-reference: subdomains from crt.sh + IPs from ASN → Complete IP-to-domain mapping
+```
+
+**Why:** Organizations often have assets across multiple CIDR ranges that aren't discoverable via DNS alone. ASN enumeration reveals forgotten infrastructure, acquired company assets, and internal systems with public IPs.
+
 ---
 
 ## Recon Variations
@@ -336,6 +363,27 @@ When recon reveals cloud indicators, route to **cloud-security** skill for deepe
 - **Azure blobs** — Look for `*.blob.core.windows.net` CNAMEs; test container enumeration
 - **GCS objects** — `storage.googleapis.com/example-*` patterns from subdomain/cert data
 - **Cloud metadata** — Internal IPs (`169.254.169.254`) in DNS records suggest cloud infrastructure → test for SSRF to metadata endpoints
+
+### Subdomain Takeover Detection
+
+When a subdomain's CNAME points to an unclaimed external service, anyone can claim it and serve content on the target's domain.
+
+| Service | CNAME Pattern | Fingerprint (HTTP Response) |
+|---------|--------------|---------------------------|
+| GitHub Pages | `*.github.io` | "There isn't a GitHub Pages site here" |
+| Heroku | `*.herokuapp.com` | "No such app" |
+| AWS S3 | `*.s3.amazonaws.com` | "NoSuchBucket" |
+| Azure | `*.azurewebsites.net` | "Error 404 - Web app not found" |
+| Shopify | `shops.myshopify.com` | "Sorry, this shop is currently unavailable" |
+| Fastly | `*.fastly.net` | "Fastly error: unknown domain" |
+| Pantheon | `*.pantheonsite.io` | "404 error unknown site!" |
+| Surge.sh | `*.surge.sh` | "project not found" |
+
+**Testing procedure:**
+1. During subdomain enumeration, flag any CNAME matching above patterns
+2. Attempt to claim the service (e.g., create matching GitHub Pages repo)
+3. Verify you can serve content on the target's subdomain
+4. Severity: Medium ($500-$5K) — enables phishing, cookie theft, CSP bypass
 
 ## Related Skills
 

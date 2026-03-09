@@ -128,10 +128,10 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - curl cancelled its bug bounty the same week AISLE's OpenSSL results were published — a stark contrast between AI-discovered quality and AI-generated slop
 
 **OpenAI Codex Security (formerly Aardvark):**
-- **Launched March 6, 2026** as research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
+- **Launched March 6, 2026** as GPT-5-powered autonomous security researcher; research preview for ChatGPT Enterprise, Business, and Edu customers via Codex web — free usage for the first month
 - Three-stage approach: builds editable threat model, validates issues in sandboxed environments, proposes fixes with full system context
-- **92% recall** on benchmark "golden" repositories with synthetically-introduced vulnerabilities
-- Performance claims: **84% noise reduction** vs traditional SAST, **90% reduction in over-reported severity**, **50%+ lower false positive rates** compared to traditional scanners
+- Discovered **10+ CVEs** in open-source projects; **92% recall** on benchmark "golden" repositories with synthetically-introduced vulnerabilities
+- Performance claims: **84% noise reduction** on repeated scans vs traditional SAST, **90%+ severity over-reporting reduction**, **50%+ lower false positive rates** compared to traditional scanners
 - Scanned **1.2 million commits**, finding **14 CVEs** across major open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh); also flagged **792 critical** and **10,561 high-severity** issues in the past month
 - Open-source maintainers can apply via the **Codex for OSS** program; **$10M in API credits** committed for open-source security
 - Best for: continuous monitoring of large codebases; major competitive threat to human hunters on pattern-matching vulns
@@ -146,8 +146,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **CVEs in Claude Code itself**: CVE-2025-59536 (CVSS 8.7, code injection via tool initialization, fixed v1.0.111) and CVE-2026-21852 (CVSS 5.3, data exfiltration including API keys, fixed v2.0.65)
 
 **Endor Labs AURI (Agentic Security Intelligence):**
-- Launched **March 3, 2026** — unified security intelligence for agentic software development
-- Embeds security directly into AI coding workflows; verifies security of code produced by different AI agents
+- Launched **March 3, 2026** — AI-native security intelligence for agentic software development
+- Addresses "vibe coding" security risks — embeds security directly into AI coding workflows; verifies security of code produced by different AI agents
 - **Free developer tier**: MCP server, CLI, and Skills plugin available at no cost for individual developers
 - Study found only **10% of AI-generated code is secure** — AURI addresses this gap
 - Identified **7 security vulnerabilities in OpenClaw** (acknowledged by development team)
@@ -309,12 +309,12 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Key insight: frontier model capability is unlocked by **agentic scaffolding**, not raw model performance — infrastructure matters more than model choice
 
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
-- Submitted **1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
-- 132 fixes confirmed by companies, 303 triaged awaiting resolution
+- Submitted **~1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+- 132 fixes confirmed by companies, 303 triaged awaiting resolution; all fully automated with human review pre-submission
 - Runs up to **80x faster** than manual teams
 - Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
+- **Validation approach:** sophisticated automated "validators" — peer reviewers that confirm each vulnerability (e.g., headless browsers verifying JavaScript payloads execute on target sites); internal methodology uses a "validator" layer with automated checkers (sometimes LLM-powered, sometimes custom scripts) to verify each vulnerability before submission
 - **Benchmark performance:** handled **75% of standard web security challenges** entirely on its own, plus **85% of custom-built, never-before-seen vulnerabilities** that would stump skilled human researchers
-- **Validation approach:** sophisticated automated "validators" — peer reviewers that confirm each vulnerability (e.g., headless browsers verifying JavaScript payloads execute on target sites) — avoiding the false positive problem
 - **Raised $75M Series B** (led by Altimeter Capital, with Sequoia Capital and NFDG); **$117M total funding**
 - However, XBOW is currently **operating in the red** — compute costs exceed bounty earnings, though costs are expected to drop
 - XBOW is fully autonomous but still requires human review pre-submission to comply with HackerOne's policy on automated tools
@@ -322,7 +322,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **XBOW Public API** launched February 1, 2026 in Public Preview — programmatic access to start, pause, resume, cancel pentests and retrieve findings; enables running dozens of pentests in parallel; pricing starts at $6K
 - Appointed Databricks CRO to board; expanding APAC presence through customer deployments and partnerships in 2026
 - A fully local pentesting agent achieved **~78% on XBOW benchmarks** via feedback-driven iteration — demonstrates locally-run agents can approach XBOW-level capability without cloud infrastructure
-- HackerOne responded by **splitting leaderboards** to separate individuals from companies/agents like XBOW
+- **HackerOne leaderboard split** (March 2026): HackerOne responded by **splitting leaderboards** into individual researchers vs AI-powered collectives. New transparency framework distinguishes human vs machine contributions — reflects industry acknowledgment that autonomous agents compete at a fundamentally different scale
+- **HackerOne Hai Insight Agent** (March 2026): launched to combat AI hallucination in hackbot reports — addresses "more false or hallucinated vulnerabilities" that appear legitimate because LLMs generate them. Positions validation as core platform capability. Implication: programs using Hai Insight may auto-filter low-quality AI submissions
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
 - **XBOW #1 globally** confirmed at Black Hat 2026 with live demo — ran real-time on HackerOne programs finding vulnerabilities on stage; nominated #6 in Enterprise Tech 30 Early Stage
 - **Notable finding**: discovered a previously unknown vulnerability in **Palo Alto GlobalProtect VPN** affecting 2,000+ hosts — demonstrates autonomous agents finding high-impact network infrastructure bugs, not just web vulns
@@ -356,7 +357,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
 
-**March 2026 Competition Escalation:** Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous vulnerability scanning on the same day (March 6, 2026). Codex Security scanned 1.2M commits finding 14 CVEs with 84% noise reduction vs traditional SAST; Claude Code Security found 500+ vulns including 22 Firefox vulns in 2 weeks. These tools will flood programs with findings — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
+**March 2026 Competition Escalation:** Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous vulnerability scanning on the same day (March 6, 2026). Codex Security scanned 1.2M commits finding 14 CVEs with 84% noise reduction vs traditional SAST; Claude Code Security found 500+ vulns including 22 Firefox vulns in 2 weeks. HackerOne responded by splitting leaderboards (individual vs AI collective) and launching Hai Insight Agent to filter hallucinated hackbot reports. These tools will flood programs with findings — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
 
 **Semgrep's AI Vulnerability Detection Benchmark (2025):**
 - Tested Claude Code (Sonnet 4) and OpenAI Codex (o4-mini) against 11 real-world open-source Python projects
@@ -387,7 +388,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Assail Ares** for continuous API/web/mobile pentesting with co-evolutionary AI agents
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
-- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched March 6, 2026** as research preview; 1.2M commits scanned in 30 days, **792 critical + 10,561 high-severity findings**; discovered and reported **14 CVEs** in major OSS (OpenSSH, GnuTLS, GOGS, Chromium, libssh, PHP); 84% noise reduction, 50%+ FP reduction via project-specific threat models and sandboxed validation; free for Pro/Enterprise/Business/Edu first month; $10M API credits for OSS security
+- **Codex Security** (OpenAI, formerly Aardvark) for GPT-5-powered autonomous security research — **launched March 6, 2026** as research preview; discovered **10+ CVEs** in open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, libssh, PHP); **84% noise reduction** on repeated scans, **90%+ severity over-reporting reduction**; 1.2M commits scanned in 30 days, **792 critical + 10,561 high-severity findings**; 50%+ FP reduction via project-specific threat models and sandboxed validation; free for Enterprise/Business/Edu first month; $10M API credits for OSS security
 - **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
@@ -404,7 +405,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Shift** (Caido AI plugin) for AI-augmented proxy workflows — English-command control, context-aware wordlists, Shift Agents micro-agent framework
 - **Aikido Infinite** for self-securing software — autonomous agents pentest every code change (found 7 CVEs in Coolify including RCE as root)
 - **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
-- **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; 55 automated audit/hardening checks mapped to OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
+- **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; **56 audit checks, 5 hardening modules, 3 background monitors** covering OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
 - **AgentGuard** — runtime guard for AI agents blocking malicious skills, data leaks, and secret exposure; sub-millisecond latency local PolicyEngine with tamper-evident audit logs; compliance evidence for EU AI Act and SOC 2
 - **Ironclaw** (February 2026) — OpenClaw-inspired Rust agent runtime with defense-in-depth (sandboxing, secret boundaries); open-source alternative focused on security-first agent execution
 - **Nono** (February 2026) — kernel-enforced sandbox CLI and SDK to isolate AI agents with capability controls and safe secret injection; granular permission model for agent containment
