@@ -7,6 +7,8 @@ description: API architecture security — design flaws in REST, GraphQL, WebSoc
 
 Architecture-specific testing patterns for APIs. While `vuln-patterns` covers vulnerability classes (IDOR, SSRF, etc.) and `auth-testing` covers authentication/authorization, this skill focuses on how API design and protocol choices create unique attack surfaces.
 
+> **Deep dive:** [reference/api-patterns.md](reference/api-patterns.md) for advanced GraphQL federation, mass assignment, JWT bypass, rate limit evasion, webhook SSRF, and microservice-specific patterns.
+
 ## API Threat Landscape (2025-2026)
 
 APIs are now the primary digital attack surface. Key stats:

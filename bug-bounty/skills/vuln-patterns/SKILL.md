@@ -14,7 +14,7 @@ For deep dives, route to the specialized skill or reference file:
 | Topic | Route To |
 |-------|----------|
 | **BOLA/BFLA/privilege escalation/session/MFA/OAuth/JWT/SSO** | [auth-testing](../auth-testing/SKILL.md) + [auth-mechanisms.md](../auth-testing/reference/auth-mechanisms.md) |
-| **API design flaws (GraphQL, gRPC, WebSocket)** | [api-security](../api-security/SKILL.md) |
+| **API design flaws (GraphQL, gRPC, WebSocket)** | [api-security](../api-security/SKILL.md) + [api-patterns.md](../api-security/reference/api-patterns.md) |
 | **Business logic, payment flows, race conditions** | [reference/business-logic.md](reference/business-logic.md) |
 | **AI/LLM/MCP/agent patterns** | [ai-hunting](../ai-hunting/SKILL.md) + [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) |
 | **GraphQL, JWT format, OAuth format, workflow automation** | [reference/web-vulns.md](reference/web-vulns.md) |
@@ -41,7 +41,7 @@ The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 20
 
 **New entries in 2025:** CWE-120 (Classic Buffer Overflow), CWE-121 (Stack-based Buffer Overflow), CWE-122 (Heap-based Buffer Overflow), CWE-284 (Improper Access Control), CWE-639 (Authorization Bypass Through User-Controlled Key), CWE-770 (Allocation of Resources Without Limits).
 
-**Key trend:** Authorization-related vulnerabilities (IDOR, BOLA, missing access controls) are rising as the most impactful vulnerability class, displacing traditional injection flaws in bounty value. Programs are shifting rewards toward identity, access, and business logic flaws.
+**Key trend:** Authorization-related vulnerabilities (IDOR, BOLA, missing access controls) are rising as the most impactful vulnerability class, displacing traditional injection flaws in bounty value. Valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; improper access control up **18% YoY** (HackerOne 2025). IDOR is the #1 vulnerability class for government programs (18% of payouts), medical technology (36%), and professional services (31%). XSS reports are **down 10% since 2023** with declining payouts. Programs are shifting rewards toward identity, access, and business logic flaws.
 
 ---
 

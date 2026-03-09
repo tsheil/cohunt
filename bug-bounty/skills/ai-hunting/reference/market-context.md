@@ -71,6 +71,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## AI Vulnerability Trends
 
+- **HackerOne valid issues**: 78,042 valid vulnerabilities found (+12% YoY); XSS still #1 at 18% of reports but **down 10% since 2023** — declining payouts
+- **IDOR/IAC surge**: valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; improper access control up **18% YoY**; IDOR is #1 vuln class for government (18%), medtech (36%), and professional services (31%) programs
+- **70% of researchers** now combine human creativity with AI tools ("bionic hackers") for report writing, PoC generation, exploit code refinement, and technology research (HackerOne 2025)
 - **210% increase** in AI vulnerability reports; **540% jump** in prompt injection reports
 - **339% increase** in bounties for AI vulnerabilities YoY
 - **Prompt injection in 73%+ of production AI deployments** assessed; only 34.7% have dedicated defenses

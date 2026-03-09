@@ -1,6 +1,10 @@
 ---
+name: start-hunt
 description: Get started hunting — tell me your target, phase, and time budget, and I'll route you to the right workflow
-argument-hint: "[target or situation]"
+arguments:
+  - name: context
+    description: "Your target, current phase, or situation (e.g., 'new to Shopify', 'have SSRF, need to escalate')"
+    required: false
 ---
 
 # /start-hunt

@@ -1,6 +1,10 @@
 ---
+name: generate-payload
 description: Generate context-aware security testing payloads — encoded, WAF-aware, and ready to use
-argument-hint: "<vuln type> [context/constraints]"
+arguments:
+  - name: vuln_type
+    description: "Vulnerability type and optional constraints (e.g., 'XSS with Cloudflare WAF', 'SQLi MySQL blind')"
+    required: true
 ---
 
 # /generate-payload

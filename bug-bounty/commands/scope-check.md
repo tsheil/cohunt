@@ -1,6 +1,10 @@
 ---
+name: scope-check
 description: Quick scope check — verify if a target, vulnerability type, or finding is in scope for a program before you invest time testing or reporting
-argument-hint: "<target or finding> for <program>"
+arguments:
+  - name: query
+    description: "Target, vuln type, or finding to check (e.g., 'SSRF on api.example.com for Shopify')"
+    required: true
 ---
 
 # /scope-check

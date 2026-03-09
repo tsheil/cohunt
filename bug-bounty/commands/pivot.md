@@ -1,6 +1,10 @@
 ---
+name: pivot
 description: Stuck or blocked? Get the next 3 highest-value test angles based on your current session
-argument-hint: "[what failed or where you're stuck]"
+arguments:
+  - name: context
+    description: "What failed or where you're stuck (e.g., 'XSS blocked by CSP', 'IDOR requires UUID')"
+    required: false
 ---
 
 # /pivot

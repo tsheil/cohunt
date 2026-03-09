@@ -1,6 +1,10 @@
 ---
+name: write-report
 description: Write a submission-ready bug bounty report — structured, scored, and formatted for the platform
-argument-hint: "<describe your finding>"
+arguments:
+  - name: finding
+    description: "Describe your finding (e.g., 'IDOR on /api/users/{id} exposes PII')"
+    required: true
 ---
 
 # /write-report

@@ -1,6 +1,10 @@
 ---
+name: hunt-plan
 description: Build a hunting plan for a target — combine recon and program intel into a prioritized action plan
-argument-hint: "<target or program>"
+arguments:
+  - name: target
+    description: "Target domain or program name (e.g., 'example.com', 'Shopify')"
+    required: true
 ---
 
 # /hunt-plan

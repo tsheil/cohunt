@@ -301,6 +301,13 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 ### The XBOW/Autonomous Agent Reality Check
 
+**XBOW GPT-5 Integration (2026):**
+- OpenAI's initial assessment of GPT-5 showed modest cybersecurity capability, but XBOW's platform doubled performance
+- Benchmark pass rate jumped from **55% (Sonnet/Gemini alloy) to 79%** with GPT-5
+- In real-world deployments, XBOW hacked **nearly 2x as many unique targets** in the same time period
+- **Zero false positives** on file read vulnerability tests (vs 18% FP rate with previous models)
+- Key insight: frontier model capability is unlocked by **agentic scaffolding**, not raw model performance — infrastructure matters more than model choice
+
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
 - Submitted **1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
 - 132 fixes confirmed by companies, 303 triaged awaiting resolution
@@ -329,7 +336,10 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **Horizon3 NodeZero (Autonomous Pentesting at Scale):**
 - Surpassed **100,000 pentests** by 3,000+ customers; projecting **400,000 by end of 2026**
-- Healthcare provider case study: replaced annual pentesting with monthly NodeZero; reduced MTTR by **65%**, closing high-risk exposures **10x faster**
+- **High-Value Targeting (HVT)** launched early 2026: analyzes and prioritizes systems by business impact — domain controllers, privileged accounts, critical infrastructure — directing testing toward highest-value attack paths
+- PoC comparison: assessed **3,600+ hosts in under 3 days** (98% coverage) vs traditional pentest evaluating only ~600 hosts; actionable results in hours vs weeks
+- Healthcare provider case study: replaced annual pentesting with monthly NodeZero; reduced MTTR by **65%**, closing high-risk exposures **10x faster**; cut vulnerability dwell time by 60%
+- Uncovered lateral movement paths that **entire human red teams missed for years** — chains weaknesses together to show complete attack plans
 - Validates the shift from periodic to continuous autonomous pentesting as mainstream practice
 
 **Where Autonomous Agents Excel:**

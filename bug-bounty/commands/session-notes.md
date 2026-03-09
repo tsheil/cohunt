@@ -1,6 +1,13 @@
 ---
+name: session-notes
 description: Track findings, observations, and progress during a bug bounty hunting session — keep running notes so nothing gets lost
-argument-hint: "[add/view/export] [note content]"
+arguments:
+  - name: action
+    description: "Action to perform: add, view, or export"
+    required: true
+  - name: note
+    description: "Note content when adding (e.g., 'Found open redirect on /login?next=')"
+    required: false
 ---
 
 # /session-notes

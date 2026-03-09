@@ -1,6 +1,10 @@
 ---
+name: triage-findings
 description: Triage your findings — rank bugs by reportability, estimate severity and payout, and decide what to report first
-argument-hint: "[findings summary or 'review session']"
+arguments:
+  - name: findings
+    description: "Summary of findings to triage, or 'review session' to analyze current session notes"
+    required: true
 ---
 
 # /triage-findings

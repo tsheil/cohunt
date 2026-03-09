@@ -1,6 +1,10 @@
 ---
+name: recon
 description: Run reconnaissance on a target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, and map the attack surface
-argument-hint: "<target domain>"
+arguments:
+  - name: target
+    description: "Target domain to recon (e.g., 'example.com')"
+    required: true
 ---
 
 # /recon

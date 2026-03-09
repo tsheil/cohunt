@@ -13,7 +13,7 @@ bug-bounty/
 │   ├── program-research/         # Bug bounty program intelligence
 │   ├── target-recon/             # Web target reconnaissance
 │   ├── source-code-audit/        # Security code review (progressive disclosure)
-│   ├── api-security/             # API-specific testing (REST, GraphQL, gRPC)
+│   ├── api-security/             # API-specific testing (REST, GraphQL, gRPC) (progressive disclosure)
 │   ├── auth-testing/             # Auth & authorization testing
 │   ├── cloud-security/           # Cloud misconfigurations (AWS, GCP, Azure)
 │   ├── mobile-security/          # Mobile app testing (iOS, Android)

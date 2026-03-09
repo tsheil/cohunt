@@ -1,6 +1,10 @@
 ---
+name: compare-programs
 description: Compare bug bounty programs side-by-side — rewards, scope, response times, competition — and get a recommendation on where to hunt
-argument-hint: "<program 1> vs <program 2>"
+arguments:
+  - name: programs
+    description: "Programs to compare (e.g., 'Shopify vs GitHub' or 'Uber vs Airbnb vs Lyft')"
+    required: true
 ---
 
 # /compare-programs

@@ -260,6 +260,41 @@ For previously fixed vulns that reappeared — reference the original report if 
 
 ---
 
+## Quality Differentiation (The Anti-Slop Imperative)
+
+The curl project shut down its HackerOne bug bounty in January 2026 — the first shutdown attributed to AI-generated report spam. Submission volume spiked 8x while confirmed-vulnerability rate dropped below 5%. Zero AI-only submissions found real vulnerabilities in 6 years. Programs are increasingly hostile toward low-quality reports. Quality is now a competitive moat.
+
+**Self-Triage Before Submission:**
+
+| Question | If No → |
+|----------|---------|
+| Can I reproduce this from my steps alone? | Don't submit — revise steps |
+| Does the PoC actually demonstrate the vulnerability? | Don't submit — build a working PoC |
+| Would the fix require a code change (not just config)? | Reconsider severity — config issues pay less |
+| Is the impact concrete and measurable? | Rewrite impact with specific data/users/scope |
+| Have I checked disclosed reports for this program? | Check first — duplicates waste everyone's time |
+| Is the affected asset clearly in scope? | Verify scope — out-of-scope = instant N/A |
+
+**AI Slop Red Flags (What Triagers Look For):**
+
+Triagers now specifically watch for these AI-generated report patterns:
+- Citing non-existent functions, endpoints, or CVEs
+- Generic "impact assessment" paragraphs that could apply to any vulnerability
+- Copy-paste from scanner output without manual verification
+- Referencing code or behavior that doesn't match the target
+- Overly polished language with no actual technical depth
+- Vague reproduction steps that can't be followed
+- Claims of "potential" impact without demonstrated proof
+
+**How to Stand Out:**
+- Include raw HTTP requests/responses (not paraphrased descriptions)
+- Show you understand the application's business context
+- Reference specific code paths or application behavior you observed
+- Include a suggested fix that demonstrates you understand the root cause
+- Keep the writing natural and direct — over-produced reports raise suspicion
+
+---
+
 ## Tips for Better Reports
 
 1. **Write for a tired triager** — they read dozens of reports daily, make yours easy
