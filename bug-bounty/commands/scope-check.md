@@ -1,5 +1,6 @@
 ---
 name: scope-check
+argument-hint: "[target or finding to check]"
 description: Quick scope check — verify if a target, vulnerability type, or finding is in scope for a program before you invest time testing or reporting
 arguments:
   - name: query

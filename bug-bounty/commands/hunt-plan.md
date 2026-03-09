@@ -1,5 +1,6 @@
 ---
 name: hunt-plan
+argument-hint: "[target-domain]"
 description: Build a hunting plan for a target — combine recon and program intel into a prioritized action plan
 arguments:
   - name: target

@@ -1,6 +1,6 @@
 ---
 name: vuln-patterns
-description: Testing patterns and checklists for web vulnerability classes that pay bounties. Covers IDOR, XSS, SSRF, authentication bypasses, injection, business logic, and more — with concrete test cases and payloads. Use when testing a web target, asking "how do I test for X", or needing a vulnerability checklist. For AI/LLM/MCP patterns, use ai-hunting instead.
+description: Testing patterns and checklists for web vulnerability classes that pay bounties. Covers IDOR, XSS, SSRF, SQLi, XXE, CSRF, open redirect, SSTI, path traversal, authentication bypasses, injection, business logic, and 50+ more — with concrete test cases and payloads. Use when testing a web target, asking "how do I test for X", or needing a vulnerability checklist. Trigger on any specific vulnerability class name, "test for", "payload for", "bypass WAF", "exploit", "proof of concept", or when user has a target and needs test cases. For AI/LLM/MCP patterns, use ai-hunting instead.
 ---
 
 # Vulnerability Patterns

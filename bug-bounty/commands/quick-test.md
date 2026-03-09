@@ -1,5 +1,6 @@
 ---
 name: quick-test
+argument-hint: "[target-url] [vuln-class]"
 description: Rapid single-vulnerability check — give a target and vuln class, get a focused test plan with exact requests to send
 arguments:
   - name: target

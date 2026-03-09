@@ -2,6 +2,17 @@
 
 Concrete test patterns for AI-powered features, MCP integrations, agentic browser systems, and AI IDE supply chains. Reference file for the vuln-patterns skill -- load when testing AI/LLM/MCP targets.
 
+## Table of Contents
+
+- [Extended AI/LLM Test Patterns](#extended-aillm-test-patterns)
+- [MCP (Model Context Protocol) Vulnerabilities](#mcp-model-context-protocol-vulnerabilities)
+- [Logic-Layer Prompt Control Injection (LPCI)](#logic-layer-prompt-control-injection-lpci)
+- [Agentic Browser Hijacking](#agentic-browser-hijacking)
+- [MCP OAuth / Authentication Bypass](#mcp-oauth--authentication-bypass)
+- [AI IDE Configuration Exploitation](#ai-ide-configuration-exploitation)
+- [ContextCrush / Documentation Supply Chain](#contextcrush--documentation-supply-chain)
+- [Real-World AI/MCP References](#real-world-aimcp-references)
+
 ---
 
 ## Extended AI/LLM Test Patterns

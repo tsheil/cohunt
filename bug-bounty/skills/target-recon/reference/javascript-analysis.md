@@ -2,6 +2,20 @@
 
 Deep-dive into client-side JavaScript analysis — the most underutilized recon technique that consistently yields $5K-$25K+ payouts. Every modern SPA ships its attack surface in the browser.
 
+## Table of Contents
+
+- [Why JavaScript Recon Pays](#why-javascript-recon-pays)
+- [Step 1: JavaScript File Discovery](#step-1-javascript-file-discovery)
+- [Step 2: Source Map Exploitation](#step-2-source-map-exploitation)
+- [Step 3: Secret & Credential Hunting](#step-3-secret--credential-hunting)
+- [Step 4: API Endpoint Extraction](#step-4-api-endpoint-extraction)
+- [Step 5: Webpack/Build Analysis](#step-5-webpackbuild-analysis)
+- [Step 6: Framework-Specific Techniques](#step-6-framework-specific-techniques)
+- [Automation Workflow](#automation-workflow)
+- [Severity & Reporting](#severity--reporting)
+
+---
+
 ## Why JavaScript Recon Pays
 
 | Finding Source | Example Payout | What Was Found |

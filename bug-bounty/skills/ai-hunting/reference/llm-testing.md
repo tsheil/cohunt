@@ -2,6 +2,12 @@
 
 Actionable testing patterns for each OWASP LLM Top 10 category plus practical workflow checklists. Reference file for the ai-hunting skill.
 
+## Table of Contents
+
+- [Area 2: Hunting Bugs in AI/LLM Features](#area-2-hunting-bugs-in-aillm-features)
+- [Advanced Jailbreak & Injection Techniques](#advanced-jailbreak--injection-techniques-march-2026)
+- [Practical Testing Workflows](#practical-testing-workflows)
+
 ---
 
 ## Area 2: Hunting Bugs in AI/LLM Features

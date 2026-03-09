@@ -1,5 +1,7 @@
 ---
 name: generate-payload
+argument-hint: "[vuln-type with constraints]"
+disable-model-invocation: true
 description: Generate context-aware security testing payloads — encoded, WAF-aware, and ready to use
 arguments:
   - name: vuln_type

@@ -4,6 +4,16 @@ Deep-dive testing patterns for API vulnerability classes that pay bounties. Refe
 
 > **Related files:** [SKILL.md](../SKILL.md) for core API testing patterns | [auth-testing](../../auth-testing/SKILL.md) for BOLA/BFLA | [vuln-patterns](../../vuln-patterns/SKILL.md) for general web patterns
 
+## Table of Contents
+
+- [GraphQL Advanced Patterns](#graphql-advanced-patterns)
+- [REST API Advanced Patterns](#rest-api-advanced-patterns)
+- [API Authentication Bypass Patterns](#api-authentication-bypass-patterns)
+- [API Rate Limiting Advanced Bypass](#api-rate-limiting-advanced-bypass)
+- [Webhook and Callback Patterns](#webhook-and-callback-patterns)
+- [Microservice-Specific Patterns](#microservice-specific-patterns)
+- [Related Skills & Commands](#related-skills--commands)
+
 ---
 
 ## GraphQL Advanced Patterns

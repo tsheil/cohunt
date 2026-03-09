@@ -1,5 +1,6 @@
 ---
 name: pivot
+argument-hint: "[what's blocking you]"
 description: Stuck or blocked? Get the next 3 highest-value test angles based on your current session
 arguments:
   - name: context

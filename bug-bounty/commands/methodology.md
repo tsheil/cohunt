@@ -1,5 +1,6 @@
 ---
 name: methodology
+argument-hint: "[target] [focus-area]"
 description: Generate a testing methodology checklist tailored to a target's tech stack. Combines recon data, vulnerability patterns, and program scope into a prioritized, step-by-step testing plan you can follow during a hunt session.
 arguments:
   - name: target

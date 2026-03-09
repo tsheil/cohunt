@@ -1,5 +1,7 @@
 ---
 name: asset-inventory
+argument-hint: "[add|view|export] [asset-type value]"
+disable-model-invocation: true
 description: Track and manage discovered assets during a hunting session — subdomains, endpoints, technologies, and findings in one place
 arguments:
   - name: action

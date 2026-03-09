@@ -1,5 +1,7 @@
 ---
 name: session-notes
+argument-hint: "[add|view|export] [note]"
+disable-model-invocation: true
 description: Track findings, observations, and progress during a bug bounty hunting session — keep running notes so nothing gets lost
 arguments:
   - name: action

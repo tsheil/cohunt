@@ -1,5 +1,6 @@
 ---
 name: chain
+argument-hint: "[finding1 + finding2 + ...]"
 description: Document and score a vulnerability chain — combine multiple findings into a higher-severity attack path with proper CVSS scoring and a single cohesive report
 arguments:
   - name: findings

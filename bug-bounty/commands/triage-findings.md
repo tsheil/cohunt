@@ -1,5 +1,6 @@
 ---
 name: triage-findings
+argument-hint: "[findings summary]"
 description: Triage your findings — rank bugs by reportability, estimate severity and payout, and decide what to report first
 arguments:
   - name: findings

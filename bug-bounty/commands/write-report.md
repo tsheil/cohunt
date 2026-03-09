@@ -1,5 +1,7 @@
 ---
 name: write-report
+argument-hint: "[finding description]"
+disable-model-invocation: true
 description: Write a submission-ready bug bounty report — structured, scored, and formatted for the platform
 arguments:
   - name: finding

@@ -1,5 +1,6 @@
 ---
 name: compare-programs
+argument-hint: "[program1 vs program2]"
 description: Compare bug bounty programs side-by-side — rewards, scope, response times, competition — and get a recommendation on where to hunt
 arguments:
   - name: programs

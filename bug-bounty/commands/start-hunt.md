@@ -1,5 +1,6 @@
 ---
 name: start-hunt
+argument-hint: "[target or situation]"
 description: Get started hunting — tell me your target, phase, and time budget, and I'll route you to the right workflow
 arguments:
   - name: context

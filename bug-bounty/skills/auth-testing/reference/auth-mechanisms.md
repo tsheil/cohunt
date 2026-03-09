@@ -2,6 +2,16 @@
 
 > Referenced from [auth-testing SKILL.md](../SKILL.md) — detailed checklists for OAuth, JWT, session management, MFA, password reset, SSO/SAML, and rate limiting bypass.
 
+## Table of Contents
+
+- [OAuth & OpenID Connect](#oauth--openid-connect)
+- [JWT (JSON Web Tokens)](#jwt-json-web-tokens)
+- [Session Management](#session-management)
+- [Multi-Factor Authentication (MFA) Bypass](#multi-factor-authentication-mfa-bypass)
+- [Password Reset Poisoning](#password-reset-poisoning)
+- [SSO & SAML](#sso--saml)
+- [Rate Limiting & Brute Force Bypass](#rate-limiting--brute-force-bypass)
+
 ---
 
 ## OAuth & OpenID Connect

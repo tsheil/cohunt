@@ -1,5 +1,6 @@
 ---
 name: recon
+argument-hint: "[target-domain]"
 description: Run reconnaissance on a target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, and map the attack surface
 arguments:
   - name: target

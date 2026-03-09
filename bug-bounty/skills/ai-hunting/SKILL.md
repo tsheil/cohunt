@@ -1,6 +1,6 @@
 ---
 name: ai-hunting
-description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability patterns. Use AI tools to accelerate recon, code review, and vulnerability discovery. Also covers testing AI-powered features for prompt injection, insecure output handling, and other OWASP LLM Top 10 issues. Trigger with "use AI to hunt", "AI hunting workflow", "test LLM features", "prompt injection", "AI vulnerability", "LLM security", "test the chatbot", "AI-assisted", or when target has AI/ML features.
+description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability patterns. Use AI tools to accelerate recon, code review, and vulnerability discovery. Also covers testing AI-powered features for prompt injection, insecure output handling, and other OWASP LLM Top 10 issues. Trigger with "use AI to hunt", "AI hunting workflow", "test LLM features", "prompt injection", "AI vulnerability", "LLM security", "test the chatbot", "AI-assisted", "MCP security", "agent security", "AI agent attack", "tool poisoning", "RAG poisoning", "model extraction", "AI red team", or when target has AI/ML features, chatbots, copilots, or MCP integrations.
 ---
 
 # AI-Assisted Bug Hunting & LLM Vulnerability Discovery
