@@ -318,6 +318,29 @@ Focus on: Attack surface mapping tied to program scope
 
 ---
 
+## CLI Execution Rules
+
+When running external recon tools via MCP connectors or shell, follow these rules to avoid blowing up the context window with raw output:
+
+| Tool | Use This Flag | Why |
+|------|--------------|-----|
+| `nmap` | `-oG -` (greppable) or `-oX -` (XML) | Raw stdout is verbose; greppable output is parseable |
+| `ffuf` | `-o results.json -of json` | Parse JSON file instead of streaming stdout |
+| `nuclei` | `-j -o results.json` | JSON output; filter by severity with `-s critical,high` |
+| `subfinder` | `-o subs.txt` | Write to file, read selectively |
+| `httpx` | `-json -o live.json` | Structured output for tech fingerprinting |
+| `amass` | `-json output.json` | Structured enumeration results |
+| `dig` | `+short` | Minimal output for DNS lookups |
+| `curl` | `-sS -D -` | Silent with headers; pipe through `head -100` for large responses |
+
+**General rules:**
+- Always redirect large outputs to files and read selectively — never dump raw stdout into context
+- For brute-forcers, cap results: `head -50` or use tool-native limits
+- Filter by severity/confidence before loading results — not everything is relevant
+- When a tool returns >100 lines, summarize findings instead of including raw output
+
+---
+
 ## Tips for Better Recon
 
 1. **Provide the root domain** — "recon example.com" casts a wider net than "recon www.example.com"

@@ -7,6 +7,26 @@ description: Testing patterns and checklists for web vulnerability classes that 
 
 Concrete testing patterns for the vulnerability classes that pay bounties. Not theory — actionable test cases you can run against a target right now.
 
+## Routing Index
+
+For deep dives, route to the specialized skill or reference file:
+
+| Topic | Route To |
+|-------|----------|
+| **BOLA/BFLA/privilege escalation/session/MFA/OAuth/JWT/SSO** | [auth-testing](../auth-testing/SKILL.md) + [auth-mechanisms.md](../auth-testing/reference/auth-mechanisms.md) |
+| **API design flaws (GraphQL, gRPC, WebSocket)** | [api-security](../api-security/SKILL.md) |
+| **Business logic, payment flows, race conditions** | [reference/business-logic.md](reference/business-logic.md) |
+| **AI/LLM/MCP/agent patterns** | [ai-hunting](../ai-hunting/SKILL.md) + [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) |
+| **GraphQL, JWT format, OAuth format, workflow automation** | [reference/web-vulns.md](reference/web-vulns.md) |
+| **Infrastructure, MotW, SSRF chains, MDM, remote desktop** | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) |
+| **DOM XSS, prototype pollution, PostMessage, CSP/CORS** | [client-side-security](../client-side-security/SKILL.md) |
+| **CI/CD, GitHub Actions, dependency confusion, supply chain** | [supply-chain-security](../supply-chain-security/SKILL.md) |
+| **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
+| **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
+| **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
+
+The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
+
 ## MITRE CWE Top 25 (2025)
 
 The 2025 list, compiled from 39,000+ vulnerabilities disclosed June 2024-June 2025, shows **authorization flaws climbing fast** while traditional injection remains at the top:

@@ -84,6 +84,14 @@ From the user, extract:
 If anything critical is missing → ASK before writing.
 ```
 
+**If the user has session notes:** When the finding comes from `/session-notes` structured format (containing **Vulnerability**, **URL**, **Payload**, **Reproduction**, **Impact** fields), map those fields directly into the report:
+- `Vulnerability` → CWE classification + title
+- `URL` + `Parameter` → Affected asset in reproduction steps
+- `Payload` → PoC section
+- `Reproduction` → Reproduction steps (expand with HTTP details)
+- `Impact` → Impact section (strengthen with business context)
+- `Severity Estimate` → Starting point for CVSS calculation
+
 ### Step 2: Classify and Score
 
 ```

@@ -65,6 +65,25 @@ Add observations, findings, or ideas to the running session log.
 /session-notes add endpoint: /api/internal/health returns server info
 ```
 
+**Structured finding format (use when logging confirmed findings):**
+
+When a note is a confirmed or likely finding, prompt for and use this structured format:
+
+```markdown
+### Finding: [Short Name]
+- **Vulnerability:** [Type — e.g., IDOR, XSS, SSRF]
+- **URL:** [Exact endpoint]
+- **Parameter:** [Affected parameter or field]
+- **Payload:** [Exact payload used]
+- **Reproduction:** [Numbered steps from zero state]
+- **Impact:** [What an attacker achieves]
+- **Severity Estimate:** [Critical/High/Medium/Low]
+- **Evidence:** [Response snippet, status code, or screenshot reference]
+- **Status:** [Ready to report / Needs more work / Needs chain]
+```
+
+This structured format feeds directly into `/write-report` and `/triage-findings` — no information is lost in the handoff.
+
 **Categorization:**
 
 When adding notes, automatically categorize them:

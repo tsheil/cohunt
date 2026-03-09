@@ -240,6 +240,25 @@ Avoid competing directly with autonomous tools on:
 - Updated duplicate landscape (new disclosures since last visit)
 ```
 
+**Progress Tracking (Required):**
+
+At the top of every response during the hunt session, output a markdown checklist showing current workflow state:
+
+```
+## Hunt Progress
+- [x] Parse target
+- [x] Program research
+- [ ] Target recon
+- [ ] Scope cross-reference
+- [ ] Competition assessment
+- [ ] OWASP framework mapping
+- [ ] Prioritize targets
+- [ ] Generate test cases
+- [ ] Compile session brief
+```
+
+Update the checklist as each step completes. This gives the hunter clear visibility into what's done, what's in progress, and what's next. If a step is skipped or fails, mark it with `~` and a note (e.g., `- [~] Program research — no public program found, using VDP`).
+
 **Quality Standards:**
 - Every recommendation must be tied to specific recon or research data
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
