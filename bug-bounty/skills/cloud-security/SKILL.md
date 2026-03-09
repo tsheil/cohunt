@@ -161,6 +161,7 @@ When basic `169.254.169.254` is blocked:
 | 6 | Lambda execution role | Invoke function → check what role it runs with |
 | 7 | EC2 instance profile | SSRF → metadata → role credentials |
 | 8 | S3 bucket policy wildcards | `Principal: "*"` or `Principal: {"AWS": "*"}` |
+| 9 | Long-term access key exposure | Enumerate exposed IAM access keys (Crimson Collective pattern, March 2026: ~570GB exfiltrated from Red Hat GitLab via exposed keys) | Unauthorized API access using leaked long-term credentials |
 
 ### GCP IAM
 

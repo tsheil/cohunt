@@ -99,7 +99,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Business logic** | Payment flows, subscription bypass, state machine abuse, multi-tenant isolation — **45% of all bounty awards** (Intigriti 2026) | vuln-patterns/reference/business-logic.md |
 | **Chain building** | Combine lower-severity findings: IDOR → auth bypass → data exfil; open redirect → OAuth token theft | vuln-patterns SKILL.md |
 | **Auth-gated scenarios** | OAuth callback manipulation, SSO trust relationships, first-party trust abuse (ConsentFix), SAML attacks | auth-testing SKILL.md |
-| **AI/LLM injection** | LPCI, memory poisoning (SpAIware/ZombieAgent), multi-turn injection, image-based injection (64% success), invisible Unicode (E0000-E007F), semantic chaining, H-CoT hijacking | ai-hunting SKILL.md |
+| **AI/LLM injection** | LPCI, memory poisoning (SpAIware/ZombieAgent), multi-turn injection, image-based injection (64% success), invisible Unicode (E0000-E007F), semantic chaining, H-CoT hijacking, **Policy Puppetry** (universal jailbreak — all frontier models, no tuning) | ai-hunting SKILL.md |
 | **MCP ecosystem** | Tool poisoning, name collision (CVE-2026-30856), sampling exploitation, SDK flaws (ReDoS, data leak), OAuth CSRF, connector SSRF (36.7% of 7K servers), schema poisoning, overthinking loops (142.4x token amplification) | ai-hunting/reference/mcp-playbooks.md |
 | **Agentic browser attacks** | Zero-click hijacking (PleaseFix), trust zone violations (TRAIL taxonomy), password manager access, adaptive prompt injection (90%+ defense bypass), CDP/WebSocket unauthenticated endpoints | ai-hunting/reference/agent-attack-patterns.md |
 | **AI IDE supply chain** | Project file exploitation (30+ vulns, 24 CVEs), extension squatting, Chromium flaws, rules file backdoor (invisible Unicode), workspace trust bypass, pre-trust window exploitation, Blackbox AI RCE via PNG | ai-hunting/reference/ide-supply-chain.md |
@@ -115,6 +115,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Workflow automation** | n8n Ni8mare (CVE-2026-21858 CVSS 10.0, ~100K servers), content-type bypass, workflow expression injection (CVE-2026-25049 CVSS 9.9) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Cloud SSO trust abuse** | Cross-tenant auth bypass (CVE-2026-24858 FortiOS CVSS 9.4), first-party trust abuse (ConsentFix), SSO token scope validation | vuln-patterns/reference/infrastructure-vulns.md |
 | **MDM/enterprise mgmt** | Ivanti EPMM bash arithmetic expansion (CVE-2026-1281/1340 CVSS 9.8, mass exploitation), SolarWinds WHD multi-stage RCE (CVE-2025-40551), VMware Aria migration path (CVE-2026-22719 CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
+| **Appliance hardcoded creds** | Dell RecoverPoint Ghost NICs (CVE-2026-22769 CVSS 10.0, China-nexus since mid-2024), enterprise backup/DR appliance plaintext creds in config files, Tomcat Manager web shell deployment | vuln-patterns/reference/infrastructure-vulns.md |
 | **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:

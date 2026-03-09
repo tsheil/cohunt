@@ -20,6 +20,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [Cloud SSO Trust Model Abuse](#cloud-sso-trust-model-abuse)
 - [Workflow Automation Platform RCE](#workflow-automation-platform-rce)
 - [Enterprise Management Platform RCE](#enterprise-management-platform-rce)
+- [Appliance Hardcoded Credentials](#appliance-hardcoded-credentials)
 
 ---
 
@@ -334,3 +335,23 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 3 | Post-exploitation lateral movement | After initial foothold, probe for C2 tunnel capability | Cloud service tunnels (Cloudflare, ngrok), legitimate remote access tools for persistence |
 
 **Severity Guidance:** Critical — management platforms control device fleets. CVE-2025-40551 demonstrates full attack lifecycle from initial unauthenticated access through C2 establishment.
+
+---
+
+## Appliance Hardcoded Credentials
+
+**What it is:** Enterprise appliances (backup, storage, DR) shipping with hardcoded admin credentials — often plaintext in config files, enabling zero-day persistent access by APT groups.
+
+**Key CVE:** CVE-2026-22769 (Dell RecoverPoint for VMs, CVSS 10.0) — hardcoded admin credentials in plaintext at `/home/kos/tomcat9/tomcat-users.xml`. China-nexus UNC6201 (overlaps UNC5221) exploited as zero-day since mid-2024: authenticated to Tomcat Manager → deployed SLAYSTYLE web shell via `/manager/text/deploy` → dropped BRICKSTORM and GRIMBOLT backdoors. Used "Ghost NICs" (temporary virtual network interfaces created for lateral movement, deleted afterward to evade detection). Appliances typically lack EDR agents, enabling long-term persistence.
+
+**Where to look:** Dell RecoverPoint, Veeam, Commvault, Veritas, Cohesity, Rubrik — any enterprise backup/DR appliance with web management interface. Search Shodan for management ports (8443, 9090, 443).
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Default/hardcoded creds | Check known default credentials and common config file paths (`tomcat-users.xml`, `application.yml`, `.env`) | Admin access without credential brute-forcing |
+| 2 | Tomcat Manager deployment | If Tomcat Manager is exposed, test WAR file deployment via `/manager/text/deploy` | Web shell deployment capability |
+| 3 | Network interface enumeration | Check for ephemeral network interfaces or unusual NIC creation/deletion patterns | Ghost NIC lateral movement technique |
+
+**Severity Guidance:** Critical (CVSS 10.0). Backup/DR appliances have access to all protected data and often lack endpoint security monitoring. The Ghost NIC technique — creating temporary virtual interfaces for lateral movement and deleting them — is a novel evasion pattern worth documenting in reports.

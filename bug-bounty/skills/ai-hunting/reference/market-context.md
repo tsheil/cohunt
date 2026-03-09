@@ -310,4 +310,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **XBOW HackerOne #1 confirmed** (March 2026): 1,060 reports, 130 resolved, 303 triaged; 85% solve rate on custom never-before-seen challenges; pivoting to pre-production scanning; still operating at loss — compute exceeds bounty earnings
 - **Microsoft AI as Tradecraft** (March 6, 2026): documented Coral Sleet state-sponsored agentic AI for end-to-end malware workflow — lure development, infrastructure provisioning, payload testing; AI-generated code fingerprints: emojis as visual markers, conversational inline comments
 - **Checkmarx 11 MCP Risks** (March 2026): complementary taxonomy covering prompt injection/context manipulation, tool poisoning, confused deputy, supply chain/rug pulls, cross-agent context abuse, privilege escalation, insecure deserialization, dependency confusion
+- **Policy Puppetry** (HiddenLayer, March 2026): first universal LLM jailbreak — works across ALL frontier models via structured policy file formatting (XML/INI/JSON); no model-specific tuning; validates alignment is fundamentally bypassable
+- **Chrome Gemini panel hijack** (CVE-2026-0628, CVSS 8.8, March 2026): low-privilege extension escalates to camera/mic/file access via Gemini WebView; new browser privilege escalation surface from AI panel integration
+- **Dell RecoverPoint CVE-2026-22769** (CVSS 10.0): hardcoded admin credentials exploited by China-nexus UNC6201 since mid-2024; Ghost NIC lateral movement technique; backup appliances as persistent APT footholds
+- **Crimson Collective AWS threat** (March 2026): emerging actor targeting AWS environments via exposed long-term access keys and IAM misconfigs; claimed ~570GB data theft from Red Hat private GitLab repos
 

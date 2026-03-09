@@ -13,6 +13,7 @@ Client-side vulnerabilities are consistently undervalued by automated scanners y
 |-----|---------|------|--------|
 | CVE-2026-2441 | Chrome | CSS @property + paint() worklet UAF | Actively exploited zero-day (patched Feb 13, 2026) |
 | CVE-2026-3545 | Chrome | Navigation data validation | Sandbox escape (CVSS 9.6) |
+| CVE-2026-0628 | Chrome Gemini | Extension → privileged WebView injection | Low-priv extension hijacks Gemini panel: camera, mic, screenshots, files (CVSS 8.8) |
 | CVE-2025-43714 | ChatGPT | SVG-based XSS | Arbitrary HTML/JS in AI preview window |
 | CVE-2026-29183 | SiYuan | Reflected XSS | Unauthenticated session token theft (CVSS 9.3) |
 | CVE-2025-55182 | React (RSC) | React2Shell deser-to-RCE | Pre-auth RCE in Server Components (CVSS 10.0) |

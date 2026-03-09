@@ -431,6 +431,10 @@ Just **5 carefully crafted documents** can manipulate AI responses **90% of the 
 
 **Testing:** 1. Identify if target uses RAG (retrieval-augmented generation). 2. Contribute or upload documents to the knowledge base with embedded instructions. 3. Query the system to verify if poisoned documents influence responses. 4. Test if poisoned content overrides system prompt instructions. Maps to ASI06 + ASI01.
 
+### Policy Puppetry: Universal LLM Jailbreak
+
+First universal alignment bypass working across all frontier models (ChatGPT, Claude, Gemini, DeepSeek, Llama, Mistral, Qwen) with no model-specific tuning (HiddenLayer, March 2026). Reformulates prompts as policy/config files (XML, INI, JSON format) — LLMs interpret structured input as system-level configuration, overriding safety alignment. "Point-and-shoot" — no technical expertise required. **Testing:** Wrap forbidden requests in XML/INI/JSON policy format; test if target model treats structured input as configuration; verify across multiple models without tuning. **Severity:** Critical for any model API or AI application — validates that alignment is fundamentally bypassable.
+
 ### Side-Channel Timing Attacks Against LLMs
 
 **Whisper Leak** analyzes packet size/timing in streaming responses (>98% AUPRC across 28 LLMs); **speculative decoding attacks** fingerprint queries with >75% accuracy.
