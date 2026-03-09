@@ -15,6 +15,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 - [GraphQL WebSocket Subscription Depth Bypass](#graphql-websocket-subscription-depth-bypass)
 - [Admin Panel Logic Errors — Typo-to-RCE Pattern](#admin-panel-logic-errors--typo-to-rce-pattern)
 - [HTTP/3 Race Conditions (QUICker)](#http3-race-conditions-quicker)
+- [DNS Rebinding SSRF Bypass (TOCTOU)](#dns-rebinding-ssrf-bypass-toctou)
 - [React Server Components DoS](#react-server-components-dos)
 
 > **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
@@ -307,6 +308,28 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 3 | Stream multiplexing abuse | Use QUIC stream multiplexing for tighter timing windows | Sub-millisecond race windows exploitable |
 
 **Severity Guidance:** Same as equivalent HTTP/1.1-2 race conditions. The novelty is that HTTP/3-only targets previously considered immune to race conditions are now testable.
+
+---
+
+## DNS Rebinding SSRF Bypass (TOCTOU)
+
+**What it is:** Time-of-check to time-of-use (TOCTOU) race condition in SSRF validation where DNS resolution is performed separately from the HTTP request, enabling DNS rebinding attacks.
+
+**Key CVE:** CVE-2026-27127 (Craft CMS, affects 3.5.0-4.16.19 and 5.0.0-RC1-5.8.23) — SSRF bypass in GraphQL Asset mutation via DNS rebinding.
+
+**How it works:** The SSRF filter resolves the hostname during validation (returns a safe external IP), but by the time the actual HTTP request is made, the attacker's DNS server returns a different IP (internal/restricted). The validation passes, but the request hits an internal host.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | DNS rebinding setup | Configure a DNS server that alternates between safe external IP and internal IP (e.g., `169.254.169.254`) | SSRF filter passes validation, but request reaches internal services |
+| 2 | Race window timing | Send rapid sequential requests with a rebinding DNS domain | Some requests bypass the filter when DNS resolution race occurs |
+| 3 | GraphQL mutation testing | If target has GraphQL file/asset mutations, test URL parameters with rebinding domains | Access to internal metadata, admin panels, or cloud credentials |
+
+**Where to look:** Any feature that fetches URLs on behalf of users (file imports, webhooks, asset downloads, URL previews) where DNS resolution and HTTP request are separate operations. GraphQL mutations with URL parameters are particularly common targets.
+
+**Severity Guidance:** High when bypass enables access to cloud metadata or internal services; Critical if it chains to credential theft or RCE. Report as SSRF with TOCTOU race condition.
 
 ---
 

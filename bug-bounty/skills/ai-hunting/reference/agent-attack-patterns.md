@@ -132,7 +132,7 @@ A major new attack surface emerging in early 2026 targeting AI agent skill/plugi
 
 > **Full coverage (28+ CVEs, IDEsaster, Claude DXT RCE, AI-as-C2 proxy, Google Antigravity):** See [ide-supply-chain.md](ide-supply-chain.md)
 
-Key patterns: workspace trust bypass (Cursor), rules file backdoor (invisible Unicode), RoguePilot (GitHub issue → token theft), PromptPwnd (CI/CD pipeline injection), CamoLeak (private code exfiltration), extension namespace squatting, Claude DXT zero-click RCE (CVSS 10.0), AI web-browsing as C2 channel.
+Key patterns: workspace trust bypass (Cursor), rules file backdoor (invisible Unicode), RoguePilot (GitHub issue → symlink + $schema exfil → repo takeover), CVE-2026-29783 (Copilot CLI bash parameter expansion RCE), PromptPwnd (CI/CD pipeline injection), CamoLeak (private code exfiltration), extension namespace squatting, Claude DXT zero-click RCE (CVSS 10.0), AI web-browsing as C2 channel.
 
 ---
 

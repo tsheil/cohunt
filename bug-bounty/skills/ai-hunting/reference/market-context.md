@@ -264,4 +264,14 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Healthcare AI agent $14M breach** (Moltwire, March 2026): patient records exfiltrated via prompt injection over 3 months; only 17% of enterprises have adopted agentic AI; ACM identified 4 critical knowledge gaps
 - **Dell RecoverPoint CVE-2026-22769 (CVSS 10.0)**: hardcoded credentials exploited by China-nexus UNC6201 since mid-2024; pattern: enterprise backup appliance hardcoded creds
 - **HackerOne Report #3000510**: $25K bounty for HackerOne's own `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token; fixed in 2 days
+- **HackerOne $81M annual payouts** (March 2026): $81M paid in bounties over past 12 months (+13% YoY); top 10 programs accounted for $21.6M; individual researchers consistently surpassing six-figure annual earnings
+- **AI vulnerability reports surged 540%**: prompt injection flaws driving 200%+ overall increase in AI security issues; authorization-related vulnerabilities (IDOR, improper access control) on the upswing as XSS/SQLi decline
+- **XBOW operating economics**: despite #1 HackerOne ranking with 1,060+ reports, XBOW is operating at a loss — compute costs exceed bounty earnings; HackerOne split leaderboards to separate individuals from automated systems; demonstrates autonomous hunting is not yet profitable at scale
+- **Cycode 62% exploitable LLM code** (March 2026): study found 62% of LLM-generated code contains exploitable vulnerabilities — validates ongoing demand for code security review as AI-generated codebases proliferate
+- **RoguePilot AI-mediated supply chain** (February 2026): first documented AI-assisted repository takeover via passive prompt injection in GitHub issues; symlink + $schema exfiltration chain; patched by Microsoft; demonstrates IDE-integrated AI as attack surface
+- **CVE-2026-29783 Copilot CLI RCE**: bash parameter expansion bypass in safety assessment — prompt injection via repo files can make "read-only" classified commands execute arbitrary code; patched in 0.0.423
+- **CVE-2026-27127 Craft CMS DNS rebinding** (TOCTOU): SSRF validation bypass via DNS rebinding in GraphQL Asset mutation; separate DNS resolution from HTTP request creates race condition window; affects all versions 3.5.0-4.16.19 and 5.0.0-RC1-5.8.23
+- **Cursor Automations** (March 2026): Cursor launched agentic automation triggered by codebase changes, Slack messages, or timers — enables automated security audits; AI IDEs shifting from reactive assistants to proactive autonomous agents
+- **Teramind AI Governance** (March 2026): behavioral oversight platform for AI agents with full activity capture; first enterprise solution for AI agent audit trails and behavioral monitoring at scale
+- **ArmorCode $81M AI AppSec** (March 2026): raised $16M (total $81M) to expand Agentic AI Platform for application security management; growing AI-native AppSec vendor category
 

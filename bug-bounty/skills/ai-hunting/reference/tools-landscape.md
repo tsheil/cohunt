@@ -377,7 +377,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Assail Ares** for continuous API/web/mobile pentesting with co-evolutionary AI agents
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
-- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched March 6, 2026**; 1.2M commits scanned, 14 CVEs found, 84% noise reduction vs traditional SAST
+- **Codex Security** (OpenAI, formerly Aardvark) for continuous source code vulnerability monitoring — **launched March 6, 2026** as research preview; 1.2M commits scanned in 30 days, **792 critical + 10,561 high-severity findings**; discovered and reported **14 CVEs** in major OSS (OpenSSH, GnuTLS, GOGS, Chromium, libssh, PHP); 84% noise reduction, 50%+ FP reduction via project-specific threat models and sandboxed validation; free for Pro/Enterprise/Business/Edu first month; $10M API credits for OSS security
 - **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
@@ -423,3 +423,5 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Repello AI SkillCheck** (March 2026) — browser-based skill security scanner; upload skill zip → security score (0-100) and verdict (Safe/High/Critical); detects prompt injection, env var exfiltration, policy violations; works across Claude Code, OpenClaw, Cursor, Windsurf; free at repello.ai
 - **Noma MCP Server Security** (March 2026) — discovers all MCP server deployments and agent connections including shadow deployments; maps destructive capabilities and risky configurations; 80+ integrations; best for: MCP attack surface discovery in enterprise environments
 - **Crust** (February 2026) — agent security infrastructure intercepting and blocking dangerous agent behaviors pre-execution; runtime behavioral analysis with kill-switch capability; best for: real-time agent threat prevention
+- **Cursor Automations** (March 2026) — agentic coding automation triggered by codebase additions, Slack messages, or timers; enables automated security audits and code reviews; demonstrates AI IDE shift from reactive to proactive agents
+- **Teramind AI Governance** (March 2026) — workforce intelligence platform providing behavioral oversight for AI agents and tools; text capture, screen recording, OCR, and full transcripts of agentic activity; best for: AI agent audit trail and behavioral monitoring
