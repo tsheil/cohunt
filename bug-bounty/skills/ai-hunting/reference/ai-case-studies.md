@@ -92,6 +92,10 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **GRP-Obliteration** | Microsoft: single prompt removes safety alignment; GPT-OSS-20B: 13% -> 93% attack success | Complete safety alignment removal |
 | **ZombieAgent (ChatGPT)** | Zero-click exploit chain — malicious email -> memory poisoned -> self-propagation; patched Dec 2025 | Self-propagating memory corruption |
 | **Autonomous jailbreak agents** | Nature Communications March 2026: 97.14% jailbreak success across 9 models with no human supervision | Systematic safety erosion |
+| **Ivanti EPMM mass exploitation** | Jan-Feb 2026: CVE-2026-1281 + CVE-2026-1340 (both CVSS 9.8); pre-auth RCE via `/mifs/c/appstore/fob/` and `/mifs/c/aftstore/fob/`; public PoC Jan 30; automated exploitation deploying web shells, cryptominers, and backdoors | Enterprise MDM mass compromise |
+| **XBOW #1 HackerOne globally** | 2025-2026: first autonomous AI system to top both US and global HackerOne leaderboards; 1,060 reports in ~90 days (54 critical, 242 high); live demo at Black Hat 2026; found Palo Alto GlobalProtect VPN zero-day affecting 2,000+ hosts | AI surpasses all human bug bounty hunters |
+| **Apple $2M maximum bounty** | 2026: Apple raised max to $2M for zero-click persistent remote exploits; introduced Target Flags for objective exploitability; Security Research Devices for iPhone 17 | Highest single-company max payout ever |
+| **Microsoft Zero Day Quest $1.6M payout** | 2025-2026: $1.6M paid in inaugural event; expanded to $5M total for 2026; spring 2026 live event at Redmond with +50% multiplier for critical Azure/Copilot/M365 findings | Largest vendor-run live hacking event |
 | **Aikido Infinite Coolify CVEs** | Autonomous agents found 7 CVEs in Coolify including RCE as root across 52,000+ instances | Self-securing software discovery |
 | **Vibe Hacking emergence** | 2026: low-effort AI-built attacks beating enterprise defenses | Democratized AI-powered attacks |
 | **FIRST CVE forecast** | February 2026: predicted median 59,427 new CVEs (first year to exceed 50,000) | Unprecedented vulnerability volume |

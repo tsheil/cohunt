@@ -16,7 +16,8 @@ Plugins are **tool-agnostic** — they describe workflows in terms of categories
 | DNS intelligence | `~~dns intelligence` | — | SecurityTrails, PassiveTotal, VirusTotal |
 | Code search | `~~code search` | GitHub (disabled) | GitLab, Sourcegraph |
 | Code security scanner | `~~code scanner` | Semgrep (disabled) | SonarQube, CodeQL |
-| Web application scanner | `~~web scanner` | — | Burp Suite, Nuclei, OWASP ZAP |
+| Web application scanner | `~~web scanner` | Burp Suite MCP (disabled) | Nuclei, OWASP ZAP |
+| Penetration testing | `~~pentest tools` | Kali Linux MCP (disabled) | Individual tool MCPs (Nmap, SQLMap) |
 
 ## Enabling a connector
 

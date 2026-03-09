@@ -164,6 +164,28 @@ Google's AI coding IDE launched in early 2026 has rapidly accumulated a signific
 
 ---
 
+## DockerDash: Container Infrastructure MCP Attack
+
+A critical vulnerability in Docker's Ask Gordon AI assistant demonstrates how MCP gateways in container tooling create RCE and data exfiltration paths (Noma Security, February 2026):
+
+**How It Works:**
+- Docker's Ask Gordon AI assistant uses an MCP Gateway to orchestrate container operations
+- A single malicious Docker image metadata label can inject instructions into the AI context
+- Two attack paths: (1) RCE on Cloud/CLI via container operations, (2) data exfiltration on Desktop via agent browsing
+- Attack chain: attacker publishes Docker image with crafted label → victim pulls/inspects image → Ask Gordon processes label → MCP tools execute attacker commands
+
+**Key Detail:** Fixed in Docker 4.50.0 with explicit confirmation requirements for MCP tool execution. Demonstrates that any MCP server processing untrusted container metadata is a supply chain attack vector.
+
+**Testing Approach:**
+1. If target uses AI assistants integrated with Docker/container infrastructure, check if image metadata is passed to AI context
+2. Test if container labels, Dockerfile comments, or compose file descriptions influence AI assistant behavior
+3. Check if MCP tool calls from container AI are gated by user confirmation
+4. Test if malicious image metadata can trigger file read/write or network operations via MCP tools
+
+**Severity Guidance:** Critical — zero-click via image pull; supply chain attack at container infrastructure level. Maps to ASI04 (Agentic Supply Chain) + ASI02 (Tool Misuse). Relevant for any enterprise using AI-powered container management tools.
+
+---
+
 ## Universal AI IDE Prompt Injection (March 2026)
 
 A six-month security research project reveals a **novel vulnerability class affecting 100% of tested AI IDEs** (GBHackers/Aikido Security):

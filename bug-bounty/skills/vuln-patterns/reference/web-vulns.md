@@ -73,6 +73,13 @@ When you know the target's technology, focus your testing:
 - Use field suggestion errors to enumerate schema without introspection
 - Try sending queries as `application/x-www-form-urlencoded` instead of JSON
 
+**GraphQL CSRF via Content-Type Switching:**
+- Many GraphQL endpoints accept `application/x-www-form-urlencoded` in addition to `application/json`
+- Form-encoded requests are not blocked by same-origin policy — can be sent cross-origin via HTML form
+- Test: submit GraphQL mutation as `POST` with `Content-Type: application/x-www-form-urlencoded` and `query=mutation{...}`
+- If the endpoint accepts the form-encoded mutation without CSRF token, any mutation is exploitable cross-origin
+- Severity: High if mutations include account changes, data modification, or admin actions
+
 ---
 
 ## JWT (JSON Web Token)
@@ -353,6 +360,32 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 4 | Cleartext credential capture | Monitor traffic for unencrypted credential transmission | Credentials visible in network capture |
 
 **Severity Guidance:** High-Critical for pre-auth chains (SSRF + session replay = full infrastructure access). Many self-hosted RustDesk instances are exposed on Shodan — scan for `rustdesk` on ports 21115-21119.
+
+---
+
+## Mobile Device Management Pre-Auth RCE
+
+**What it is:** Exploiting unauthenticated endpoints in enterprise MDM/EMM platforms to achieve remote code execution. These targets are high-value because MDM servers control thousands of devices and often run with elevated privileges.
+
+**Key CVE cluster (Ivanti EPMM, January-February 2026):**
+- **CVE-2026-1281** (CVSS 9.8): pre-auth RCE via malicious HTTP GET to `/mifs/c/appstore/fob/`. Public PoC available Jan 30, 2026. Widespread automated exploitation deploying web shells, cryptominers, and backdoors within days
+- **CVE-2026-1340** (CVSS 9.8): companion pre-auth RCE via `/mifs/c/aftstore/fob/` (Android File Transfer endpoint)
+
+**Where to look:**
+- Ivanti EPMM (MobileIron), ManageEngine MDM, VMware Workspace ONE, Microsoft Intune
+- Any MDM management console exposed to the internet (common due to mobile device enrollment requirements)
+- Search Shodan: `http.favicon.hash` for MDM platforms, `"MobileIron"`, `"/mifs/"` paths
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Unauthenticated endpoints | Fuzz MDM admin paths without credentials | Admin functions accessible pre-auth |
+| 2 | File upload via enrollment | Use device enrollment endpoints to upload arbitrary files | Web shell deployment via enrollment flow |
+| 3 | API version mismatch | Test legacy API versions alongside current ones | Older APIs may lack auth checks |
+| 4 | SSRF via device check-in | Manipulate device check-in URLs to target internal services | Internal network access via MDM trust |
+
+**Severity Guidance:** Critical — MDM servers manage enterprise device fleets and often have access to push configurations, install apps, and wipe devices across the entire organization. A compromised MDM server = full mobile fleet control.
 
 ---
 

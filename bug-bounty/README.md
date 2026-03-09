@@ -136,8 +136,18 @@ Connect your tools for a richer experience:
 | **DNS intelligence** | SecurityTrails, PassiveTotal | Historical DNS, related domains, zone data |
 | **Code search** | GitHub, GitLab, Sourcegraph | Cross-repo pattern matching for code audit |
 | **Web scanner** | Burp Suite, Nuclei, OWASP ZAP | Automated vulnerability validation |
+| **Pentest tools** | Kali Linux MCP | AI-driven penetration testing with security tool orchestration |
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
+
+## What's New in v0.44.0
+
+- **Advanced recon techniques** — Favicon hash enumeration (Shodan/Censys infrastructure discovery), origin IP discovery via Certificate Transparency logs (WAF bypass), copyright notice mining for related domains, and virtual host fuzzing for hidden services in `target-recon`
+- **DockerDash MCP attack pattern** — Docker's Ask Gordon AI compromised via single malicious image metadata label; two attack paths (RCE + exfiltration) via MCP Gateway; new section in `ide-supply-chain.md` with testing approach
+- **MDM pre-auth RCE section** — Ivanti EPMM CVE-2026-1281/1340 (both CVSS 9.8) mass exploitation pattern; new section in `web-vulns.md` covering enterprise MDM attack surfaces
+- **GraphQL CSRF via Content-Type switching** — Cross-origin mutation exploitation when GraphQL endpoints accept form-encoded requests; added to `web-vulns.md` GraphQL section
+- **Burp Suite MCP + Kali Linux MCP connectors** — Two new MCP integrations for hands-on testing added to `.mcp.json` and `CONNECTORS.md`; Burp for proxy history + HTTP request manipulation, Kali for AI-driven penetration testing
+- **5 new case study entries** — Ivanti EPMM mass exploitation, XBOW #1 globally, Apple $2M max bounty, Microsoft Zero Day Quest $1.6M payout, plus market intelligence updates
 
 ## What's New in v0.43.0
 

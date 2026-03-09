@@ -248,6 +248,60 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 ---
 
+## Advanced Recon Techniques
+
+### Favicon Hash Enumeration
+
+```
+Use favicon hashes to discover related infrastructure hidden behind different domains:
+1. Download favicon: curl -sL https://[target]/favicon.ico -o favicon.ico
+2. Calculate Shodan/Censys hash (mmh3 or MD5)
+3. Search Shodan: http.favicon.hash:[hash]
+4. Search Censys: services.http.response.favicons.hashes=[hash]
+5. Discover: staging servers, internal tools, acquisition targets, forgotten instances
+```
+
+**Why:** Shared favicons reveal infrastructure belonging to the same organization across different domains, IPs, and cloud providers. Often exposes forgotten or unprotected instances running the same software.
+
+### Origin IP Discovery via Certificate Transparency
+
+```
+Bypass WAF/CDN to find the real origin server:
+1. Search crt.sh: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
+2. Extract all cert-associated IPs from historical DNS (SecurityTrails, PassiveTotal)
+3. Check if origin responds directly: curl -sI -H "Host: [domain]" https://[origin-IP]
+4. Compare responses from CDN vs direct-to-origin
+5. Look for: staging certs, internal hostnames, pre-CDN DNS records
+```
+
+**Why:** Direct origin access bypasses WAF rules, rate limits, and CDN-based security. Many programs pay High for WAF bypass → origin access chains.
+
+### Copyright Notice Mining
+
+```
+Find related, untested infrastructure via shared copyright notices:
+1. Extract copyright text from target's footer/about/legal pages
+2. Web search: "[exact copyright text]" -site:[target-domain]
+3. Discover: sister companies, acquired properties, white-label deployments
+4. Check if discovered hosts share the same tech stack and vulnerabilities
+```
+
+**Why:** Related domains often share codebases but have weaker security configurations. White-label deployments frequently lack the hardening of the primary product.
+
+### Virtual Host Fuzzing
+
+```
+Discover hidden virtual hosts on the same IP:
+1. Resolve target IP: dig +short [target]
+2. Fuzz Host header: ffuf -u https://[IP] -H "Host: FUZZ.[domain]" -w subdomains.txt -fs [default-size]
+3. Also try: internal, staging, admin, dev, test, api, beta, legacy
+4. Check for: different responses, authentication prompts, admin panels
+```
+
+**Why:** Virtual hosts on the same IP often share the same server but have different access controls. Internal vhosts may lack authentication entirely.
+
+---
+
 ## Recon Variations
 
 ### Quick Fingerprint
