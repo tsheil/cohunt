@@ -454,3 +454,6 @@ Competition awareness:
 - **ingress-nginx EOL RCE** (CVE-2026-3288, CVSS 8.8): annotation injection at project end-of-life; 50%+ of K8s clusters affected; no patch at advisory
 - **Brave unseeable prompt injection**: hidden near-transparent text passes OCR in AI browsers; hijacks authenticated sessions; novel agentic browser attack class
 - **48% of respondents** believe agentic AI will be top attack vector by end of 2026 (DarkReading); only 29% report readiness to secure agentic AI
+- **Unit 42 IDPI delivery breakdown**: in-the-wild delivery methods — visible plaintext 37.8%, HTML attribute cloaking 19.8%, CSS rendering suppression 16.9%; autonomous ransomware demo completed in ~25 minutes
+- **Smithery.ai path traversal**: fly.io token leaked granting access to 3,000+ MCP server apps; API keys/auth tokens captured from thousands of clients (GitGuardian)
+- **Unit 42 2026 Global IR Report**: attacks accelerated 4x YoY; identity weaknesses exploited in 89% of incidents; 87% of attacks involved multiple attack surfaces
