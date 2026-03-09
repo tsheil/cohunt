@@ -31,7 +31,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 | **Shannon** | Autonomous white-box web app pentesting | 96.15% on XBOW benchmark |
 | **CAI** | CTF-level challenges, structured offensive tasks | Top-20 worldwide CTF, 11x faster |
 | **AISLE** | Deep C/C++ memory safety bugs at scale | 100+ CVEs, 12/12 OpenSSL zero-days |
-| **Codex Security** | Continuous source code monitoring | 14 CVEs found, 1.2M commits scanned |
+| **Codex Security** | Continuous source code monitoring | 792 critical + 10,561 high findings, 1.2M commits scanned |
 | **Claude Code Security** | Deep codebase analysis, variant finding | 500+ vulns, 22 Firefox vulns in 2 weeks |
 | **ZAST.AI** | Zero-false-positive source code scanning | 119 CVEs assigned |
 | **Strix** | Autonomous web app testing with browser + proxy | Used by top 1% HackerOne hunters |
@@ -86,7 +86,7 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **59 MCP test procedures, OWASP MCP Top 10, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **59 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -107,7 +107,7 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 
 **OMNI-LEAK**: single injection cascades through orchestrator → 82.4% of LLMs compromised via inter-agent trust. **CORBA**: 79-100% of agents blocked within 1.6 turns. **ZombieAgent**: zero-click self-propagating memory corruption via email.
 
-> **Agent supply chain, agentic browsers, novel techniques, OWASP Agentic Top 10:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **OWASP Agentic Top 10 (19 test procedures), agent supply chain, agentic browsers, novel techniques:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
 > **IDEsaster (28+ CVEs), Claude DXT, AI-as-C2, Google Antigravity:** See [reference/ide-supply-chain.md](reference/ide-supply-chain.md)
 > **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
@@ -131,7 +131,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 | LLM10 | Unbounded Consumption | Test for denial-of-wallet via large prompts or recursive tool calls |
 
 **Also test against:**
-- **OWASP Agentic Top 10** (ASI01-ASI10): Goal hijacking, tool misuse, privilege escalation, memory poisoning, cascading failures
+- **OWASP Agentic Top 10** (ASI01-ASI10): Goal hijacking, tool misuse, privilege escalation, memory poisoning, cascading failures — **19 test procedures** in [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
 - **OWASP AIVSS**: AI-specific vulnerability scoring extending CVSS for agentic capabilities
 
 > **Full testing patterns for each LLM Top 10 category + practical workflow checklists:** See [reference/llm-testing.md](reference/llm-testing.md)
@@ -236,13 +236,13 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~377 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (59), OWASP MCP Top 10, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~420 |
-| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~480 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks | ~384 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (59), OWASP MCP Top 10, Checkmarx 11 risks, vulnerability classes, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, scanning tools | ~460 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~538 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~163 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 50+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~241 |
-| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~406 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (120+ data points) | ~161 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 55+ real-world incidents, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, CTFs, NIST standards, AI slop warning | ~277 |
+| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~445 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (130+ data points) | ~218 |
 
 ---
 

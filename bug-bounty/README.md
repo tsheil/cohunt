@@ -139,6 +139,29 @@ Connect your tools for a richer experience:
 
 See [CONNECTORS.md](CONNECTORS.md) for the full list of supported integrations.
 
+## What's New in v0.38.0
+
+- **OWASP Agentic Top 10 test procedures** — 19 concrete test procedures (T1-T19) for ASI01-ASI10 risks in `agent-attack-patterns.md`, covering goal hijacking, tool misuse, privilege escalation, memory poisoning, inter-agent impersonation, cascading failures, trust exploitation, and rogue agent detection
+- **Microsoft "AI as Tradecraft" case study** — Coral Sleet fully AI-enabled malware workflow, LLM jailbreaking for code gen, AI code fingerprints (emojis as markers, conversational comments), first documented agentic AI experimentation by state-sponsored threat actors
+- **Codex Security Research Preview stats** — Updated with March 6, 2026 launch data: 792 critical + 10,561 high findings from 1.2M commits, 50%+ FP reduction, 90% severity over-reporting reduction, sandboxed validation, project-specific threat models
+- **Checkmarx 11 MCP Risks taxonomy** — Cross-referenced in `mcp-playbooks.md` alongside OWASP MCP Top 10, adding client-side and deserialization vectors
+- **Market intelligence** — Codex Security launch, OWASP Agentic Top 10 finalization, Checkmarx MCP risk taxonomy, Microsoft AI threat actor tradecraft
+
+## What's New in v0.37.0
+
+- **Edge framework path normalization bypass** — CVE-2026-29045 (Hono) auth bypass via `decodeURI` vs `decodeURIComponent` mismatch, with 5 test patterns in `web-vulns.md`
+- **SSRF via webhook/notification/import cluster** — 5-CVE cluster (Soft Serve 9.1, Ghostfolio 9.3, Wallos 8.8, Plane 8.5, PinchTab 7.5) with incomplete IP validation patterns
+- **GraphQL WebSocket subscription depth bypass** — CVE-2026-30241 (Mercurius) transport-inconsistent depth limiting pattern
+- **OAuth first-party app trust abuse (ConsentFix)** — Azure CLI trust bypass for MFA circumvention
+- **HTTP/3 race conditions (QUICker)** — First HTTP/3-specific race condition testing patterns
+- **Langflow CSV Agent RCE** — CVE-2026-27966 (CVSS 9.8) hardcoded dangerous defaults pattern in `ai-mcp-vulns.md`
+- **MCP Security Bench stats** — 40.71% average attack success rate (ICLR 2026), 30 MCP CVEs in 60 days
+- **PleaseFix zero-click exfiltration** — Zenity Labs agentic browser calendar invite → 1Password credential theft pattern
+- **Unit42 in-the-wild IDPI catalog** — 22 documented indirect prompt injection techniques including first ad review evasion
+- **Advanced jailbreak techniques** — Jailbreak Foundry (papers-to-attacks), TAO-Attack two-stage optimization, LRM autonomous jailbreak (97.14% success)
+- **6 new AI security tools** — Penetrify, GHOSTCREW, OpenAnt, Jailbreak Foundry, QUICker, Simbian added to tools landscape
+- **Market intelligence** — Bugcrowd FedRAMP, HackerOne AI Safe Harbor, Wallarm +400% AI API threats, curl bounty shutdown
+
 ## What's New in v0.28.0
 
 - **TypeScript runtime type erasure pattern** — New critical hunt pattern in `framework-patterns.md` for sandbox escapes via TS type confusion (CVE-2026-25049, n8n, CVSS 9.8) with code examples and audit guidance

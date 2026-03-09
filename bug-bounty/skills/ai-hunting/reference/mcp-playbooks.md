@@ -116,6 +116,8 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 
 **Testing against OWASP MCP Top 10:** When a target uses MCP integrations, map your findings to these risk IDs (MCP01-MCP10). The framework is especially useful for framing MCP supply chain (MCP04), tool poisoning (MCP06), and shadow server (MCP07) findings in reports.
 
+**Checkmarx 11 MCP Risks (March 2026):** Complementary taxonomy covering prompt injection/context manipulation, tool poisoning (schema manipulation), confused deputy (OAuth proxy), supply chain/rug pulls, malicious MCP servers (intentional), cross-agent context abuse, privilege escalation via over-delegation, insecure deserialization/code execution, data exposure via context leakage, insecure MCP client implementation, and dependency confusion/package hijacking. Use alongside OWASP MCP Top 10 for comprehensive coverage — Checkmarx risks map to MCP01-MCP10 but add client-side and deserialization vectors not explicitly covered.
+
 ---
 
 ## 59 MCP Test Procedures
