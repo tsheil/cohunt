@@ -32,6 +32,7 @@ Attack patterns targeting AI agents, coding assistants, multi-agent systems, and
 - [Image-Based Prompt Injection](#image-based-prompt-injection)
 - [Full Schema Poisoning (FSP)](#full-schema-poisoning-fsp)
 - [Supply Chain Worm: Shai-Hulud](#supply-chain-worm-shai-hulud)
+- [Phantom: Template-Based Agent Hijacking](#phantom-template-based-agent-hijacking)
 
 ---
 
@@ -482,18 +483,16 @@ An evolution beyond tool description poisoning where attackers compromise entire
 
 ## Supply Chain Worm: Shai-Hulud
 
-Multi-wave JavaScript supply chain worm (2025-2026): **454,648 malicious npm packages** in 2025 (99% of all open-source malware). s1ngularity campaign harvested 2,349 credentials from 1,079 developer systems via compromised Nx packages. Cross-victim propagation — stolen credentials compromise packages maintained by others.
+**454,648 malicious npm packages** in 2025 (99% of all open-source malware). s1ngularity harvested 2,349 credentials from 1,079 developer systems. **Test:** lockfile integrity, postinstall scripts, dependency pinning, npm token rotation. 7-14 day cooldowns prevent 80% of attacks.
 
-**Testing:** Check lockfile integrity verification, postinstall script execution in CI/CD, dependency pinning policies, transitive dependency poisoning, npm publish token rotation/scoping. **Key defense:** 7-14 day dependency cooldowns would have prevented 8/10 major 2025 supply chain attacks.
+---
+
+## Phantom: Template-Based Agent Hijacking
+
+Role confusion jailbreak exploiting chat template tokens (arXiv:2602.16958, Feb 2026). Template Autoencoder (TAE) maps structural patterns into latent space; Bayesian optimization finds adversarial vectors. **79.76% ASR** across 7 closed-source agents (GPT-4.1, Gemini-3), **70+ vendor vulnerabilities**. Operates at **structural/token level** — model-agnostic, bypasses instruction-tuning. **Test:** inject system/assistant role markers within user messages; test token bleeding across turns; check role confusion persistence in multi-turn.
 
 ---
 
 ## DXT/MCP Confused Deputy: Cross-Privilege Data-to-Execution Chains
 
-MCP/DXT architectures bridge low-privilege data sources to high-privilege executors without adequate trust boundaries (LayerX, February 2026, CVSS 10.0). DXT extensions run unsandboxed; MCP treats all connected data sources with equal trust; agents chain actions without per-action authorization gates.
-
-**Pattern:** Attacker plants content in low-risk source (calendar, email, Slack, GitHub issue) → AI agent processes → hidden instructions trigger high-privilege tool (file system, code execution, API calls) → no confirmation required.
-
-**Quick tests:** Calendar invite → code execution | Email → file exfiltration | Slack → API abuse | GitHub issue → credential theft | RSS → persistent backdoor. Critical when any low-privilege data source triggers code execution or exfiltration. Applies to ALL MCP/DXT platforms. Maps to ASI02 + ASI05.
-
-> **Full DXT/IDE attack details:** See [ide-supply-chain.md](ide-supply-chain.md) | **AI hunting tools:** See [tools-landscape.md](tools-landscape.md)
+Low-privilege data → AI agent → high-privilege executor without trust boundaries (LayerX CVSS 10.0). **Quick tests:** calendar→RCE | email→file exfil | Slack→API abuse | issue→cred theft | RSS→backdoor. Maps to ASI02 + ASI05. **Full details:** [ide-supply-chain.md](ide-supply-chain.md)
