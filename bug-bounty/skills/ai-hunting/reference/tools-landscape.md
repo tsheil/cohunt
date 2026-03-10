@@ -253,13 +253,6 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Found **7 CVEs in Coolify** including privilege escalation and full host compromise via RCE as root across 52,000+ exposed instances
 - Best for: continuous pre-deployment security validation with automated remediation
 
-**Zen-AI-Pentest:**
-- Python-based open-source framework wrapping 20+ established security tools (Nmap, SQLMap, Metasploit, Burp Suite, Gobuster, Nuclei, BloodHound) under an AI-driven orchestration layer (February 2026)
-- Uses LLMs to make strategic decisions and adjust testing approaches based on discovered information
-- CI/CD integration with GitHub Actions, GitLab CI, and Jenkins
-- Best for: automated pentest pipelines combining traditional tools with AI-driven strategy
-- GitHub: `SHAdd0WTAka/Zen-Ai-Pentest`
-
 **Penligent (Autonomous Security Agent):**
 - Fully autonomous Security Agent with its own runtime environment — unlike PentestGPT (AI copilot for human), Penligent executes commands, analyzes return traffic, and plans next moves autonomously
 - Implements military OODA Loop (Observe-Orient-Decide-Act) with feedback loops
@@ -433,7 +426,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
 - **Synack Sara** (Synack Autonomous Red Agent) for multi-agent PTaaS — hundreds of specialized AI agents for recon, attack, and verification; all findings require human review by 1,500+ SRT researchers; reduces exposure window from months to days; signaling PTaaS incumbents adopting agentic AI
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
-- **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
+- **AWS Security Agent** for multi-agent automated pentesting — specialized agents for recon, vulnerability analysis, and exploit validation; now supports shared VPC and GitHub Enterprise Cloud (Feb 2026 updates)
 - **Hadrian** for attack-surface-driven 24/7 autonomous pentesting
 - **Escape** for API-native DAST with agentic crawling and MCP endpoint discovery (Y Combinator backed)
 - **Penligent** for fully autonomous black-box pentesting with OODA loop feedback

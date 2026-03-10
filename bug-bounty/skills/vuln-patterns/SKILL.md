@@ -53,17 +53,7 @@ The patterns below cover the **core web vulnerability classes** that don't have 
 
 ## MITRE CWE Top 25 (2025)
 
-2025 list (39K+ vulns, June 2024-June 2025) — **authorization flaws climbing fast**:
-
-| Rank | CWE | Name | Trend |
-|------|-----|------|-------|
-| 1 | CWE-79 | XSS | Stable at #1 |
-| 2 | CWE-89 | SQL Injection | Up 1 |
-| 3 | CWE-352 | CSRF | Up 1 |
-| 4 | **CWE-862** | **Missing Authorization** | **Up 5 — biggest climber** |
-| 5 | CWE-787 | Out-of-Bounds Write | Stable |
-
-**Key trend:** IDOR reports grew **116% over 5 years** (+29% YoY); access control up **18% YoY** (HackerOne 2025). XSS reports **down 10% since 2023**. Programs shifting rewards toward identity, access, and business logic. **FIRST forecasts ~59,427 CVEs in 2026** (first year to exceed 50,000) — vulnerability volume continues accelerating. **45% of AI-generated code** has OWASP Top 10 vulnerabilities (Contrast Security 2026) — vibe-coded applications are a growing target class.
+2025 list (39K+ vulns) — **CWE-862 Missing Authorization up 5 spots to #4** (biggest climber). IDOR reports grew **116% over 5 years** (+29% YoY); access control up **18% YoY**. XSS reports **down 10% since 2023**. FIRST forecasts **~59,427 CVEs in 2026** (first year to exceed 50K). **45% of AI-generated code** has OWASP Top 10 vulns (Contrast Security 2026) — vibe-coded apps are a growing target class.
 
 ---
 
@@ -494,15 +484,11 @@ When you know the target's technology, focus your testing:
 
 ## Reference Files
 
-This skill uses progressive disclosure. Detailed reference material is available on demand:
+| File | Contents |
+|------|----------|
+| [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation |
+| [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns, LPCI, OWASP MCP Top 10 |
+| [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, workflow automation, React RSC |
+| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | SSRF chains, MDM, MotW bypass, critical infra, remote desktop, webmail RCE |
 
-| File | Contents | Lines |
-|------|----------|-------|
-| [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation, monetary impact quantification | ~320 (dedicated skill) |
-| [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns 11-18, LPCI, real-world incidents, OWASP MCP Top 10 mapping | ~360 |
-| [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
-| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass, new critical CVEs (MSHTML, SharePoint ToolShell, GoAnywhere, RoundCube, Langflow, WebView) | ~550 |
-
-**Quick search** — find patterns without loading full files: `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/<file>.md`
-
-**Related:** target-recon (stack ID), program-research (payout priorities), report-writing (writeups), ai-hunting (AI/LLM patterns).
+**Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/<file>.md` | **Related:** target-recon, program-research, report-writing, ai-hunting

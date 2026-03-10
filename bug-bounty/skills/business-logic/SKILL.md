@@ -1,6 +1,6 @@
 ---
 name: business-logic
-description: Tests business logic vulnerabilities — the #1 bounty-paying class (45% of all awards) and the human hunter's strongest edge over autonomous tools. Covers payment flow exploitation, state machine mapping, subscription bypass, multi-step workflow abuse, race conditions with financial impact, referral system gaming, and multi-tenant isolation. Activates when testing e-commerce checkout, pricing, subscriptions, approvals, invite flows, or any application-specific workflow that autonomous scanners can't reason about. Trigger on "business logic", "payment bypass", "checkout flow", "subscription bypass", "race condition money", "coupon abuse", "price manipulation", "workflow skip", "state machine", "referral abuse", "feature toggle", "paywall bypass", "multi-tenant", "trust boundary", "approval workflow", "trial extension". For auth/access control bugs (BOLA, BFLA, JWT, OAuth), use auth-testing. For technical vuln classes (XSS, SQLi, SSRF), use vuln-patterns. For race condition protocol details, use http-desync.
+description: Tests business logic vulnerabilities — the #1 bounty-paying class (45% of all awards) and the human hunter's strongest edge over autonomous tools. Covers payment flow exploitation, state machine mapping, subscription bypass, multi-step workflow abuse, race conditions with financial impact, referral system gaming, B2B SaaS workflows (SCIM, invites, shared links, connectors, real-time collaboration), and multi-tenant isolation. Activates when testing e-commerce checkout, pricing, subscriptions, approvals, invite flows, shared link abuse, SaaS connector integrations, or any application-specific workflow that autonomous scanners can't reason about. Trigger on "business logic", "payment bypass", "checkout flow", "subscription bypass", "race condition money", "coupon abuse", "price manipulation", "workflow skip", "state machine", "referral abuse", "feature toggle", "paywall bypass", "approval workflow", "trial extension", "shared link", "invite flow", "connector abuse", "webhook replay", "seat limit", "B2B SaaS". For auth/access control bugs (BOLA, BFLA, JWT, OAuth), use auth-testing. For technical vuln classes (XSS, SQLi, SSRF), use vuln-patterns. For race condition protocol details, use http-desync.
 ---
 
 # Business Logic Vulnerability Testing
@@ -312,6 +312,9 @@ The highest-value, lowest-competition attack surface. B2B SaaS admin workflows c
 | Approval workflows | Self-approval or approval bypass via direct API call | High — separation of duties bypassed |
 | Webhooks | SSRF via webhook URL (RFC 1918 ranges, cloud metadata) | High — internal network access |
 | Billing | Plan confusion — premium features at free-tier price | High — revenue loss |
+| Shared links | Scope confusion — admin share link leaks admin-only data to unauthenticated users | High — data exposure at scale |
+| SaaS connectors | Cross-tenant connector bleed via unscoped OAuth tokens | Critical — cross-service data exfil |
+| Real-time collab | WebSocket auth parity gap — actions blocked on REST succeed via WebSocket | High — auth bypass |
 
 ---
 

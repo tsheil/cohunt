@@ -176,6 +176,60 @@ Support impersonation features ("login as customer") are high-value targets — 
 
 ---
 
+## Shared Links & Signed URLs
+
+Sharing features are high-value because bugs here expose data to unintended audiences at scale.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Link scope confusion | Generate share link as admin, access as unauthenticated — does it show admin-only data? | Share link inherits creator's permissions instead of explicit scope |
+| 2 | Revoke bypass | Revoke a share link, then access it again (with and without cache) | Revocation not enforced — link still works |
+| 3 | Signed URL reuse | Capture time-limited signed URL, replay after expiration | Timestamp not validated or expiry window too long |
+| 4 | Link permission escalation | Modify share link parameters (`access=view` → `access=edit`, `role=viewer` → `role=admin`) | Permission upgrade via URL parameter tampering |
+| 5 | Preview endpoint bypass | Access `/preview` or `/embed` endpoint without share token | Preview endpoints lack auth — full content accessible |
+| 6 | Stale download links | Download link for deleted resource still returns content | Deletion doesn't invalidate download URLs |
+| 7 | Link enumeration | Iterate share tokens (sequential IDs, short random strings) | Discover others' shared content |
+
+**Severity guidance:** Share link scope confusion exposing PII = High. Revoke bypass = High. Enumeration of sequential tokens = Critical if content is sensitive.
+
+---
+
+## SaaS Connector & OAuth Scope Abuse
+
+Third-party integrations (Slack, Jira, Google Drive, GitHub) create cross-service trust boundaries. Bugs here chain into data exfiltration or cross-tenant access.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Connector cross-tenant bleed | Install connector in tenant A, check if it can access tenant B's data | Connector token not scoped to tenant |
+| 2 | OAuth scope over-request | Review OAuth consent screen — does connector request more scopes than needed? | Excessive permissions (e.g., `admin:write` when `read` suffices) |
+| 3 | App install privilege escalation | Install app as member, check if it gets org-level access | App inherits higher privileges than installer |
+| 4 | Connector token persistence | Remove/uninstall connector, check if OAuth token still works | Stale tokens not revoked on uninstall |
+| 5 | Webhook integration SSRF | Set integration webhook to internal endpoints | Internal network access via third-party integration |
+| 6 | Connector data sync IDOR | Modify resource ID in connector sync request | Sync data from another project/workspace/repo |
+| 7 | OAuth state parameter fixation | Remove or reuse `state` parameter in OAuth callback | CSRF on OAuth flow — attacker's connector linked to victim's account |
+
+**Severity guidance:** Cross-tenant connector bleed = Critical. OAuth token persistence after uninstall = High. State fixation = High.
+
+---
+
+## Real-Time Collaboration Auth Drift
+
+Real-time features (WebSocket/SSE, comments, presence, live editing) often have weaker auth than REST endpoints. Bugs here cross tenant or role boundaries in real-time.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | WebSocket auth parity | Call REST endpoint with low-privilege user (blocked), then try same action via WebSocket | WebSocket lacks auth check that REST enforces |
+| 2 | Channel subscription IDOR | Subscribe to WebSocket channel for another tenant's workspace/room | Receive real-time events from other tenants |
+| 3 | Comment/mention cross-tenant | @mention a user from a different tenant | Cross-tenant notification or data leak |
+| 4 | Presence leak | Join workspace, observe presence indicators — can you see users from other tenants? | Tenant-leaked user activity (online status, typing indicators) |
+| 5 | Attachment auth bypass | Access file attachment URL from a conversation you weren't part of | Attachment URLs not scoped to conversation participants |
+| 6 | SSE reconnect auth | Disconnect SSE, let session expire, reconnect — does the SSE stream resume without re-auth? | Stale SSE connection bypasses session expiry |
+| 7 | Collaborative edit race | Two users edit same resource simultaneously with different permissions | Permission check evaluated once at start, not per-edit |
+
+**Severity guidance:** WebSocket auth parity gaps = High (same impact as REST auth bypass). Cross-tenant presence/events = High-Critical.
+
+---
+
 ## Testing Methodology Summary
 
 For each B2B SaaS target, systematically work through:

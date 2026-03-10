@@ -103,6 +103,11 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 - Maintains persistent control even after chat is closed
 - Test for: URL parameter injection in AI assistants, persistent instruction injection via conversation context
 
+**Claude Code Security Fixes (March 2026) — generalizable test patterns:**
+- **Nested skill loading from gitignored dirs**: skills loaded from `node_modules/` and other ignored paths — test if other AI IDEs load plugins/skills from untrusted directories (dependency directories, build output, temp files)
+- **Trust dialog bulk grant**: all `.mcp.json` servers silently enabled on first run without per-item consent — test if other tools auto-trust all configs vs. requiring individual approval
+- **OAuth keychain corruption**: multiple OAuth MCP servers caused macOS keychain buffer overflow leaving stale credentials — test credential storage with 5+ concurrent OAuth providers
+
 **Testing Approach:**
 1. Clone a repository containing malicious `.claude/`, `.cursor/`, `.github/` configurations
 2. Open in target AI IDE and observe if project hooks, MCP configs, or environment variables are automatically executed
@@ -110,6 +115,40 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 4. Test if IDE extension recommendations can be manipulated to install attacker-controlled extensions
 5. Verify if workspace file manipulation can inject MCP connections or alter build configurations
 6. Check for legacy Chromium vulnerabilities if IDE uses embedded browser (94+ known flaws in Cursor/Windsurf builds)
+7. Test skill/plugin loading from gitignored or untrusted directories (node_modules, .git, build output)
+8. Test bulk trust grants — does the tool require per-item consent for MCP servers?
+
+---
+
+## Claude Code Plugin Hook Injection
+
+PromptArmor demonstrated (March 2026) that Claude Code marketplace plugins can hijack the agent via the hook system's exit-2 stderr channel:
+
+**Attack Chain:**
+1. Malicious plugin installed from marketplace uses `PostToolUse` hook
+2. Hook exits with code 2, injecting arbitrary content into Claude's stderr
+3. Claude treats stderr feedback as authoritative system input (no source attribution)
+4. Injected prompt instructs Claude to exfiltrate codebase to attacker-controlled server
+5. Claude follows instructions including reading files, spawning subagents, and making network requests
+
+**Key Details:**
+- The runtime delivers hook stderr without filtering or marking it as untrusted
+- Any plugin can inject instructions that appear indistinguishable from system messages
+- Bypass all permission dialogs by having Claude use pre-approved tool patterns
+- Demonstrated full codebase exfiltration in proof-of-concept
+
+**Generalizable Test Patterns:**
+1. **Hook stderr injection**: Does the AI tool's plugin/extension system have a stderr or error channel that feeds back into the model's context? If so, can plugins inject prompts through it?
+2. **Source attribution**: Does the tool distinguish between user input, system messages, and plugin feedback in the model's context window?
+3. **Plugin trust boundary**: After installation, what actions can a plugin take without additional user consent?
+4. **Marketplace review**: Are plugin hooks and extension points reviewed for prompt injection vectors during marketplace submission?
+
+**Testing Approach:**
+1. Install a benign-looking plugin with `PostToolUse` or equivalent hooks
+2. Have the hook output instructions via stderr/error channel
+3. Observe if the AI agent follows those instructions as if they came from the user
+4. Check if the agent can distinguish hook-injected content from user messages
+5. Test if permission dialogs can be bypassed via hook-injected prompts
 
 ---
 

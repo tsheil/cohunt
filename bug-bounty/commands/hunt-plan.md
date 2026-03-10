@@ -78,21 +78,45 @@ Tell me what you know: "I want to hunt on Shopify. I'm good at API bugs and XSS.
 
 ---
 
-### Actor Matrix (Required)
+### Target Archetype
 
-Map every user role and its access boundaries. This matrix drives all authorization testing.
+| Archetype | Signals | Primary Skills | Top Vuln Classes |
+|-----------|---------|---------------|-----------------|
+| **B2B SaaS** | Multi-tenant, org/team model, SCIM/SSO, seat limits | business-logic, auth-testing | Tenant isolation, IDOR, privilege escalation |
+| **Consumer App** | User profiles, social features, payments, mobile | vuln-patterns, client-side-security | XSS, IDOR, payment bypass, race conditions |
+| **API-First** | Developer docs, API keys, webhooks, rate limits | api-security, auth-testing | BOLA/BFLA, broken auth, rate limiting |
+| **AI Product** | Chatbot, copilot, agent, MCP integrations | ai-hunting, vuln-patterns | Prompt injection, tool abuse, memory poisoning |
+| **Infrastructure** | Network appliances, management consoles, VPN | vuln-patterns (infra ref) | Auth bypass, command injection, default creds |
+| **Mobile-First** | iOS/Android apps, deep links, cert pinning | mobile-security, api-security | API backend vulns, deep link hijacking |
 
-| Role | Access Level | Key Endpoints | Test Account Ready? |
-|------|-------------|---------------|---------------------|
-| Unauthenticated | Public only | [endpoints] | N/A |
-| Free user | Basic features | [endpoints] | □ Account created |
-| Paid user | Premium features | [endpoints] | □ Account created |
-| Admin | Full management | [endpoints] | □ Account created |
-| API-only | Programmatic access | [endpoints] | □ Token obtained |
-| Service account | Internal operations | [endpoints] | □ If testable |
+**This target's archetype:** [archetype] → drives skill selection and test priorities below.
 
-**Multi-tenant:** □ Accounts in 2+ tenants | **Webhook receiver:** □ Set up for callbacks
-**Two-account minimum:** Every auth test requires Account A and Account B at different privilege levels.
+---
+
+### Setup & State Fixtures (REQUIRED before testing)
+
+| Fixture | Status | Notes |
+|---------|--------|-------|
+| 2+ accounts (different roles) | □ | [e.g., free + paid, user + admin] |
+| Webhook receiver | □ | [Burp Collaborator / interactsh / webhook.site] |
+| Multi-tenant accounts | □ / N/A | [accounts in 2+ tenants if applicable] |
+| Pending invite (not accepted) | □ | |
+| Downgraded plan (premium→free) | □ | [check retained access] |
+| API token pair (2 users) | □ | |
+| Tools ready (Burp/proxy) | □ | |
+
+**Blockers:** [List anything the hunter can't set up — adjust plan accordingly]
+
+---
+
+### Role-Endpoint Matrix
+
+| Endpoint | Unauth | Free | Paid | Admin |
+|----------|--------|------|------|-------|
+| [endpoint 1] | [✓/✗] | [✓/✗] | [✓/✗] | [✓/✗] |
+| [endpoint 2] | [✓/✗] | [✓/✗] | [✓/✗] | [✓/✗] |
+
+Every ✗ cell is a test target — can the blocked role actually access it?
 
 ---
 
@@ -123,30 +147,23 @@ Ranked by: (Reward Potential × Vulnerability Likelihood) ÷ Competition Level
 
 ---
 
-### First Test Cases
+### Proof-First Test Cards
 
-Start with these specific tests:
+#### Test Card 1: [Name]
+- **Target:** [Exact URL/endpoint]
+- **Baseline:** [Expected behavior for authorized user — capture this first]
+- **Attack:** [Exact request with payload — what to change and why]
+- **Verify:** [What confirms the bug — specific response field, status code, data]
+- **FP Check:** [What would make this a false positive]
+- **Evidence:** [What to capture — screenshot, response body, two-account comparison]
+- **Pivot If Hit:** [What to test next — escalation, chain, variant]
+- **Pivot If Blocked:** [Alternative approach or next test area]
 
-**Test 1: [Name]**
-- Target: [URL or feature]
-- Vuln type: [CWE]
-- Steps: [Concrete testing steps]
-- What to look for: [Expected behavior if vulnerable]
-- Time estimate: [minutes]
+#### Test Card 2: [Name]
+[Same format]
 
-**Test 2: [Name]**
-- Target: [URL or feature]
-- Vuln type: [CWE]
-- Steps: [Concrete testing steps]
-- What to look for: [Expected behavior if vulnerable]
-- Time estimate: [minutes]
-
-**Test 3: [Name]**
-- Target: [URL or feature]
-- Vuln type: [CWE]
-- Steps: [Concrete testing steps]
-- What to look for: [Expected behavior if vulnerable]
-- Time estimate: [minutes]
+#### Test Card 3: [Name]
+[Same format]
 
 ---
 

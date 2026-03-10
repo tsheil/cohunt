@@ -99,6 +99,7 @@ I found three things on example.com:
 **Before reporting:**
 - [Step to strengthen the finding, if needed]
 
+**Triager repro time:** [Estimated minutes — under 5 is ideal]
 **Estimated payout:** [$range based on program + severity]
 
 ---
@@ -121,13 +122,29 @@ I found three things on example.com:
 
 ---
 
+## 5-Gate Quick Triage (do this FIRST — 2 minutes per finding)
+
+Run every finding through these 5 gates before the detailed assessment. If any gate fails, fix it before proceeding.
+
+| Gate | Question | FAIL Action |
+|------|----------|-------------|
+| 1. BOUNDARY | Does it cross a trust boundary? (user→admin, tenant-A→tenant-B, unauth→auth) | Not a vulnerability. Do not report. |
+| 2. REPRO | Can a triager reproduce in under 5 min? (numbered steps, specific URLs, exact payloads) | Add precise reproduction steps first. |
+| 3. IMPACT | Is real-world harm concrete and specific? (whose data? how many users? what dollar amount?) | Replace vague impact with specifics. |
+| 4. SCOPE | Is this asset + vuln type explicitly in scope? | Do not report. Check program policy. |
+| 5. EVIDENCE | Is there proof beyond "I tested and it works"? (screenshots, HTTP req/res, two-account proof) | Capture evidence before reporting. |
+
+**All 5 pass → proceed to detailed triage below. Any fail → fix the failing gate first.**
+
+---
+
 ## Triage Criteria
 
 ### Reportability Assessment
 
 | Level | Meaning | Criteria |
 |-------|---------|----------|
-| **Ready** | Submit now | Working PoC, clear impact, in-scope, strong repro steps |
+| **Ready** | Submit now | All 5 gates pass, working PoC, clear impact, in-scope, strong repro steps |
 | **Needs Work** | Strengthen first | Partial PoC, unclear impact, needs second account test, or chaining required |
 | **Weak** | Consider skipping | Self-only impact, theoretical, likely duplicate, or borderline out-of-scope |
 

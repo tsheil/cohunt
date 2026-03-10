@@ -1,6 +1,6 @@
 ---
 name: program-research
-description: Researches bug bounty programs before hunting — scope, rewards, disclosed reports, duplicate patterns, and competition assessment. Provides a go/no-go recommendation with rationale. Trigger on "which program", "what pays", "program scope", "bug bounty program", "HackerOne program", "Bugcrowd program", "is it worth hunting on", "duplicate risk", "program rewards", "bounty table", or when evaluating whether to hunt on a program. Also use when comparing programs or checking what gets marked as duplicate. For market statistics and trends, see reference/market-context.md.
+description: Researches bug bounty programs before hunting — scope, rewards, disclosed reports, duplicate patterns, and competition assessment. Provides a go/no-go recommendation with rationale. ALWAYS use this skill when evaluating whether a program is worth hunting on, or when the user asks about any bug bounty platform or program. Trigger on "which program", "what pays", "program scope", "bug bounty program", "HackerOne program", "Bugcrowd program", "Intigriti", "Synack", "is it worth hunting on", "duplicate risk", "program rewards", "bounty table", "how much does X pay", "payout range", "response time", "triage time", "who else is hunting", "should I hunt this", "compare programs", or when evaluating whether to hunt on a program. Also use when comparing programs or checking what gets marked as duplicate. For market statistics and trends, see reference/market-context.md.
 ---
 
 # Program Research
