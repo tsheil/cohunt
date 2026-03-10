@@ -355,7 +355,12 @@ A zero-click exploit chain against ChatGPT demonstrating self-propagating memory
 4. Test if compromised agent can propagate instructions to contacts or collaborators
 5. Verify if poisoned memory entries are visible to the user (most are not)
 
-**Severity Guidance:** Critical — zero-click, self-propagating, persistent. Maps to ASI06 (Memory Poisoning) and enables ASI07 (Insecure Inter-Agent Communication) via propagation. OpenAI patched December 2025.
+**ZombieAgent Successor — Character-at-a-Time Exfiltration:**
+- Bypasses ChatGPT's link protection defense by exfiltrating data one character at a time using pre-constructed URLs terminating in different text characters
+- Exploits ChatGPT's memory feature for attack persistence — OpenAI attempted mitigation by disallowing connectors and memory in the same chat session, but the character-level exfiltration route remains viable
+- **Testing:** Send long text with exfiltration instructions using single-char URL encoding; check if AI constructs and visits character-mapped URLs; test if memory abuse persists across sessions despite connector restrictions
+
+**Severity Guidance:** Critical — zero-click, self-propagating, persistent. Maps to ASI06 (Memory Poisoning) and enables ASI07 (Insecure Inter-Agent Communication) via propagation. OpenAI patched December 2025 (original), character-at-a-time variant disclosed January 2026.
 
 ### Unit42 In-the-Wild Indirect Prompt Injection Catalog
 
@@ -485,15 +490,10 @@ Multi-wave JavaScript supply chain worm (2025-2026): **454,648 malicious npm pac
 
 ## DXT/MCP Confused Deputy: Cross-Privilege Data-to-Execution Chains
 
-MCP/DXT architectures bridge low-privilege data sources to high-privilege executors without adequate trust boundaries (LayerX, March 2026, CVSS 10.0).
+MCP/DXT architectures bridge low-privilege data sources to high-privilege executors without adequate trust boundaries (LayerX, February 2026, CVSS 10.0). DXT extensions run unsandboxed; MCP treats all connected data sources with equal trust; agents chain actions without per-action authorization gates.
 
-**Pattern:** Attacker plants benign-looking content in a low-risk data source (calendar, email, Slack, GitHub issue) → AI agent processes content → hidden instructions trigger high-privilege tool (file system, code execution, API calls) → no user confirmation required.
+**Pattern:** Attacker plants content in low-risk source (calendar, email, Slack, GitHub issue) → AI agent processes → hidden instructions trigger high-privilege tool (file system, code execution, API calls) → no confirmation required.
 
-**Why it works:** DXT extensions run unsandboxed; MCP treats all connected data sources with equal trust; agents chain actions without per-action authorization gates.
-
-**Quick tests:** Calendar invite → code execution | Email → file exfiltration | Slack → API abuse | GitHub issue → credential theft | RSS → persistent backdoor.
-
-**Severity:** Critical when any low-privilege data source triggers code execution or data exfiltration. Applies to ALL MCP/DXT platforms. Maps to ASI02 + ASI05.
+**Quick tests:** Calendar invite → code execution | Email → file exfiltration | Slack → API abuse | GitHub issue → credential theft | RSS → persistent backdoor. Critical when any low-privilege data source triggers code execution or exfiltration. Applies to ALL MCP/DXT platforms. Maps to ASI02 + ASI05.
 
 > **Full DXT/IDE attack details:** See [ide-supply-chain.md](ide-supply-chain.md) | **AI hunting tools:** See [tools-landscape.md](tools-landscape.md)
-

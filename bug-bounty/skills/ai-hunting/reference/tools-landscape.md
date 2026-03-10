@@ -61,6 +61,13 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Combines structured testing methodologies with LLM-driven decision-making
 - Useful for automated exploitation chains in structured environments
 
+**BugBounty MCP Server (LLM-Integrated Security Testing):**
+- MCP tool transforming natural language prompts into actionable security scans and assessments
+- 90+ integrated tools spanning multiple security domains: recon, exploitation, web testing, API testing
+- Enables security professionals to converse with LLMs to orchestrate scans — "test this target for SSRF" becomes automated scanning workflow
+- Best for: integrating security testing into LLM workflows, natural language security automation
+- Available on: mcpmarket.com
+
 **AgentFence (AI Agent Security Testing):**
 - Open-source platform for automatically testing AI agent security
 - Detects vulnerabilities like prompt injection, secret leakage, and system instruction exposure
@@ -197,6 +204,14 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Built in response to the ClawHub supply chain crisis (824+ malicious skills)
 - Best for: scanning third-party agent skills before installation; defensive auditing
 - GitHub: `cisco-ai-defense/skill-scanner`
+
+**Promptfoo (Acquired by OpenAI, March 9, 2026):**
+- Open-source CLI/library for LLM evaluation and red-teaming; 50+ vulnerability types; CI/CD integration
+- 125,000+ developers, 30+ Fortune 500 companies; pledged to remain open-source post-acquisition
+- Agent tracing, compliance mapping (OWASP, NIST, MITRE ATLAS, EU AI Act), MCP testing
+- Automated adversarial agent with deep reconnaissance, strategic planning, adaptive execution, persistent memory
+- Best for: continuous red-teaming of AI features during development; CI/CD security gates
+- GitHub: `promptfoo/promptfoo`
 
 **AgentShield Benchmark (AI Agent Security Testing):**
 - First open benchmark testing 6 commercial AI agent security tools with **537 test cases**

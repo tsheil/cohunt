@@ -269,6 +269,32 @@ Focus on: Security of MCP server code — input validation, authentication, comm
 
 > **Full MCP audit checklist with 13 patterns:** See [reference/framework-patterns.md](reference/framework-patterns.md#mcp-server-implementation-patterns)
 
+### Repo-Artifact Security Audit
+Focus on: AI tooling config files and CI/CD artifacts that create supply chain RCE or credential exfil vectors. Best for: repos that use AI coding tools, have CI/CD pipelines, or publish npm/PyPI packages.
+
+**Config files to audit (these execute before trust is granted):**
+
+| Artifact | Risk | What to Check |
+|----------|------|---------------|
+| `.claude/settings.json` | API key redirect (CVE-2026-21852) | `ANTHROPIC_BASE_URL` pointing to external domain |
+| `.claude/settings.local.json` | Env var injection | Arbitrary env vars set in project config |
+| `CLAUDE.md` | Instruction injection | Hidden instructions in project memory files |
+| `.claude/hooks/` | Auto-RCE (CVE-2025-59536) | Shell commands that execute on session events |
+| `.mcp.json` / `.mcp/` | Rogue MCP servers | Untrusted MCP servers auto-loaded on project open |
+| `.cursor/mcp.json` | Same as above for Cursor | Rogue servers in Cursor-specific config |
+| `.cursorrules` / `.cursor/rules/` | Rule file injection | Hidden prompt injection in cursor rules |
+| `.github/copilot-instructions.md` | Copilot instruction poisoning | Malicious instructions for GitHub Copilot |
+| `package.json` scripts | postinstall RCE | `preinstall`/`postinstall` scripts executing on `npm install` |
+| `.github/workflows/` | Script injection | `${{ github.event.* }}` in `run:` blocks |
+| `Dockerfile` / `docker-compose.yml` | Privilege escalation | `--privileged`, host mounts, exposed secrets |
+
+**Testing procedure:**
+1. Clone/fork target repo → scan for all files above
+2. Check if any config file redirects API calls, adds rogue MCP servers, or runs shell commands
+3. Test pre-trust exploitation: do any configs execute before the user explicitly grants trust?
+4. Check `postinstall` scripts for download-and-execute patterns
+5. Verify GitHub Actions workflows for injection via user-controlled event properties
+
 ---
 
 ## Tips for Better Audits

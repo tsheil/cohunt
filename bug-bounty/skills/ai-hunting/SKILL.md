@@ -29,7 +29,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 | **Vulnhalla** | CodeQL + LLM-guided questioning | 96% false positive reduction |
 | **Hound** | Deep logic bugs, multi-file chains via knowledge graphs | Language-agnostic |
 | **Shannon** | Autonomous white-box web app pentesting | 96.15% on XBOW benchmark |
-| **CAI** | CTF-level challenges, structured offensive tasks | Top-20 worldwide CTF, 11x faster |
+| **CAI** | CTF-level challenges, structured offensive tasks | Top-30 Spain, top-500 worldwide HTB; 3,600x faster than humans in CTF benchmarks; 156x cost reduction; non-professionals find CVSS 4.3-7.5 bugs at expert rates |
 | **AISLE** | Deep C/C++ memory safety bugs at scale | 100+ CVEs across 30+ projects (OpenSSL, Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, NASA CryptoLib); 15 OpenSSL CVEs including CVE-2025-15467 (CVSS 9.8 RCE); found bugs dating back 25-27 years |
 | **Codex Security** | Continuous source code monitoring | 792 critical + 10,561 high findings, 1.2M commits scanned |
 | **Claude Code Security** | Deep codebase analysis, variant finding | 500+ vulns in OSS; 22 Firefox vulns (14 high-severity) in 2 weeks scanning 6,000 C++ files; 112 unique bug reports to Mozilla; first AI-authored browser exploit (CVE-2026-2796, CVSS 9.8); $4K API credits vs $3K-$20K per vuln bounty |
@@ -160,7 +160,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **Business logic vulnerabilities** = **45% of all bounty awards** industrywide (Intigriti 2026) — highest-value human edge
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
-- **XBOW**: #1 HackerOne with 1,060 submissions; **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
+- **XBOW**: #1 HackerOne with 1,060 submissions (mission declared completed March 2026, pivoting to pre-production); **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
 - **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI)
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
@@ -238,13 +238,13 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks, Pynt/Noma research | ~454 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), security MCP servers, red teaming frameworks, Pynt/Noma research | ~469 |
 | [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 59 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks | ~486 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~499 |
-| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~293 |
+| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~293 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~454 |
-| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~489 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points) | ~357 |
+| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~470 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points) | ~362 |
 
 **Quick search** — find specific content without loading full files:
 ```

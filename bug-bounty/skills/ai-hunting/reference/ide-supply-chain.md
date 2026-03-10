@@ -114,7 +114,7 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 
 ## Claude DXT Zero-Click RCE
 
-A critical vulnerability (CVSS 10.0) in Claude Desktop Extensions (DXT) discovered by LayerX (March 2026):
+A critical vulnerability (CVSS 10.0) in Claude Desktop Extensions (DXT) discovered by LayerX (February 9, 2026):
 
 **How It Works:**
 - 50+ Claude Desktop Extensions execute without sandboxing, with full host privileges

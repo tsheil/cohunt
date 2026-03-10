@@ -494,3 +494,6 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2026-25108 | Roundcube Webmail | High | XSS (SVG animate) | CISA KEV; nation-state exploitation. See Webmail RCE section for full pattern |
 | CVE-2025-3248 | Langflow AI Platform | 9.8 | Unauth RCE | `/api/v1/validate/code` — code validation endpoint executes arbitrary code. CISA KEV. Route to ai-mcp-vulns.md for AI platform patterns |
 | CVE-2025-XXXXX | Chrome WebView | High | Policy bypass | WebView tag policy enforcement — affects Android apps, hybrid apps, in-app browsers |
+| CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download + key disclosure | Unauthenticated endpoint leaks full backup including TLS private keys and credentials. Pattern: web management UIs for infrastructure (Nginx, Apache, HAProxy) often expose admin-only endpoints without auth |
+| CVE-2026-21509 | Microsoft Office | High | Zero-day (APT28) | Operation Neusploit — weaponized RTF files; Russian state-sponsored exploitation. Fingerprint: Office document parsing in enterprise environments |
+| CVE-2026-20805 | Windows Desktop Window Manager | High | Info disclosure | Actively exploited zero-day; DWM handles compositing for all Windows apps — info leak may enable ASLR bypass for further exploitation chains |

@@ -348,7 +348,8 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | React RSC / Next.js | Deserialization in Flight protocol (React2Shell) | vuln-patterns SKILL.md |
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
 | Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
-| Claude Desktop Extensions (DXT) | Zero-click RCE, AppleScript injection, API whitelist exfiltration | ai-hunting/reference/ide-supply-chain.md |
+| Claude Desktop Extensions (DXT) | Zero-click RCE (CVSS 10.0, LayerX Feb 2026), confused deputy cross-connector chains, AppleScript injection | ai-hunting/reference/ide-supply-chain.md |
+| Repos with AI tooling configs | .claude/ hooks RCE (CVE-2025-59536), API key redirect (CVE-2026-21852), .mcp.json rogue servers, .cursorrules injection | source-code-audit SKILL.md |
 | MCP client infrastructure | mcp-remote RCE (CVE-2025-6514), OAuth metadata injection, proxy/gateway URL handling | vuln-patterns/reference/ai-mcp-vulns.md |
 | SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains | vuln-patterns/reference/infrastructure-vulns.md |
 

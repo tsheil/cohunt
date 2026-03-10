@@ -53,6 +53,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Samsung launched $1M mobile bounty** for critical mobile security architecture flaws
 - **OpenAI raised max bounty to $100K**; added Bio Bug Bounty ($25K for universal jailbreaks); **Lockdown Mode** (Feb 2026) acknowledged prompt injection "may never be fully patched"
 - **Amazon launched private AI Bug Bounty** for Nova models ($200-$25,000)
+- **Nvidia launched bug bounty on Intigriti** (2025): separate private program for core AI assets + public VDP for all other Nvidia properties; covers Nvidia products across hardware and software
+- **HackerOne IBB controversy** (Jan 2026): researcher reported two high-severity DoS flaws in Argo CD (CVE-2025-59538, CVE-2025-59531) then was "ghosted" over $8,500 bounty from the Internet Bug Bounty program; highlights trust risks when programs pause/defund without communication — "Bug bounty programs run on trust and clarity"
 - **Meta paid $4M** in 2025 ($25M lifetime) across ~13,000 reports
 - **Usual crypto bounty**: $16M — largest single bug bounty prize in tech history
 - **curl shut down its bug bounty** (January 2026) — first program shutdown attributed to AI slop
@@ -162,7 +164,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 ## Threat Landscape & CVE Trends
 
 - **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024
-- **32.1% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck 2026)
+- **28.96% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck State of Exploitation 2026; up from 23.6% in 2024)
 - **IBM X-Force 2026**: vulnerability exploitation now **#1 initial attack vector at 40%** (up from 26% prior year); validates that exploitation speed is outpacing patch cycles — hunters should prioritize recently-patched CVEs in programs where patch lag is visible
 - **884 KEVs** identified in 2025; exploitation was #1 cause of incidents at 40% (IBM X-Force)
 - **FIRST CVE forecast** (Feb 2026): predicted median 59,427 new CVEs (first year to exceed 50,000)
@@ -303,6 +305,9 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Chrome CVE-2026-2441**: CSS zero-day (@property + paint() worklet use-after-free) actively exploited; patched February 13
 - **Shannon Lite 96.15%**: hit 100/104 on hint-free, source-aware XBOW benchmark variant using Code Property Graphs; subscription model ($0–$49.99/mo)
 - **Anthropic + Mozilla partnership** (March 6, 2026): Claude Opus 4.6 found 22 Firefox CVEs (14 high-severity) in 2 weeks scanning ~6,000 C++ files; 112 bug reports filed; fixes shipped in Firefox 148; PoC exploit generation cost ~$4,000 in API credits, succeeded in only 2 cases
+- **OpenAI acquires Promptfoo** (March 9, 2026): open-source LLM red-teaming CLI (125K+ devs, 30+ Fortune 500, 50+ vuln types); pledged to remain open-source; signals AI red-teaming consolidation under frontier labs; 97.14% autonomous jailbreak success rate reported separately (Nature Communications)
+- **VulnCheck 2026 VEIR**: 14,400+ exploits tracked for 10,000+ unique CVE-2025 vulns (16.5% YoY increase); AI-generated fake PoCs on the rise — validate any public exploit code before using
+- **DXT CVSS 10.0 zero-click RCE** (LayerX, February 9, 2026): Claude Desktop Extensions run unsandboxed with full host privileges; single calendar event triggers code execution through cross-connector trust boundary abuse; Anthropic declined to fix; 10,000+ active DXT users; 50 extensions affected
 - **Codex Security research preview** (March 6, 2026): same-day launch as Claude Code Security; free 30 days for Enterprise/Business/Edu; both tools create major competitive pressure on pattern-matching vulns
 - **Bionic hacker dominance**: 67% of HackerOne researchers use AI tools; hackbots submitted 560 valid reports (primarily surface-level XSS); human + AI collaboration is the winning model
 - **Barracuda agentic AI threat study**: identified 43 agent framework components with embedded supply chain vulnerabilities; AI offense compresses attack lifecycle — recon, exploitation, lateral movement run continuously in parallel

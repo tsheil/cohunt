@@ -117,6 +117,14 @@ Generate test plans for any of these (and variations):
 | Mass assignment | Send extra fields to modify protected attributes |
 | JWT issues | Manipulate token claims or algorithm |
 | GraphQL abuse | Introspection, batching, nested query DoS |
+| Indirect prompt injection | Inject instructions in content AI processes (docs, emails, comments) |
+| Tool poisoning / MCP abuse | Inject malicious tool descriptions or hidden schema params |
+| DXT/MCP confused deputy | Chain low-privilege data source (calendar, email) to code execution |
+| Project config poisoning | Plant .claude/, .mcp.json, .cursorrules, copilot-instructions.md in repos |
+| Pre-trust config exfil | Redirect API keys via env vars/settings before user grants trust |
+| Memory poisoning | Inject persistent instructions that survive across sessions |
+| LLM output injection | Prompt LLM to include XSS/SQLi/command injection in rendered output |
+| System prompt extraction | Extract internal APIs, credentials, or config from system prompt |
 
 For any class not listed, generate a reasonable test plan following the same structure.
 
