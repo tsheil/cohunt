@@ -85,6 +85,12 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **339% increase** in bounties for AI vulnerabilities YoY
 - **Prompt injection in 73%+ of production AI deployments** assessed; only 34.7% have dedicated defenses
 - **AI agent attack success rates 66-84%** when testing against auto-execution systems
+- **Over 21,500 CVEs** disclosed in H1 2025 alone — 16-18% increase over 2024; CVE volume continues accelerating
+- **Average HackerOne pentest** uncovers 12 vulnerabilities, with 16% classified as high/critical; paired with bug bounty, 25% of reports are high/critical
+- **Bugcrowd CrowdMatch**: ~32% market mindshare as of January 2026; AI-powered researcher matching technology
+- **Supply chain dominance**: Group-IB 2026 reports 68% of severe incidents linked to supply chain compromise — nearly double from prior years
+- **AI agent skill supply chain**: Snyk ToxicSkills audit found 100% of malicious skills use dual-vector attacks (code + prompt injection); mcp-scan detection achieves 90-100% recall with 0% false positives
+- **CAI 3,600x**: Cybersecurity AI framework demonstrated 3,600x performance improvement over human pentesters in standardized CTF benchmarks (aliasrobotics)
 - **Multi-turn prompt injection** achieves up to **92% success rates** across 8 open-weight models
 - **35% of real-world AI security incidents** caused by simple prompts — advanced attacks not necessary
 - **Only 10% of AI-generated code is secure** (Endor Labs study, March 2026)
@@ -338,4 +344,11 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Anthropic Code Review** (March 9, 2026): agentic multi-step reasoning loop for security research; builds on Claude Code Security (500+ vulns, 22 Firefox CVEs); continuous improvement of AI-driven code review — competitive pressure on pattern-matching bounty submissions
 - **SecureClaw** (Adversa AI, February 2026): first open-source OWASP-aligned security plugin for OpenClaw AI agents; 55 automated audit checks; addresses OpenClaw supply chain crisis (42,665 exposed instances)
 - **XBOW Palo Alto GlobalProtect discovery** (March 2026): found vulnerability in Palo Alto GlobalProtect VPN; demonstrates AI agent capability expanding beyond web apps into enterprise network security appliances
+- **XBOW #1 on HackerOne US leaderboard** (March 2026): 1,060+ vulnerabilities submitted in 90 days (54 critical, 242 high, 524 medium); 130 resolved, 303 triaged; **85% solve rate on custom never-before-seen challenges**; first autonomous AI to top a major bug bounty leaderboard; launched **XBOW Pentest On-Demand** (fully automated, results in 5 business days); still operating at loss — compute costs exceed bounty earnings
+- **IDOR/access control reward surge** (HackerOne 2026): IDOR-related rewards increased **23% YoY**; valid IDOR reports grew **29% YoY**; fastest-growing payout category. Authorization flaws climbing CWE Top 25 (Missing Authorization up 5 positions to #4). Programs shifting rewards toward identity, access, and business logic; XSS/SQLi declining in relative payout value
+- **GitHub Security Lab Taskflow Agent** (March 6, 2026): open-source structured security audit framework using LLMs; **80+ vulnerabilities** across 40 repos; business logic findings had 25% confirmed rate; **IDOR/access control produced the largest absolute count at 38 confirmed findings**; validates structured multi-step AI audit approach
+- **PortSwigger Top 10 Web Hacking Techniques 2025** (published early 2026): parser differentials named #1 exploitation technique; Unicode normalization attacks create systematic WAF bypass gaps; HTTP/2 CONNECT exploitation resurfacing; side-channels named "the defining trend of 2025." **Hunter implication:** parser differentials are now a first-class cross-cutting attack family — see parser-differentials.md
+- **Codex Security 1.2M commits** (March 6, 2026): renamed from Aardvark; scanned 1.2M commits in one month; found 792 critical, 10,561 high-severity issues; 84% noise reduction; reported vulns in OpenSSH, GnuTLS, PHP; multi-stage approach (context → threat model → analysis → sandbox → patches)
+- **TeamPCP cloud worm** (Feb-March 2026): compromised **60,000+ servers** across AWS (36%), Azure (61%), GCP; exploits exposed Docker APIs, misconfigured K8s, Ray dashboards, Redis servers; monetization: cryptomining, proxy sales, ransomware C2, data exfiltration. **Hunter implication:** cloud misconfigurations at scale remain highly exploitable; test Docker API exposure, Redis unauth, K8s dashboard access
+- **AgentShield Benchmark** (March 2026): first open comparison of 6 AI agent security tools across 537 test cases; scores ranged 39-98; tools catching 95%+ prompt injections **miss most unauthorized tool calls**. **Hunter implication:** tool abuse and unauthorized tool execution are under-defended — focus MCP/agent testing on tool misuse, not just injection
 

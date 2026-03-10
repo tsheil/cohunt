@@ -216,6 +216,14 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
 □ Pydantic-AI SSRF (archived/won't fix): if finding involves Pydantic-AI MCP server SSRF, note CVE-2026-25904 was archived as won't-fix — vendor disputes are reportable context for alternative disclosure paths
 □ OpenClaw query parameter credential relay: if finding involves AI agent passing URL query parameters to shell commands, reference CVE-2026-25253 (OpenClaw) — demonstrate that `?param=malicious` in agent URL results in command injection via unsanitized parameter relay
 
+PARSER DIFFERENTIAL VALIDATION
+□ Parser differential finding identifies both parsing layers and documents how each interprets the input differently
+□ Unicode normalization attack specifies which normalization form (NFC, NFKC, NFKD) and which component applies it
+□ URL parser differential shows specific parser libraries on each side (e.g., Python urllib vs Go net/url)
+□ Content-Type confusion documents which server-side component selects the wrong parser and why
+□ Filename canonicalization finding proves the TOCTOU gap — character present at validation, absent at execution
+□ Side-channel finding includes statistical significance (multiple measurements, timing deltas, response size differences)
+
 BUSINESS LOGIC VALIDATION
 □ Business logic finding crosses a trust boundary (affects someone other than the attacker)
 □ Financial impact is quantified with actual numbers (affected users × transaction value × frequency)

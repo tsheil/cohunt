@@ -1,6 +1,6 @@
 ---
 name: target-recon
-description: Recon a web target — fingerprint tech stack, enumerate subdomains, detect WAF/CDN, map the attack surface. Works with curl/dig and web search. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on". Use proactively when user mentions a target domain and hasn't done recon yet.
+description: Recons a web target — fingerprints tech stack, enumerates subdomains, detects WAF/CDN, maps the attack surface. Works with curl/dig and web search. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on". Use proactively when user mentions a target domain and hasn't done recon yet.
 ---
 
 # Target Recon

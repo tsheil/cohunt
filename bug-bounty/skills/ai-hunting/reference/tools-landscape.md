@@ -38,8 +38,9 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - CAI achieved **Top-10 ranking in the Dragos OT CTF 2025** (Rank 1 during hours 7-8), completing 32 of 34 challenges with a 37% velocity advantage over top human teams
 - Achieved first place among AI teams in the "AI vs Human" CTF challenge; solves challenges up to 3,600x faster than humans in specific tasks, averaging **11x faster** overall
 - Reached **top-30 in Spain** and **top-500 worldwide** on Hack The Box within a week of active operation
-- Reduces security testing costs by an average of **156x** compared to traditional approaches
+- Demonstrated **3,600x performance improvement** over human penetration testers in standardized CTF benchmark evaluations; reduces security testing costs by an average of **156x** compared to traditional approaches
 - **Non-professional enablement:** enables non-professionals to discover significant security bugs (CVSS 4.3-7.5) at rates comparable to experts during bug bounty exercises — democratizing offensive security
+- Identified CVSS 4.3–7.5 severity vulnerabilities in production systems during bug bounty exercises
 - HackerOne's top engineers leverage CAI to explore agentic AI architectures; CAI's Retester agent inspired HackerOne's AI-powered Deduplication Agent, now in production
 - Published as academic paper: "CAI: An Open, Bug Bounty-Ready Cybersecurity AI" (arXiv:2504.06017)
 - **Security note:** CAI itself was found to have a critical command injection vulnerability (CVE-2025-67511, CVSS 9.6-9.7) — AI security tools can themselves be vulnerable

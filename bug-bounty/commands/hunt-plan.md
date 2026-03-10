@@ -28,6 +28,7 @@ Build a hunting plan for: $ARGUMENTS
 ┌──────────────────────────────────────────────────────────────┐
 │                        HUNT PLAN                             │
 ├──────────────────────────────────────────────────────────────┤
+│  ✓ Step 0: What changed? (new features, patches, scope)      │
 │  ✓ Gather or reuse target recon data                         │
 │  ✓ Gather or reuse program research data                     │
 │  ✓ Map scope boundaries (in/out)                             │
@@ -36,6 +37,8 @@ Build a hunting plan for: $ARGUMENTS
 │  ✓ Allocate time budget across targets                       │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+> **Always start here:** Before planning tests, check what changed recently on the target — new features, patches, scope additions, API version bumps, acquisitions, infrastructure migrations. Fresh attack surface has the lowest duplicate risk and highest signal. Use program changelogs, blog posts, release notes, git commits, and Wayback Machine diffs.
 
 ---
 

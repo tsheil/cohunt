@@ -479,3 +479,18 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 - **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): unauthenticated command injection. Added to CISA KEV March 2026; actively exploited; federal agencies required to patch by March 24, 2026. **Test:** Identify VMware Aria instances via `/ui/` login page → test command injection vectors on management endpoints
 - **CVE-2026-21385** (Qualcomm Android, March 2026): memory corruption in Qualcomm component. Added to CISA KEV March 3; Google confirmed limited targeted exploitation. Affects 129 Android vulnerabilities patched in March update. **Test:** Only relevant for mobile programs; check target's Android patch level against March 2026 bulletin
+
+---
+
+## Additional High-Value CVEs (Late 2025 – Early 2026)
+
+> **Target gate:** Only when recon reveals affected products.
+
+| CVE | Product | CVSS | Type | Key Detail |
+|-----|---------|------|------|------------|
+| CVE-2025-36918 | Windows MSHTML | Critical | RCE | Spear-phishing via crafted HTML; actively exploited against gov/finance. See MSHTML MotW section for related patterns |
+| CVE-2025-53770 | SharePoint 2016/2019/SE | Critical | Unauth RCE (CWE-502) | Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV; gov/finance targets |
+| CVE-2025-10035 | Fortra GoAnywhere MFT | Critical | Deser RCE (CWE-502) | License Servlet deser → cmd injection. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
+| CVE-2026-25108 | Roundcube Webmail | High | XSS (SVG animate) | CISA KEV; nation-state exploitation. See Webmail RCE section for full pattern |
+| CVE-2025-3248 | Langflow AI Platform | 9.8 | Unauth RCE | `/api/v1/validate/code` — code validation endpoint executes arbitrary code. CISA KEV. Route to ai-mcp-vulns.md for AI platform patterns |
+| CVE-2025-XXXXX | Chrome WebView | High | Policy bypass | WebView tag policy enforcement — affects Android apps, hybrid apps, in-app browsers |

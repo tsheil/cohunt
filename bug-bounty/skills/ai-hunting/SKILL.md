@@ -91,9 +91,11 @@ MCP is AI's fastest-growing attack surface: **30+ CVEs in 60 days**, 38% of serv
 
 ### Agent Skill Supply Chain
 
-**ClawHavoc** (Feb 2026): 1,184+ malicious skills on ClawHub (~1 in 5 packages). **ToxicSkills** (Snyk): 36% of 3,984 audited skills contain prompt injection; SKILL.md to shell access in 3 lines of markdown. **Clinejection**: prompt injection in GitHub issue → AI triage bot → npm token theft → malicious package on 4,000 machines.
+**ClawHavoc** (Feb 2026): 1,184+ malicious skills on ClawHub (~1 in 5 packages). **ToxicSkills** (Snyk): 3,984 skills audited — 36% contain security flaws, 76 confirmed malicious payloads, **100% of malicious skills combine code-level attacks with prompt injection** (dual-vector); mcp-scan detection engine achieves 90-100% recall with 0% false positives. SKILL.md to shell access in 3 lines of markdown. **Clinejection**: prompt injection in GitHub issue → AI triage bot → npm token theft → malicious package on 4,000 machines.
 
-**Scan before installing any third-party skill** with Cisco MCP Scanner, Snyk Agent Scan, or Repello SkillCheck.
+**Claude Code CVE-2026-21852** (CVSS 5.3): information disclosure in project-load flow — malicious repository exfiltrates data including Anthropic API keys; fixed in v2.0.65 (Jan 2026). Pattern: AI coding tool trust boundary violations via crafted repos.
+
+**Scan before installing any third-party skill** with Cisco MCP Scanner, Snyk Agent Scan, mcp-scan, or Repello SkillCheck.
 
 ### IDEsaster: AI Coding IDE Attack Surface
 
@@ -131,7 +133,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 | LLM10 | Unbounded Consumption | Test for denial-of-wallet via large prompts or recursive tool calls |
 
 **Also test against:**
-- **OWASP Agentic Top 10** (ASI01-ASI10): Goal hijacking, tool misuse, privilege escalation, memory poisoning, cascading failures — **19 test procedures** in [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+- **OWASP Top 10 for Agentic Applications 2026** (ASI01-ASI10): Globally peer-reviewed framework developed with 100+ experts; covers goal hijacking, tool misuse, privilege escalation, memory poisoning, cascading failures — **19 test procedures** in [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
 - **OWASP AIVSS**: AI-specific vulnerability scoring extending CVSS for agentic capabilities
 
 > **Full testing patterns for each LLM Top 10 category + practical workflow checklists:** See [reference/llm-testing.md](reference/llm-testing.md)
@@ -159,7 +161,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
 - **XBOW**: #1 HackerOne with 1,060 submissions; **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
-- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt)
+- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI)
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it

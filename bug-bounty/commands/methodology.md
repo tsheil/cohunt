@@ -20,6 +20,7 @@ Produces a structured, step-by-step testing checklist tailored to the target's t
 ## Execution Flow
 
 ```
+Step 0: What changed? — Check for recent target changes (new features, patches, scope, API versions)
 Step 1: Gather context — recon data, tech stack, program scope (use existing data or run quick recon)
 Step 2: Identify applicable vulnerability classes based on tech stack
 Step 3: Prioritize by (reward potential × likelihood) ÷ competition
@@ -27,6 +28,8 @@ Step 4: Generate concrete test cases for each vulnerability class
 Step 5: Organize into a phased testing plan
 Step 6: Add tool recommendations for each phase
 ```
+
+> **Step 0 is mandatory.** Fresh changes have the lowest duplicate risk. Before generating a testing checklist, always check: program changelogs, release notes, blog posts, git activity, Wayback Machine diffs. If something changed recently, prioritize testing the changed surface first.
 
 ## Output Format
 

@@ -27,6 +27,7 @@ For deep dives, route to the specialized skill or reference file:
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
+| **Parser differentials, Unicode normalization, canonicalization** | [reference/parser-differentials.md](reference/parser-differentials.md) |
 | **Vibe-coded apps (Supabase RLS, Firebase, API key exposure)** | [reference/web-vulns.md](reference/web-vulns.md#vibe-coded-application-attack-surface) |
 
 The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
@@ -57,7 +58,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | **B: Human-Advantaged** | Humans find deeper variants and chains; tools find surface-level | Auth chains (BOLA→privilege escalation), race conditions with business impact, complex SSRF chains, AI/LLM agent exploitation | **Medium** — surface variants automated, deep chains are not |
 | **C: Commodity** | Autonomous tools find 75-85% of instances faster | Basic XSS/SQLi/SSRF, subdomain takeovers, missing headers, simple IDOR, known CVE patterns | **High** — submit only if novel bypass or high impact chain |
 
-> **Business logic is 45% of all bounty awards** (Intigriti 2026). Deep dive: [reference/business-logic.md](reference/business-logic.md)
+> **Business logic is 45% of all bounty awards** (Intigriti 2026). Deep dive: [business-logic skill](../business-logic/SKILL.md)
 
 ---
 
@@ -426,6 +427,7 @@ Quick checks when you find an AI-powered feature:
 | 5 | Excessive agency | Agent performs unintended actions (delete, send, modify) | High-Critical |
 
 | 6 | Confused deputy (DXT/MCP) | Trigger AI to chain low-risk data → high-risk action (e.g., calendar invite → code execution) | High-Critical (LayerX DXT CVSS 10.0) |
+| 7 | AI platform unauth RCE | Test unauthenticated API endpoints on AI orchestration platforms (Langflow CVE-2025-3248 CVSS 9.8: `/api/v1/validate/code`) | Critical |
 
 If any of these hit: switch to the `ai-hunting` skill for deep testing (68 MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains).
 
@@ -465,7 +467,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation, monetary impact quantification | ~320 (dedicated skill) |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns 11-18, LPCI, real-world incidents, OWASP MCP Top 10 mapping | ~360 |
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
-| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass | ~220 |
+| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass, new critical CVEs (MSHTML, SharePoint ToolShell, GoAnywhere, RoundCube, Langflow, WebView) | ~550 |
 
 **Quick search** — find specific vuln patterns without loading full files:
 ```

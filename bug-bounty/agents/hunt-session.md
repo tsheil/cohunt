@@ -73,12 +73,15 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation | **INVEST** — this is where bounties pay |
 
    Key competitive landscape (March 2026):
-   - **XBOW**: pivoting to pre-production scanning; 85% custom challenge solve rate; 1,060+ reports; discovered Palo Alto GlobalProtect VPN vuln — expanding beyond web into network appliances
-   - **Codex Security + Claude Code Security + Anthropic Code Review**: enterprise source scanning + agentic multi-step reasoning (pattern-matching vulns are AI territory)
-   - **GitHub Taskflow Agent**: 80+ vulns in 40 open-source repos (auth bypasses, IDORs, token leaks)
-   - **ZeroPath**: AI-native SAST detecting business logic + chained vulns (RSAC 2026 finalist)
+   - **XBOW**: **#1 on HackerOne US leaderboard** — 1,060+ reports, 54 critical/242 high in 90 days; 85% custom solve rate; launched **Pentest On-Demand** (automated, 5 business days); expanding into network appliances (Palo Alto GlobalProtect); still operating at loss
+   - **Codex Security**: 1.2M commits scanned, 792 critical/10,561 high issues; reported vulns in OpenSSH, GnuTLS, PHP; multi-stage pipeline (context → threat model → sandbox validation → patches)
+   - **Claude Code Security + Anthropic Code Review**: 500+ production vulns, 22 Firefox CVEs; agentic multi-step reasoning (avg 21.2 independent tool calls); pattern-matching vulns are AI territory
+   - **GitHub Taskflow Agent**: 80+ vulns in 40 repos; **IDOR/access control = largest absolute count** (38 confirmed); business logic 25% confirmed rate; validates structured audit approach
+   - **ZeroPath**: AI-native SAST detecting business logic + chained vulns (RSAC 2026 finalist, $5M)
    - **SecureClaw**: 55 OWASP-aligned audit checks for OpenClaw agents — establishes defensive baseline
+   - **AgentShield**: tools catching 95%+ prompt injections **miss most unauthorized tool calls** — focus on tool misuse
    - AI agents solve 9/10 directed challenges but **degrade in realistic undirected scenarios** (Wiz Cyber Model Arena)
+   - **IDOR rewards surging**: +23% payout increase, +29% valid reports YoY (HackerOne 2026); fastest-growing payout category
 
 6. **Map workflows** — For the target's core features, apply `/workflow-map` thinking: actors, states, invariants, abuse cases. Business logic = 45% of bounty awards (Intigriti 2026).
 
@@ -192,6 +195,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Cloud SSO trust abuse** | Cross-tenant auth bypass (CVE-2026-24858 FortiOS CVSS 9.4), first-party trust abuse (ConsentFix), SSO token scope validation | vuln-patterns/reference/infrastructure-vulns.md |
 | **MDM/enterprise mgmt** | Ivanti EPMM bash arithmetic expansion (CVE-2026-1281/1340 CVSS 9.8, mass exploitation), SolarWinds WHD multi-stage RCE (CVE-2025-40551), VMware Aria migration path (CVE-2026-22719 CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Appliance hardcoded creds** | Dell RecoverPoint Ghost NICs (CVE-2026-22769 CVSS 10.0, China-nexus since mid-2024), enterprise backup/DR appliance plaintext creds in config files, Tomcat Manager web shell deployment | vuln-patterns/reference/infrastructure-vulns.md |
+| **Parser differentials** | Unicode normalization WAF bypass, URL parser confusion, Content-Type confusion (n8n CVSS 10.0), H2 downgrade, path normalization, filename canonicalization (CVE-2026-28289 CVSS 10.0), SAML parser differentials — PortSwigger Top 10 #1 (2025) | vuln-patterns/reference/parser-differentials.md |
 | **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:

@@ -24,11 +24,12 @@ Starting hunt: $ARGUMENTS
 
 ## If No Arguments Provided
 
-I need three things to route you effectively:
+I need four things to route you effectively:
 
-1. **What's your target?** — Domain, app, program name, or "I don't have one yet"
-2. **What phase are you in?** — Recon, testing, stuck, have findings, writing report
-3. **How much time do you have?** — 30 minutes, 2 hours, full day, ongoing
+1. **What changed recently?** — New features, patches, scope additions, API versions, acquisitions. Fresh changes = highest-signal attack surface. If nothing changed, that's fine — but always ask first.
+2. **What's your target?** — Domain, app, program name, or "I don't have one yet"
+3. **What phase are you in?** — Recon, testing, stuck, have findings, writing report
+4. **How much time do you have?** — 30 minutes, 2 hours, full day, ongoing
 
 Example: "I want to hunt on Shopify's API. I'm in the testing phase. I have about 3 hours."
 

@@ -1,6 +1,6 @@
 ---
 name: source-code-audit
-description: Audit source code for security vulnerabilities — trace data flows, find auth gaps, spot injection sinks, and identify logic flaws. Works on any codebase you can share or point to. Trigger with "audit this code", "review this repo for vulns", "find vulnerabilities in this source", "code review for security", "check this code for bugs", "security review", "static analysis", "taint analysis", "dangerous function", "unsafe deserialization". Use proactively when user shares code snippets, opens a repository, or mentions reviewing source for a target.
+description: Audits source code for security vulnerabilities — traces data flows, finds auth gaps, spots injection sinks, and identifies logic flaws. Works on any codebase you can share or point to. Trigger with "audit this code", "review this repo for vulns", "find vulnerabilities in this source", "code review for security", "check this code for bugs", "security review", "static analysis", "taint analysis", "dangerous function", "unsafe deserialization". Use proactively when user shares code snippets, opens a repository, or mentions reviewing source for a target.
 ---
 
 # Source Code Audit

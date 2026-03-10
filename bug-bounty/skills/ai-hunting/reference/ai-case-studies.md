@@ -82,6 +82,13 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **OpenClaw Voice Extension RCE (CVE-2026-28446)** | CVSS 9.8: pre-auth RCE; 42,000+ exposed instances | AI agent voice feature RCE |
 | **MCP MarkItDown SSRF (MCP fURI)** | BlueRock: SSRF in Microsoft's MarkItDown MCP server -> AWS credential theft | MCP SSRF -> cloud compromise |
 | **GeminiJack (Google Gemini Enterprise)** | Noma Labs: zero-click indirect prompt injection via poisoned Google Docs/Calendar/emails | Enterprise AI data exfiltration |
+| **Claude Code CVE-2026-21852** | CVSS 5.3: information disclosure in project-load flow; malicious repo exfiltrates data including Anthropic API keys; fixed v2.0.65 (Jan 2026) | AI coding tool trust boundary violation |
+| **Langflow CVE-2025-3248** | CVSS 9.8: unauthenticated RCE in Langflow AI orchestration platform via `/api/v1/validate/code` endpoint — unsafe code validation; added to CISA KEV | AI orchestration platform RCE |
+| **OWASP Agentic Top 10 (2026)** | New globally peer-reviewed framework (100+ experts) identifying top 10 security risks for autonomous AI systems; distinct from LLM Top 10 | Industry standard for agentic AI security |
+| **ToxicSkills dual-vector finding** | Snyk deep analysis: 100% of confirmed malicious skills combine code-level malware with prompt injection; 91% employ prompt injection; mcp-scan achieves 90-100% recall, 0% FP | Dual-vector attack pattern in AI supply chain |
+| **RoundCube XSS (CVE-2026-25108)** | XSS via SVG animate tag; added to CISA KEV; RoundCube webmail is a perennial target for nation-state actors | Webmail XSS in-the-wild |
+| **Cline CLI NPM compromise** | Feb 17, 2026: stolen publish token → postinstall script installing OpenClaw on developer machines | AI coding tool supply chain compromise |
+| **StripeApi.Net NuGet typosquat** | Feb 16, 2026: NuGet typosquat of legitimate Stripe.net package | Package ecosystem attack on payment SDKs |
 | **Claude DXT Zero-Click RCE** | LayerX: CVSS 10.0; DXT extensions run unsandboxed with full system privileges; **Anthropic declined to fix** | AI desktop extension zero-click RCE |
 | **Claude Code confirmation bypass RCE (CVE-2026-24887)** | RCE via `find` command bypassing confirmation prompts (SentinelOne) | AI coding tool confirmation bypass |
 | **mcp-atlassian RCE + SSRF (CVE-2026-27825)** | Path traversal for arbitrary file writes + SSRF via unsanitized headers (Arctic Wolf) | MCP connector RCE |
