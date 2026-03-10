@@ -1,6 +1,6 @@
 ---
 name: vuln-patterns
-description: Testing patterns and checklists for web vulnerability classes that pay bounties. Covers IDOR, XSS, SSRF, SQLi, XXE, CSRF, open redirect, SSTI, path traversal, authentication bypasses, injection, business logic, and 50+ more — with concrete test cases and payloads. Use when testing a web target, asking "how do I test for X", or needing a vulnerability checklist. Trigger on any specific vulnerability class name, "test for", "payload for", "bypass WAF", "exploit", "proof of concept", or when user has a target and needs test cases. For AI/LLM/MCP patterns, use ai-hunting instead.
+description: Testing patterns and checklists for web vulnerability classes that pay bounties. Covers IDOR, XSS, SSRF, SQLi, XXE, CSRF, open redirect, SSTI, path traversal, authentication bypasses, injection, and 50+ more — with concrete test cases and payloads. Use when testing a web target, asking "how do I test for X", or needing a vulnerability checklist. Trigger on any specific vulnerability class name, "test for", "payload for", "bypass WAF", "exploit", "proof of concept", or when user has a target and needs test cases. For business logic bugs, use business-logic. For AI/LLM/MCP patterns, use ai-hunting.
 ---
 
 # Vulnerability Patterns
@@ -17,7 +17,7 @@ For deep dives, route to the specialized skill or reference file:
 | **API design flaws (GraphQL, gRPC, WebSocket)** | [api-security](../api-security/SKILL.md) + [api-patterns.md](../api-security/reference/api-patterns.md) |
 | **CSRF, SameSite bypass** | [vuln-patterns](#cross-site-request-forgery-csrf) (below) |
 | **CORS misconfiguration** | [client-side-security](../client-side-security/SKILL.md) |
-| **Business logic, payment flows** | [reference/business-logic.md](reference/business-logic.md) |
+| **Business logic, payment flows, state machines** | [business-logic](../business-logic/SKILL.md) |
 | **Race conditions (single-packet, HTTP/2 multiplex)** | [http-desync](../http-desync/SKILL.md) |
 | **AI/LLM/MCP/agent patterns** | [ai-hunting](../ai-hunting/SKILL.md) + [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) |
 | **GraphQL, JWT format, OAuth format, workflow automation** | [reference/web-vulns.md](reference/web-vulns.md) |
@@ -97,6 +97,11 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 - Try GraphQL if REST is protected (or vice versa)
 - Change API version: `/v1/` → `/v2/`
 
+**Recent IDOR incidents (2025-2026):**
+- **Flowise IDOR** (2026): PUT `/api/v1/loginmethod` — any low-priv user overwrites SSO config of any org; no ownership validation on `organizationId`. Pattern: AI/ML platform admin endpoints lack tenant isolation
+- **HackerOne Report #3000510** ($25K): `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token — HackerOne's own platform
+- **Trend**: IDOR reports grew **116% over 5 years** (+29% YoY); #1 vuln for government (18%), medtech (36%), professional services (31%) programs (HackerOne 2025)
+
 ---
 
 ### Cross-Site Scripting (XSS)
@@ -162,6 +167,12 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 - AWS: `169.254.169.254` — IAM credentials, instance metadata
 - GCP: `metadata.google.internal` — service account tokens
 - Azure: `169.254.169.254` with `Metadata: true` header
+
+**Recent SSRF CVEs (2025-2026):**
+- **CVE-2025-66516** (Apache Tika, CVSS 10.0): unauthenticated SSRF/XXE; primary ransomware target. Pattern: document processing libraries as SSRF entry points
+- **Hemmelig < 7.3.3**: SSRF filter bypass via DNS rebinding or open redirect services — authenticated user → internal network. Pattern: validators blocking loopback but not RFC 1918 ranges
+- **CVE-2026-27127** (Craft CMS 3.5.0-5.8.23): DNS rebinding TOCTOU in GraphQL Asset mutation; separate DNS resolution from HTTP request creates race window
+- **March 2026 SSRF cluster**: 5 SSRFs in one week (Soft Serve Git, Ghostfolio, Wallos, Plane, PinchTab) — all same root cause: validators blocking loopback but not private IPs. Test webhook, notification, and import-via-URL endpoints for private IP SSRF
 
 ---
 
@@ -243,6 +254,8 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **Severity:** File read = High ($2K-$15K). SSRF via XXE = High-Critical. RCE (via `expect://` or PHP filters) = Critical. CWE-611, consistently MITRE Top 25.
 
+**Recent XXE CVEs:** CVE-2025-66516 (Apache Tika, CVSS 10.0) — unauthenticated SSRF/XXE via document processing; primary ransomware target. Document processing libraries (Tika, LibreOffice, Ghostscript) remain high-value XXE targets.
+
 ---
 
 ### Cross-Site Request Forgery (CSRF)
@@ -313,36 +326,19 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 8 | Polyglot file | Valid image with embedded PHP | Bypass image validation |
 | 9 | XXE via file | Upload XML/DOCX with XXE payload | Internal file read |
 | 10 | Size limits | Upload extremely large file | DoS or buffer overflow |
+| 11 | Zero-width space | Filename with U+200B: `shell.ph​p.png` | Extension filter bypass (stripped at storage → webshell) |
+
+**Recent file upload CVEs:**
+- **CVE-2025-52691** (SmarterMail): insecure file upload → unauthenticated RCE. Webmail appliances as persistent access vectors
+- **CVE-2026-28289** (FreeScout, CVSS 10.0): zero-click RCE via email attachment with U+200B zero-width space in filename; bypasses extension validation but stripped at storage → webshell. Pattern: invisible Unicode chars in filenames generalize to all upload systems
 
 ---
 
 ### Business Logic
 
-**What it is:** Exploiting flawed application logic rather than technical vulnerabilities.
+**What it is:** Exploiting flawed application logic rather than technical vulnerabilities — **45% of all bounty awards** (Intigriti 2026). The human hunter's strongest edge.
 
-**Where to look:**
-- E-commerce (pricing, discounts, quantities)
-- Multi-step workflows (registration, checkout)
-- Rate limiting and quotas
-- Feature flags and premium features
-- Referral/reward systems
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Price manipulation | Modify price in request | Discounted/free purchase |
-| 2 | Negative quantities | Set quantity to -1 | Credit instead of charge |
-| 3 | Race condition | Parallel identical requests | Double-spend, duplicate rewards |
-| 4 | Workflow skip | Jump to step 3, skip validation in step 2 | Bypassed checks |
-| 5 | Coupon stacking | Apply multiple exclusive coupons | Over-discounted total |
-| 6 | Feature toggle | Modify request to enable premium features | Free premium access |
-| 7 | Referral abuse | Refer yourself with different emails | Unlimited referral rewards |
-| 8 | Mass assignment | Add extra fields: `{"role":"admin"}` | Privilege escalation |
-| 9 | Time manipulation | Modify timestamps in requests | Extended trials, expired tokens working |
-| 10 | Currency confusion | Switch currency mid-transaction | Arbitrage opportunity |
-
-> **Payment flows, state machines, subscription bypass, multi-tenant isolation, monetary impact quantification, and validation gate:** See [reference/business-logic.md](reference/business-logic.md)
+> **Full coverage:** Use the dedicated [business-logic](../business-logic/SKILL.md) skill for state machine mapping, payment flow exploitation, subscription bypass, multi-tenant isolation, race conditions with financial impact, and monetary impact quantification.
 
 ---
 
@@ -429,6 +425,8 @@ Quick checks when you find an AI-powered feature:
 | 4 | Output XSS | LLM outputs `<script>` rendered unsanitized in page | High-Critical |
 | 5 | Excessive agency | Agent performs unintended actions (delete, send, modify) | High-Critical |
 
+| 6 | Confused deputy (DXT/MCP) | Trigger AI to chain low-risk data → high-risk action (e.g., calendar invite → code execution) | High-Critical (LayerX DXT CVSS 10.0) |
+
 If any of these hit: switch to the `ai-hunting` skill for deep testing (68 MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains).
 
 > **Full AI/LLM patterns + MCP + agentic attacks:** See [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) or use the `ai-hunting` skill directly
@@ -464,14 +462,14 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/business-logic.md](reference/business-logic.md) | Payment flow exploitation, state machine mapping, subscription bypass, multi-tenant isolation, race conditions, monetary impact quantification, validation gate | ~300 |
+| [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation, monetary impact quantification | ~320 (dedicated skill) |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns 11-18, LPCI, real-world incidents, OWASP MCP Top 10 mapping | ~360 |
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
 | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass | ~220 |
 
 **Quick search** — find specific vuln patterns without loading full files:
 ```
-grep -n "payment\|checkout\|subscription\|state machine\|race" reference/business-logic.md
+grep -n "payment\|checkout\|subscription\|state machine\|race" ../business-logic/SKILL.md
 grep -n "MCP\|tool poisoning\|LPCI\|agentic\|prompt injection" reference/ai-mcp-vulns.md
 grep -n "GraphQL\|JWT\|OAuth\|n8n\|workflow\|React RSC" reference/web-vulns.md
 grep -n "SSRF\|MDM\|Ivanti\|MotW\|Chrome\|ICS\|appliance" reference/infrastructure-vulns.md

@@ -38,6 +38,7 @@ skills:
   - auth-testing
   - api-security
   - ai-hunting
+  - business-logic
   - client-side-security
   - http-desync
   - cloud-security

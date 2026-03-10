@@ -209,7 +209,25 @@ Search for exposed assets and data:
 6. "[target]" site:pastebin.com OR site:github.com → Leaked data on third parties
 7. intitle:"index of" site:[target] → Directory listings
 8. inurl:".git" site:[target] → Exposed git repositories
+9. site:github.com "[target]" ".env" OR "mcp.json" OR ".cursorrules" → AI config + secret leaks in repos
 ```
+
+### Step 6b: AI/MCP Configuration Artifact Discovery
+
+```
+Check for exposed AI agent and MCP configuration files:
+1. curl -s https://[target]/.claude/settings.json → Claude Code config
+2. curl -s https://[target]/CLAUDE.md → Project instructions (may leak internal architecture)
+3. curl -s https://[target]/.mcp.json → MCP server configs (may contain API keys, internal URLs)
+4. curl -s https://[target]/.cursor/mcp.json → Cursor MCP config
+5. curl -s https://[target]/.amazonq/mcp.json → Amazon Q Developer config
+6. curl -s https://[target]/.cursorrules → Cursor system prompts (may reveal business logic)
+7. curl -s https://[target]/.github/copilot-instructions.md → Copilot custom instructions
+8. curl -s https://[target]/AGENTS.md → Agent definitions
+9. Web search: site:github.com "[company]" ".mcp.json" OR "CLAUDE.md" OR ".cursorrules"
+```
+
+**Why:** AI config files are the new `.env` — developers commit them with embedded API keys, internal URLs, MCP server credentials, and system prompts that reveal architecture. MCP configs often contain OAuth tokens or PATs with broad scopes. `.cursorrules` and `CLAUDE.md` files expose internal business logic that aids further exploitation.
 
 ### Step 7: JavaScript Analysis (Always for SPAs)
 
@@ -429,6 +447,7 @@ For each user role (free, paid, admin, support, API-only):
 □ Sitemap and robots.txt — may reference internal paths
 □ JavaScript bundle analysis — see reference/javascript-analysis.md
 □ Error-based discovery — send invalid requests to trigger stack traces with route info
+□ AI/MCP config files — /.mcp.json, /.claude/, /.cursor/mcp.json, /.amazonq/, /CLAUDE.md, /AGENTS.md
 ```
 
 ### Multi-Tenant Isolation Probing

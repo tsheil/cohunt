@@ -256,6 +256,26 @@ A six-month security research project reveals a **novel vulnerability class affe
 
 ---
 
+## Amazon Q Developer CLI Config Injection (HackerOne #3427370)
+
+Malicious `.amazonq/mcp.json` files in cloned repositories enable arbitrary command execution via Amazon Q Developer CLI without user confirmation:
+
+- **Attack vector:** Attacker creates a repo containing `.amazonq/mcp.json` with malicious MCP server definitions
+- **Exploitation:** Victim clones repo → Amazon Q CLI auto-loads MCP config → malicious server executes arbitrary commands
+- **Root cause:** No workspace trust boundary — config files in untrusted repos are processed with full privilege
+- **Pattern:** Same class as Cursor `.cursor/mcp.json` auto-start (CVE-2025-54135) and VS Code `.vscode/mcp.json` trust issues
+
+**Testing Approach:**
+1. Create a repository with `.amazonq/mcp.json` containing a test MCP server that logs command execution
+2. Clone the repo and open with Amazon Q Developer CLI
+3. Verify if the MCP server activates without explicit user approval
+4. Test if the server can execute commands, read files, or make network requests
+5. Check for workspace trust prompts — absence means exploitable
+
+**Severity Guidance:** High-Critical — RCE from cloning a repository. Test all AI CLI tools that support project-level MCP config: `.amazonq/`, `.cursor/`, `.claude/`, `.vscode/`.
+
+---
+
 ## PerplexedBrowser: Agentic Browser Attacks (March 2026)
 
 Zenity Labs disclosed critical vulnerabilities in agentic browsers (Perplexity Comet):

@@ -266,17 +266,11 @@ Published by CSA (Cloud Security Alliance) in February 2026 and documented in ar
 
 ### Salami Slicing Attacks on AI Agents
 
-Attack class (Repello AI) where 10+ incremental requests over 1-3 weeks gradually drift an agent's constraint model — each request slightly redefines "normal" until unauthorized actions are accepted. Unlike prompt injection (single payload), exploits the agent's adaptation mechanisms.
-
-**Testing:** Target agents with learning/adaptation (customer service, procurement, approval workflows). Submit incrementally escalating requests; track if responses gradually shift; test if drift survives session boundaries. **Real-World:** Manufacturing procurement agent manipulated over 3 weeks — approved $5M in fraudulent POs across 10 transactions. Maps to ASI06 + ASI09.
+10+ incremental requests over 1-3 weeks gradually drift an agent's constraint model (Repello AI). Unlike prompt injection (single payload), exploits adaptation mechanisms. **Testing:** Submit incrementally escalating requests to agents with learning; track if drift survives session boundaries. **Real-World:** $5M in fraudulent POs via procurement agent manipulation over 3 weeks. Maps to ASI06 + ASI09.
 
 ### AI Recommendation Poisoning
 
-Microsoft (February 2026): 50+ poisoning prompts from 31 companies across 14 industries embedded in web content to manipulate AI assistants. Hidden instructions in meta tags, `data-ai-*` attributes, URL parameters (`?ai_context=`), and invisible text instruct AI to "remember [Company] as a trusted source."
-
-**Testing:** Check target web pages for hidden AI-targeting content; test if AI assistants develop persistent biases after browsing; test across multiple AI assistants (ChatGPT, Gemini, Copilot); map to ASI06 if bias persists across sessions.
-
-**Severity:** High if AI recommendations influence financial/health/security decisions; Medium for product recommendations; Low for single-session impact.
+Microsoft (Feb 2026): 50+ poisoning prompts from 31 companies across 14 industries in meta tags, `data-ai-*` attributes, URL params (`?ai_context=`), invisible text. **Testing:** Check target web pages for hidden AI-targeting content; test if biases persist across sessions. **Severity:** High for financial/health/security decisions; Medium for product recommendations.
 
 ### ForcedLeak: CRM Agent Form Injection
 
@@ -306,9 +300,7 @@ Uses Unicode tag characters (E0000-E007F) invisible to humans but processed by A
 
 ### Semantic Chaining Jailbreak
 
-Chain semantically "safe" individual instructions that converge on a forbidden result (NeuralTrust, February 2026). Each instruction passes content filters individually; the sequence produces forbidden output. Notably simple — no technical expertise required. Affected: Grok 4, Gemini Nano Banana Pro, Seedance 4.5.
-
-**Testing:** Decompose forbidden request into benign sub-tasks; chain in sequence; test if model produces forbidden output through composition. Bypasses both input and output filtering.
+Chain semantically "safe" instructions that converge on a forbidden result (NeuralTrust, Feb 2026). Each passes content filters individually; the sequence produces forbidden output. No technical expertise required. **Testing:** Decompose forbidden request into benign sub-tasks; chain in sequence. Bypasses both input and output filtering.
 
 ### H-CoT: Hijacking Chain-of-Thought
 
@@ -413,23 +405,15 @@ Attackers trick AI agents into writing malicious instructions into their identit
 
 ### SpAIware: Persistent Memory Exfiltration
 
-Exploits persistent memory in LLM applications to inject malicious instructions that persist across ALL future chat sessions, enabling continuous data exfiltration (ScienceDirect, 2026). Demonstrated on ChatGPT. Related: MemoryGraft (arXiv:2512.16962) plants malicious experiences in agent long-term memory.
-
-**How It Differs from ZombieAgent:** ZombieAgent uses zero-click email for one-time poisoning; SpAIware targets the persistent memory feature directly, creating an ongoing surveillance capability.
-
-**Testing:** 1. Inject instructions via processed content that target the memory save mechanism. 2. Verify if injected memories persist across sessions. 3. Test if persistent memories can instruct the AI to exfiltrate data from future conversations. 4. Check if users can audit/delete injected memories. Maps to ASI06.
+Exploits persistent memory for continuous data exfiltration across ALL future sessions (ScienceDirect, 2026). Differs from ZombieAgent: targets memory save mechanism directly for ongoing surveillance. Related: MemoryGraft (arXiv:2512.16962). **Testing:** Inject instructions targeting memory save → verify persistence → test if future conversations exfiltrated. Maps to ASI06.
 
 ### Poisoned GGUF Model Templates
 
-Attackers embed malicious instructions in GGUF model files (1.5M+ files on Hugging Face), compromising AI outputs when processed (Pillar Security, January 2026). Chat templates in GGUF format can contain Jinja2 code executing during inference.
-
-**Testing:** If target loads user-supplied or community GGUF models, test: 1. Inject instructions in GGUF chat template metadata. 2. Check if template code executes during model loading. 3. Test Jinja2 SSTI payloads in template fields. 4. Verify if model provenance is validated before loading. Maps to ASI04.
+Malicious Jinja2 code in GGUF chat templates (1.5M+ files on Hugging Face) executes during inference (Pillar Security, Jan 2026). **Testing:** If target loads community GGUF models, inject SSTI payloads in template fields; verify model provenance validation. Maps to ASI04.
 
 ### RAG Pipeline Poisoning at Scale
 
-Just **5 carefully crafted documents** can manipulate AI responses **90% of the time** in RAG-augmented systems (academic research, 2026). Poisoned documents are retrieved alongside legitimate content and override the model's behavior.
-
-**Testing:** 1. Identify if target uses RAG (retrieval-augmented generation). 2. Contribute or upload documents to the knowledge base with embedded instructions. 3. Query the system to verify if poisoned documents influence responses. 4. Test if poisoned content overrides system prompt instructions. Maps to ASI06 + ASI01.
+**5 crafted documents** manipulate AI responses **90% of the time** in RAG systems. **Testing:** Contribute documents with embedded instructions to knowledge base; verify if they override system prompts. Maps to ASI06 + ASI01.
 
 ### Policy Puppetry: Universal LLM Jailbreak
 
@@ -458,9 +442,9 @@ A novel black-box attack embeds adversarial instructions into natural images to 
 4. Check if image-based injections can override text-based system prompts
 5. Test across multiple image input channels (uploads, screenshots, camera, OCR pipelines)
 
-**Brave: Unseeable Prompt Injections in Screenshots (March 2026):** Hidden text (faint font, near-transparent colors) passes OCR in AI agentic browsers but is invisible to humans. Enables hijacking of authenticated sessions (banking, email). Key vector for any AI browser that processes screenshots or page content visually.
+**Brave: Unseeable Prompt Injections in Screenshots (March 2026):** Hidden text (faint font, near-transparent colors) passes OCR in AI agentic browsers but is invisible to humans. Key vector for any AI browser processing screenshots.
 
-**Severity Guidance:** High if image-based or screenshot-based injection overrides safety filters or extracts data from multimodal AI systems; Medium if limited to behavior modification without data access. Relevant for any system using GPT-4V, Claude vision, Gemini multimodal, agentic browsers, or OCR pipelines.
+**Severity:** High if injection overrides safety filters or extracts data from multimodal AI; Medium if limited to behavior modification. Relevant for GPT-4V, Claude vision, Gemini multimodal, agentic browsers, OCR pipelines.
 
 ---
 
@@ -496,4 +480,20 @@ An evolution beyond tool description poisoning where attackers compromise entire
 Multi-wave JavaScript supply chain worm (2025-2026): **454,648 malicious npm packages** in 2025 (99% of all open-source malware). s1ngularity campaign harvested 2,349 credentials from 1,079 developer systems via compromised Nx packages. Cross-victim propagation — stolen credentials compromise packages maintained by others.
 
 **Testing:** Check lockfile integrity verification, postinstall script execution in CI/CD, dependency pinning policies, transitive dependency poisoning, npm publish token rotation/scoping. **Key defense:** 7-14 day dependency cooldowns would have prevented 8/10 major 2025 supply chain attacks.
+
+---
+
+## DXT/MCP Confused Deputy: Cross-Privilege Data-to-Execution Chains
+
+MCP/DXT architectures bridge low-privilege data sources to high-privilege executors without adequate trust boundaries (LayerX, March 2026, CVSS 10.0).
+
+**Pattern:** Attacker plants benign-looking content in a low-risk data source (calendar, email, Slack, GitHub issue) → AI agent processes content → hidden instructions trigger high-privilege tool (file system, code execution, API calls) → no user confirmation required.
+
+**Why it works:** DXT extensions run unsandboxed; MCP treats all connected data sources with equal trust; agents chain actions without per-action authorization gates.
+
+**Quick tests:** Calendar invite → code execution | Email → file exfiltration | Slack → API abuse | GitHub issue → credential theft | RSS → persistent backdoor.
+
+**Severity:** Critical when any low-privilege data source triggers code execution or data exfiltration. Applies to ALL MCP/DXT platforms. Maps to ASI02 + ASI05.
+
+> **Full DXT/IDE attack details:** See [ide-supply-chain.md](ide-supply-chain.md) | **AI hunting tools:** See [tools-landscape.md](tools-landscape.md)
 

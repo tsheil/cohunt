@@ -244,6 +244,34 @@ Growing attack surface as SaaS platforms proliferate. IDOR/IAC has shown 116% 5-
 □ GraphQL federation — Query federated service without tenant context
 □ Shared infrastructure — Redis/cache keys colliding across tenants
 □ AI agent context isolation — Multi-tenant AI platforms leaking context between tenants (CVE-2026-30855 WeKnora CVSS 8.8)
+□ Support impersonation escalation — Can support role access exceed intended scope? Test impersonate-as-admin paths
+□ Service account scope drift — Service accounts with initial narrow scope accumulate permissions over time; test for over-privileged service tokens
+```
+
+### SCIM/JIT Provisioning Attacks
+
+Growing attack surface as enterprises adopt automated identity provisioning:
+
+```
+□ SCIM endpoint auth — Is /scim/v2/Users protected? Many deployments expose unauthenticated SCIM endpoints
+□ SCIM user creation — Can you provision an admin user via SCIM API? Test role/group assignment in SCIM payloads
+□ SCIM attribute injection — Inject unexpected attributes (isAdmin, role, permissions) in SCIM user creation
+□ JIT provisioning race — Create user via JIT before legitimate SAML assertion arrives; claim the identity
+□ SCIM group manipulation — Add your user to admin groups via SCIM Groups endpoint
+□ Deprovisioning bypass — After SCIM deprovisioning, can the user still authenticate via cached sessions or API keys?
+□ SCIM token reuse — SCIM bearer tokens often long-lived; test if revoked IdP tokens still work for SCIM operations
+```
+
+### Invite Flow Exploitation
+
+```
+□ Invite to wrong org — Modify org_id/tenant_id in invite acceptance to join a different organization
+□ Invite role escalation — Intercept invite, modify role field (viewer → admin) before acceptance
+□ Expired invite reuse — Use invite link after expiration; test if tokens are time-validated server-side
+□ Invite enumeration — Sequential invite tokens allow discovering valid invitations for other orgs
+□ Multi-accept — Accept same invite from multiple accounts simultaneously (race condition)
+□ Self-invite — Call invite endpoint to invite yourself with elevated permissions
+□ Invite + deactivated user — Reactivate a deactivated user account by sending them a new invite
 ```
 
 ---

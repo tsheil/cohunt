@@ -1,36 +1,21 @@
-# Business Logic Vulnerability Deep Dive
-
-Concrete methodologies for finding business logic vulnerabilities — the #1 bounty-paying class (45% of all awards, Intigriti 2026) and the area where human hunters have the strongest edge over autonomous tools.
-
-> **Related files:** [../SKILL.md](../SKILL.md) for quick patterns | [web-vulns.md](web-vulns.md) for GraphQL/JWT/OAuth | [ai-mcp-vulns.md](ai-mcp-vulns.md) for AI/MCP logic flaws
-
+---
+name: business-logic
+description: Test business logic vulnerabilities — the #1 bounty-paying class (45% of all awards) and the human hunter's strongest edge over autonomous tools. Covers payment flow exploitation, state machine mapping, subscription bypass, multi-step workflow abuse, race conditions with financial impact, referral system gaming, and multi-tenant isolation. Use when testing e-commerce checkout, pricing, subscriptions, approvals, invite flows, or any application-specific workflow that autonomous scanners can't reason about. Trigger on "business logic", "payment bypass", "checkout flow", "subscription bypass", "race condition money", "coupon abuse", "price manipulation", "workflow skip", "state machine", "referral abuse", "feature toggle", "paywall bypass", "multi-tenant", "trust boundary", "approval workflow", "trial extension".
 ---
 
-## Table of Contents
+# Business Logic Vulnerability Testing
 
-- [Why Business Logic Pays More](#why-business-logic-pays-more)
-- [State Machine Mapping](#state-machine-mapping)
-- [Payment & Checkout Flows](#payment--checkout-flows)
-- [Subscription & Feature Access](#subscription--feature-access)
-- [Multi-Step Workflow Exploitation](#multi-step-workflow-exploitation)
-- [Race Conditions in Business Context](#race-conditions-in-business-context)
-- [Referral & Reward Systems](#referral--reward-systems)
-- [Multi-Tenant Isolation](#multi-tenant-isolation)
-- [Monetary Impact Quantification](#monetary-impact-quantification)
-- [Validation Gate: Is This Submittable?](#validation-gate-is-this-submittable)
-
----
+The #1 bounty-paying class (45% of all awards, Intigriti 2026) and the area where human hunters have the strongest edge over autonomous tools. Business logic bugs require understanding what the application is *supposed* to do, then finding where implementation diverges from intent.
 
 ## Why Business Logic Pays More
 
-Autonomous tools (XBOW, Shannon, Codex Security) scan for technical patterns — they can't understand business intent. Business logic bugs require understanding what the application is *supposed* to do, then finding where the implementation diverges from that intent.
+Autonomous tools (XBOW, Shannon, Codex Security) scan for technical patterns — they can't understand business intent:
 
-**Why humans win here:**
-- Requires domain understanding (e-commerce, SaaS, fintech)
-- No signature to match — each app's logic is unique
-- Multi-step exploitation chains that scanners can't reason about
-- Context-dependent: same action may be valid or exploitable depending on state
-- Low duplicate risk: each finding is application-specific
+- **Requires domain understanding** (e-commerce, SaaS, fintech)
+- **No signature to match** — each app's logic is unique
+- **Multi-step exploitation chains** that scanners can't reason about
+- **Context-dependent** — same action may be valid or exploitable depending on state
+- **Low duplicate risk** — each finding is application-specific
 
 **Severity guidance:** Business logic bugs often score Medium-High on CVSS but pay High-Critical bounties because programs weight financial and business impact beyond the CVSS formula.
 
@@ -218,8 +203,6 @@ Race conditions are business logic bugs when the timing exploit has financial or
 
 These bugs are high-severity because they cross organizational boundaries.
 
-### Testing Patterns
-
 | # | Test | Method | What to look for |
 |---|------|--------|-----------------|
 | 1 | Tenant ID swap | Change `org_id`, `tenant_id`, or `workspace_id` in API requests | Access to another tenant's data |
@@ -237,32 +220,19 @@ These bugs are high-severity because they cross organizational boundaries.
 
 Programs care about dollars. Quantifying financial impact elevates severity.
 
-### Framework
-
 ```
 Financial Impact = Affected Users × Average Transaction Value × Exploitation Frequency
 
 Where:
 - Affected Users: How many users could an attacker target?
-  - "Any authenticated user" → estimate total user base
-  - "Users of feature X" → estimate feature adoption
 - Average Transaction Value: What's at stake per exploitation?
-  - Price manipulation: difference between real and modified price
-  - Double-spend: full transaction amount
-  - Subscription bypass: monthly subscription cost × duration
 - Exploitation Frequency: How often could this be exploited?
-  - One-time: single exploitation
-  - Recurring: per transaction/checkout/interaction
-  - Automated: unlimited with scripting
 ```
 
 ### Example Impact Statements
 
 **Weak:** "An attacker could manipulate prices."
 **Strong:** "An attacker can reduce any item's price to $0.01 at checkout by modifying the `unit_price` parameter. With an average order value of $85 and approximately 10,000 daily orders, this could result in revenue loss of up to $850,000 per day if exploited at scale."
-
-**Weak:** "Users can get free trials forever."
-**Strong:** "By creating accounts with email aliases, an attacker bypasses trial restrictions to access the Enterprise tier ($299/month) indefinitely. With 50,000+ trial signups monthly, this pattern could result in $14.9M in annual subscription revenue loss if widely exploited."
 
 ### Severity Elevation Guide
 
@@ -280,8 +250,6 @@ Where:
 
 Before writing a report, run this checklist:
 
-### Minimum Requirements
-
 | Check | Required? | Details |
 |-------|-----------|---------|
 | **Crosses a trust boundary** | Yes | Attacker affects someone/something other than themselves |
@@ -289,16 +257,6 @@ Before writing a report, run this checklist:
 | **In scope** | Yes | Confirmed feature/endpoint is in program scope |
 | **Financial or security impact** | Yes | Quantifiable harm — dollars, data, access |
 | **Not a known limitation** | Yes | Not documented as "by design" or known issue |
-
-### Impact Verification
-
-| Question | If No → Action |
-|----------|----------------|
-| Can an attacker exploit this without victim interaction? | Severity drops; add "requires user to..." caveat |
-| Does this affect users other than the attacker? | If self-only, likely N/A — chain it or move on |
-| Is the financial impact > $100 per exploitation? | If trivial amount, may get downgraded to Low/Informational |
-| Can this be automated/scaled? | If one-time only, severity capped at Medium |
-| Does the program have similar disclosed findings? | High duplicate risk — check hacktivity/VRT first |
 
 ### Common Mistakes in Business Logic Reports
 
@@ -318,3 +276,4 @@ Before writing a report, run this checklist:
 - **auth-testing** — BOLA/BFLA/OAuth testing patterns that complement business logic
 - **report-writing** — How to frame business logic findings for maximum payout
 - **http-desync** — Race conditions and timing attacks in detail
+- **workflow-map** (command) — Map B2B SaaS business logic workflows

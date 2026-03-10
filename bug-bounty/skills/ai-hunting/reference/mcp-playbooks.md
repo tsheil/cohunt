@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-68 test procedures for MCP vulnerabilities: OWASP MCP Top 10, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
+69 test procedures for MCP vulnerabilities: OWASP MCP Top 10, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
 
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
@@ -8,7 +8,7 @@
 
 ## Table of Contents
 
-- [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [68 Test Procedures](#68-mcp-test-procedures)
+- [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [69 Test Procedures](#69-mcp-test-procedures)
 - [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples) | [Implementation Stats](#mcp-implementation-vulnerability-stats)
 - [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026)
@@ -57,6 +57,7 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **mcp-remote OAuth RCE** | CVE-2025-6514 (CVSS 10.0): OS command injection via malicious authorization_endpoint in mcp-remote npm package (437K+ downloads) | Critical |
 | **DockerDash MCP Gateway** | Malicious Docker image labels compromise environments via Ask Gordon AI MCP Gateway — data exfil of container details, network topology | High-Critical |
 | **Shadow Escape (Zero-Click MCP)** | Hidden instructions in documents cause MCP-enabled AI to exfiltrate PII from connected databases and CRM systems within authorized identity boundaries | Critical |
+| **Exec-Namespace Preloading RCE** | MCP servers pre-load dangerous Python objects (os, subprocess, importlib) into `exec()` namespace. Pattern-matching scanners defeated by reflection: `getattr(os, 'system')('cmd')` bypasses regex blocklists (HackerOne aws-diagram-mcp-server). General pattern: any exec namespace + `getattr`/`__import__` bypass defeats static validation | Critical |
 | **ContextCrush (Documentation Supply Chain)** | Malicious instructions injected into trusted documentation served via MCP servers (e.g., Context7's "Custom Rules"). AI coding assistants consume poisoned library docs as trusted context, executing attacker instructions (env file theft, file deletion) | Critical |
 | **LLM Framework Serialization** | Untrusted LLM-influenced metadata deserialized as objects (LangGrinch/CVE-2025-68664 pattern). Single prompt cascades through serialization in streaming operations to exfiltrate secrets | Critical |
 | **MCP TypeScript SDK ReDoS** | CVE-2026-0621 (CVSS 8.7): `partToRegExp()` generates regex with nested quantifiers for exploded template variables (e.g., `{/id*}`), causing catastrophic backtracking and 100% CPU utilization via crafted URI in `resources/read` request | High |
@@ -105,13 +106,11 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 | MCP09 | Lack of Input Validation | Missing validation of tool call parameters, allowing path traversal, SSRF, and injection attacks |
 | MCP10 | Insufficient Logging & Monitoring | No audit trail for MCP tool invocations, making detection and forensics of compromises impossible |
 
-**Testing against OWASP MCP Top 10:** When a target uses MCP integrations, map your findings to these risk IDs (MCP01-MCP10). The framework is especially useful for framing MCP supply chain (MCP04), tool poisoning (MCP06), and shadow server (MCP07) findings in reports.
-
-**Checkmarx 11 MCP Risks (March 2026):** Complementary taxonomy covering prompt injection/context manipulation, tool poisoning (schema manipulation), confused deputy (OAuth proxy), supply chain/rug pulls, malicious MCP servers (intentional), cross-agent context abuse, privilege escalation via over-delegation, insecure deserialization/code execution, data exposure via context leakage, insecure MCP client implementation, and dependency confusion/package hijacking. Use alongside OWASP MCP Top 10 for comprehensive coverage — Checkmarx risks map to MCP01-MCP10 but add client-side and deserialization vectors not explicitly covered.
+**Testing against OWASP MCP Top 10:** Map findings to MCP01-MCP10 risk IDs. Especially useful for framing supply chain (MCP04), tool poisoning (MCP06), and shadow server (MCP07) findings. **Checkmarx 11 MCP Risks** adds client-side and deserialization vectors not explicitly covered by OWASP.
 
 ---
 
-## 68 MCP Test Procedures
+## 69 MCP Test Procedures
 
 **Testing MCP Deployments:**
 1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
@@ -468,11 +467,7 @@ mcp-server-kubernetes: command injection via unsanitized parameters in kubectl-w
 
 Palo Alto Unit 42 identified three attack vectors through MCP sampling — the mechanism letting MCP servers request LLM completions from the client. A compromised server becomes an active prompt author:
 
-**1. Resource Theft** — Hidden instructions in sampling requests cause the LLM to generate unauthorized content, consuming victim's API credits. The server pockets completions while the user pays.
-
-**2. Conversation Hijacking** — Compromised server injects persistent instructions via sampling affecting the entire session — not just the current tool call.
-
-**3. Covert Tool Invocation** — Sampling requests instruct the LLM to invoke other tools (filesystem, code execution) without user awareness.
+**Three attack vectors:** (1) **Resource Theft** — hidden instructions consume victim's API credits. (2) **Conversation Hijacking** — persistent instructions affect the entire session. (3) **Covert Tool Invocation** — sampling requests invoke other tools without user awareness.
 
 **Test Procedure (#66): MCP Sampling Resource Theft**
 1. Identify MCP servers that use sampling capabilities (`sampling/createMessage`)
@@ -493,3 +488,10 @@ Palo Alto Unit 42 identified three attack vectors through MCP sampling — the m
 4. Verify audit logs capture tool calls initiated through sampling chains
 
 **Maps to:** MCP02 (Tool Poisoning) + MCP06 (Excessive Permissions) + ASI05 (Excessive Agency)
+
+**Test Procedure (#69): Exec-Namespace Reflection Bypass**
+1. Identify MCP servers using Python `exec()`/`eval()` with pre-loaded namespaces (diagram generators, code runners, data processors)
+2. Test reflection bypasses: `getattr(__builtins__, '__import__')('os').system('id')`, `getattr(os, 'sys'+'tem')('id')`, string concat evasion `eval('o'+'s.sy'+'stem("id")')` — defeats regex blocklists
+3. Verify if namespace includes `os`, `subprocess`, `importlib`, `shutil`, or `pathlib` — any pre-loaded module exploitable via `getattr`/`__import__`
+
+**Maps to:** MCP03 (Sandbox Escape) + CWE-94 (Code Injection)
