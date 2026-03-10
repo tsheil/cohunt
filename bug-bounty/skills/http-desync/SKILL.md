@@ -1,6 +1,6 @@
 ---
 name: http-desync
-description: HTTP request smuggling, web cache poisoning, and race condition testing patterns. High-value bug classes that require understanding protocol-level behavior. Trigger with "request smuggling", "cache poisoning", "race condition testing", "HTTP desync", "web cache deception", "CL.TE", "TE.CL", "how do I test for smuggling", "cache key analysis", "TOCTOU", "time-of-check", "HTTP/2 downgrade", "transfer-encoding", "content-length mismatch", "cache key", "host header injection".
+description: HTTP request smuggling, web cache poisoning, and race condition testing patterns. High-value bug classes that require understanding protocol-level behavior. Trigger with "request smuggling", "cache poisoning", "race condition testing", "HTTP desync", "web cache deception", "CL.TE", "TE.CL", "how do I test for smuggling", "cache key analysis", "TOCTOU", "time-of-check", "HTTP/2 downgrade", "transfer-encoding", "content-length mismatch", "cache key", "host header injection". For parser differentials and Content-Type confusion, use vuln-patterns reference/parser-differentials.md. For race conditions in business logic (double-spend, coupon reuse), use business-logic.
 ---
 
 # HTTP Desync & Cache Attacks

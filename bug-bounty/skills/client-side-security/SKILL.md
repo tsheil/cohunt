@@ -1,6 +1,6 @@
 ---
 name: client-side-security
-description: Browser and client-side vulnerability testing — DOM-based XSS, prototype pollution, postMessage flaws, XS-Leaks, CSP/CORS bypasses, WebSocket hijacking, service worker attacks, client-side storage leaks, and SPA-specific issues. Use when testing frontend JavaScript, browser security boundaries, or single-page applications. Trigger on "DOM XSS", "prototype pollution", "postMessage", "XS-Leak", "CSP bypass", "CORS bypass", "WebSocket security", "service worker", "client-side", "browser security", "SPA security", "frontend security", "DOM clobbering", "cross-site leak", "client-side routing", "localStorage", "sessionStorage", "source map".
+description: Browser and client-side vulnerability testing — DOM-based XSS, prototype pollution, postMessage flaws, XS-Leaks, CSP/CORS bypasses, WebSocket hijacking, service worker attacks, client-side storage leaks, and SPA-specific issues. Use when testing frontend JavaScript, browser security boundaries, or single-page applications. Trigger on "DOM XSS", "prototype pollution", "postMessage", "XS-Leak", "CSP bypass", "CORS bypass", "WebSocket security", "service worker", "client-side", "browser security", "SPA security", "frontend security", "DOM clobbering", "cross-site leak", "client-side routing", "localStorage", "sessionStorage", "source map". For server-side XSS (reflected/stored), use vuln-patterns. For mobile web view issues, use mobile-security. For JavaScript source analysis and endpoint extraction, use target-recon.
 ---
 
 # Client-Side & Browser Security Testing

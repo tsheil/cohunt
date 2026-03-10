@@ -1,6 +1,6 @@
 ---
 name: supply-chain-security
-description: Supply chain and CI/CD pipeline security testing — GitHub Actions script injection, GitLab CI pipeline abuse, dependency confusion, package ecosystem attacks, artifact poisoning, release provenance, webhook abuse, container supply chain, and runner/agent trust boundaries. Trigger with "supply chain", "CI/CD", "GitHub Actions", "GitLab CI", "dependency confusion", "package", "artifact", "pipeline", "runner", "webhook", "container security", "SBOM", "SLSA", "typosquatting", "lockfile", "self-hosted runner", "build pipeline", "release signing", "provenance".
+description: Supply chain and CI/CD pipeline security testing — GitHub Actions script injection, GitLab CI pipeline abuse, dependency confusion, package ecosystem attacks, artifact poisoning, release provenance, webhook abuse, container supply chain, and runner/agent trust boundaries. Trigger with "supply chain", "CI/CD", "GitHub Actions", "GitLab CI", "dependency confusion", "package", "artifact", "pipeline", "runner", "webhook", "container security", "SBOM", "SLSA", "typosquatting", "lockfile", "self-hosted runner", "build pipeline", "release signing", "provenance". For AI IDE supply chain (project file poisoning, extension squatting), use ai-hunting. For cloud CI/CD misconfiguration, use cloud-security. For source code review of pipeline configs, use source-code-audit.
 ---
 
 # Supply Chain & CI/CD Security Testing

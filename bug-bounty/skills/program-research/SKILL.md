@@ -304,11 +304,11 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific market data without loading the full file:
 ```
-grep -n "IDOR\|BOLA\|payout\|reward\|bounty" reference/market-context.md
-grep -n "XBOW\|Shannon\|Codex Security\|autonomous" reference/market-context.md
-grep -n "HackerOne\|Bugcrowd\|Intigriti" reference/market-context.md
-grep -n "MCP\|agentic\|AI vuln\|prompt injection" reference/market-context.md
-grep -n "Apple\|Google\|Microsoft\|Samsung" reference/market-context.md
+grep -n "IDOR\|BOLA\|payout\|reward\|bounty" ${CLAUDE_SKILL_DIR}/reference/market-context.md
+grep -n "XBOW\|Shannon\|Codex Security\|autonomous" ${CLAUDE_SKILL_DIR}/reference/market-context.md
+grep -n "HackerOne\|Bugcrowd\|Intigriti" ${CLAUDE_SKILL_DIR}/reference/market-context.md
+grep -n "MCP\|agentic\|AI vuln\|prompt injection" ${CLAUDE_SKILL_DIR}/reference/market-context.md
+grep -n "Apple\|Google\|Microsoft\|Samsung" ${CLAUDE_SKILL_DIR}/reference/market-context.md
 ```
 
 ---

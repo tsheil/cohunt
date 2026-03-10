@@ -1,6 +1,6 @@
 ---
 name: report-writing
-description: Writes high-quality bug bounty reports that get triaged fast and paid well. Structures findings with clear impact, solid reproduction steps, and severity justification. Trigger with "write a report for", "draft a bug report", "help me report this vuln", "write up this finding", "report this bug to", "submit this finding", "CVSS score", "severity rating", "impact statement", "reproduction steps", "how to report", "report template". Use proactively when user has confirmed a vulnerability and needs to document it for submission.
+description: Writes high-quality bug bounty reports that get triaged fast and paid well. Structures findings with clear impact, solid reproduction steps, and severity justification. Trigger with "write a report for", "draft a bug report", "help me report this vuln", "write up this finding", "report this bug to", "submit this finding", "CVSS score", "severity rating", "impact statement", "reproduction steps", "how to report", "report template". Use proactively when user has confirmed a vulnerability and needs to document it for submission. For pre-submission go/no-go assessment, use /reportability-check. For variant findings, emphasize "requires separate fix" and reference the original CVE/report. For report quality review before submission, use the report-review agent.
 ---
 
 # Report Writing

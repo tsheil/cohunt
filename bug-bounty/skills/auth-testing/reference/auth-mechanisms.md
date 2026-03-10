@@ -141,6 +141,12 @@ A new technique documented by Microsoft Defender targeting government and public
   Test: Tokens valid after logout?
   Test: Tokens valid after account deletion?
   Test: Refresh token rotation — old refresh tokens still work?
+
+□ Cross-application JWT acceptance
+  Test: Obtain valid JWT from one application, present it to another that shares the same signing key
+  Test: Parse Server pattern — if multiple apps share a signing key, JWT issued for App A authenticates as any user on App B
+  Applies to: Parse Server < 8.6.10 / < 9.5.0-alpha.11; any multi-tenant JWT system with shared signing keys
+  Impact: Full authentication bypass — impersonate any user on any co-hosted application
 ```
 
 ---

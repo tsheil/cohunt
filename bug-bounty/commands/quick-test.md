@@ -117,6 +117,9 @@ Generate test plans for any of these (and variations):
 | Mass assignment | Send extra fields to modify protected attributes |
 | JWT issues | Manipulate token claims or algorithm |
 | GraphQL abuse | Introspection, batching, nested query DoS |
+| Auth alternate path (CWE-288) | Send magic values, alternate endpoints, or undocumented params to bypass auth |
+| Deserialization patch bypass | Test patched deser endpoints with alternate gadget chains (ysoserial) |
+| Credential stuffing / reuse | Test credential-reuse protections and account lockout behavior |
 | Indirect prompt injection | Inject instructions in content AI processes (docs, emails, comments) |
 | Tool poisoning / MCP abuse | Inject malicious tool descriptions or hidden schema params |
 | DXT/MCP confused deputy | Chain low-privilege data source (calendar, email) to code execution |

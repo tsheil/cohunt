@@ -211,6 +211,8 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 8 | Race condition | Send parallel requests during auth state change | Bypass checks via timing |
 | 9 | JWT issues | Check for none algorithm, weak secret, no expiry | Forged or extended tokens |
 | 10 | Password reset poisoning | Manipulate Host header in reset request | Reset link points to attacker |
+| 11 | Missing await on async auth | Check if `bcrypt.compare()` or similar async crypto is awaited | Un-awaited Promise = truthy = any password accepted (CVE-2026-28514, Rocket.Chat CVSS 9.3) |
+| 12 | Cross-app JWT acceptance | Present JWT from App A to App B with shared signing key | Full auth bypass in multi-tenant JWT systems (Parse Server < 8.6.10) |
 
 ---
 
@@ -480,11 +482,11 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific vuln patterns without loading full files:
 ```
-grep -n "payment\|checkout\|subscription\|state machine\|race" ../business-logic/SKILL.md
-grep -n "MCP\|tool poisoning\|LPCI\|agentic\|prompt injection" reference/ai-mcp-vulns.md
-grep -n "GraphQL\|JWT\|OAuth\|n8n\|workflow\|React RSC" reference/web-vulns.md
-grep -n "SSRF\|MDM\|Ivanti\|MotW\|Chrome\|ICS\|appliance" reference/infrastructure-vulns.md
-grep -n "CVE-\|CVSS\|bypass\|RCE\|escalation" reference/infrastructure-vulns.md
+grep -n "MCP\|tool poisoning\|LPCI\|agentic\|prompt injection" ${CLAUDE_SKILL_DIR}/reference/ai-mcp-vulns.md
+grep -n "GraphQL\|JWT\|OAuth\|n8n\|workflow\|React RSC" ${CLAUDE_SKILL_DIR}/reference/web-vulns.md
+grep -n "SSRF\|MDM\|Ivanti\|MotW\|Chrome\|ICS\|appliance" ${CLAUDE_SKILL_DIR}/reference/infrastructure-vulns.md
+grep -n "CVE-\|CVSS\|bypass\|RCE\|escalation" ${CLAUDE_SKILL_DIR}/reference/infrastructure-vulns.md
+grep -n "parser\|canonical\|Unicode\|normalization\|SAML" ${CLAUDE_SKILL_DIR}/reference/parser-differentials.md
 ```
 
 ---

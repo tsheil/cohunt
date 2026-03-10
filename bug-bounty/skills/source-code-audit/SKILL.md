@@ -1,6 +1,6 @@
 ---
 name: source-code-audit
-description: Audits source code for security vulnerabilities — traces data flows, finds auth gaps, spots injection sinks, and identifies logic flaws. Works on any codebase you can share or point to. Trigger with "audit this code", "review this repo for vulns", "find vulnerabilities in this source", "code review for security", "check this code for bugs", "security review", "static analysis", "taint analysis", "dangerous function", "unsafe deserialization". Use proactively when user shares code snippets, opens a repository, or mentions reviewing source for a target.
+description: Audits source code for security vulnerabilities — traces data flows, finds auth gaps, spots injection sinks, and identifies logic flaws. Works on any codebase you can share or point to. Trigger with "audit this code", "review this repo for vulns", "find vulnerabilities in this source", "code review for security", "check this code for bugs", "security review", "static analysis", "taint analysis", "dangerous function", "unsafe deserialization". Use proactively when user shares code snippets, opens a repository, or mentions reviewing source for a target. For black-box testing without source, use vuln-patterns. For API-specific code patterns, use api-security. For CI/CD pipeline code review, use supply-chain-security.
 ---
 
 # Source Code Audit
@@ -184,6 +184,7 @@ Review:
 | Timing-safe comparison | Using `==` instead of constant-time compare for tokens |
 | Password in logs | Logging request bodies that contain passwords |
 | Session fixation | No session regeneration after login |
+| Missing `await` on async auth | Un-awaited `bcrypt.compare()` returns Promise (truthy) → any password accepted (CVE-2026-28514 Rocket.Chat, CVSS 9.3; discovered by GitHub Taskflow Agent) |
 
 ### Step 5: Check for Framework-Specific Issues
 
@@ -319,11 +320,11 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find language/framework-specific patterns:
 ```
-grep -n "Node\|Express\|JavaScript\|TypeScript" reference/framework-patterns.md
-grep -n "Python\|Django\|Flask" reference/framework-patterns.md
-grep -n "PHP\|Laravel\|Java\|Spring\|Go\|Rust" reference/framework-patterns.md
-grep -n "AI/LLM\|prompt\|injection\|MCP\|tool_call" reference/framework-patterns.md
-grep -n "type erasure\|Content-Type\|deserialization" reference/framework-patterns.md
+grep -n "Node\|Express\|JavaScript\|TypeScript" ${CLAUDE_SKILL_DIR}/reference/framework-patterns.md
+grep -n "Python\|Django\|Flask" ${CLAUDE_SKILL_DIR}/reference/framework-patterns.md
+grep -n "PHP\|Laravel\|Java\|Spring\|Go\|Rust" ${CLAUDE_SKILL_DIR}/reference/framework-patterns.md
+grep -n "AI/LLM\|prompt\|injection\|MCP\|tool_call" ${CLAUDE_SKILL_DIR}/reference/framework-patterns.md
+grep -n "type erasure\|Content-Type\|deserialization" ${CLAUDE_SKILL_DIR}/reference/framework-patterns.md
 ```
 
 ---

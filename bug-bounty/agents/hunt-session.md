@@ -68,9 +68,9 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 
    | Automation Pressure | What It Means | Hunter Strategy |
    |---|---|---|
-   | **HIGH** (AI tools cover 80%+) | Simple XSS/SQLi/SSRF, subdomain takeovers, known CVE patterns, basic prompt injection | **SKIP** — waste of time, high duplicate risk |
+   | **HIGH** (AI tools cover 80%+) | Simple XSS/SQLi/SSRF, subdomain takeovers, commodity CVE scanning (version detection → known exploit), basic prompt injection | **SKIP** — waste of time, high duplicate risk |
    | **MEDIUM** (AI tools cover 40-80%) | Standard IDOR, common auth bypass, API enumeration | **FAST-TRACK** — test quickly, don't spend hours |
-   | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation | **INVEST** — this is where bounties pay |
+   | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
    Key competitive landscape (March 2026):
    - **XBOW**: **#1 on HackerOne US leaderboard** — 1,060+ reports, 54 critical/242 high in 90 days; 85% custom solve rate; launched **Pentest On-Demand** (automated, 5 business days); expanding into network appliances; still operating at loss; **academic paper (arXiv:2506.23592) notes all findings required human review** — Level 3-4 autonomy, not fully autonomous
@@ -205,7 +205,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
 - Subdomain enumeration (AI tools are faster and more thorough)
-- Known CVE pattern matching (automated scanners excel here)
+- Commodity CVE scanning — version detection → known exploit (automated scanners excel here). **Exception:** patch-bypass variants and auth alternate-path discovery (CWE-288) are LOW automation pressure — AI tools can't reason about incomplete fixes or undocumented auth paths
 - Standard prompt injection on chatbots (high duplicate risk — 540% jump in reports)
 - Basic MCP SSRF scanning (BlueRock Trust Registry already catalogued 36.7% of 7,000+ servers as SSRF-vulnerable — low-hanging fruit is mapped)
 

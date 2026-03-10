@@ -296,12 +296,12 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific patterns without loading the full file:
 ```
-grep -n "GraphQL\|federation\|persisted query" reference/api-patterns.md
-grep -n "mass assignment\|JSON API\|HATEOAS" reference/api-patterns.md
-grep -n "JWT\|API key\|authentication bypass" reference/api-patterns.md
-grep -n "rate limit\|distributed\|evasion" reference/api-patterns.md
-grep -n "webhook\|callback\|SSRF" reference/api-patterns.md
-grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" reference/api-patterns.md
+grep -n "GraphQL\|federation\|persisted query" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "mass assignment\|JSON API\|HATEOAS" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "JWT\|API key\|authentication bypass" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "rate limit\|distributed\|evasion" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "webhook\|callback\|SSRF" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 ```
 
 ---

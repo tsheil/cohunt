@@ -1,6 +1,6 @@
 ---
 name: ai-hunting
-description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability patterns. Use AI tools to accelerate recon, code review, and vulnerability discovery. Also covers testing AI-powered features for prompt injection, insecure output handling, and other OWASP LLM Top 10 issues. Trigger with "use AI to hunt", "AI hunting workflow", "test LLM features", "prompt injection", "AI vulnerability", "LLM security", "test the chatbot", "AI-assisted", "MCP security", "agent security", "AI agent attack", "tool poisoning", "RAG poisoning", "model extraction", "AI red team", or when target has AI/ML features, chatbots, copilots, or MCP integrations.
+description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability patterns. Use AI tools to accelerate recon, code review, and vulnerability discovery. Also covers testing AI-powered features for prompt injection, insecure output handling, and other OWASP LLM Top 10 issues. Trigger with "use AI to hunt", "AI hunting workflow", "test LLM features", "prompt injection", "AI vulnerability", "LLM security", "test the chatbot", "AI-assisted", "MCP security", "agent security", "AI agent attack", "tool poisoning", "RAG poisoning", "model extraction", "AI red team", or when target has AI/ML features, chatbots, copilots, or MCP integrations. For traditional web vuln classes (XSS, SSRF, SQLi), use vuln-patterns. For auth bypass on AI-gated features, use auth-testing. For AI IDE supply chain attacks, see reference/ide-supply-chain.md.
 ---
 
 # AI-Assisted Bug Hunting & LLM Vulnerability Discovery
@@ -171,6 +171,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
 - **EU AI Act deadline**: August 2, 2026 (penalties up to 35M EUR or 7% of global turnover)
+- **EU Cyber Resilience Act enforcement**: September 11, 2026 — mandatory vulnerability reporting for all digital products in EU; actively exploited vulns must be reported to ENISA within 24 hours
 - **Microsoft** paid **$17M to 344 researchers** in 2025; Zero Day Quest spring 2026 paid $1.6M; CISA VDP received 12,800 reports in FY2025, 1,200 valid, $345K awarded across 7 bug bounty programs
 - **Apple max bounty $2M**; Google $250K Chrome record + AI VRP up to $30K ($458K in single live hacking session); OpenAI raised to $100K; Samsung $1M mobile; Nvidia launched program via Intigriti
 - **AI agent attacks**: 66-84% success when testing prompt injection against auto-execution systems
@@ -255,12 +256,12 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific content without loading full files:
 ```
-grep -n "OWASP\|Agentic Top 10\|MCP Top 10\|ASI0" reference/agent-attack-patterns.md
-grep -n "tool poisoning\|name collision\|sampling\|OAuth\|schema" reference/mcp-playbooks.md
-grep -n "XBOW\|Shannon\|Codex Security\|ZeroPath\|Ghost Security" reference/tools-landscape.md
-grep -n "IDEsaster\|DXT\|Cursor\|Copilot\|VS Code" reference/ide-supply-chain.md
-grep -n "prompt injection\|jailbreak\|system prompt\|indirect injection" reference/llm-testing.md
-grep -n "CVE-\|CVSS\|incident\|breach\|exploit" reference/ai-case-studies.md
+grep -n "OWASP\|Agentic Top 10\|MCP Top 10\|ASI0" ${CLAUDE_SKILL_DIR}/reference/agent-attack-patterns.md
+grep -n "tool poisoning\|name collision\|sampling\|OAuth\|schema" ${CLAUDE_SKILL_DIR}/reference/mcp-playbooks.md
+grep -n "XBOW\|Shannon\|Codex Security\|ZeroPath\|Ghost Security" ${CLAUDE_SKILL_DIR}/reference/tools-landscape.md
+grep -n "IDEsaster\|DXT\|Cursor\|Copilot\|VS Code" ${CLAUDE_SKILL_DIR}/reference/ide-supply-chain.md
+grep -n "prompt injection\|jailbreak\|system prompt\|indirect injection" ${CLAUDE_SKILL_DIR}/reference/llm-testing.md
+grep -n "CVE-\|CVSS\|incident\|breach\|exploit" ${CLAUDE_SKILL_DIR}/reference/ai-case-studies.md
 ```
 
 ---

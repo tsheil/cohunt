@@ -280,6 +280,8 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-24457 (OpenMQ, CVSS 9.1): arbitrary file read + potential RCE via unsafe parsing in OpenMQ Broker; message broker as file system access vector
 - Endor Labs "classic vulns meet AI infra" (March 2026): MCP servers inherit CWE-22/CWE-77 at scale; 82% of 2,614 implementations vulnerable to path traversal; root cause is architectural assumption that LLM inputs are trusted
 - VDP as compliance requirement (March 2026): NIST CSF 2.0, ISO 27001, EU CRA all reference coordinated vulnerability disclosure; not having VDP now equivalent to missing privacy policy
+- CVE-2026-28514 (Rocket.Chat, CVSS 9.3): critical authentication bypass — missing `await` on async `bcrypt.compare()` in microservices account-service; un-awaited Promise evaluates truthy → any password accepted for any user with bcrypt hash set; discovered by GitHub Security Lab Taskflow Agent. Pattern: async/await bugs in auth paths
+- EU Cyber Resilience Act enforcement (September 11, 2026): mandatory vulnerability reporting for all products with digital elements sold in EU; actively exploited vulnerabilities must be reported to ENISA within 24 hours; manufacturers must implement coordinated vulnerability disclosure processes
 
 ---
 

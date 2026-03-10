@@ -237,6 +237,25 @@ Low:      Self-only system prompt leak, safety bypass without chain,
 
 ---
 
+## Variant & Patch-Bypass Reportability
+
+Variant findings (same bug class on a different endpoint or a bypass of a previous patch) have specific proof requirements. These are NOT duplicates — they require separate fixes — but triagers need clear evidence.
+
+| Variant Type | Proof Required | Key Distinction |
+|---|---|---|
+| **Sibling endpoint** | Same attack works on endpoint B (different from reported endpoint A) | Different endpoint = different fix = separate report |
+| **Incomplete patch** | Original CVE was patched but alternative input/gadget chain still works | Show the patch, then show your bypass works on the patched version |
+| **API version regression** | Bug fixed in v3 but v2/v1 still vulnerable | Prove v2/v1 is still active and accepting requests |
+| **Cross-feature pattern** | Same authz gap in a different feature area | Different feature = different code path = separate fix |
+
+**Critical for variant reports:**
+- Reference the original CVE/report to help the triager understand context
+- Explicitly state "this requires a separate fix because [specific reason]"
+- Show that the original patch does NOT address your finding
+- If the triager marks it as duplicate, appeal with: "the fix for [original] does not address [your endpoint/method/chain]"
+
+---
+
 ## Tips
 
 1. **Run this check early** — 10 minutes of assessment saves 2 hours writing a doomed report

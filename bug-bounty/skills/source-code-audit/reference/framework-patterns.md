@@ -32,6 +32,7 @@ Language and framework-specific vulnerability patterns for source code audits. R
 | `express.static()` serving sensitive directories | Information disclosure |
 | `child_process.exec()` with string interpolation | Command injection |
 | API data processing with unsanitized input (CWE-94) | Code injection — CVE-2026-25888 (Chartbrew, CVSS 8.8): improperly sanitized input in API data processing enables arbitrary code execution |
+| Missing `await` on async crypto in auth paths | Auth bypass — CVE-2026-28514 (Rocket.Chat, CVSS 9.3): un-awaited `bcrypt.compare()` returns Promise (truthy in JS) → any password accepted; search for `bcrypt.compare`, `argon2.verify`, `scrypt` calls without `await` in authentication code |
 
 ---
 

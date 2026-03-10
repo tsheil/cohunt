@@ -1,6 +1,6 @@
 ---
 name: target-recon
-description: Recons a web target — fingerprints tech stack, enumerates subdomains, detects WAF/CDN, maps the attack surface. Works with curl/dig and web search. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on". Use proactively when user mentions a target domain and hasn't done recon yet.
+description: Recons a web target — fingerprints tech stack, enumerates subdomains, detects WAF/CDN, maps the attack surface. Works with curl/dig and web search. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on". Use proactively when user mentions a target domain and hasn't done recon yet. For program research (rewards, scope, competition), use program-research. For testing vulnerabilities found during recon, use vuln-patterns or the specific skill for that vuln class. For cloud asset enumeration, use cloud-security.
 ---
 
 # Target Recon
@@ -258,11 +258,11 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific JS analysis patterns:
 ```
-grep -n "source map\|sourceMappingURL\|\.map" reference/javascript-analysis.md
-grep -n "secret\|API_KEY\|token\|credential\|password" reference/javascript-analysis.md
-grep -n "webpack\|chunk\|bundle\|build" reference/javascript-analysis.md
-grep -n "React\|Angular\|Vue\|Next.js" reference/javascript-analysis.md
-grep -n "endpoint\|route\|path\|/api/" reference/javascript-analysis.md
+grep -n "source map\|sourceMappingURL\|\.map" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
+grep -n "secret\|API_KEY\|token\|credential\|password" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
+grep -n "webpack\|chunk\|bundle\|build" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
+grep -n "React\|Angular\|Vue\|Next.js" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
+grep -n "endpoint\|route\|path\|/api/" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
 ```
 
 ---
@@ -445,7 +445,7 @@ For each user role (free, paid, admin, support, API-only):
 □ GraphQL introspection — query { __schema { types { name fields { name } } } }
 □ Swagger/OpenAPI endpoints — /swagger.json, /openapi.yaml, /api-docs
 □ Sitemap and robots.txt — may reference internal paths
-□ JavaScript bundle analysis — see reference/javascript-analysis.md
+□ JavaScript bundle analysis — see ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
 □ Error-based discovery — send invalid requests to trigger stack traces with route info
 □ AI/MCP config files — /.mcp.json, /.claude/, /.cursor/mcp.json, /.amazonq/, /CLAUDE.md, /AGENTS.md
 ```

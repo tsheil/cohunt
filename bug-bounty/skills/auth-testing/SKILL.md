@@ -133,6 +133,8 @@ Higher severity than BOLA — accessing admin or privileged functions, not just 
 | **Device-Code Flow** | User code brute force + phishing | Short codes brutable during long polling; attacker-initiated code + victim authorization |
 | **DPoP** | Proof replay + missing binding | jti not checked; access token works without DPoP proof |
 | **Token Exchange** | Subject impersonation + audience bypass | Exchange low-priv token for high-priv; audience not validated |
+| **JWT (cross-app)** | Cross-application JWT acceptance | JWT from App A accepted by App B sharing signing key (Parse Server < 8.6.10) |
+| **Async auth** | Missing `await` on async password validation (CVE-2026-28514, CVSS 9.3) | Rocket.Chat: un-awaited `bcrypt.compare()` returns Promise (truthy) → any password accepted; AI-discovered by GitHub Taskflow Agent |
 
 > **Deep dive on OAuth/JWT format-level bugs:** See vuln-patterns [reference/web-vulns.md](../vuln-patterns/reference/web-vulns.md)
 > **Modern identity protocols (Passkeys, SCIM, DPoP, Token Exchange, JIT):** See [reference/auth-mechanisms.md](reference/auth-mechanisms.md#modern-identity-protocols)
@@ -348,9 +350,9 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific auth mechanism patterns:
 ```
-grep -n "OAuth\|redirect_uri\|ConsentFix\|silent redirect" reference/auth-mechanisms.md
-grep -n "JWT\|JWE\|algorithm\|PlainJWT\|CVE-2026-29000" reference/auth-mechanisms.md
-grep -n "session\|cookie\|fixation\|hijack" reference/auth-mechanisms.md
-grep -n "MFA\|2FA\|TOTP\|bypass" reference/auth-mechanisms.md
-grep -n "SAML\|SSO\|SCIM\|Passkey\|WebAuthn\|DPoP" reference/auth-mechanisms.md
+grep -n "OAuth\|redirect_uri\|ConsentFix\|silent redirect" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
+grep -n "JWT\|JWE\|algorithm\|PlainJWT\|CVE-2026-29000" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
+grep -n "session\|cookie\|fixation\|hijack" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
+grep -n "MFA\|2FA\|TOTP\|bypass" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
+grep -n "SAML\|SSO\|SCIM\|Passkey\|WebAuthn\|DPoP" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
 ```

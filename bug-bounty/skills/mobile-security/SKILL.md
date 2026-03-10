@@ -1,6 +1,6 @@
 ---
 name: mobile-security
-description: Mobile application security testing patterns for iOS and Android. Covers API key extraction, certificate pinning bypass, deep link abuse, local storage analysis, and mobile-specific authentication flaws. Trigger with "mobile app security", "test this iOS app", "Android APK analysis", "mobile API testing", "certificate pinning", "deep link vulnerability", "mobile app pentest", or when program scope includes mobile applications.
+description: Mobile application security testing patterns for iOS and Android. Covers API key extraction, certificate pinning bypass, deep link abuse, local storage analysis, and mobile-specific authentication flaws. Trigger with "mobile app security", "test this iOS app", "Android APK analysis", "mobile API testing", "certificate pinning", "deep link vulnerability", "mobile app pentest", or when program scope includes mobile applications. For mobile API backend bugs (IDOR, auth bypass), use auth-testing or api-security. For web views and browser-based issues, use client-side-security.
 ---
 
 # Mobile Security
