@@ -108,8 +108,9 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high, 132 resolved, 303 triaged), 80x faster than humans, $75M Series B ($117M total); pivoting to pre-production scanning — reduces externally-available attack surface; requires human review for all submissions (Level 3-4 autonomy)
    - **Codex Security + Claude Code Security + GitHub Taskflow + Aikido Infinite + Terra Portal**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge; continuous pentesting (Aikido) and human-governed agentic (Terra) expanding automated coverage
    - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
-   - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category
+   - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category; ~50% of all high/critical findings are now access control
    - **Business logic = 45% of all bounty awards** (Intigriti 2026) — lowest automation pressure
+   - **Snyk Evo** agentic security orchestration broadens automated coverage — narrows window for commodity vuln findings
 
 7. **Map workflows** — For the target's core features, apply `/workflow-map` thinking: actors, states, invariants, abuse cases. Business logic = 45% of bounty awards (Intigriti 2026).
 
@@ -433,7 +434,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | CI/CD with AI bots | Pipeline injection via issues/PRs, secret exfiltration | ai-hunting/reference/agent-attack-patterns.md |
 | RAG / retrieval | Zero-click indirect injection, vector DB poisoning | ai-hunting/reference/mcp-playbooks.md |
 | Multi-agent system | Cascade injection, cross-agent privilege escalation | ai-hunting/reference/agent-attack-patterns.md |
-| React RSC / Next.js | Deserialization in Flight protocol (React2Shell) | vuln-patterns SKILL.md |
+| React RSC / Next.js | Deserialization in Flight protocol (React2Shell); **nation-state exploitation wave** deploying MINOCAT/SNOWLIGHT/COMPOOD backdoors targeting K8s containers | vuln-patterns SKILL.md |
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
 | Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
 | Claude Desktop Extensions (DXT) | Zero-click RCE (CVSS 10.0, LayerX Feb 2026), confused deputy cross-connector chains, AppleScript injection | ai-hunting/reference/ide-supply-chain.md |

@@ -300,7 +300,7 @@ Key program-relevant trends:
 - Continuous assurance testing replacing annual pentests as industry standard
 - **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming demand
 - **Business logic = 45% of all bounty awards** (Intigriti 2026); **IDOR rewards surging** (+23% payout, +29% valid reports YoY)
-- **Access control flaws** caused $953.2M in losses; logic flaws another $63M (FailSafe 2025)
+- **Access control flaws** caused $953.2M in losses; logic flaws another $63M (FailSafe 2025). ~50% of all high/critical severity findings are now broken access control (IDOR, authorization bypass); **18-29% YoY increase** in valid IDOR/IAC reports — fastest-growing payout category
 - **Supply chain compromise** nearly quadrupled since 2020 (IBM X-Force 2026); 454,648 malicious npm packages in 2025
 - **curl ended bug bounty** (Jan 2026) — first shutdown from AI slop; confirmed-rate dropped below 5%
 - **Joseph Thacker (rez0)**: 2x submissions predicted in 2026; internal AI code review will commoditize external bug bounty in 1-2 years

@@ -57,7 +57,7 @@ Real-world LLM exploitation incidents, platform AI integration updates, bug boun
 | **Shadow Escape (Operant AI)** | October 2025: first zero-click agentic attack via MCP; hidden instructions in documents exfiltrate PII | Zero-click MCP data exfiltration |
 | **Gemini MCP Tool 0-day** | CVE-2026-0755 (CVSS 9.8): command injection in gemini-mcp-tool; vendor never responded; published as 0-day | MCP tool RCE |
 | **IDEsaster campaign** | 30+ vulnerabilities across 10+ AI coding tools, 24 CVEs | AI coding IDE as attack surface |
-| **React2Shell (CVE-2025-55182)** | CVSS 10.0: pre-auth RCE in React Server Components; exploited in-the-wild by China-nexus groups within hours | Critical framework RCE |
+| **React2Shell (CVE-2025-55182)** | CVSS 10.0: pre-auth RCE in React Server Components; exploited in-the-wild by China-nexus groups within hours; **nation-state exploitation wave**: GTIG identified distinct campaigns deploying MINOCAT tunneler, SNOWLIGHT downloader, HISONIC backdoor, and COMPOOD backdoor; targets include internet-facing Next.js apps and Kubernetes containers; XMRIG cryptominers also deployed; mass exploitation began December 5, 2025, two days after disclosure | Critical framework RCE — nation-state mass exploitation |
 | **Microsoft Entra ID (CVE-2025-55241)** | CVSS 10.0: Global Administrator privileges via Actor Tokens authentication mechanism | Cloud identity total compromise |
 | **Shai-Hulud supply chain worm** | 454,648 malicious packages in 2025; s1ngularity campaign harvested 2,349 credentials from 1,079 dev systems | Supply chain worm |
 | **ServiceNow second-order prompt injection** | First documented cross-agent privilege escalation in production multi-agent system | Cross-agent privilege escalation |
