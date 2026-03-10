@@ -120,7 +120,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **AISLE (AI-Driven Vulnerability Discovery):**
 - Landmark achievement in January 2026: discovered **12 of 12 OpenSSL zero-days** in the January 2026 coordinated release, plus 13 of 14 CVEs assigned in 2025 — **15 total** across both releases
-- CVE-2025-15467 (HIGH severity, stack buffer overflow in CMS message parsing, potentially remotely exploitable); vulnerability types include heap overflows, type confusions, NULL dereferences, and a cryptographic bug in OCB mode
+- CVE-2025-15467 (NIST CVSS 9.8 CRITICAL, stack buffer overflow in CMS message parsing with RCE potential; OpenSSL rated HIGH); vulnerability types include heap overflows, type confusions, NULL dereferences, and a cryptographic bug in OCB mode
 - Three of the OpenSSL bugs dated back to 1998-2000, lurking undetected for 25-27 years
 - Has been assigned **100+ externally validated CVEs** (including all 12 OpenSSL zero-days) across 30+ projects including Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, and NASA CryptoLib
 - **Full-loop capability**: discover → validate → patch — in 5 cases, AISLE's AI directly proposed patches accepted into official OpenSSL releases
@@ -140,7 +140,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 **Anthropic Claude Code Security:**
 - **Launched March 6, 2026** with Mozilla partnership as limited research preview
 - Claude Opus 4.6 found **500+ vulnerabilities** in production open-source codebases — bugs that had gone undetected for decades despite expert review
-- **Mozilla partnership**: found **22 vulnerabilities in Firefox** (14 high-severity) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24); 112 total reports submitted to Mozilla
+- **Mozilla partnership**: scanned ~6,000 C++ files and submitted 112 unique bug reports; found **22 vulnerabilities in Firefox** (14 high-severity, 7 moderate, 1 low) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24, 2026). First AI-authored working browser engine exploit: CVE-2026-2796 (CVSS 9.8, JIT miscompilation in WebAssembly — optimization placed wasm function from Module B into Module A's import record without type checking). After just 20 minutes of exploration, identified Use After Free in JavaScript engine
 - Worked in a virtual machine with access to standard utilities and fuzzers; no specific instructions or specialized knowledge — "out-of-the-box" capability
 - Key technique: reasoning about code by tracing data flows and reading commit histories to find variants of partially fixed bugs
 - PoC exploit generation remains hard: ~$4,000 in API credits for exploit attempts, succeeded in only 2 cases — finding vulns is easier than exploiting them

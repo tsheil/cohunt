@@ -30,9 +30,9 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 | **Hound** | Deep logic bugs, multi-file chains via knowledge graphs | Language-agnostic |
 | **Shannon** | Autonomous white-box web app pentesting | 96.15% on XBOW benchmark |
 | **CAI** | CTF-level challenges, structured offensive tasks | Top-20 worldwide CTF, 11x faster |
-| **AISLE** | Deep C/C++ memory safety bugs at scale | 100+ CVEs, 12/12 OpenSSL zero-days |
+| **AISLE** | Deep C/C++ memory safety bugs at scale | 100+ CVEs across 30+ projects (OpenSSL, Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, NASA CryptoLib); 15 OpenSSL CVEs including CVE-2025-15467 (CVSS 9.8 RCE); found bugs dating back 25-27 years |
 | **Codex Security** | Continuous source code monitoring | 792 critical + 10,561 high findings, 1.2M commits scanned |
-| **Claude Code Security** | Deep codebase analysis, variant finding | 500+ vulns, 22 Firefox vulns in 2 weeks |
+| **Claude Code Security** | Deep codebase analysis, variant finding | 500+ vulns in OSS; 22 Firefox vulns (14 high-severity) in 2 weeks scanning 6,000 C++ files; 112 unique bug reports to Mozilla; first AI-authored browser exploit (CVE-2026-2796, CVSS 9.8); $4K API credits vs $3K-$20K per vuln bounty |
 | **ZAST.AI** | Zero-false-positive source code scanning | 119 CVEs assigned |
 | **Strix** | Autonomous web app testing with browser + proxy | Used by top 1% HackerOne hunters |
 
@@ -57,7 +57,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 **Where humans still win:** Context-dependent bugs, multi-step business logic, authentication-gated scenarios, chaining bugs across components, creative attack paths.
 
-**Your role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous scanning the same week (March 6, 2026) — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate.
+**Your role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. Both Anthropic (Claude Code Security) and OpenAI (Codex Security) launched enterprise-grade autonomous scanning the same week (March 6, 2026) — human hunters must differentiate with chains, business logic, and agent-specific attack patterns that scanning tools cannot replicate. **Wiz Cyber Model Arena** (March 2026) confirmed: AI solved 9/10 directed challenges at under $50 but fails at broad enumeration — human direction + AI execution is the winning model.
 
 > **Full competitive analysis and benchmarks:** See [reference/tools-landscape.md](reference/tools-landscape.md)
 
@@ -142,7 +142,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 
 ## Critical Warning: "AI Slop" Reports
 
-**curl ended its bug bounty** (Jan 2026) after AI submissions overwhelmed the team — first program shutdown attributed to AI slop. In six years, not a single AI-only-generated submission discovered a genuine vulnerability.
+**curl ended its bug bounty** (Jan 2026) after AI submissions overwhelmed the team — first program shutdown attributed to AI slop. Over 6 years, the program paid $90K+ for 81 genuine vulnerabilities, but by 2025 ~20% of submissions were AI slop and only 5% of all submissions were genuine. Not a single AI-only-generated submission discovered a real vulnerability. Submission volume spiked 8x while quality cratered — a cautionary signal for all programs.
 
 **Before submitting:**
 1. Reproduce the finding yourself (Burp, curl, manual testing)
@@ -238,13 +238,13 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks, Pynt/Noma research | ~388 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | MCP test procedures (68), OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks | ~493 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), security MCP servers, red teaming frameworks, Pynt/Noma research | ~454 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 59 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks | ~486 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~499 |
-| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~163 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~310 |
-| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~445 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (140+ data points) | ~259 |
+| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE, AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~293 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~454 |
+| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~489 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points) | ~357 |
 
 **Quick search** — find specific content without loading full files:
 ```

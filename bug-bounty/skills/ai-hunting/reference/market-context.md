@@ -92,6 +92,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **AI agent skill supply chain**: Snyk ToxicSkills audit found 100% of malicious skills use dual-vector attacks (code + prompt injection); mcp-scan detection achieves 90-100% recall with 0% false positives
 - **CAI 3,600x**: Cybersecurity AI framework demonstrated 3,600x performance improvement over human pentesters in standardized CTF benchmarks (aliasrobotics)
 - **Multi-turn prompt injection** achieves up to **92% success rates** across 8 open-weight models
+- **RAG poisoning threshold**: just 5 carefully crafted documents manipulate AI responses 90% of the time; indirect prompt injection targets all data AI ingests (webpages, PDFs, MCP metadata, RAG docs, emails, memory, code)
+- **Prompt injection attack evolution**: persistence capabilities in 12 of 21 documented multi-stage attacks (2025-2026); lateral movement grew from 0 incidents in 2023 to 8 of 21; attacks escalating from single-shot to multi-stage campaigns
 - **35% of real-world AI security incidents** caused by simple prompts — advanced attacks not necessary
 - **Only 10% of AI-generated code is secure** (Endor Labs study, March 2026)
 - **Apiiro "4x Velocity, 10x Vulnerabilities"** — AI coding assistants produce 10x more security findings; 322% increase in privilege escalation bugs
@@ -106,7 +108,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **XBOW** reached **#1 on HackerOne US leaderboard** in 90 days, submitting ~1,060 vulns (54 critical, 242 high, 524 medium); cumulative 1,400+ zero-days; **$75M Series B** ($117M total, Altimeter + Sequoia)
 - **XBOW Public API** launched Feb 2026 ($6K per pentest, 5-day turnaround)
 - **78% local XBOW benchmark**: fully local agent via feedback-driven iteration — cloud infrastructure no longer required
-- **AISLE discovered all 12 OpenSSL zero-days** in January 2026, including bugs dating back 25-27 years
+- **AISLE discovered all 12 OpenSSL zero-days** in January 2026 (15 total across both releases, credited for 13 of 14 CVEs in 2025); including CVE-2025-15467 (stack buffer overflow, CVSS 9.8 CRITICAL RCE); three bugs dated back to 1998-2000 (25-27 years), one inherited from SSLeay; **100+ CVEs across 30+ projects** (Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, NASA CryptoLib)
 - **Claude Opus 4.6 found 500+ vulnerabilities** across production OSS codebases; **22 Firefox vulns** in 2 weeks
 - **OpenAI Codex Security** (March 6, 2026): 1.2M commits scanned, 14 CVEs found; $10M in API credits for OSS
 - **Novee Security benchmark**: proprietary model outperformed Gemini 2.5 Pro and Claude 4 Sonnet by 55%+, achieving up to 90% accuracy
@@ -168,6 +170,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **90 zero-day vulnerabilities** tracked in 2025; 48% targeted enterprise technology (Google review)
 - **API security detection gap**: only 21% detect attacks at API layer; 97% of API vulns exploitable with single request (42Crunch 2026)
 - **Malicious AI browser extensions**: ~900,000 installs across 20,000+ enterprise environments (Microsoft Defender, March 2026)
+- **GreyNoise LLM infrastructure targeting** (Oct 2025-Jan 2026): 91,403 attack sessions captured; two campaigns — (1) SSRF exploitation via Ollama model pull + Twilio webhooks with Christmas spike (1,688 sessions in 48 hours), 99% sharing single JA4H signature (Nuclei tooling), 62 IPs across 27 countries; (2) systematic enumeration of 73+ LLM model endpoints from just 2 IPs over 11 days (80,469 sessions). Assessment: if running exposed LLM endpoints, you're already on target lists
 - **CrowdStrike 2026**: FANCY BEAR, PUNK SPIDER, FAMOUS CHOLLIMA named as AI-using threat actors; cloud intrusions up 37%
 - **IBM X-Force 2026**: 44% increase in attacks via public-facing apps; 300,000+ ChatGPT credentials on dark web
 - **Cisco broke DeepSeek R1** with 100% jailbreak success rate (50/50 prompts)
@@ -177,7 +180,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## MCP & Agent Infrastructure
 
-- **40+ MCP CVEs** filed in Q1 2026; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI); **1,412 MCP servers indexed** (232% increase in 6 months, Adversa AI March 2026 digest)
+- **40+ MCP CVEs** filed in Q1 2026; 38% of servers lack auth; 43% vulnerable to command execution (Adversa AI); **1,412 MCP servers indexed** (232% increase in 6 months, Adversa AI March 2026 digest). **Field scan** (DEV Community/Kai Security, March 2026): 539 active production endpoints scanned — 201 (37.4%) require no authentication; 70% of all MCP protocol traffic is `initialize` + `tools/list` + `disconnect` (pure reconnaissance, not exploitation) — attackers are systematically mapping the ecosystem before attacking
 - **8,000+ MCP servers** found publicly exposed (Feb 2026)
 - **Endor Labs analysis** of 2,614 MCP implementations: 82% Path Traversal, 67% Code Injection, 34% Command Injection risks
 - **MCP server audit** (March 2026): 118 findings across 68 of 194 packages audited

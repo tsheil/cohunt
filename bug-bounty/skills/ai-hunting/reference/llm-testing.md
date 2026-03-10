@@ -128,6 +128,9 @@ These occur when an attacker poisons *input data* that the LLM later processes:
 | **Knowledge Base Injection** | Submit malicious document/FAQ for knowledge base indexing | Subsequent LLM queries retrieve and act on poisoned data |
 | **Training Data Injection** | If app collects user feedback to train model, inject false examples | Model learns incorrect / malicious behavior from poisoned examples |
 | **RAG Source Manipulation** | If LLM queries a vector database, inject false embeddings | LLM retrieves crafted, harmful responses from poisoned DB |
+| **RAG Poisoning at Scale** | Inject 5+ crafted documents into RAG corpus targeting specific queries | Research shows just 5 carefully crafted documents manipulate AI responses 90% of the time (2026 study); test with webpages, PDFs, MCP metadata, emails, memory, and code as injection vectors |
+
+**RAG Poisoning Effectiveness:** Indirect prompt injection targets all data AI ingests — webpages, PDFs, MCP metadata, RAG docs, emails, memory, and code. Persistence capabilities now appear in 12 of 21 documented multi-stage attacks (2025-2026), and lateral movement grew from zero incidents in 2023 to eight of 21 in the same period.
 
 **Concrete Test Example:**
 ```

@@ -177,6 +177,24 @@ Before delivering, verify:
 
 ---
 
+## AI Report Quality Gate
+
+Programs are actively filtering AI-generated reports. The curl project ended its bug bounty in January 2026 after AI slop overwhelmed the security team. Triagers flag and reject reports with these patterns:
+
+- Citing non-existent functions, endpoints, or CVEs
+- Generic impact paragraphs that could apply to any vulnerability
+- Scanner output without manual verification
+- Vague reproduction steps that can't be followed
+- Claims of "potential" impact without demonstrated proof
+
+**Before submitting any report this tool generates:**
+1. Reproduce the finding yourself (manually, with curl or Burp)
+2. Verify every endpoint, parameter, and payload mentioned actually exists
+3. Confirm the PoC works exactly as written
+4. Disclose AI assistance in the methodology section — transparency builds trust
+
+---
+
 ## Tips
 
 1. **Lead with impact** — the title and first sentence should make severity obvious
