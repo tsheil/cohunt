@@ -120,10 +120,67 @@ Generate test plans for any of these (and variations):
 
 For any class not listed, generate a reasonable test plan following the same structure.
 
+## Stateful Workflow Mode
+
+For vulnerabilities beyond simple IDOR (invite flows, approvals, checkouts, OAuth, async workers, webhooks), use the multi-actor stateful test pattern:
+
+### Actor Setup
+
+```
+Define actors for the test scenario:
+□ Attacker — the threat actor exploiting the vulnerability
+□ Victim — the user whose data/account is affected
+□ Admin — privileged user (if relevant to escalation)
+□ Webhook receiver — external endpoint capturing callbacks
+□ Background worker — async process that acts on queued data
+```
+
+### State Transition Testing
+
+```
+For each workflow (e.g., invite flow, payment, approval):
+
+1. Map the state machine:
+   [Initial] → [Pending] → [Approved] → [Completed]
+
+2. Test state manipulation:
+   □ Can you skip states? (jump from Initial → Completed)
+   □ Can you reverse states? (Completed → Pending)
+   □ Can you act on another user's state transition?
+   □ Does the transition enforce the correct actor? (only approver can approve)
+   □ Can you modify data after a state is "locked"?
+
+3. Test race conditions at state boundaries:
+   □ Send approve + deny simultaneously
+   □ Send two withdrawals against the same balance
+   □ Modify cart after checkout initiated but before payment
+```
+
+### Multi-Step Workflow Tests
+
+```
+Invite Flow:
+□ Can attacker accept invite meant for victim? (IDOR on invite token)
+□ Can expired invite be replayed?
+□ Can invite be used to escalate role beyond what was granted?
+
+Payment/Checkout:
+□ Can item price be modified between cart and payment?
+□ Can attacker use victim's saved payment method?
+□ Can refund be triggered by non-purchaser?
+□ Is the payment amount validated server-side after client sends total?
+
+Approval Workflow:
+□ Can requester approve their own request?
+□ Can a lower-role user approve a higher-role action?
+□ Can approval be bypassed by directly calling the post-approval endpoint?
+```
+
 ## Design Principles
 
 - **Copy-paste ready** — Every test should be a curl command you can run immediately
 - **Two-account pattern** — Always use two accounts to prove cross-account access
+- **Stateful pattern** — For workflows, map the state machine and test transitions
 - **Baseline first** — Establish normal behavior before testing the attack
 - **Confirmation step** — Every test includes how to verify it's not a false positive
 - **Minimal scope** — Test one thing at a time, don't combine vulnerability classes

@@ -100,8 +100,8 @@ If anything critical is missing → ASK before writing.
 4. Determine severity tier — include both scores; note which the platform uses
    - HackerOne: uses CVSS 3.1 with their own severity mapping
    - Bugcrowd: uses VRT (maps loosely to CVSS)
-   - Intigriti: uses CVSS 3.1
-   - When in doubt, lead with 3.1 and include 4.0 as supplementary
+   - Intigriti: uses CVSS V4 for all new submissions (since 2026)
+   - When in doubt, include both 3.1 and 4.0 — lead with whichever the platform uses
 5. Cross-reference with program's reward table (if known from program-research)
 6. Assess duplicate risk (if program-research data available)
 ```

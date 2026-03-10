@@ -281,3 +281,73 @@ A new technique documented by Microsoft Defender targeting government and public
 □ Distributed — rate limit per IP? Use multiple IPs
 □ Long password DoS — send extremely long password to exhaust server CPU (bcrypt)
 ```
+
+---
+
+## Modern Identity Protocols
+
+Enterprise SaaS targets increasingly use these protocols — each introduces distinct attack surfaces that are underexplored in bug bounty.
+
+### Passkeys / WebAuthn / FIDO2
+
+```
+□ Authenticator attestation bypass — can you register a non-compliant authenticator?
+□ Challenge replay — is the server challenge tied to a session and single-use?
+□ User verification bypass — UV flag not enforced; authenticator claims UV but skips biometric
+□ Cross-origin registration — can a subdomain or sibling domain register a passkey for the main domain?
+□ Resident key enumeration — does the RP leak which usernames have passkeys registered?
+□ Fallback chain weakness — passkey setup present, but password/SMS fallback still active? Test fallback-to-phishable
+□ Credential ID leakage — are credential IDs exposed in public API responses? They're not secrets but enable targeted attacks
+□ AAGUID-based filtering bypass — if RP restricts authenticator types, test with spoofed AAGUID
+```
+
+### SCIM Provisioning
+
+```
+□ Cross-tenant user creation — SCIM endpoint accepts user creation for a different tenant
+□ SCIM token scope escalation — provisioning token grants access beyond intended tenant/group
+□ Attribute injection — inject admin roles via SCIM user creation (e.g., roles: ["admin"])
+□ Bulk operation abuse — SCIM bulk endpoint allows mass user modification without rate limiting
+□ Deprovisioning race — delete user via SCIM while active session persists; test if sessions are revoked
+□ Filter injection — SCIM filter parameter (e.g., filter=userName eq "x" or 1 eq 1) allows enumeration
+□ Schema extension abuse — custom SCIM schema extensions that accept unexpected attributes
+```
+
+### Device Authorization / Device-Code Flow (RFC 8628)
+
+```
+□ Polling interval abuse — device polls faster than specified; server doesn't enforce slow_down
+□ User code brute force — short user codes (6-8 chars) may be brutable during long polling windows
+□ Device code reuse — can a device code be used after successful authorization for a second token?
+□ Cross-client device code — authorize device code from one client_id, exchange from another
+□ Phishing via device flow — attacker starts device flow, victim enters code; test if target validates device context
+```
+
+### DPoP (Demonstrating Proof of Possession — RFC 9449)
+
+```
+□ DPoP proof replay — is the jti (JWT ID) in DPoP proof checked for uniqueness?
+□ Missing DPoP binding — access token issued without cnf claim; token works without proof
+□ Algorithm downgrade — DPoP header accepts weak algorithms (none, HS256 with leaked key)
+□ Key confusion — register DPoP with one key, present proof with another
+□ Nonce bypass — server issues DPoP-Nonce but doesn't enforce it on subsequent requests
+```
+
+### Token Exchange (RFC 8693)
+
+```
+□ Subject token impersonation — exchange a low-privilege token for a higher-privilege one
+□ Audience restriction bypass — requested audience not validated; get tokens for any service
+□ Actor token escalation — exchange act_token to gain permissions beyond the actor's scope
+□ Token type confusion — submit access_token as id_token type or vice versa
+□ Cross-tenant exchange — exchange token from tenant A for a token valid in tenant B
+```
+
+### JIT (Just-in-Time) Provisioning
+
+```
+□ Attribute manipulation at JIT — IdP assertion sets admin role during first-login provisioning
+□ Account takeover via JIT — existing account gets overwritten when JIT creates user with same email
+□ Orphaned JIT accounts — user removed from IdP but JIT-provisioned account persists with active sessions
+□ Group membership injection — JIT maps IdP groups to local roles; inject privileged group claims
+```

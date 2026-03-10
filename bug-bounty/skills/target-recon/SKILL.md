@@ -385,8 +385,68 @@ When a subdomain's CNAME points to an unclaimed external service, anyone can cla
 3. Verify you can serve content on the target's subdomain
 4. Severity: Medium ($500-$5K) — enables phishing, cookie theft, CSP bypass
 
+---
+
+## Authenticated Recon
+
+External recon finds the perimeter. Authenticated recon maps the real attack surface — the endpoints, roles, and data flows that only exist behind login. Most high-severity bugs (IDOR, privilege escalation, business logic) live here.
+
+### Per-Role Endpoint Mapping
+
+```
+For each user role (free, paid, admin, support, API-only):
+1. Log in as that role
+2. Spider the application — capture all requests in Burp/mitmproxy
+3. Extract unique endpoint + method combinations
+4. Build a role-endpoint matrix:
+
+   Endpoint              | Free | Paid | Admin | API
+   POST /api/users       |  ✓   |  ✓   |   ✓   |  ✓
+   DELETE /api/users/:id  |  ✗   |  ✗   |   ✓   |  ✓
+   GET /api/admin/stats   |  ✗   |  ✗   |   ✓   |  ✗
+   PUT /api/billing       |  ✗   |  ✓   |   ✓   |  ✓
+
+5. Test every ✗ cell — can the blocked role actually access it?
+```
+
+### Hidden Route Discovery
+
+```
+□ Predictable admin paths — /admin, /internal, /debug, /status, /_admin
+□ API version exploration — if /api/v2/users exists, try /api/v1/users, /api/v3/users
+□ Framework-specific routes — /actuator (Spring Boot), /__debug__ (Django), /elmah (ASP.NET)
+□ GraphQL introspection — query { __schema { types { name fields { name } } } }
+□ Swagger/OpenAPI endpoints — /swagger.json, /openapi.yaml, /api-docs
+□ Sitemap and robots.txt — may reference internal paths
+□ JavaScript bundle analysis — see reference/javascript-analysis.md
+□ Error-based discovery — send invalid requests to trigger stack traces with route info
+```
+
+### Multi-Tenant Isolation Probing
+
+```
+□ Tenant ID in URL — /orgs/{tenant_id}/resource → swap tenant IDs
+□ Tenant ID in headers — X-Tenant-ID, X-Organization-ID → swap values
+□ Subdomain-based tenants — company1.app.com vs company2.app.com → cross-tenant requests
+□ Shared resources — /shared/files/{id} → IDs may span tenants
+□ Admin endpoints — tenant admin vs platform admin authorization boundaries
+□ API key scoping — does API key for tenant A work against tenant B endpoints?
+```
+
+### Webhook & Integration Mapping
+
+```
+□ Outgoing webhooks — where does the app send data? Test for SSRF via webhook URL
+□ Incoming webhooks — /webhooks/*, /callbacks/* — test for signature bypass
+□ OAuth integrations — which third-party apps are connected? Test token scope
+□ Email notifications — do they include sensitive data? HTML injection?
+□ Export features — CSV/PDF/Excel export — test for formula injection, IDOR on exports
+□ Import features — CSV/file upload import — test for XXE, SSRF, path traversal
+```
+
 ## Related Skills
 
 - **program-research** — Research the bug bounty program before hunting
 - **cloud-security** — Deep cloud misconfig testing when recon reveals cloud infrastructure
 - **hunt-plan** (command) — Turn recon into a prioritized hunting plan
+- **auth-testing** — Deep dive on authentication and authorization testing after authenticated recon

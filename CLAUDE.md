@@ -24,7 +24,7 @@ bug-bounty/
 ├── agents/                        # 2 autonomous workflow agents (flat .md files)
 │   ├── hunt-session.md           # End-to-end hunting orchestrator
 │   └── report-review.md          # Pre-submission quality assurance
-└── commands/                      # 14 slash commands
+└── commands/                      # 15 slash commands
 ```
 
 ## Key Conventions

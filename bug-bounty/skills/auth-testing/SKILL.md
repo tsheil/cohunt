@@ -128,8 +128,14 @@ Higher severity than BOLA — accessing admin or privileged functions, not just 
 | **Password Reset** | Host header poisoning → reset link hijack | `Host: attacker.com` or `X-Forwarded-Host`; check token predictability |
 | **SSO/SAML** | Signature wrapping + NameID injection | Remove sig; comment injection `user<!---->.admin@company.com`; IdP confusion |
 | **Rate Limiting** | IP rotation + parameter pollution | `X-Forwarded-For: random`; case/encoding variations; race conditions |
+| **Passkeys/WebAuthn** | Fallback chain + UV bypass | Passkey registered but password fallback still active; UV flag not enforced |
+| **SCIM** | Cross-tenant provisioning + attribute injection | SCIM creates users in wrong tenant; inject admin role via SCIM attributes |
+| **Device-Code Flow** | User code brute force + phishing | Short codes brutable during long polling; attacker-initiated code + victim authorization |
+| **DPoP** | Proof replay + missing binding | jti not checked; access token works without DPoP proof |
+| **Token Exchange** | Subject impersonation + audience bypass | Exchange low-priv token for high-priv; audience not validated |
 
 > **Deep dive on OAuth/JWT format-level bugs:** See vuln-patterns [reference/web-vulns.md](../vuln-patterns/reference/web-vulns.md)
+> **Modern identity protocols (Passkeys, SCIM, DPoP, Token Exchange, JIT):** See [reference/auth-mechanisms.md](reference/auth-mechanisms.md#modern-identity-protocols)
 
 ---
 

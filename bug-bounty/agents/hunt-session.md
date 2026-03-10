@@ -35,6 +35,15 @@ skills:
   - target-recon
   - program-research
   - vuln-patterns
+  - auth-testing
+  - api-security
+  - ai-hunting
+  - client-side-security
+  - http-desync
+  - cloud-security
+  - mobile-security
+  - source-code-audit
+  - supply-chain-security
 memory: user
 ---
 
