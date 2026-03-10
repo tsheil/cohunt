@@ -40,6 +40,10 @@ Based on your situation, I'll send you to the best workflow:
 
 | Situation | Route To | Why |
 |-----------|----------|-----|
+| **Target recently changed** (new feature, patch, scope addition, API version) | `/regression-hunt` | Fresh changes = highest-signal attack surface |
+| **Know a disclosed bug, want more findings** | `/variant-hunt` | Turn one bug into siblings — low duplicate risk |
+| **Want to map business logic** | `/workflow-map` | Actors, states, invariants, abuse cases — 45% of payouts |
+| **Found something, is it worth reporting?** | `/reportability-check` | Early go/no-go before investing in a full write-up |
 | New target, no recon yet | `/recon` then `/hunt-plan` | Map the attack surface before testing |
 | New target, want full guided session | `hunt-session` agent | End-to-end orchestrator handles everything |
 | Have recon, need a test plan | `/hunt-plan` | Turns recon into prioritized test cases |
@@ -92,6 +96,10 @@ If you describe your situation, I'll detect your phase automatically:
 
 | Keywords in Your Input | Detected Phase | Route |
 |------------------------|---------------|-------|
+| "changed", "updated", "new feature", "patched", "released", "added scope" | Change-driven | `/regression-hunt` |
+| "CVE", "disclosed", "variant", "similar bug", "same pattern" | Variant hunting | `/variant-hunt` |
+| "business logic", "workflow", "payment", "checkout", "state machine" | Workflow mapping | `/workflow-map` |
+| "is this reportable", "worth reporting", "N/A risk", "should I submit" | Reportability check | `/reportability-check` |
 | "new", "first time", "getting started" | Onboarding | `/recon` + `/hunt-plan` |
 | "scanning", "enumerating", "fingerprinting" | Recon | `target-recon` skill |
 | "testing", "trying", "fuzzing", "injecting" | Active testing | `/quick-test` or `/methodology` |

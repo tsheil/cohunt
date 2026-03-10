@@ -233,3 +233,41 @@ A six-month security research project reveals a **novel vulnerability class affe
 2. Check if the AI IDE uses an embedded Chromium browser — test for known unpatched CVEs
 3. Verify Chromium version in `process.versions.chrome` or about:version and cross-reference against known CVEs
 4. Test prompt injection → legacy IDE feature chains (e.g., injection → task.json auto-execution → RCE)
+
+---
+
+## Cursor Shell Built-In Bypass (March 2026)
+
+**CVE-2026-22708** — RCE via AI agent manipulation in Cursor's Auto-Run Mode (SentinelOne):
+
+- Shell built-in commands bypass Cursor's command allowlist entirely
+- Prompt injection can trigger arbitrary shell execution via AI agent
+- Auto-Run Mode enables execution without user confirmation
+- Attack vector: malicious code comments or README files trigger AI → shell execution chain
+
+**Testing Approach:**
+1. Create a project with prompt injection in code comments or documentation
+2. Open in Cursor with Auto-Run Mode enabled
+3. Trigger AI analysis (code completion, chat, or automated review)
+4. Test if AI can be manipulated into running shell built-in commands (e.g., `eval`, `source`, `exec`)
+5. Verify no confirmation prompt appears before execution
+
+**Severity Guidance:** High-Critical — RCE from opening a project. Related: CVE-2025-54135 (CurXecute MCP auto-start RCE), CVE-2025-59944 (case-sensitivity bypass in file protections), Workspace Trust disabled by default.
+
+---
+
+## PerplexedBrowser: Agentic Browser Attacks (March 2026)
+
+Zenity Labs disclosed critical vulnerabilities in agentic browsers (Perplexity Comet):
+
+- **Attack chain:** Calendar invite with prompt injection → agent processes invite → accesses local file system → steals credentials from password managers (1Password)
+- Zero-click: victim only needs to have the calendar event appear in their integrated calendar
+- Agentic browsers combine browsing with tool execution (file access, app integration), creating trust boundary violations
+
+**Testing Approach:**
+1. Test if the agentic browser processes content from integrated services (calendar, email, messaging)
+2. Inject prompt injection payloads into calendar invites, shared documents, or email subjects
+3. Check if the agent can access local files, credentials, or other integrated apps
+4. Test CDP/WebSocket endpoints — many agentic browsers expose unauthenticated debugging ports
+
+**Severity Guidance:** Critical — zero-click credential theft via calendar invite. New attack surface class: any AI tool that processes external content and has local system access.

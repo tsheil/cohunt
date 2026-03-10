@@ -394,6 +394,17 @@ First autonomous penetration testing tool specifically targeting MCP servers via
 
 ---
 
+## March 2026 Incidents
+
+- **LexisNexis cloud breach** (March 4, 2026): 2GB exfiltrated via vulnerable application; 21K enterprise customer accounts + 400K user profiles + complete VPC infrastructure map exposed; impacts law firms and government agencies. **Hunting heuristic:** legal/GRC SaaS platforms often have weaker AppSec than consumer apps — large data stores with sensitive data make high-value targets
+- **Bugcrowd CNA status** (March 2026): recognized as CVE Numbering Authority — can now assign CVEs directly to disclosed vulnerabilities, streamlining researcher disclosure workflow
+- **GitHub Taskflow Agent** (March 6, 2026): AI-powered structured audit found 80+ vulnerabilities in 40 open-source repos; ~20 disclosed including WooCommerce CVE-2025-15033. **Hunting heuristic:** structured multi-step audits (business logic, auth bypass, IDOR) outperform single-prompt scanning
+- **AgentShield benchmark** (March 2026): 6 commercial AI security tools tested across 537 cases — tools catching 95%+ prompt injections **missed most unauthorized tool calls**. **Hunting heuristic:** focus MCP/agent testing on tool abuse and unauthorized execution, not just prompt injection
+- **RSAC 2026 Innovation Sandbox** (March 23, 2026): top 10 finalists each receive $5M; security-relevant: ZeroPath (AI-native SAST for business logic), Crash Override (CI/CD build provenance, SLSA Level-2), Charm Security (agentic AI scam prevention), Token Security (machine identity)
+- **Anthropic prompt injection defense research** (March 2026): RL-trained Claude reduces successful attacks to 1% in browser ops; but joint OpenAI/Anthropic/DeepMind research showed **all 12 published defenses bypassed at 90%+ under adaptive attack**. **Hunting heuristic:** defense-in-depth claims are overstated — adaptive multi-step injection still works against all deployed defenses
+
+---
+
 ## Critical Warning: AI Slop Reports
 
 AI slop reports are now a **major industry problem** that has caused the first program shutdowns. In January 2026, **curl ended its bug bounty program** after AI-generated submissions overwhelmed the security team — by July 2025 submission volume spiked to 8x the normal rate, with only 5% of 2025 submissions being genuine vulnerabilities. In six years, not a single AI-only-generated submission discovered a genuine vulnerability.
