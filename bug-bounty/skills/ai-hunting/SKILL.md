@@ -77,7 +77,7 @@ Vague prompts produce vague results. Use surgical prompts targeting specific vul
 
 ### The XBOW/Autonomous Agent Reality Check
 
-**XBOW reached #1 on HackerOne US leaderboard** in 90 days with 1,060 submissions (54 critical, 242 high), now surpassing 1,400 zero-day vulnerabilities. Architecture: coordinator → multiple solver agents with isolated attack machines — runs up to 80x faster than manual teams. Raised $75M but currently operating in the red (compute > bounties).
+**XBOW reached #1 on HackerOne US leaderboard** in 90 days with 1,060 submissions (54 critical, 242 high), cumulative 1,400+ findings. Architecture: coordinator → multiple solver agents with isolated attack machines — runs up to 80x faster than manual teams. Raised $75M but currently operating in the red (compute > bounties).
 
 **Where autonomous agents excel:** Mass SSRF scanning, subdomain enumeration, simple SQLi/XSS, structured exploitation tasks, code analysis at scale.
 
@@ -216,7 +216,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 ### Hunter Implications (Key Stats)
 
 - **Hunter implication — AI is the #1 growth surface:** 1,121 programs include AI in scope (270% YoY increase); 50+ MCP CVEs in 60 days; 38% of servers lack auth. Hunt MCP and agentic features.
-- **Hunter implication — Autonomous tools are competitors:** XBOW is #1 on HackerOne with 1,400+ zero-days and 85x speed. Focus on business logic (45% of awards) and multi-step chains that agents can't replicate.
+- **Hunter implication — Autonomous tools are competitors:** XBOW is #1 on HackerOne with 1,400+ findings and 80x speed. Focus on business logic (45% of awards) and multi-step chains that agents can't replicate.
 - **Hunter implication — Bounties are rising:** Apple $2M max, OpenAI $100K, Samsung $1M. Bug bounty market $2.06B (2026). AI-specific programs paying Critical for cross-boundary prompt injection.
 - **Hunter implication — Regulatory deadlines create urgency:** EU AI Act (Aug 2026), EU CRA (Sep 2026) — programs must fix AI vulns or face 7% global turnover penalties.
 

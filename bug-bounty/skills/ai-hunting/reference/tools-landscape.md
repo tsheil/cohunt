@@ -338,8 +338,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Key insight: frontier model capability is unlocked by **agentic scaffolding**, not raw model performance — infrastructure matters more than model choice
 
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
-- Submitted **~1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 vulnerability reports** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
-- 132 fixes confirmed by companies, 303 triaged awaiting resolution; all fully automated with human review pre-submission
+- Submitted **~1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 findings** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
+- 130 fixes confirmed, 303 triaged awaiting resolution; all fully automated with human review pre-submission
 - Runs up to **80x faster** than manual teams
 - Architecture: "coordinator" performs initial discovery and spawns multiple "solvers" — individual AI pentesters with isolated attack machines
 - **Validation approach:** sophisticated automated "validators" — peer reviewers that confirm each vulnerability (e.g., headless browsers verifying JavaScript payloads execute on target sites); internal methodology uses a "validator" layer with automated checkers (sometimes LLM-powered, sometimes custom scripts) to verify each vulnerability before submission

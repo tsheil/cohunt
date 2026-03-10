@@ -263,7 +263,7 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 ## Competition Landscape
 
 Competition awareness:
-- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ zero-day submissions, running 80x faster than manual teams; raised **$117M total** ($75M Series B led by Altimeter/Sequoia); expanding APAC presence in 2026
+- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ vulnerability findings, running 80x faster than manual teams; raised **$117M total** ($75M Series B led by Altimeter/Sequoia); pivoting to pre-production scanning in 2026
 - XBOW benchmark: **75% of standard web security challenges** solved autonomously, **85% of custom-built challenges** — uses automated "validator" peer reviewers to confirm each finding
 - HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
 - XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days

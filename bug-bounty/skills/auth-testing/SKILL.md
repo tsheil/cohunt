@@ -362,6 +362,23 @@ Auth bugs need clear impact statements. Use this structure:
 
 ---
 
+## WordPress/CMS Plugin Authorization Bypass
+
+WordPress plugins are a top bug bounty target. The most common pattern: AJAX handlers registered via `wp_ajax_nopriv_*` missing `current_user_can()` checks, allowing unauthenticated access to admin functionality.
+
+**Key CVE:** CVE-2026-2371 (Greenshift plugin <= 12.8.3, 100K+ installs) — `gspb_el_reusable_load()` AJAX handler accepts arbitrary `post_id`, renders private/draft reusable blocks without checking `current_user_can('read_post')`. Nonce exposed on public pages via `ajax="1"` shortcode.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Enumerate AJAX handlers | `grep -r 'wp_ajax_nopriv_' wp-content/plugins/` | Handlers accessible without login |
+| 2 | Missing capability check | Call AJAX handler with `action=handler_name` — no cookies | Data returned without auth (private posts, settings, user data) |
+| 3 | Nonce bypass | Check if nonce is exposed on public pages or predictable | AJAX calls succeed with leaked/missing nonce |
+| 4 | Post status leak | Request private/draft/password-protected content IDs | Content rendered regardless of visibility status |
+
+**Applies to:** WordPress, Drupal (route access callbacks), Joomla (component ACL), any CMS with plugin-registered endpoints. **Severity:** Medium-High (private content disclosure) to Critical (admin functionality exposure).
+
+---
+
 ## Reference Files
 
 This skill uses progressive disclosure. Detailed reference material is available on demand:

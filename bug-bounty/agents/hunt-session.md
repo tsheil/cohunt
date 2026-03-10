@@ -105,7 +105,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
    Key competitive context (see `ai-hunting/reference/tools-landscape.md` for full landscape):
-   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high), 85x faster than humans, $75M Series B; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
+   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high), 80x faster than humans, $75M Series B; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
    - **Codex Security + Claude Code Security + GitHub Taskflow**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge
    - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
    - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category
@@ -234,6 +234,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Ivanti EPM magic number** | CVE-2026-1603 (CISA KEV March 9) — sending specific numeric value (64) bypasses auth + exposes Credential Vault (domain admin hashes, service accounts); test enterprise management software for hardcoded auth values | vuln-patterns/reference/infrastructure-vulns.md |
 | **Git LFS supply chain** | Gogs CVE-2026-25921 (CVSS 9.3) — cross-repo LFS object overwrite without auth; replace release binaries with backdoored payloads; test self-hosted Git platforms (Gogs, Gitea, GitLab) for unauthenticated artifact operations | vuln-patterns/reference/infrastructure-vulns.md |
 | **MCP tool poisoning** | MCPTox benchmark: 72.8% attack success on 45 live servers; MCP-ITP automated implicit poisoning; more capable models MORE susceptible (<3% refusal); test tool descriptions for hidden behavioral instructions | ai-hunting/reference/mcp-playbooks.md |
+| **Backup/export endpoint disclosure** | Nginx-UI CVE-2026-27944 (CVSS 9.8) — unauthenticated `/api/backup` returns full backup + AES key in response header; generalizable to any management UI with backup/export/download features; test admin panels, cPanel, pfSense, self-hosted tools | vuln-patterns/reference/infrastructure-vulns.md |
+| **WordPress/CMS AJAX authz** | Greenshift CVE-2026-2371 (100K+ installs) — `wp_ajax_nopriv_*` handler missing `current_user_can()` check → unauthenticated private content leak; grep for `wp_ajax_nopriv_` in plugins to find unprotected AJAX handlers | auth-testing/SKILL.md |
 | **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:

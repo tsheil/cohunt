@@ -454,14 +454,31 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## DNS ACL TOCTOU Bypass (Kubernetes)
 
-**Key CVE:** CVE-2026-26017 (CoreDNS, CVSS 7.7) — `acl` plugin checks original query, then `rewrite` changes it to blocked name after check passes → DNS segmentation bypass in multi-tenant K8s. Fixed CoreDNS 1.14.2.
+**Key CVE:** CVE-2026-26017 (CoreDNS, CVSS 7.7) — `acl` plugin checks original query, then `rewrite` changes it to blocked name after check passes → DNS segmentation bypass in multi-tenant K8s.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
 | 1 | ACL + rewrite order | Query allowed name that rewrites to blocked name | Blocked resource resolved via allowed alias |
 | 2 | Multi-tenant DNS isolation | Cross-namespace DNS queries via rewritten names | Tenant A resolving tenant B's services |
 
-**Severity Guidance:** High in multi-tenant K8s. Pattern: access checks + request transformation in separate stages = TOCTOU.
+---
+
+## Unauthenticated Backup/Export Endpoint Disclosure
+
+**What it is:** Management UIs expose backup/export/download endpoints without authentication — leaking credentials, TLS private keys, session tokens, and encryption keys. Often the backup encryption key is returned in a response header, making decryption trivial.
+
+**Key CVE:** CVE-2026-27944 (Nginx UI < 2.3.3, CVSS 9.8) — `/api/backup` accessible without auth; AES-256 encryption key + IV leaked in `X-Backup-Security` response header. Attacker downloads full backup → decrypts with leaked key → obtains admin creds, session tokens, TLS private keys → full takeover.
+
+**Where to look:** Any admin panel, management console, or infrastructure UI with backup/export/download functionality — especially Nginx-UI, cPanel, Plesk, Webmin, pfSense, OPNsense, Proxmox, any self-hosted tool with a settings export feature.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Unauth backup endpoint | Request `/api/backup`, `/backup`, `/export`, `/download` without session cookie | Backup file returned (zip, tar, JSON, SQL dump) |
+| 2 | Key leakage in headers | Inspect all response headers on backup endpoints | Encryption keys, IVs, passwords in `X-*` headers |
+| 3 | Backup content analysis | Download and examine backup contents | Credentials, API keys, TLS private keys, DB connection strings |
+| 4 | Settings export bypass | Try `/api/settings/export`, `/admin/config/download` without auth | Configuration files with embedded secrets |
+
+**Severity Guidance:** Critical (CVSS 9.8). Unauthenticated access to backups containing credentials = full system compromise. Report immediately — active data exposure.
 
 ---
 
@@ -471,15 +488,13 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 |-----|---------|------|------------|
 | CVE-2025-53770 | SharePoint | Critical | Unauth deser RCE. Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV |
 | CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
-| CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download leaks TLS keys + credentials |
-| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via "magic number" + cred disclosure. CISA KEV March 9, 2026. Unauthenticated: sending specific numeric value grants admin access |
-| CVE-2026-21902 | Juniper Junos OS Evolved | 9.3 | Pre-auth RCE as root on PTX routers. Internal-only On-Box Anomaly Detection service exposed externally due to incorrect permissions. Out-of-band emergency patch |
-| CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE — lone `\n` in chunk extension parsed differently by Kestrel vs proxies; enables auth bypass, CSRF bypass, injection; highest-ever ASP.NET severity; affects 2.x-10.x; $10K bounty (Praetorian). See http-desync skill |
-| CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied Base64-encoded prompt embeddings. Deserialization of untrusted PyTorch tensors → arbitrary Python execution. Pattern: AI inference engines processing user-supplied model data without `weights_only=True` |
-| CVE-2026-25224 | Fastify | High | Stream backpressure DoS — `sendWebStream` ignores TCP backpressure; slow client → unbounded memory → OOM crash. Pattern: Node.js streaming without checking `res.write()` return value. Fixed 5.7.3 |
-| CVE-2026-28514 | Rocket.Chat | 9.3 | Missing `await` on `bcrypt.compare()` returns truthy Promise → any password accepted. Pattern: async auth bypass in Node.js/TypeScript microservices |
-| CVE-2026-24985 | Windows ICMP | 9.8 | RCE via ICMP — no auth/interaction required. March 2026 Patch Tuesday zero-day. Pattern: network protocol handlers processing malformed packets without bounds checking |
-| CVE-2026-24993 | Outlook | 9.8 | EoP zero-day — specially crafted email triggers automatically on retrieval by server. No preview pane required. March 2026 Patch Tuesday. Pattern: email-triggered pre-auth exploitation |
-| CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE — untrusted data deserialized → cmd exec on host. CISA KEV March 2026. Pattern: Java deserialization in enterprise web help desk products |
-| CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite without authentication — supply chain attack vector: replace legitimate release binaries with backdoored payloads. Fixed Gogs 0.14.2. Pattern: LFS/artifact registries with missing authz on object storage |
-| CVE-2026-22719 | VMware Aria | 8.1 | Command injection — unauth attacker executes arbitrary commands. CISA KEV March 2026. Active exploitation in the wild. Pattern: management console command injection |
+| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via "magic number" + cred disclosure. CISA KEV March 9, 2026 |
+| CVE-2026-21902 | Juniper Junos OS Evolved | 9.3 | Pre-auth RCE as root on PTX routers. Incorrectly exposed internal service |
+| CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE. See http-desync skill |
+| CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied embeddings. Pattern: AI inference deser |
+| CVE-2026-28514 | Rocket.Chat | 9.3 | Missing `await` on `bcrypt.compare()` → any password accepted. Async auth bypass |
+| CVE-2026-24985 | Windows ICMP | 9.8 | RCE via ICMP — no auth. March 2026 Patch Tuesday zero-day |
+| CVE-2026-24993 | Outlook | 9.8 | EoP zero-day — email auto-triggers on retrieval. March 2026 Patch Tuesday |
+| CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE (3rd bypass). CISA KEV March 2026 |
+| CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite — supply chain vector. Fixed 0.14.2 |
+| CVE-2026-22719 | VMware Aria | 8.1 | Unauth command injection. CISA KEV March 2026. Active exploitation |
