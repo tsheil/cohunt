@@ -312,3 +312,5 @@ Key program-relevant trends:
 - **Promptfoo acquired by OpenAI** (March 9): $86M valuation; frontier labs consolidating AI red-team tooling
 - **Claude Code Review** (March 9-10): multi-agent PR review at $15-$25/review; 84% finding rate on large PRs; <1% rejection rate
 - **OWASP Red Teaming Vendor Eval v1.0** (March 6): first standard for evaluating AI red teaming providers
+- **ShinyHunters Salesforce Aura** (March 8-10): UNC6240 breached ~400 orgs via Experience Cloud guest user misconfig; $6.2M Salesforce bounties in 2025; no CVE — misconfiguration class
+- **SiYuan auth-vs-authz pattern** (CVE-2026-30926): systemic — CheckAuth present but CheckRole missing across 4+ endpoints; applies broadly to self-hosted apps with role-based access

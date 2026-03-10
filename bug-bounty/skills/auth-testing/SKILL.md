@@ -379,6 +379,24 @@ WordPress plugins are a top bug bounty target. The most common pattern: AJAX han
 
 ---
 
+## Salesforce Experience Cloud / Aura Guest User Access Control
+
+Salesforce Experience Cloud sites expose the `/s/sfsites/aura` endpoint for the Lightning Aura framework. When guest user profiles are misconfigured with overly broad permissions, unauthenticated users can query CRM objects (Accounts, Contacts, Cases, Documents) directly. **ShinyHunters (UNC6240) breached ~400 organizations** in March 2026 using this pattern — no CVE assigned (Salesforce classifies as customer misconfiguration).
+
+**Discovery:** Send empty POST `{}` to `/s/sfsites/aura` — `aura:invalidSession` response confirms Aura instance. Check custom path prefixes: `/business/s/sfsites/aura`, `/support/s/sfsites/aura`.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Object enumeration | POST `getConfigData` action to Aura endpoint | `apiNamesToKeyPrefixes` reveals all accessible objects; `__c` suffix = custom objects |
+| 2 | Unauthenticated data access | POST `getItems` with `entityNameOrId` for each discovered object | Response >12KB indicates data exposure; records returned without auth |
+| 3 | Custom Apex controller | Search proxy history for `compound://c` and `Apex@` strings | Undocumented business logic accessible to guest users |
+| 4 | Record limit bypass | Test `sortBy` parameter against 2,000-record GraphQL limit | Bypass returns full dataset beyond intended limit |
+| 5 | Self-registration escalation | Register via guest self-registration if enabled | Elevated access beyond guest-tier permissions |
+
+**Severity:** Critical when PII or CRM data exposed (Salesforce paid $6.2M in bounties in 2025, up to $60K/finding). **Tools:** AuraInspector (Mandiant), Misconfig Mapper (Intigriti), poc_salesforce_lightning. **Key misconfiguration:** "API Enabled" permission on guest user profile opens the attack vector — disabling it closes it.
+
+---
+
 ## 9. Credential-Based Attacks — "Log In, Don't Break In"
 
 **Cloudflare 2026 data:** 63% of all logins involve previously compromised credentials; 94% of login attempts originate from bots. Attackers are shifting from exploitation to credential abuse — and many applications lack adequate defenses.

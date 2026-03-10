@@ -111,6 +111,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category; ~50% of all high/critical findings are now access control
    - **Business logic = 45% of all bounty awards** (Intigriti 2026) — lowest automation pressure
    - **Snyk Evo** agentic security orchestration broadens automated coverage — narrows window for commodity vuln findings
+   - **Auth-vs-authz confusion pattern** (SiYuan CVE-2026-30926): `CheckAuth` present but `CheckRole` missing — systemic across self-hosted apps; 4+ endpoints in one codebase; human-only pattern
 
 7. **Map workflows** — For the target's core features, apply `/workflow-map` thinking: actors, states, invariants, abuse cases. Business logic = 45% of bounty awards (Intigriti 2026).
 
@@ -438,6 +439,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
 | Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
 | Claude Desktop Extensions (DXT) | Zero-click RCE (CVSS 10.0, LayerX Feb 2026), confused deputy cross-connector chains, AppleScript injection | ai-hunting/reference/ide-supply-chain.md |
+| Salesforce Experience Cloud | Guest user profile misconfig → unauthenticated CRM data access via `/s/sfsites/aura`; ShinyHunters (UNC6240) breached ~400 orgs March 2026; no CVE needed — test with AuraInspector | auth-testing SKILL.md |
 | Repos with AI tooling configs | .claude/ hooks RCE (CVE-2025-59536), API key redirect (CVE-2026-21852), .mcp.json rogue servers, .cursorrules injection | source-code-audit SKILL.md |
 | MCP client infrastructure | mcp-remote RCE (CVE-2025-6514), OAuth metadata injection, proxy/gateway URL handling | vuln-patterns/reference/ai-mcp-vulns.md |
 | SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains, CISA ED 26-03, CVE-2026-20127 (CVSS 10.0 exploited since 2023) | vuln-patterns/reference/infrastructure-vulns.md |
