@@ -447,6 +447,8 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | MCP gateways / proxies | Auth scope confusion, param injection at gateway boundary, credential vault isolation testing (Peta, TrueFoundry, Lasso, MintMCP) | vuln-patterns/reference/ai-mcp-vulns.md |
 | Denial-of-wallet / resource exhaustion | MCP overthinking loops (142.4x token amplification), unbounded tool execution chains, subscription depth bypass | ai-hunting/reference/mcp-playbooks.md |
 | Internal service exposure | Management services exposed externally due to incorrect permissions (Juniper CVE-2026-21902 CVSS 9.3), appliance On-Box features accessible pre-auth | vuln-patterns/reference/infrastructure-vulns.md |
+| AI-powered features processing external content | AI-as-exfil-channel: attacker content → AI agent → data exfiltration (ForcedLeak, Reprompt, DXT, CVE-2026-26144 Copilot Agent exfil). Test all paths where untrusted data enters AI context with access to privileged data/tools | ai-hunting/reference/agent-attack-patterns.md |
+| Enterprise management platforms | Management-plane auth bypass patterns: magic number auth (Ivanti CVE-2026-1603), triple deser bypass chains (SolarWinds CVE-2025-26399), bash arithmetic expansion (Ivanti EPMM), hardcoded creds | vuln-patterns/reference/infrastructure-vulns.md |
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint

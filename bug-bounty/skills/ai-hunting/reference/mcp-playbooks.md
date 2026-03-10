@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-72 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps).
+73 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps).
 
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
@@ -9,7 +9,7 @@
 ## Table of Contents
 
 - [CoSAI MCP Threat Routing](#cosai-mcp-threat-routing-matrix) | [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026)
-- [72 Test Procedures](#72-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
+- [73 Test Procedures](#73-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
 - [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox Benchmark](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
 
@@ -489,3 +489,10 @@ First systematic benchmark of tool poisoning attacks on real-world MCP infrastru
 Automated framework for implicit tool poisoning — black-box optimization maximizes Attack Success Rate while evading detection. Test: inject subtle behavioral modifications in tool descriptions that don't mention other tools explicitly but bias LLM tool selection; verify if model's tool choice shifts without visible instruction.
 
 **Maps to:** MCP02 + CoSAI T3
+
+**Test Procedure (#73): Azure MCP Server Elevation of Privilege** (CVE-2026-26118, March 2026 Patch Tuesday)
+Crafted input to Azure MCP Server enables privilege escalation. Test: send malformed requests to Azure MCP Server endpoints; test parameter injection in Azure resource management tool calls; verify if tool invocations can escalate beyond granted RBAC scope; check if MCP server validates Azure AD token scope at the tool level vs. session level.
+
+**Maps to:** MCP04 (Privilege Escalation) + CoSAI T2
+
+**MCP CVE milestone update (March 2026):** 50+ MCP CVEs filed (30 in 60 days); 42,665 exposed instances, 5,194 actively vulnerable; vulnerability rate accelerating, not plateauing. Update header stat from 72 to 73 test procedures.

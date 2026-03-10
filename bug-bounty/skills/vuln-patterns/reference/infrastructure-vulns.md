@@ -365,7 +365,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## March 2026 Patch Tuesday Cluster (Microsoft)
 
-**What it is:** Microsoft's March 11, 2026 Patch Tuesday addressed 79-83 CVEs (BleepingComputer: 79 flaws; Tenable: 83 including Edge/Chromium) with 2 publicly disclosed zero-days and 3 Critical vulnerabilities. Follows February's unprecedented 6 zero-days.
+**What it is:** Microsoft's March 2026 Patch Tuesday addressed 79-83 CVEs (BleepingComputer: 79 flaws; Tenable: 83 including Edge/Chromium) with 2 publicly disclosed zero-days and 3 Critical vulnerabilities. Follows February's unprecedented 6 zero-days.
 
 **Key CVEs:**
 
