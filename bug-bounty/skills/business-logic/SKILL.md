@@ -7,6 +7,29 @@ description: Tests business logic vulnerabilities — the #1 bounty-paying class
 
 The #1 bounty-paying class (45% of all awards, Intigriti 2026) and the area where human hunters have the strongest edge over autonomous tools. Business logic bugs require understanding what the application is *supposed* to do, then finding where implementation diverges from intent.
 
+## Quick Start — First 5 Minutes
+
+1. **Map the money flow** — Find checkout/payment/billing endpoints. Intercept, change `price`, `quantity`, or `currency`.
+2. **Skip steps** — Identify a multi-step workflow (checkout, signup, approval). Jump from step 1 to step 3's API.
+3. **Race the limit** — Find a single-use action (coupon, invite, vote). Send 20 parallel requests via HTTP/2 single-packet.
+4. **Cross-tenant swap** — If B2B SaaS: swap `org_id` or `tenant_id` in any admin/export/webhook endpoint.
+5. **Downgrade + retain** — Downgrade from premium to free tier. Check if premium API endpoints still respond.
+
+If you have a hit, run `/reportability-check` before `/write-report`. If blocked or it looks patched, run `/variant-hunt`.
+
+**B2B SaaS targets — test these first** (highest value, lowest competition):
+
+| Surface | Key Test | Why It Pays |
+|---------|----------|-------------|
+| SCIM provisioning | Cross-tenant user creation via SCIM token scope bypass | Critical — admin access in wrong tenant |
+| SSO/JIT | JIT into wrong tenant via email domain collision | Critical — cross-tenant account creation |
+| Invitations | Role escalation on invite acceptance | High — join as admin instead of viewer |
+| Support impersonation | Impersonate admin from support agent context | Critical — full ATO at scale |
+| Data exports | IDOR on export endpoint (`org_id` swap) | High — bulk data exfiltration |
+| Approval workflows | Self-approval or bypass via direct API call | High — separation of duties bypassed |
+
+---
+
 ## Why Business Logic Pays More
 
 Autonomous tools (XBOW, Shannon, Codex Security) scan for technical patterns — they can't understand business intent:

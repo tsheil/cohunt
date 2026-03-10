@@ -120,6 +120,31 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 
 ---
 
+## Quick Start — Testing an AI Feature (Without Getting N/A'd)
+
+1. **Classify surface** — Chat / RAG / tool-using agent / MCP / IDE plugin / code generator?
+2. **Identify attacker-controlled input** — What data does the AI process that you can influence?
+3. **Identify higher-privileged data or tool** — What can the AI access that you cannot? (other users' data, internal APIs, file system, email)
+4. **Plant payload** — Inject via the attacker-controlled input (document, issue, email, shared content).
+5. **Trigger from second session/victim context** — Does the AI execute your payload when a *different* user or session processes it?
+6. **Capture unauthorized read/action** — Did the AI exfiltrate data, execute an action, or access something it shouldn't?
+7. **Verify cross-boundary harm** — Is someone other than yourself harmed? (If no: not a bounty — move on.)
+8. **Test persistence** — Only if the first hit lands: does it persist across sessions or affect future users?
+9. **Stop if** — It's only a self-session jailbreak, prompt leak without secrets, or hallucination.
+10. **Run `/reportability-check`** before `/write-report`. If blocked or patched, run `/variant-hunt`.
+
+**Quick severity filter — what pays vs. what doesn't:**
+
+| Pays Bounty | Does NOT Pay |
+|-------------|-------------|
+| Prompt injection → accessing *other users'* data | "I made the AI say something bad" (pure jailbreak) |
+| Tool executes unauthorized action (email, delete, modify) | System prompt leak with no sensitive data |
+| Indirect injection exfiltrates secrets from victim | Prompt injection with no downstream effect |
+| MCP tool poisoning → RCE or credential theft | Self-XSS via AI output in own chat |
+| Memory poisoning affects future sessions/other users | AI hallucinated wrong information |
+
+---
+
 ## Area 2: Hunting Bugs in AI/LLM Features
 
 When a target has AI/LLM features (chatbots, AI assistants, code generators, content modifiers), test against the **OWASP LLM Top 10 2025**:
@@ -160,23 +185,14 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 
 ## Program Scoping & Bounty Notes
 
-### Key Market Stats (2025-2026)
+### Hunter Implications (Key Stats)
 
-- **Business logic vulnerabilities** = **45% of all bounty awards** industrywide (Intigriti 2026) — highest-value human edge
-- **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
-- **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
-- **XBOW**: #1 HackerOne with 1,400+ zero-days (mission declared completed March 2026, pivoting to pre-production); **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days (CVE-2025-15467 CVSS 9.8 RCE — some bugs dating back 27 years to SSLeay era; AI proposed 5/12 accepted patches); **Google Big Sleep**: 20 OSS zero-days (SQLite, FFmpeg, ImageMagick)
-- **50+ MCP CVEs** by March 2026 (30 in 60 days); **42,665 exposed instances**, 5,194 actively vulnerable; 38% lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI); 82% of 2,614 implementations vulnerable to path traversal (Endor Labs)
-- **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
-- **Only 10% of AI-generated code** is secure (Endor Labs)
-- **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
-- **EU AI Act deadline**: August 2, 2026 (penalties up to 35M EUR or 7% of global turnover)
-- **EU Cyber Resilience Act enforcement**: September 11, 2026 — mandatory vulnerability reporting for all digital products in EU; actively exploited vulns must be reported to ENISA within 24 hours
-- **Microsoft** paid **$17M to 344 researchers** in 2025; Zero Day Quest spring 2026 paid $1.6M; CISA VDP received 12,800 reports in FY2025, 1,200 valid, $345K awarded across 7 bug bounty programs
-- **Apple max bounty $2M**; Google $250K Chrome record + AI VRP up to $30K ($458K in single live hacking session); OpenAI raised to $100K; Samsung $1M mobile; Nvidia launched program via Intigriti
-- **AI agent attacks**: 66-84% success when testing prompt injection against auto-execution systems
+- **Hunter implication — AI is the #1 growth surface:** 1,121 programs include AI in scope (270% YoY increase); 50+ MCP CVEs in 60 days; 38% of servers lack auth. Hunt MCP and agentic features.
+- **Hunter implication — Autonomous tools are competitors:** XBOW is #1 on HackerOne with 1,400+ zero-days and 85x speed. Focus on business logic (45% of awards) and multi-step chains that agents can't replicate.
+- **Hunter implication — Bounties are rising:** Apple $2M max, OpenAI $100K, Samsung $1M. Bug bounty market $2.06B (2026). AI-specific programs paying Critical for cross-boundary prompt injection.
+- **Hunter implication — Regulatory deadlines create urgency:** EU AI Act (Aug 2026), EU CRA (Sep 2026) — programs must fix AI vulns or face 7% global turnover penalties.
 
-> **Full market context database (120+ metrics):** See [reference/market-context.md](reference/market-context.md)
+> **Full market context database (150+ metrics):** See [reference/market-context.md](reference/market-context.md)
 
 ### How to Scope AI Vulnerabilities with Programs
 

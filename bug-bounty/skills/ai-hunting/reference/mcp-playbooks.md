@@ -74,9 +74,10 @@ MCP is rapidly being adopted to connect AI agents to enterprise tools and data. 
 | **Git MCP Server RCE** | CVE-2025-68145, CVE-2025-68143, CVE-2025-68144: Three CVEs in Anthropic's Git MCP server enabling RCE via prompt injection | Critical |
 | **MCP Server SSRF -> Cloud Compromise** | Unpatched SSRF in Microsoft MarkItDown MCP server — compromises AWS EC2 instances via metadata service exploitation | Critical |
 | **Gemini MCP 0-day** | CVE-2026-0755 (CVSS 9.8): command injection via execAsync in gemini-mcp-tool; vendor unresponsive, published as 0-day | Critical |
-| **Godot MCP Command Injection** | CVE-2026-25546: command injection via exec() in godot-mcp server | High |
-| **GitHub Kanban MCP Injection** | CVE-2026-0756: command injection in create_issue functionality | High |
+| **MCP CLI Wrapper Injections** | CVE-2026-25546 (Godot), CVE-2026-0756 (GitHub Kanban): command injection via exec()/child_process in CLI-wrapping MCP servers | High |
 | **eBay API MCP RCE** | CVE-2026-27203: RCE via updateEnvFile in eBay API MCP Server | Critical |
+| **SaaS Connector Path Traversal / File Write** | CVE-2026-27825 (mcp-atlassian, CVSS 9.1): path traversal via Confluence page download overwrites `~/.bashrc` or `~/.ssh/authorized_keys` → unauthenticated RCE. Pattern: any MCP connector bridging SaaS files to local filesystem without path canonicalization. **Hunter heuristic:** test all file-download MCP tools with `../../` payloads in resource identifiers | Critical |
+| **SaaS Connector Header/Base-URL SSRF** | CVE-2026-27825 secondary: unsanitized headers from Confluence responses passed through to internal HTTP requests → SSRF to cloud metadata. Pattern: MCP connectors forwarding SaaS-provided headers/URLs without validation. **Test:** any MCP tool fetching remote resources — inject `169.254.169.254` via header manipulation or redirect | Critical |
 | **mcp-remote OAuth RCE** | CVE-2025-6514 (CVSS 10.0): OS command injection via malicious authorization_endpoint in mcp-remote npm package (437K+ downloads) | Critical |
 | **DockerDash MCP Gateway** | Malicious Docker image labels compromise environments via Ask Gordon AI MCP Gateway — data exfil of container details, network topology | High-Critical |
 | **Shadow Escape (Zero-Click MCP)** | Hidden instructions in documents cause MCP-enabled AI to exfiltrate PII from connected databases and CRM systems within authorized identity boundaries | Critical |

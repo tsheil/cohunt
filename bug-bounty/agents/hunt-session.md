@@ -73,7 +73,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
    Key competitive context (see `ai-hunting/reference/tools-landscape.md` for full landscape):
-   - **XBOW**: #1 HackerOne US leaderboard; 85% custom solve rate; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
+   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high), 85x faster than humans, $75M Series B; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
    - **Codex Security + Claude Code Security + GitHub Taskflow**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge
    - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
    - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category
@@ -97,6 +97,7 @@ Step 6: Score automation pressure per attack surface area (HIGH/MEDIUM/LOW)
 Step 7: Map workflows — actors, states, invariants, abuse cases for core features
 Step 8: Map OWASP frameworks (LLM Top 10, Agentic Top 10, MCP Top 10, Standard Top 10)
 Step 9: Prioritize by (reward × likelihood) / (automation pressure × duplicate risk)
+Step 9b: Build 3 fresh variant bets from the last 30 days of CVE patterns
 Step 10: Generate first 3 tests with exact payloads + evidence capture checklist
 Step 11: Compile into session brief with explicit stop conditions
 ```
@@ -170,7 +171,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Chain building** | Combine lower-severity findings: IDOR → auth bypass → data exfil; open redirect → OAuth token theft | vuln-patterns SKILL.md |
 | **Auth-gated scenarios** | OAuth callback manipulation, SSO trust relationships, first-party trust abuse (ConsentFix), SAML attacks | auth-testing SKILL.md |
 | **AI/LLM injection** | LPCI, memory poisoning (SpAIware/ZombieAgent), multi-turn injection, image-based injection (64% success), invisible Unicode (E0000-E007F), semantic chaining, H-CoT hijacking, **Policy Puppetry** (universal jailbreak — all frontier models, no tuning) | ai-hunting SKILL.md |
-| **MCP ecosystem** | Tool poisoning, name collision (CVE-2026-30856), sampling exploitation, SDK flaws (ReDoS, data leak), OAuth CSRF, connector SSRF (36.7% of 7K servers), schema poisoning, overthinking loops (142.4x token amplification) | ai-hunting/reference/mcp-playbooks.md |
+| **MCP ecosystem** | Tool poisoning, name collision (CVE-2026-30856), sampling exploitation, SDK flaws (ReDoS, data leak), OAuth CSRF, **SaaS connector path traversal** (CVE-2026-27825 mcp-atlassian CVSS 9.1 — test all file-download MCP tools with `../../` payloads), connector SSRF (36.7% of 7K servers), schema poisoning, overthinking loops (142.4x token amplification) | ai-hunting/reference/mcp-playbooks.md |
 | **Agentic browser attacks** | Zero-click hijacking (PleaseFix), trust zone violations (TRAIL taxonomy), password manager access, adaptive prompt injection (90%+ defense bypass), CDP/WebSocket unauthenticated endpoints | ai-hunting/reference/agent-attack-patterns.md |
 | **AI IDE supply chain** | Project file exploitation (30+ vulns, 24 CVEs), extension squatting, Chromium flaws, rules file backdoor (invisible Unicode), workspace trust bypass, pre-trust window exploitation, Blackbox AI RCE via PNG | ai-hunting/reference/ide-supply-chain.md |
 | **AI CLI exploitation** | Shell expansion bypass (CVE-2026-29783), allowlist gaps, command obfuscation (CVE-2026-2256 CVSS 9.8) | ai-hunting/reference/agent-attack-patterns.md |
@@ -243,6 +244,14 @@ Avoid competing directly with autonomous tools on:
 ### Tier 3: Exploratory (Long shots)
 [High-reward but lower-probability targets]
 
+## Fresh Variant Bets (Last 30 Days)
+
+| Recent Pattern | Similar Surface on Target | First Request to Send |
+|----------------|--------------------------|----------------------|
+| [e.g., SaaS connector path traversal (CVE-2026-27825)] | [e.g., target's Confluence/Jira MCP integration] | [e.g., download tool with ../../.ssh/authorized_keys] |
+| [e.g., Middleware regex auth bypass (CVE-2026-31816)] | [e.g., target's webhook/health endpoints] | [e.g., ?/api/webhooks/ appended to auth'd endpoint] |
+| [e.g., SSRF validation gap — private IP not blocked] | [e.g., target's webhook URL / import-from-URL] | [e.g., http://10.0.0.1/latest/meta-data/] |
+
 ## First 3 Tests to Run
 [Concrete, actionable test cases to start with — specific URLs, parameters, payloads]
 
@@ -292,6 +301,7 @@ At the top of every response during the hunt session, output a markdown checklis
 - [ ] Map workflows (actors, states, invariants)
 - [ ] OWASP framework mapping
 - [ ] Prioritize targets
+- [ ] Build 3 fresh variant bets (last 30 days)
 - [ ] Generate first 3 tests + evidence checklist
 - [ ] Compile session brief
 - [ ] Findings: [0 cards logged — apply Finding Gate to each]

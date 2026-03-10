@@ -431,6 +431,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
 - **Codex Security** (OpenAI, formerly Aardvark) for GPT-5-powered autonomous security research — **launched March 6, 2026** as research preview; discovered **10+ CVEs** in open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, libssh, PHP); **84% noise reduction** on repeated scans, **90%+ severity over-reporting reduction**; 1.2M commits scanned in 30 days, **792 critical + 10,561 high-severity findings**; 50%+ FP reduction via project-specific threat models and sandboxed validation; free for Enterprise/Business/Edu first month; $10M API credits for OSS security
 - **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
+- **Synack Sara** (Synack Autonomous Red Agent) for multi-agent PTaaS — hundreds of specialized AI agents for recon, attack, and verification; all findings require human review by 1,500+ SRT researchers; reduces exposure window from months to days; signaling PTaaS incumbents adopting agentic AI
 - **Terra Security** ($38M funded) for agentic-AI continuous pentesting for Fortune 100 companies
 - **AWS Security Agent** for multi-agent automated pentesting (preview since re:Invent 2025)
 - **Hadrian** for attack-surface-driven 24/7 autonomous pentesting

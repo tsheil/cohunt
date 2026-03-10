@@ -7,6 +7,16 @@ description: Recons a web target — fingerprints tech stack, enumerates subdoma
 
 Get a complete external view of any web target before hunting using curl, dig, and web search.
 
+## Quick Start — First 5 Minutes
+
+1. **Headers** — `curl -sI https://[target]` — Server, X-Powered-By, cookies, security headers.
+2. **Subdomains** — `curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq '.[].name_value' | sort -u` — CT log discovery.
+3. **Paths** — `curl -s https://[target]/robots.txt` + `/sitemap.xml` + `/.well-known/security.txt` — Hidden routes, bug bounty info.
+4. **JS endpoints** — View page source, extract API endpoints from fetch/axios calls and `__NEXT_DATA__`.
+5. **AI configs** — `curl -s https://[target]/.mcp.json` + `/CLAUDE.md` + `/.cursorrules` — API keys, internal URLs.
+
+If you find something interesting, run full recon. If you have a finding, run `/reportability-check` before `/write-report`. If blocked, run `/variant-hunt`.
+
 ---
 
 ## Output Format
@@ -126,6 +136,19 @@ Get a complete external view of any web target before hunting using curl, dig, a
 
 ## Execution Flow
 
+### Step 0: Recent Changes Diff
+
+Before recon, ask: **"What changed recently?"** New features, patches, scope additions, API versions, AI rollouts, and mobile releases are the highest-signal attack surface. Check:
+
+```
+1. Web search: "[target] changelog" OR "[target] release notes" OR "[target] new feature" (last 30 days)
+2. Wayback Machine: curl -s "https://web.archive.org/web/timemap/link/https://[target]" | head -20
+3. Compare current JS bundles vs archived versions for new endpoints
+4. Check program updates: recent scope changes, new assets, bounty table changes
+```
+
+If the target changed recently, route to `/regression-hunt` thinking — test new surfaces first.
+
 ### Step 1: Parse Target
 
 ```
@@ -160,12 +183,13 @@ Run these curl commands:
 
 ```
 Run these lookups:
-1. Web search: "site:crt.sh [domain]" or curl crt.sh API
-2. dig [domain] ANY → DNS records
-3. dig ns [domain] → Name servers
-4. dig mx [domain] → Mail servers
-5. For each discovered subdomain: curl -sI → Status and server
-6. Check for subdomain takeover indicators (CNAME to unclaimed services)
+1. Certificate Transparency: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
+2. DNS records: dig [domain] A AAAA CNAME TXT CAA +short (avoid deprecated ANY)
+3. Name servers: dig ns [domain] +short
+4. Mail servers: dig mx [domain] +short
+5. Passive DNS: web search "site:securitytrails.com [domain]" for historical records
+6. For each discovered subdomain: curl -sI → Status and server
+7. Check for subdomain takeover indicators (CNAME to unclaimed services)
 ```
 
 **Extract:**
@@ -210,6 +234,9 @@ Search for exposed assets and data:
 7. intitle:"index of" site:[target] → Directory listings
 8. inurl:".git" site:[target] → Exposed git repositories
 9. site:github.com "[target]" ".env" OR "mcp.json" OR ".cursorrules" → AI config + secret leaks in repos
+10. web.archive.org/web/*/[target]/* → Wayback Machine: discover deprecated endpoints, old API versions, removed features still accessible
+11. site:github.com "[target]" "password" OR "secret_key" OR "api_key" → Deep GitHub search for leaked secrets
+12. site:github.com "[target]" filename:.env OR filename:config → Config files in public repos
 ```
 
 ### Step 6b: AI/MCP Configuration Artifact Discovery
@@ -256,14 +283,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 |------|----------|-------|
 | [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~200 |
 
-**Quick search** — find specific JS analysis patterns:
-```
-grep -n "source map\|sourceMappingURL\|\.map" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
-grep -n "secret\|API_KEY\|token\|credential\|password" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
-grep -n "webpack\|chunk\|bundle\|build" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
-grep -n "React\|Angular\|Vue\|Next.js" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
-grep -n "endpoint\|route\|path\|/api/" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md
-```
+**Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md`
 
 ---
 

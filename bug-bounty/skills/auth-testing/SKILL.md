@@ -7,6 +7,28 @@ description: Tests authentication and authorization flaws — BOLA, BFLA, privil
 
 Auth bugs are the highest-paid vulnerability class in bug bounties. This skill covers the full spectrum: broken authentication, broken authorization (BOLA/BFLA), privilege escalation, and access control bypass.
 
+## Quick Start — Two Accounts, Two Roles, Three Endpoints
+
+1. **Set up** — Create 2 accounts at different privilege levels (free+paid, user+admin, tenant-A+tenant-B).
+2. **Swap tokens** — Take Account A's auth token and call 3 endpoints that should be Account B-only.
+3. **Check vertically** — Call admin/paid endpoints with the lower-privilege token.
+4. **Check horizontally** — Access Account B's resources (IDs, files, settings) with Account A's token.
+5. **Try bypasses** — Method switch (GET→PUT), API version (`/v1/` if `/v2/` blocked), parameter pollution (`?id=mine&id=theirs`).
+
+If you have a hit, run `/reportability-check` before `/write-report`. If blocked or it looks patched, run `/variant-hunt`.
+
+### Common Report Killers
+
+| Mistake | Why It Gets N/A'd |
+|---------|-------------------|
+| Single-account proof | "I accessed my own data differently" — no trust boundary crossed |
+| Soft-200 mistaken for auth bypass | Server returns 200 but with empty/error body — not a real bypass |
+| Public data mistaken for IDOR | Data is intentionally public; check if it's truly behind auth |
+| Cached role state | Browser cache showing old role data; clear cache and retest |
+| UI block but API untested | UI hides button ≠ API enforced auth. Always test the API directly |
+
+---
+
 ## Quick Reference: What Pays
 
 | Bug Class | Typical Severity | Avg Payout Range | Duplicate Risk |

