@@ -248,9 +248,10 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 70 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks | ~491 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~499 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~293 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~454 |
-| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~470 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points) | ~362 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~466 |
+| [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~364 |
+| [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md) | Advanced jailbreak techniques: JBF, TAO-Attack, autonomous jailbreak agents (97.14%), Unit42 IDPI catalog, encoding/multilingual/visual bypasses, semantic chaining, hybrid XSS+PI | ~189 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points) | ~376 |
 
 **Quick search** — find specific content without loading full files:
 ```

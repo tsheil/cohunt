@@ -28,6 +28,9 @@ For deep dives, route to the specialized skill or reference file:
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
 | **Parser differentials, Unicode normalization, canonicalization** | [reference/parser-differentials.md](reference/parser-differentials.md) |
+| **Error-based blind SSTI, SSTI polyglots (PortSwigger #1)** | [reference/web-vulns.md](reference/web-vulns.md#error-based-blind-ssti-detection-portswigger-1-2025) |
+| **ORM leaking via search/filter (PortSwigger #2)** | [reference/web-vulns.md](reference/web-vulns.md#orm-leaking-via-search--filter-portswigger-2-2025) |
+| **SSRF redirect loops — blind→visible (PortSwigger #3)** | [reference/web-vulns.md](reference/web-vulns.md#ssrf-via-http-redirect-loops-portswigger-3-2025) |
 | **Vibe-coded apps (Supabase RLS, Firebase, API key exposure)** | [reference/web-vulns.md](reference/web-vulns.md#vibe-coded-application-attack-surface) |
 
 The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
