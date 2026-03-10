@@ -117,6 +117,40 @@ The cache decides what to store based on a "cache key" (typically: method, host,
 | **AWS CloudFront** | X-Cache, default TTL, query string forwarding config |
 | **Varnish** | X-Varnish, Age header, VCL configuration clues |
 
+### Framework-Specific Cache Poisoning
+
+#### Next.js App Router Internal Cache (PortSwigger Top 10 2025 #7)
+
+Next.js App Router uses an internal in-memory cache (`fetch()` cache, Full Route Cache, Router Cache) that operates independently from CDN caching. Poisoning the internal cache affects all subsequent requests to that Next.js instance — no CDN involvement needed.
+
+**Attack surface:**
+- **Data Cache**: `fetch()` calls in Server Components are cached by default. If an attacker controls a cached upstream API response, all users of that Server Component get poisoned data.
+- **Full Route Cache**: Server-rendered routes cached at build time. Cache revalidation endpoints (`/api/revalidate?tag=X`) that lack auth allow on-demand cache poisoning.
+- **Router Cache**: Client-side cache of RSC payloads. Prefetched routes (`<Link>`) cache Server Component payloads in the browser for 30s (dynamic) or 5min (static). Poisoning occurs if a MitM or Service Worker intercepts the prefetch.
+
+**Test patterns:**
+
+| # | Test | What to look for |
+|---|------|-----------------|
+| 1 | Unauthenticated revalidation | `GET /api/revalidate?tag=homepage` — does it invalidate cache without auth? |
+| 2 | Fetch cache poisoning | Identify Server Component `fetch()` calls — can you poison the upstream data source? |
+| 3 | ISR timing attack | For `revalidate: 60` pages, serve poisoned response during revalidation window |
+| 4 | Route handler cache | `GET` route handlers in App Router are cached by default — test for unkeyed inputs |
+
+#### HTTP/2 CONNECT Tunnel Abuse (PortSwigger Top 10 2025 #9)
+
+HTTP/2 `CONNECT` method creates a TCP tunnel through the proxy. When the proxy supports H2 CONNECT but doesn't restrict the target, attackers can use it as an open proxy to scan internal services or reach otherwise-unreachable endpoints.
+
+**Test patterns:**
+
+| # | Test | What to look for |
+|---|------|-----------------|
+| 1 | Internal port scan | `CONNECT 127.0.0.1:6379` via H2 — enumerate internal services (Redis, Memcached, admin panels) |
+| 2 | SSRF via tunnel | `CONNECT internal-api.corp:8080` — access internal APIs through H2 proxy |
+| 3 | Protocol smuggling | Tunnel HTTP/1.1 through H2 CONNECT to reach endpoints that block direct H2 |
+
+**Where to look:** Any HTTP/2 reverse proxy (HAProxy, Envoy, nginx with `grpc_pass`). Test if CONNECT is enabled and whether destination restrictions are enforced.
+
 ---
 
 ## Web Cache Deception

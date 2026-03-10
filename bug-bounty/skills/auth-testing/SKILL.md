@@ -192,9 +192,15 @@ Enterprise targets with SSO are high-value — SAML bypasses often mean access t
 | CVE | Product | Impact |
 |-----|---------|--------|
 | CVE-2024-45409 | Ruby SAML | Signature wrapping → admin access (CVSS 10.0) |
-| CVE-2025-25291/25292 | ruby-saml | Parser differentials enable auth bypass |
+| CVE-2025-25291/25292 | ruby-saml | Void canonicalization — parser differentials enable auth bypass (CVSS 9.1) |
+| CVE-2025-66568/66567 | Multiple | Void canonicalization attack class — C14N comment handling bypass |
+| CVE-2025-27773 | SimpleSAMLphp | Signature confusion via namespace manipulation |
+| CVE-2025-29775/29774 | xml-crypto (SAMLStorm) | Multiple SignedInfo elements bypass signature without IdP key |
+| CVE-2026-24858 | FortiNet SAML SSO | Cross-device login bypass via SAML assertion manipulation |
 | CVE-2023-22515 | Atlassian Confluence | Broken access control → admin account creation |
 | CVE-2026-1868 | GitLab AI Gateway | Auth bypass via JWT validation flaw |
+
+> **Deep dive on void canonicalization and XML parser differentials:** See [parser-differentials.md](../vuln-patterns/reference/parser-differentials.md#void-canonicalization--new-attack-class-2025)
 
 ---
 

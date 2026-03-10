@@ -27,6 +27,8 @@ Supply chain attacks target the development and delivery pipeline rather than th
 
 The largest CI/CD attack surface in bug bounties. Most orgs expose workflow files publicly in `.github/workflows/`.
 
+> **Advanced exploitation patterns:** See [reference/github-actions-exploitation.md](reference/github-actions-exploitation.md) for AI-powered exploitation (hackerbot-claw), multi-stage supply chain chains (Shai-Hulud v2/v3), self-hosted runner deep exploitation, and hunt checklists.
+
 ### Script Injection via Untrusted Inputs
 
 Attacker-controlled values interpolated directly into `run:` blocks execute arbitrary commands.

@@ -188,6 +188,8 @@ Side-channel techniques that infer cross-origin state without directly reading t
 | **Cache probing** | Prior visits/auth state | Load resource, measure timing; cached = previously visited |
 | **History length** | Navigation state | `history.length` changes if redirect occurred (login vs. not) |
 | **Content-Type oracle** | Response type | `<script>` tag errors reveal if response is JSON vs HTML |
+| **ETag length leak** | Response body size | Cross-origin ETag value changes at hex digit boundaries (e.g., 0xFF→0x100) — byte-level size inference without reading response. PortSwigger Top 10 2025 #6 |
+| **Connection pool exhaustion** | Cross-origin redirect target | Chrome prioritizes in-flight requests sharing a connection pool — measure `fetch()` timing to detect whether cross-origin redirect went to site A vs B. PortSwigger Top 10 2025 #8 |
 
 ### Testing Procedure
 

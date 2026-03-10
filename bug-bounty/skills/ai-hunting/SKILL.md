@@ -172,7 +172,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
 - **EU AI Act deadline**: August 2, 2026 (penalties up to 35M EUR or 7% of global turnover)
 - **Microsoft** paid **$17M to 344 researchers** in 2025; Zero Day Quest spring 2026 paid $1.6M; CISA VDP received 12,800 reports in FY2025, 1,200 valid, $345K awarded across 7 bug bounty programs
-- **Apple max bounty $5M**; Google $250K Chrome record + AI VRP up to $30K ($458K in single live hacking session); OpenAI raised to $100K; Samsung $1M mobile; Nvidia launched program via Intigriti
+- **Apple max bounty $2M**; Google $250K Chrome record + AI VRP up to $30K ($458K in single live hacking session); OpenAI raised to $100K; Samsung $1M mobile; Nvidia launched program via Intigriti
 - **AI agent attacks**: 66-84% success when testing prompt injection against auto-execution systems
 
 > **Full market context database (120+ metrics):** See [reference/market-context.md](reference/market-context.md)

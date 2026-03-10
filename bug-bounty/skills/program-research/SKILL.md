@@ -249,7 +249,7 @@ Key highlights for quick program evaluation:
 - **Market size**: $2.06B (2026), projected $7.74B by 2035
 - **HackerOne payouts**: $81M annual, $300M+ all-time
 - **AI programs**: 1,121 with AI in scope (270% YoY increase), prompt injection reports up 540%
-- **Top bounties**: Apple up to $5M, Microsoft $5M pool (Zero Day Quest), Google $250K Chrome
+- **Top bounties**: Apple $2M base (up to $5M+ with bonuses), Microsoft $5M pool (Zero Day Quest), Google $250K Chrome
 - **Competition**: XBOW declared mission completed (March 2026, pivoting to pre-production scanning); 82% of hunters use AI tools
 - **New programs**: Nvidia on Intigriti (AI assets), IBM Granite ($100K), Amazon Nova; HackerOne IBB controversy signals trust risks in intermediary programs
 - **Fastest-growing attack surface**: MCP (30+ CVEs in 60 days), AI coding tools (IDEsaster: 30+ vulns)

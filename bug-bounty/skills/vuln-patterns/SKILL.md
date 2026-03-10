@@ -32,6 +32,10 @@ For deep dives, route to the specialized skill or reference file:
 | **ORM leaking via search/filter (PortSwigger #2)** | [reference/web-vulns.md](reference/web-vulns.md#orm-leaking-via-search--filter-portswigger-2-2025) |
 | **SSRF redirect loops — blind→visible (PortSwigger #3)** | [reference/web-vulns.md](reference/web-vulns.md#ssrf-via-http-redirect-loops-portswigger-3-2025) |
 | **Vibe-coded apps (Supabase RLS, Firebase, API key exposure)** | [reference/web-vulns.md](reference/web-vulns.md#vibe-coded-application-attack-surface) |
+| **SOAPwn .NET SOAP exploitation (PortSwigger #5)** | [source-code-audit framework-patterns.md](../source-code-audit/reference/framework-patterns.md#soapwn-net-soap-web-service-exploitation-portswigger-top-10-2025-5) |
+| **ETag length leak, XSS-Leak Chrome pool (PortSwigger #6, #8)** | [client-side-security](../client-side-security/SKILL.md) XS-Leaks table |
+| **Next.js cache poisoning, H2 CONNECT (PortSwigger #7, #9)** | [http-desync](../http-desync/SKILL.md) cache + smuggling sections |
+| **SAML void canonicalization (PortSwigger-adjacent)** | [reference/parser-differentials.md](reference/parser-differentials.md#void-canonicalization--new-attack-class-2025) |
 
 The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
 

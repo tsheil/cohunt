@@ -192,10 +192,32 @@ Any multi-layer architecture (WAF → reverse proxy → application → database
 | 2 | Entity expansion | `&xxe;` entity in assertion values | Entity resolved differently between signature verification and assertion processing |
 | 3 | Namespace confusion | Duplicate namespace declarations with different values | Signature validates against one namespace; assertion processed with another |
 | 4 | Canonicalization mismatch | Different C14N algorithms between IdP and SP | Signature valid under one canonicalization; assertion altered under another |
+| 5 | Void canonicalization bypass | Insert XML comments around NameID: `<NameID>admin<!--attacker-->@evil.com</NameID>` — C14N 1.0 (omitComments) strips comments before signing; SP with different C14N preserves them | SP processes different NameID than what was signed; full account takeover |
+| 6 | Signature wrapping via namespace prefix | Duplicate `<Assertion>` element with different namespace prefix: `<saml:Assertion>` vs `<saml2:Assertion>` | Signature validates first Assertion; SP processes attacker-controlled second |
+| 7 | SAMLStorm (xml-crypto) | Malformed XML with multiple `<SignedInfo>` elements — verification checks one, canonicalization uses another | Auth bypass without knowledge of IdP signing key |
 
-**Where to hunt:** Any application using SAML SSO. Test the SP's SAML response processing with manipulated assertions.
+### Void Canonicalization — New Attack Class (2025)
 
-**Severity Guidance:** Critical — SAML auth bypass is consistently CVSS 9.0+ and enables full account takeover.
+**What it is:** XML Canonicalization (C14N) normalizes XML before cryptographic operations. C14N 1.0 with `omitComments=true` strips XML comments before computing signatures. If the IdP signs with comment-stripping C14N but the SP processes the raw XML (comments intact), an attacker can inject content inside comments that changes the assertion's meaning after verification.
+
+**Key CVEs:**
+- **CVE-2025-25291/25292** (ruby-saml, CVSS 9.1): REXML and Nokogiri parse comments differently — enables full auth bypass as any user. Patched in ruby-saml 1.17.0+.
+- **CVE-2025-66568/66567** (void canonicalization): Dedicated CVEs for the canonicalization attack class itself across multiple SAML libraries.
+- **CVE-2025-27773** (SimpleSAMLphp): Signature confusion via namespace manipulation — similar parser differential enables admin takeover.
+- **CVE-2025-29775/29774** (SAMLStorm, Node.js xml-crypto): Multiple `<SignedInfo>` elements confuse verification — bypasses signature check entirely without needing IdP key.
+- **CVE-2026-24858** (FortiNet SAML SSO): Cross-device login bypass via SAML assertion manipulation.
+
+**Hunt procedure:**
+1. Capture a valid SAML response (use browser dev tools or Burp during SSO login)
+2. Inject XML comment inside `<NameID>`: `<NameID>admin<!---->@victim.com</NameID>` → if SP strips comment, you authenticate as `admin@victim.com`
+3. Duplicate the `<Assertion>` element with a different namespace prefix — keep original signed, modify duplicate
+4. Insert multiple `<SignedInfo>` blocks — one matching signature, one with altered references
+5. Test with both Base64-encoded and raw XML — some SPs decode differently
+6. Check SAML library version: ruby-saml < 1.17.0, SimpleSAMLphp < 2.3.0, xml-crypto < 6.0.1 are all vulnerable
+
+**Where to hunt:** Any application using SAML SSO. Test the SP's SAML response processing with manipulated assertions. Priority targets: Ruby on Rails apps (ruby-saml), Node.js apps (xml-crypto/passport-saml), PHP apps (SimpleSAMLphp), and enterprise SSO integrations.
+
+**Severity Guidance:** Critical — SAML auth bypass is consistently CVSS 9.0+ and enables full account takeover. Void canonicalization is a systemic vulnerability across SAML libraries, not a one-off bug.
 
 ---
 

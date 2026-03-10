@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.36.0)*
+*Last updated: March 2026 (v0.75.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
