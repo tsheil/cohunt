@@ -250,6 +250,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **NEAR Intents bridge** bug bounty (March 3, 2026): cross-chain MPC infrastructure; bridges historically yield top payouts
 - **Microsoft "In Scope by Default"** expanded to include third-party and open source code impacting Microsoft online services
 - **Bugcrowd FedRAMP Moderate Authorization** (March 2026): sponsored by CISA; first crowdsourced security platform cleared for U.S. federal agencies; opens government programs to researchers
+- **CISA VDP Platform FY2025**: federal agencies received **12,800 vulnerability reports** from public researchers, including 1,200+ valid reports (90% remediated); CISA managed **7 bug bounty programs** across 4 agencies, identifying 28 critical vulnerabilities and awarding **$345K+**; 238 high-risk vulnerabilities added to KEV catalog in FY2025 (CISA 2025 Year in Review)
 - **HackerOne AI Research Safe Harbor** (January 2026): platform-wide opt-in specifically for AI system testing; reduces legal risk for AI security researchers; signals programs welcoming AI-focused submissions
 - **Intigriti Global Hacker Ambassador Program** (March 4, 2026): early access to private programs, rewards, community building; 125,000+ ethical hackers in the community
 - **NVIDIA private AI bounty on Intigriti**: private program specifically covering NVIDIA AI products and infrastructure; public VDP for all NVIDIA assets

@@ -497,3 +497,4 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
 | CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download leaks TLS keys + credentials |
 | CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass + cred disclosure. CISA KEV March 9, 2026 |
+| CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE — lone `\n` in chunk extension parsed differently by Kestrel vs proxies; enables auth bypass, CSRF bypass, injection; highest-ever ASP.NET severity; affects 2.x-10.x; $10K bounty (Praetorian). See http-desync skill |

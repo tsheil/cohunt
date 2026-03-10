@@ -32,6 +32,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 | **CAI** | CTF-level challenges, structured offensive tasks | Top-30 Spain, top-500 worldwide HTB; 3,600x faster than humans in CTF benchmarks; 156x cost reduction; non-professionals find CVSS 4.3-7.5 bugs at expert rates |
 | **AISLE** | Deep C/C++ memory safety bugs at scale | 100+ CVEs across 30+ projects (OpenSSL, Linux kernel, glibc, Chromium, Firefox, WebKit, Apache HTTPd, GnuTLS, OpenVPN, Samba, NASA CryptoLib); 15 OpenSSL CVEs including CVE-2025-15467 (CVSS 9.8 RCE); found bugs dating back 25-27 years |
 | **Codex Security** | Continuous source code monitoring | 792 critical + 10,561 high findings, 1.2M commits scanned |
+| **Google Big Sleep** | LLM-guided variant analysis of open-source C/C++ | 20 zero-days in popular OSS (SQLite CVE-2025-6965 CVSS 7.2, FFmpeg, ImageMagick); DeepMind + Project Zero collab; found SQLite memory corruption missed by years of fuzzing; human verification step in loop |
 | **Claude Code Security** | Deep codebase analysis, variant finding | 500+ vulns in OSS; 22 Firefox vulns (14 high-severity) in 2 weeks scanning 6,000 C++ files; 112 unique bug reports to Mozilla; first AI-authored browser exploit (CVE-2026-2796, CVSS 9.8); $4K API credits vs $3K-$20K per vuln bounty |
 | **ZAST.AI** | Zero-false-positive source code scanning | 119 CVEs assigned |
 | **Strix** | Autonomous web app testing with browser + proxy | Used by top 1% HackerOne hunters |
@@ -51,7 +52,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 ### The XBOW/Autonomous Agent Reality Check
 
-**XBOW reached #1 on HackerOne US leaderboard** in 90 days with 1,060 submissions (54 critical, 242 high). Architecture: coordinator → multiple solver agents with isolated attack machines. Raised $75M but currently operating in the red (compute > bounties).
+**XBOW reached #1 on HackerOne US leaderboard** in 90 days with 1,060 submissions (54 critical, 242 high), now surpassing 1,400 zero-day vulnerabilities. Architecture: coordinator → multiple solver agents with isolated attack machines — runs up to 80x faster than manual teams. Raised $75M but currently operating in the red (compute > bounties).
 
 **Where autonomous agents excel:** Mass SSRF scanning, subdomain enumeration, simple SQLi/XSS, structured exploitation tasks, code analysis at scale.
 
@@ -164,13 +165,14 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **Business logic vulnerabilities** = **45% of all bounty awards** industrywide (Intigriti 2026) — highest-value human edge
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
-- **XBOW**: #1 HackerOne with 1,060 submissions (mission declared completed March 2026, pivoting to pre-production); **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days
+- **XBOW**: #1 HackerOne with 1,400+ zero-days (mission declared completed March 2026, pivoting to pre-production); **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days (CVE-2025-15467 CVSS 9.8 RCE — some bugs dating back 27 years to SSLeay era; AI proposed 5/12 accepted patches); **Google Big Sleep**: 20 OSS zero-days (SQLite, FFmpeg, ImageMagick)
 - **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI); 82% of 2,614 implementations vulnerable to path traversal (Endor Labs)
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it
 - **EU AI Act deadline**: August 2, 2026 (penalties up to 35M EUR or 7% of global turnover)
-- **Apple max bounty $5M**; Google $250K Chrome record; OpenAI raised to $100K; Samsung $1M mobile
+- **Microsoft** paid **$17M to 344 researchers** in 2025; Zero Day Quest spring 2026 paid $1.6M; CISA VDP received 12,800 reports in FY2025, 1,200 valid, $345K awarded across 7 bug bounty programs
+- **Apple max bounty $5M**; Google $250K Chrome record + AI VRP up to $30K ($458K in single live hacking session); OpenAI raised to $100K; Samsung $1M mobile; Nvidia launched program via Intigriti
 - **AI agent attacks**: 66-84% success when testing prompt injection against auto-execution systems
 
 > **Full market context database (120+ metrics):** See [reference/market-context.md](reference/market-context.md)

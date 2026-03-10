@@ -285,8 +285,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Best for: broad adversarial testing of LLM deployments at scale
 
 **Google Big Sleep (DeepMind + Project Zero):**
-- Google's AI-based bug hunter found 20+ security vulnerabilities in open-source software including 5 Safari vulnerabilities (buffer overflows, use-after-free)
-- **First AI agent to foil active exploitation in the wild**: discovered CVE-2025-6965 (critical SQLite memory corruption, CVSS 7.2) that was known only to threat actors and at risk of being exploited — Google coordinated patches before widespread attacks
+- Google's AI-based bug hunter found 20+ security vulnerabilities in open-source software including SQLite, FFmpeg (audio/video library), ImageMagick (image-editing suite), and 5 Safari vulnerabilities (buffer overflows, use-after-free)
+- **First AI agent to foil active exploitation in the wild**: discovered CVE-2025-6965 (critical SQLite memory corruption via integer overflow → out-of-bounds read, CVSS 7.2) that was known only to threat actors and at risk of being exploited — Google coordinated patches before widespread attacks; this bug had evaded years of fuzzing and manual review
 - Can spot complex chaining issues that single-tool SAST misses
 - Always verify: AI may hallucinate; always confirm any finding with manual proof-of-concept
 
