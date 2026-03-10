@@ -361,7 +361,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 **What it is:** Authentication bypass in network management planes — SD-WAN controllers, EoL routers, VPN gateways — enabling unauthenticated administrative access to devices managing entire network fabrics.
 
 **Key CVEs (Feb-March 2026):**
-- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 (sophisticated APT) **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root access via software downgrade-then-restore technique. CISA KEV, 24-hour patch mandate for federal agencies
+- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root via software downgrade-then-restore. CISA KEV + Emergency Directive ED 26-03, 24-hour patch mandate. Largest attack spike **March 4, 2026**. Rogue peer joined to management plane; post-exploitation: version downgrade → old privesc → restore
 - **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` endpoint — unauthenticated DNS modification ("DNSChanger") on EoL devices (DSL-2740R, DSL-2640B, DSL-2780B, DSL-526B). Exploited in the wild since November 2025. **No patch available** — devices EoL since 2020
 
 **Where to look:** Cisco SD-WAN (vSmart/vManage), EoL routers still in production, Fortinet/Ivanti VPN gateways. Shodan: `Cisco SD-WAN`, `vManage`, `D-Link DSL`.
@@ -450,14 +450,6 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ---
 
-## ICS/OT Controller RCE
-
-> **Target gate:** Only when recon reveals ICS/OT/SCADA scope.
-
-**Key CVE:** CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8) — unauthenticated stack buffer overflow → RCE against industrial controllers. Fingerprint: Shodan `Delta COMMGR` or `DVP` protocol. Also test Cisco FMC (CVE-2026-20079/20131, dual CVSS 10.0) for management console deser RCE.
-
----
-
 ## Deserialization Patch Bypass (Variant Hunting)
 
 **What it is:** Vendors patch a known deserialization RCE but the fix is incomplete — the same deserialization endpoint accepts different gadget chains or object types not covered by the original patch.
@@ -496,5 +488,6 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2025-53770 | SharePoint | Critical | Unauth deser RCE. Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV |
 | CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
 | CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download leaks TLS keys + credentials |
-| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass + cred disclosure. CISA KEV March 9, 2026 |
+| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via "magic number" + cred disclosure. CISA KEV March 9, 2026. Unauthenticated: sending specific numeric value grants admin access |
+| CVE-2026-21902 | Juniper Junos OS Evolved | 9.3 | Pre-auth RCE as root on PTX routers. Internal-only On-Box Anomaly Detection service exposed externally due to incorrect permissions. Out-of-band emergency patch |
 | CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE — lone `\n` in chunk extension parsed differently by Kestrel vs proxies; enables auth bypass, CSRF bypass, injection; highest-ever ASP.NET severity; affects 2.x-10.x; $10K bounty (Praetorian). See http-desync skill |

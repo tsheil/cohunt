@@ -73,7 +73,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation | **INVEST** — this is where bounties pay |
 
    Key competitive landscape (March 2026):
-   - **XBOW**: **#1 on HackerOne US leaderboard** — 1,060+ reports, 54 critical/242 high in 90 days; 85% custom solve rate; launched **Pentest On-Demand** (automated, 5 business days); expanding into network appliances (Palo Alto GlobalProtect); still operating at loss
+   - **XBOW**: **#1 on HackerOne US leaderboard** — 1,060+ reports, 54 critical/242 high in 90 days; 85% custom solve rate; launched **Pentest On-Demand** (automated, 5 business days); expanding into network appliances; still operating at loss; **academic paper (arXiv:2506.23592) notes all findings required human review** — Level 3-4 autonomy, not fully autonomous
    - **Codex Security**: 1.2M commits scanned, 792 critical/10,561 high issues; reported vulns in OpenSSH, GnuTLS, PHP; multi-stage pipeline (context → threat model → sandbox validation → patches)
    - **Claude Code Security + Anthropic Code Review**: 500+ production vulns, 22 Firefox CVEs; agentic multi-step reasoning (avg 21.2 independent tool calls); pattern-matching vulns are AI territory
    - **GitHub Taskflow Agent**: 80+ vulns in 40 repos; **IDOR/access control = largest absolute count** (38 confirmed); business logic 25% confirmed rate; validates structured audit approach
@@ -354,7 +354,11 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Claude Desktop Extensions (DXT) | Zero-click RCE (CVSS 10.0, LayerX Feb 2026), confused deputy cross-connector chains, AppleScript injection | ai-hunting/reference/ide-supply-chain.md |
 | Repos with AI tooling configs | .claude/ hooks RCE (CVE-2025-59536), API key redirect (CVE-2026-21852), .mcp.json rogue servers, .cursorrules injection | source-code-audit SKILL.md |
 | MCP client infrastructure | mcp-remote RCE (CVE-2025-6514), OAuth metadata injection, proxy/gateway URL handling | vuln-patterns/reference/ai-mcp-vulns.md |
-| SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains | vuln-patterns/reference/infrastructure-vulns.md |
+| SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains, CISA ED 26-03, CVE-2026-20127 (CVSS 10.0 exploited since 2023) | vuln-patterns/reference/infrastructure-vulns.md |
+| Firewall management consoles | Boot-time auth bypass + Java deser RCE (Cisco FMC dual CVSS 10.0), gadget chain testing, management API probing | vuln-patterns/reference/infrastructure-vulns.md |
+| MCP gateways / proxies | Auth scope confusion, param injection at gateway boundary, credential vault isolation testing (Peta, TrueFoundry, Lasso, MintMCP) | vuln-patterns/reference/ai-mcp-vulns.md |
+| Denial-of-wallet / resource exhaustion | MCP overthinking loops (142.4x token amplification), unbounded tool execution chains, subscription depth bypass | ai-hunting/reference/mcp-playbooks.md |
+| Internal service exposure | Management services exposed externally due to incorrect permissions (Juniper CVE-2026-21902 CVSS 9.3), appliance On-Box features accessible pre-auth | vuln-patterns/reference/infrastructure-vulns.md |
 
 *Hunter-Level:*
 - If the user provides a time budget, strictly prioritize within that constraint
