@@ -276,6 +276,24 @@ Growing attack surface as enterprises adopt automated identity provisioning:
 
 ---
 
+## 7b. Middleware Auth Bypass via URL Regex
+
+Route-matcher authentication bypasses are a growing pattern — middleware skips auth when the URL matches a known "public" pattern (webhooks, health checks), but the regex operates on the full URL including query string.
+
+**Key CVE:** CVE-2026-31816 (Budibase, CVSS 9.1) — appending `?/api/webhooks/` to any API endpoint bypassed all auth/CSRF.
+
+```
+Quick test for any authenticated API:
+□ Append known public paths as query params: ?/api/webhooks/, ?/health, ?/public/
+□ Append known bypass paths as fragments: #/api/webhooks/
+□ Append known bypass paths as path params: ;/api/webhooks/
+□ Test if auth middleware uses regex on full URL vs parsed path
+```
+
+**Cross-reference:** See parser-differentials.md for full route-matcher regex bypass patterns.
+
+---
+
 ## 8. Reporting Auth Bugs
 
 ### Impact Framing

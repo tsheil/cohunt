@@ -322,23 +322,20 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## Enterprise Management Platform RCE
 
-**What it is:** Unauthenticated or low-privilege RCE in IT management and operations platforms that manage large fleets of devices — compromising these platforms yields control over entire infrastructure.
+**What it is:** Unauthenticated RCE in IT management platforms that control large device fleets.
 
-**Key CVEs (Feb-March 2026):**
-- **CVE-2025-40551** (SolarWinds Web Help Desk, CVSS 9.8): unauthenticated RCE enabling multi-stage attack chains — lateral movement via Zoho Meetings + Cloudflare tunnels for persistence + Velociraptor for C2; actively exploited by state-level actors
-- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): command injection during migration operations — unauthenticated RCE when migration services are exposed; added to CISA KEV March 2026
+**Key CVEs:**
+- **CVE-2025-40551** (SolarWinds WHD, CVSS 9.8): unauthenticated RCE → lateral movement via Zoho Meetings + Cloudflare tunnels + Velociraptor C2; state-level exploitation
+- **CVE-2026-22719** (VMware Aria, CVSS 8.1): command injection during migration; CISA KEV March 2026
 
-**Where to look:** SolarWinds WHD, VMware Aria/vRealize, ServiceNow instances, ManageEngine products. Search Shodan for management port exposure on 8443, 8787, 443.
-
-**Test patterns:**
+**Where to look:** SolarWinds WHD, VMware Aria/vRealize, ServiceNow, ManageEngine. Shodan: ports 8443, 8787, 443.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Unauthenticated RCE | Probe management API endpoints without credentials | Command execution, error messages revealing internal paths |
-| 2 | Migration/upgrade path exploitation | Test upgrade/migration endpoints that may bypass auth | CVE-2026-22719 pattern: migration services with reduced auth requirements |
-| 3 | Post-exploitation lateral movement | After initial foothold, probe for C2 tunnel capability | Cloud service tunnels (Cloudflare, ngrok), legitimate remote access tools for persistence |
+| 1 | Unauthenticated RCE | Probe management API endpoints without credentials | Command execution or internal path disclosure |
+| 2 | Migration path exploitation | Test upgrade/migration endpoints (CVE-2026-22719 pattern) | Reduced auth on migration services |
 
-**Severity Guidance:** Critical — management platforms control device fleets. CVE-2025-40551 demonstrates full attack lifecycle from initial unauthenticated access through C2 establishment.
+**Severity Guidance:** Critical — management platforms control device fleets.
 
 ---
 
@@ -346,19 +343,16 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **What it is:** Enterprise appliances (backup, storage, DR) shipping with hardcoded admin credentials — often plaintext in config files, enabling zero-day persistent access by APT groups.
 
-**Key CVE:** CVE-2026-22769 (Dell RecoverPoint for VMs, CVSS 10.0) — hardcoded admin credentials in plaintext at `/home/kos/tomcat9/tomcat-users.xml`. China-nexus UNC6201 (overlaps UNC5221) exploited as zero-day since mid-2024: authenticated to Tomcat Manager → deployed SLAYSTYLE web shell via `/manager/text/deploy` → dropped BRICKSTORM and GRIMBOLT backdoors. Used "Ghost NICs" (temporary virtual network interfaces created for lateral movement, deleted afterward to evade detection). Appliances typically lack EDR agents, enabling long-term persistence.
+**Key CVE:** CVE-2026-22769 (Dell RecoverPoint for VMs, CVSS 10.0) — plaintext creds at `tomcat-users.xml`; China-nexus UNC6201 exploited since mid-2024 → Tomcat Manager web shell → BRICKSTORM/GRIMBOLT backdoors via "Ghost NICs" (ephemeral virtual interfaces for lateral movement). Appliances lack EDR, enabling long-term persistence.
 
-**Where to look:** Dell RecoverPoint, Veeam, Commvault, Veritas, Cohesity, Rubrik — any enterprise backup/DR appliance with web management interface. Search Shodan for management ports (8443, 9090, 443).
-
-**Test patterns:**
+**Where to look:** Dell RecoverPoint, Veeam, Commvault, Veritas, Cohesity, Rubrik. Shodan: ports 8443, 9090, 443.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Default/hardcoded creds | Check known default credentials and common config file paths (`tomcat-users.xml`, `application.yml`, `.env`) | Admin access without credential brute-forcing |
-| 2 | Tomcat Manager deployment | If Tomcat Manager is exposed, test WAR file deployment via `/manager/text/deploy` | Web shell deployment capability |
-| 3 | Network interface enumeration | Check for ephemeral network interfaces or unusual NIC creation/deletion patterns | Ghost NIC lateral movement technique |
+| 1 | Default/hardcoded creds | Check `tomcat-users.xml`, `application.yml`, `.env` | Admin access without brute-forcing |
+| 2 | Tomcat Manager deployment | Test WAR file deployment via `/manager/text/deploy` | Web shell deployment capability |
 
-**Severity Guidance:** Critical (CVSS 10.0). Backup/DR appliances have access to all protected data and often lack endpoint security monitoring. The Ghost NIC technique — creating temporary virtual interfaces for lateral movement and deleting them — is a novel evasion pattern worth documenting in reports.
+**Severity Guidance:** Critical (CVSS 10.0). Backup/DR appliances access all protected data and lack EDR monitoring.
 
 ---
 
@@ -458,42 +452,48 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## ICS/OT Controller RCE
 
-> **Target gate:** Only when recon reveals ICS/OT/SCADA scope or Delta Electronics products.
+> **Target gate:** Only when recon reveals ICS/OT/SCADA scope.
 
-**What it is:** Stack buffer overflow in industrial automation controller software — unauthenticated remote code execution against operational technology systems.
-
-**Key CVE:** CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8, March 9 2026): unauthenticated remote attacker → arbitrary code execution or DoS against industrial control systems. Affects process control, manufacturing, and critical infrastructure.
-
-| # | Fingerprint | Test | Reportable If |
-|---|---|---|---|
-| 1 | Shodan: `Delta COMMGR` or `DVP` protocol | Send oversized buffer to COMMGR2 service port | Service crash or controlled memory corruption |
-| 2 | Recon reveals Delta PLC/HMI infrastructure | Check for exposed COMMGR2 management interface | Unauthenticated access to management console |
-
-**Severity:** Critical. ICS/OT systems control physical processes — RCE can result in safety incidents, production disruption, environmental damage.
+**Key CVE:** CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8) — unauthenticated stack buffer overflow → RCE against industrial controllers. Fingerprint: Shodan `Delta COMMGR` or `DVP` protocol. Also test Cisco FMC (CVE-2026-20079/20131, dual CVSS 10.0) for management console deser RCE.
 
 ---
 
-## Active Exploitation Updates (March 2026)
+## Deserialization Patch Bypass (Variant Hunting)
 
-> **Target gate:** Only relevant when recon reveals VMware Aria or Qualcomm Android device scope.
+**What it is:** Vendors patch a known deserialization RCE but the fix is incomplete — the same deserialization endpoint accepts different gadget chains or object types not covered by the original patch.
 
-- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): unauthenticated command injection. Added to CISA KEV March 2026; actively exploited; federal agencies required to patch by March 24, 2026. **Test:** Identify VMware Aria instances via `/ui/` login page → test command injection vectors on management endpoints
-- **CVE-2026-21385** (Qualcomm Android, March 2026): memory corruption in Qualcomm component. Added to CISA KEV March 3; Google confirmed limited targeted exploitation. Affects 129 Android vulnerabilities patched in March update. **Test:** Only relevant for mobile programs; check target's Android patch level against March 2026 bulletin
+**Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk <= 12.8.7 Hotfix 1, CVSS 9.8) — unauthenticated Java deserialization RCE that **bypasses the patch for CVE-2024-28988** (the original deser RCE). Added to CISA KEV March 9, 2026; actively exploited. The original fix blocked specific gadget chains but left the deserialization endpoint accessible with alternative payloads.
+
+**Where to look:** Any product previously patched for deserialization vulnerabilities — SolarWinds WHD, Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware products.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Alternative gadget chains | If a product was patched for deser RCE, test with different ysoserial chains (CommonsCollections, Spring, ROME, BeanUtils) | RCE via gadget chain not covered by patch |
+| 2 | Endpoint reachability | Verify the deserialization endpoint is still accessible after patch | Endpoint accepts serialized objects even if some chains blocked |
+| 3 | Version-specific bypass | Check if hotfix/patch version still processes serialized input | Incomplete patch — new gadget works on patched version |
+
+**Severity Guidance:** Critical (CVSS 9.8). Patch bypass variants are high-value — they demonstrate incomplete fixes. Cross-link: `/variant-hunt` command.
+
+---
+
+## DNS ACL TOCTOU Bypass (Kubernetes)
+
+**Key CVE:** CVE-2026-26017 (CoreDNS, CVSS 7.7) — `acl` plugin checks original query, then `rewrite` changes it to blocked name after check passes → DNS segmentation bypass in multi-tenant K8s. Fixed CoreDNS 1.14.2.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | ACL + rewrite order | Query allowed name that rewrites to blocked name | Blocked resource resolved via allowed alias |
+| 2 | Multi-tenant DNS isolation | Cross-namespace DNS queries via rewritten names | Tenant A resolving tenant B's services |
+
+**Severity Guidance:** High in multi-tenant K8s. Pattern: access checks + request transformation in separate stages = TOCTOU.
 
 ---
 
 ## Additional High-Value CVEs (Late 2025 – Early 2026)
 
-> **Target gate:** Only when recon reveals affected products.
-
-| CVE | Product | CVSS | Type | Key Detail |
-|-----|---------|------|------|------------|
-| CVE-2025-36918 | Windows MSHTML | Critical | RCE | Spear-phishing via crafted HTML; actively exploited against gov/finance. See MSHTML MotW section for related patterns |
-| CVE-2025-53770 | SharePoint 2016/2019/SE | Critical | Unauth RCE (CWE-502) | Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV; gov/finance targets |
-| CVE-2025-10035 | Fortra GoAnywhere MFT | Critical | Deser RCE (CWE-502) | License Servlet deser → cmd injection. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
-| CVE-2026-25108 | Roundcube Webmail | High | XSS (SVG animate) | CISA KEV; nation-state exploitation. See Webmail RCE section for full pattern |
-| CVE-2025-3248 | Langflow AI Platform | 9.8 | Unauth RCE | `/api/v1/validate/code` — code validation endpoint executes arbitrary code. CISA KEV. Route to ai-mcp-vulns.md for AI platform patterns |
-| CVE-2025-XXXXX | Chrome WebView | High | Policy bypass | WebView tag policy enforcement — affects Android apps, hybrid apps, in-app browsers |
-| CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download + key disclosure | Unauthenticated endpoint leaks full backup including TLS private keys and credentials. Pattern: web management UIs for infrastructure (Nginx, Apache, HAProxy) often expose admin-only endpoints without auth |
-| CVE-2026-21509 | Microsoft Office | High | Zero-day (APT28) | Operation Neusploit — weaponized RTF files; Russian state-sponsored exploitation. Fingerprint: Office document parsing in enterprise environments |
-| CVE-2026-20805 | Windows Desktop Window Manager | High | Info disclosure | Actively exploited zero-day; DWM handles compositing for all Windows apps — info leak may enable ASLR bypass for further exploitation chains |
+| CVE | Product | CVSS | Key Detail |
+|-----|---------|------|------------|
+| CVE-2025-53770 | SharePoint | Critical | Unauth deser RCE. Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV |
+| CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
+| CVE-2026-27944 | Nginx-UI | 9.8 | Unauth backup download leaks TLS keys + credentials |
+| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass + cred disclosure. CISA KEV March 9, 2026 |

@@ -252,6 +252,36 @@ See [http-desync skill](../../http-desync/SKILL.md) for full cache poisoning and
 
 ---
 
+## Route-Matcher Regex Bypass
+
+**What it is:** Middleware authentication/CSRF protection bypassed when the route matcher uses an unanchored regex on the full URL (including query string) rather than just the path — allowing query parameter injection to match the bypass pattern.
+
+**Key CVE:** CVE-2026-31816 (Budibase <= 3.31.4, CVSS 9.1) — Webhook middleware used regex matching on the full URL to skip authentication. Appending `?/api/webhooks/` to any API request matched the webhook bypass regex, disabling all auth and CSRF protection on every endpoint. Unauthenticated attackers gained full admin API access.
+
+**Root cause:** The middleware checked `if (url.matches(webhookPattern))` on the full request URL (path + query string) instead of only the path. Query parameters like `?/api/webhooks/` satisfied the regex while routing to a completely different endpoint.
+
+**Where to look:**
+- Any middleware-based auth that uses regex matching (Express, Koa, Fastify, Django, Rails)
+- Webhook/callback endpoints with authentication exemptions
+- API gateways with path-based auth bypass rules
+- WAFs using regex rules on full URL strings
+
+**Test patterns:**
+
+| # | Test | Payload | What to look for |
+|---|------|---------|-----------------|
+| 1 | Query param regex match | `GET /api/admin/users?/api/webhooks/` | Admin endpoint accessed without auth; webhook regex matches on query string |
+| 2 | Fragment-based bypass | `GET /api/admin/users#/api/webhooks/` | Fragment triggers bypass pattern in middleware |
+| 3 | Path parameter injection | `GET /api/admin/users;/api/webhooks/` | Semicolon path parameter matches bypass regex |
+| 4 | Double-path bypass | `GET /api/admin?callback=/api/webhooks/trigger` | Callback parameter triggers webhook path detection |
+| 5 | Case variation | `GET /api/admin?/API/WEBHOOKS/` | Case-insensitive regex matches despite different casing |
+
+**Generalized hunt:** For any authenticated API, identify which URL patterns bypass auth (webhooks, health checks, public endpoints). Then test if adding those patterns as query strings, fragments, or path parameters to protected endpoints triggers the bypass. The vulnerability is the regex operating on the full URL string rather than just the parsed path.
+
+**Severity Guidance:** Critical when bypass disables all authentication on all endpoints. The Budibase pattern was unauthenticated full-admin access via a single query parameter. Any middleware using regex on full URLs (not parsed path) is potentially vulnerable.
+
+---
+
 ## Where to Hunt
 
 Parser differentials exist wherever multi-component architectures process attacker-controlled input. Highest-value targets:

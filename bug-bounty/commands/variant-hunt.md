@@ -49,7 +49,7 @@ Hunt for:
 
 ### Strategy 2: Incomplete Fix
 
-Patches often fix the specific reported case but miss edge cases. This is one of the most reliable variant patterns.
+Patches often fix the specific reported case but miss edge cases. This is one of the most reliable variant patterns. **Case study:** CVE-2025-26399 (SolarWinds WHD, CVSS 9.8) bypassed CVE-2024-28988 deserialization patch — alternative gadget chains worked on the "patched" endpoint. See `infrastructure-vulns.md` → Deserialization Patch Bypass.
 
 ```
 Given: XSS via <script> tag was patched

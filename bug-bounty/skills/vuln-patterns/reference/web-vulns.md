@@ -389,6 +389,27 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
+## Data Pipeline Template Injection (SSTI + SSRF)
+
+**What it is:** Server-side template injection in data pipeline and observability tools — template engines used for dashboards, workflows, or notifications process user-controlled input, enabling arbitrary file read and SSRF.
+
+**Key CVE:** CVE-2026-26938 (Kibana Workflows, CVSS 8.6) — template engine injection in Kibana Workflows allows reading arbitrary server files and performing SSRF. Fixed Kibana 9.3.1.
+
+**Where to look:** Kibana, Grafana, Datadog, Splunk dashboards, n8n/Make workflow templates, notification template editors, any tool where users define templates or expressions that the server evaluates.
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Template polyglot | Inject `{{7*7}}`, `${7*7}`, `<%= 7*7 %>`, `#{7*7}` in template fields | Evaluated expression (49) in output reveals template engine |
+| 2 | File read via SSTI | After confirming SSTI, escalate with engine-specific payloads (Jinja2, EJS, Handlebars, Pebble) | Server file contents in response |
+| 3 | SSRF via SSTI | Use template engine features to make HTTP requests to internal services or cloud metadata | Cloud metadata or internal service responses |
+| 4 | Workflow expression injection | In workflow/pipeline tools, inject expressions in notification templates, alert conditions, or dashboard variables | Expression evaluated server-side beyond intended scope |
+
+**Severity Guidance:** High-Critical. SSTI in observability tools is especially dangerous — these tools have broad network access and often run with elevated privileges. The Kibana pattern generalizes to any data pipeline tool with user-configurable templates.
+
+---
+
 ## Filename Canonicalization + TOCTOU Upload Bypass
 
 **What it is:** File upload validation that checks the filename at upload time but processes a different canonical form later — enabling extension filter bypass via Unicode characters, null bytes, or encoding inconsistencies that survive validation but are stripped during storage or execution.

@@ -309,7 +309,10 @@ grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" reference/api
 ## Related Skills & Commands
 
 - `vuln-patterns` — Individual vulnerability class patterns (IDOR, XSS, SSRF, etc.)
-- `auth-testing` — Authentication and authorization testing in depth
+- `auth-testing` — Authentication and authorization testing in depth (includes middleware regex bypass patterns)
 - `source-code-audit` — Trace API handlers in source code
+- `ai-hunting/reference/mcp-playbooks.md` — MCP-specific API testing (gRPC transport, OAuth, tool invocation)
 - `/quick-test` — Rapid single-endpoint testing
 - `/methodology` — Full testing methodology including API-specific phases
+
+**Note:** For MCP servers using gRPC transport (Google Cloud, January 2026), test JWT/OAuth authentication hooks and per-method authorization policies. gRPC MCP servers may have different trust boundaries than HTTP-based MCP servers — verify auth enforcement across both transports.

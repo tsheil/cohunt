@@ -170,7 +170,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 
 | Category | What to Test | Key References |
 |----------|-------------|----------------|
-| **Business logic** | Payment flows, subscription bypass, state machine abuse, multi-tenant isolation — **45% of all bounty awards** (Intigriti 2026) | vuln-patterns/reference/business-logic.md |
+| **Business logic** | Payment flows, subscription bypass, state machine abuse, multi-tenant isolation — **45% of all bounty awards** (Intigriti 2026) | business-logic SKILL.md |
 | **Chain building** | Combine lower-severity findings: IDOR → auth bypass → data exfil; open redirect → OAuth token theft | vuln-patterns SKILL.md |
 | **Auth-gated scenarios** | OAuth callback manipulation, SSO trust relationships, first-party trust abuse (ConsentFix), SAML attacks | auth-testing SKILL.md |
 | **AI/LLM injection** | LPCI, memory poisoning (SpAIware/ZombieAgent), multi-turn injection, image-based injection (64% success), invisible Unicode (E0000-E007F), semantic chaining, H-CoT hijacking, **Policy Puppetry** (universal jailbreak — all frontier models, no tuning) | ai-hunting SKILL.md |
@@ -195,7 +195,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Cloud SSO trust abuse** | Cross-tenant auth bypass (CVE-2026-24858 FortiOS CVSS 9.4), first-party trust abuse (ConsentFix), SSO token scope validation | vuln-patterns/reference/infrastructure-vulns.md |
 | **MDM/enterprise mgmt** | Ivanti EPMM bash arithmetic expansion (CVE-2026-1281/1340 CVSS 9.8, mass exploitation), SolarWinds WHD multi-stage RCE (CVE-2025-40551), VMware Aria migration path (CVE-2026-22719 CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Appliance hardcoded creds** | Dell RecoverPoint Ghost NICs (CVE-2026-22769 CVSS 10.0, China-nexus since mid-2024), enterprise backup/DR appliance plaintext creds in config files, Tomcat Manager web shell deployment | vuln-patterns/reference/infrastructure-vulns.md |
+| **Middleware auth regex bypass** | Route-matcher regex on full URL (CVE-2026-31816 Budibase CVSS 9.1) — query param `?/api/webhooks/` bypasses all auth/CSRF; test any API where webhook/public paths skip auth | vuln-patterns/reference/parser-differentials.md |
 | **Parser differentials** | Unicode normalization WAF bypass, URL parser confusion, Content-Type confusion (n8n CVSS 10.0), H2 downgrade, path normalization, filename canonicalization (CVE-2026-28289 CVSS 10.0), SAML parser differentials — PortSwigger Top 10 #1 (2025) | vuln-patterns/reference/parser-differentials.md |
+| **Deser patch bypass** | Previous deser RCE patches often incomplete — test alternative gadget chains on patched endpoints (CVE-2025-26399 SolarWinds WHD CVSS 9.8 bypasses CVE-2024-28988, CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
+| **Data pipeline SSTI** | Template injection in observability tools — Kibana Workflows SSTI+SSRF (CVE-2026-26938 CVSS 8.6), Grafana, Splunk dashboard templates, workflow notification editors | vuln-patterns/reference/web-vulns.md |
 | **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:
