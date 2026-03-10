@@ -25,6 +25,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Bug bounty market valued at $2.06B** (2026), projected to reach **$7.74B by 2035** (CAGR 15.94%; alternative: $5.7B by 2033)
 - **Q4 2025 AI security startup funding**: $2.17B across 28 deals — **8x growth** over two years
 - **83% of organizations** now use bug bounties (HackerOne 2025)
+- **CISA FY2025 federal bug bounty stats**: 12,800+ vulnerability reports received via VDP Platform, 1,200+ valid (90% remediated); 7 bug bounty programs across 4 agencies; 28 critical vulnerabilities identified, $345K+ awarded; 238 high-risk vulnerabilities added to KEV catalog (CISA 2025 Year in Review)
 - **63% of Fortune 500** run bug bounty programs; for every $1 spent on bounties, companies save $15 ($3B in mitigated losses)
 - **82% of hackers** now use AI in their workflows (Bugcrowd 2026, up from 64% in 2023)
 - **Nearly 10% of researchers** now specialize in AI/LLM security testing
@@ -45,7 +46,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **HackerOne Agentic PTaaS** (January 2026): continuous testing with **88% accuracy**, fix-verified findings; trained on proprietary exploit intelligence
 - **IBM Granite AI Bug Bounty** (HackerOne): up to **$100K** to test Granite models with Granite Guardian guardrails; focus on jailbreaks in enterprise environments
 - **Intigriti adopted CVSS V4** for all new submissions starting 2026
-- **Salesforce Bug Bounty 10th Anniversary** — $30.4M invested since 2015
+- **Salesforce Bug Bounty 10th Anniversary** — $30.4M invested since 2015; **$6.2M paid in 2025** (program's most productive year), 696 ethical hackers participated, 4,000+ vulnerability reports disclosed, individual payouts up to $60K (Salesforce March 2026)
 - **Google awarded $250,000** for a single Chrome flaw (CVE-2025-4609) — record-breaking payout
 - **Google launched dedicated AI VRP** (October 2025) covering Search, Gemini Apps, Workspace — up to $30K per finding; $430K+ already paid
 - **Apple doubled max payout to $2M** for zero-click remote exploits, with bonuses potentially exceeding $5M; launched "Target Flags"
@@ -73,6 +74,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **XBOW mission completed** (March 2026): declared HackerOne mission concluded; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface for bounty hunters
 - **Vibe-coded app attack surface** (2026): Escape.tech found 2,000+ vulns in 5,600 vibe-coded apps (Lovable, Bolt.new, Replit); Moltbook breach exposed 1.5M API keys via misconfigured Supabase; 10% of Lovable apps leaked PII — new class of systematically vulnerable targets for bounty programs
 - **Wiz Cyber Model Arena** (March 2026): 257 offensive security challenges, 25 agent-model combinations tested; Claude Code + Opus 4.6 #1; AI solved 9/10 directed challenges at under $50 but fails at broad enumeration; human direction + AI execution confirmed as winning model
+- **DJI ROMO bug bounty** (February 2026): $30K awarded for BOLA + MQTT wildcard subscription flaw exposing 7,000+ robot vacuums across 20+ countries; live camera feeds, audio streams, and 2D floor plans accessible; researcher originally building PS5 controller interface; DJI patched Feb 8-10 (DroneDJ, March 2026)
 - **Google AI VRP**: dedicated AI Vulnerability Reward Program covering Search, Gemini Apps, Workspace — up to $30K per finding; moved AI issues from Abuse VRP
 - **XBOW $75M raised** (March 2026): Series B led by Altimeter Capital with Sequoia; $117M total funding; but still operating at a loss (compute costs exceed bounty earnings)
 

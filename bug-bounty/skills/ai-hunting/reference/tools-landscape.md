@@ -96,6 +96,26 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Best for: autonomous pentesting workflows requiring cross-tool coordination and persistent memory
 - GitHub: `vxcontrol/pentagi`
 
+**Zen-AI-Pentest (AI-Orchestrated Pentesting Framework):**
+- Open-source Python framework wrapping 20+ security tools (Nmap, SQLMap, Metasploit, Burp Suite, Gobuster, Nuclei, BloodHound) under an AI-driven orchestration layer
+- LLM-guided decision-making: AI interacts with state machine to guide tool selection and scanning strategies; suggests follow-up actions based on prior step outputs
+- Multi-model voting mechanism compares outputs to reduce hallucinations and false positives
+- Multiple interfaces: REST API, web UI, and CLI for different workflows
+- Risk engine applies CVSS and EPSS scoring automatically
+- CI/CD integration: GitHub Actions, GitLab CI, Jenkins; outputs JSON, XML, or SARIF
+- Built-in benchmarking against intentionally vulnerable apps with metrics for discovery time, vuln count, and false positive rate
+- Best for: structured pentesting workflows with tool orchestration and reproducible benchmarks
+- GitHub: `SHAdd0WTAka/Zen-Ai-Pentest`
+
+**Penligent (Autonomous AI Hacker):**
+- Commercial "Zero-Setup" autonomous pentesting platform; self-described as "the first platform to productize the Autonomous Hacker"
+- Full feedback loop: generates payloads → sends to targets → analyzes errors → refines payloads via error databases → retries until successful
+- Scans for latest CVEs and generates one-click PoC exploit scripts
+- Positioned as replacing the Red Team function for modern enterprises — highest security coverage per dollar
+- Prediction: by 2027, manual pentesting becomes a boutique service; 99% of vulnerability assessments will be agentic
+- Best for: enterprise continuous pentesting requiring minimal setup and autonomous operation
+- Website: `penligent.ai`
+
 **Ghost Security Agent (Claude Code Plugin):**
 - Claude Code plugin for application security: find, validate, fix loop
 - Secret scanner (dual-engine pattern matching + entropy analysis)
