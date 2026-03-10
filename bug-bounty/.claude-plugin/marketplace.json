@@ -1,0 +1,16 @@
+{
+  "name": "cohunt",
+  "owner": {
+    "name": "Thomas Sheil"
+  },
+  "plugins": [
+    {
+      "name": "bug-bounty",
+      "source": {
+        "source": "github",
+        "repo": "tsheil/cohunt",
+        "path": "bug-bounty"
+      }
+    }
+  ]
+}

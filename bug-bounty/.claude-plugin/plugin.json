@@ -3,6 +3,27 @@
   "version": "0.61.0",
   "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities. Includes AI-assisted hunting, client-side security, supply chain testing, and LLM vulnerability patterns.",
   "author": {
-    "name": "Thomas Sheil"
-  }
+    "name": "Thomas Sheil",
+    "url": "https://github.com/tsheil"
+  },
+  "repository": "https://github.com/tsheil/cohunt",
+  "homepage": "https://github.com/tsheil/cohunt",
+  "license": "Apache-2.0",
+  "keywords": [
+    "bug-bounty",
+    "security",
+    "hacking",
+    "penetration-testing",
+    "vulnerability",
+    "recon",
+    "ai-security",
+    "mcp-security",
+    "llm-security",
+    "hackerone",
+    "bugcrowd",
+    "owasp"
+  ],
+  "commands": "./commands/",
+  "agents": "./agents/",
+  "skills": "./skills/"
 }
