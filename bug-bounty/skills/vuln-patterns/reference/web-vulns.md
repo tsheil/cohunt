@@ -365,6 +365,8 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 - **Lovable platform**: 10% of 1,645 apps leaked sensitive user data; **170 apps with open databases**
 - **Tea dating app**: 72K images including 13K government ID photos via open Firebase storage
 - Only **10% of AI-generated code is secure** (Endor Labs 2026); **62% of LLM-generated code** contains exploitable vulnerabilities (Cycode 2026)
+- **45% of AI-generated code** contains classic OWASP Top 10 vulnerabilities (Contrast Security 2026)
+- **20% of vibe-coded apps** have serious vulnerabilities or configuration errors (Wiz 2026)
 
 **Why it matters for bug bounty:** Startups using vibe-coding platforms often run bug bounty programs (especially crypto/Web3). The vulnerabilities are trivial to find and consistently high-severity. AI coding agents commonly suggest permissive policies like `USING (true)` to fix permission errors — making entire databases public.
 

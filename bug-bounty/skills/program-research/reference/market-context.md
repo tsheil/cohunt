@@ -76,8 +76,8 @@ Reference data for program evaluation. Loaded on demand when program-research ne
 
 | Metric | Value | Source |
 |--------|-------|--------|
-| MCP CVEs filed | 30+ CVEs in 60 days — AI's fastest-growing attack surface | MCP Security Research 2026 |
-| MCP servers exposed | 8,000+ publicly exposed (Feb 2026), 492 vulnerable | Security research 2026 |
+| MCP CVEs filed | 50+ CVEs by March 2026 (30 in 60 days) — AI's fastest-growing attack surface | MCP Security Research 2026 |
+| MCP servers exposed | **42,665 exposed instances** (5,194 actively vulnerable); 8,000+ publicly exposed (Feb 2026) | Security research 2026 |
 | MCP servers lacking auth | 38% of 500+ scanned servers completely lack authentication | MCP Security Research 2026 |
 | MCP auth security | 88% of MCP servers require credentials; 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth | Astrix State of MCP Security 2025 |
 | MCP eval() epidemic | 7 RCE CVEs in February 2026 alone — all from unsanitized user input to eval()/exec() | DEV Community 2026 |

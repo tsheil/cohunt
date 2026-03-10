@@ -16,7 +16,7 @@ Protocol-level and timing-based vulnerability classes that consistently pay high
 | CVE-2023-46809 | Node.js | HTTP pipeline desync | Smuggling via malformed Transfer-Encoding in undici |
 | CVE-2024-24795 | Apache HTTP Server | HTTP response splitting | CRLF injection via multiple Content-Type headers |
 | CVE-2025-32681 | Envoy Proxy | HTTP/1 codec | Request smuggling via chunked encoding edge case |
-| CVE-2025-55315 | ASP.NET Core Kestrel | Chunked TE smuggling | **CVSS 9.9** — highest-ever ASP.NET severity; lone `\n` in chunk extension treated as continuation by Kestrel but as line terminator by proxies; enables auth bypass, CSRF bypass, injection; affects ASP.NET Core 2.x-10.x; $10K bounty (Praetorian) |
+| CVE-2025-55315 | ASP.NET Core Kestrel | Chunked TE smuggling | **CVSS 9.9** — highest-ever ASP.NET severity; lone `\n` in chunk extension treated as continuation by Kestrel but as line terminator by proxies; enables auth bypass, CSRF bypass, injection; affects ASP.NET Core 2.x-10.x; $10K bounty (Praetorian); fix added `InsecureChunkedParsing` compat flag; apps behind reverse proxies that strip smuggled requests may be protected |
 | CVE-2026-27127 | Craft CMS | DNS rebinding SSRF | TOCTOU in SSRF validation → metadata access |
 | CVE-2026-23864 | React Server Components | DoS via RSC payloads | Server crash/OOM via malformed Server Function args (CVSS 7.5) |
 

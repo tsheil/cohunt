@@ -68,7 +68,7 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 ### MCP (Model Context Protocol)
 
-MCP is AI's fastest-growing attack surface: **40+ CVEs in Q1 2026**, 38% of servers lack authentication, 43% have command injection flaws. **Pynt quantified the risk**: 10 MCP plugins = **92% exploit probability** (281 configs analyzed); Enkrypt AI scanned 1,000+ servers and found **33% had critical vulnerabilities**. ChatGPT can now connect to any remote MCP server, expanding the attack surface to all Enterprise/Business users. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners). Endor Labs analysis confirmed MCP inherits classical CWE-22/CWE-77 at scale: 82% of 2,614 implementations vulnerable to path traversal.
+MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60 days alone), **42,665 exposed instances** (5,194 actively vulnerable), 38% of servers lack authentication, 43% have command injection flaws. **Pynt quantified the risk**: 10 MCP plugins = **92% exploit probability** (281 configs analyzed); Enkrypt AI scanned 1,000+ servers and found **33% had critical vulnerabilities**. ChatGPT can now connect to any remote MCP server, expanding the attack surface to all Enterprise/Business users. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners). Endor Labs analysis confirmed MCP inherits classical CWE-22/CWE-77 at scale: 82% of 2,614 implementations vulnerable to path traversal.
 
 **Top vulnerability classes:**
 
@@ -166,7 +166,7 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 - **1,121 programs** on HackerOne include AI in scope (270% YoY increase)
 - **Bug bounty market**: $2.06B (2026), projected $7.74B by 2035 (CAGR 15.94%)
 - **XBOW**: #1 HackerOne with 1,400+ zero-days (mission declared completed March 2026, pivoting to pre-production); **AISLE**: 100+ CVEs including all 12 OpenSSL zero-days (CVE-2025-15467 CVSS 9.8 RCE — some bugs dating back 27 years to SSLeay era; AI proposed 5/12 accepted patches); **Google Big Sleep**: 20 OSS zero-days (SQLite, FFmpeg, ImageMagick)
-- **40+ MCP CVEs** in Q1 2026; 38% of servers lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI); 82% of 2,614 implementations vulnerable to path traversal (Endor Labs)
+- **50+ MCP CVEs** by March 2026 (30 in 60 days); **42,665 exposed instances**, 5,194 actively vulnerable; 38% lack auth; 43% have command injection; **10 plugins = 92% exploit probability** (Pynt); **33% of 1,000+ servers have critical vulns** (Enkrypt AI); 82% of 2,614 implementations vulnerable to path traversal (Endor Labs)
 - **3+ million AI agents** in corporations; 88% reported security incidents; 47% not monitored
 - **Only 10% of AI-generated code** is secure (Endor Labs)
 - **Enterprise AI gap**: 83% plan agentic AI, only 29% ready to secure it

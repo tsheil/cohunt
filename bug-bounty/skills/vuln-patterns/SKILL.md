@@ -44,7 +44,7 @@ The patterns below cover the **core web vulnerability classes** that don't have 
 | 4 | **CWE-862** | **Missing Authorization** | **Up 5 — biggest climber** |
 | 5 | CWE-787 | Out-of-Bounds Write | Stable |
 
-**Key trend:** IDOR reports grew **116% over 5 years** (+29% YoY); access control up **18% YoY** (HackerOne 2025). XSS reports **down 10% since 2023**. Programs shifting rewards toward identity, access, and business logic. **FIRST forecasts ~59,427 CVEs in 2026** (first year to exceed 50,000) — vulnerability volume continues accelerating.
+**Key trend:** IDOR reports grew **116% over 5 years** (+29% YoY); access control up **18% YoY** (HackerOne 2025). XSS reports **down 10% since 2023**. Programs shifting rewards toward identity, access, and business logic. **FIRST forecasts ~59,427 CVEs in 2026** (first year to exceed 50,000) — vulnerability volume continues accelerating. **45% of AI-generated code** has OWASP Top 10 vulnerabilities (Contrast Security 2026) — vibe-coded applications are a growing target class.
 
 ---
 

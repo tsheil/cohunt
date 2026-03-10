@@ -72,11 +72,12 @@ A major new attack surface category: **30+ vulnerabilities across 10+ AI coding 
 - Full attack chain: malicious issue → HTML comment injection → Codespace launch → symlink PR checkout → token exfiltration → repository takeover with read/write access
 - Patched by Microsoft — test for similar patterns in other IDE integrations that process issue/PR content
 
-**CamoLeak (Legit Security, March 2026):**
-- Critical vulnerability enabling **private source code exfiltration** from GitHub Copilot
-- Attacker crafts repository content that triggers Copilot to leak private code from other repositories the victim has access to
-- Exploits Copilot's code completion context — suggestions can include code from private repos
-- Test for: context leakage in AI coding assistants that access multiple repositories
+**CamoLeak (CVE-2025-59145, CVSS 9.6 — Legit Security, March 2026):**
+- **Zero-click** private source code exfiltration from GitHub Copilot Chat
+- Exploit chain: invisible Markdown comments for injection delivery → Camo URL pre-generation to circumvent CSP → character-by-character exfiltration through GitHub's own Camo image proxy request sequences
+- Attacker crafts repository content that triggers Copilot to leak private code and secrets from other repositories the victim has access to
+- GitHub's fix: disabled image rendering in Copilot Chat entirely
+- Test for: context leakage in AI coding assistants that access multiple repositories; image proxy exfiltration channels in any AI tool that renders Markdown
 
 **PromptPwnd (Aikido Security, 2026):**
 - Prompt injection in **GitHub Actions and GitLab CI/CD pipelines** exploits AI agents (Gemini CLI, Claude Code, OpenAI Codex)
