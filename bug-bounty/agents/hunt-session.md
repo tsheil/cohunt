@@ -239,7 +239,8 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Credential-based attacks** | Cloudflare 2026: 63% logins use compromised creds, 94% bot; test credential stuffing resistance, breached-password detection, bot detection bypass, MFA enforcement gaps across all auth paths (web/mobile/API/SSO) | auth-testing/SKILL.md |
 | **SAP/enterprise deser** | SAP FS-QUO Log4j deser (CVE-2019-17571 CVSS 9.8), SAP NetWeaver Portal upload+deser (CVE-2026-27685 CVSS 9.1), SolarWinds WHD patch bypass (CVE-2025-26399 CVSS 9.8, 3rd bypass CISA KEV); test enterprise portals for deser RCE with alternative gadget chains on patched endpoints | vuln-patterns/reference/infrastructure-vulns.md |
 | **Suggest-and-audit methodology** | Two-stage AI-augmented review: suggest (wide net) → audit (strict validation); GitHub Taskflow Agent found 80+ vulns; 25% confirmed rate for business logic, 38 confirmed IDOR/access control findings; run two passes with fresh context | source-code-audit/SKILL.md |
-| **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape, March PT 83 CVEs including SQL Server sysadmin zero-day | vuln-patterns/reference/infrastructure-vulns.md |
+| **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape, March PT 79-83 CVEs including SQL Server sysadmin zero-day + **Excel info disclosure via Copilot Agent mode** (CVE-2026-26144 Critical) | vuln-patterns/reference/infrastructure-vulns.md |
+| **AI feature as attack vector** | CVE-2026-26144: Excel info disclosure exploitable via Copilot Agent mode — first Critical CVE where AI assistant is the exploitation mechanism; test targets' AI copilot/assistant features for info disclosure, SSRF, and action abuse | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
@@ -247,6 +248,9 @@ Avoid competing directly with autonomous tools on:
 - Commodity CVE scanning — version detection → known exploit (automated scanners excel here). **Exception:** patch-bypass variants and auth alternate-path discovery (CWE-288) are LOW automation pressure — AI tools can't reason about incomplete fixes or undocumented auth paths
 - Standard prompt injection on chatbots (high duplicate risk — 540% jump in reports)
 - Basic MCP SSRF scanning (BlueRock Trust Registry already catalogued 36.7% of 7,000+ servers as SSRF-vulnerable — low-hanging fruit is mapped)
+- Pattern-matching code vulnerabilities (Codex Security + Claude Code Review both launched March 6-10, 2026 — these tools now flood programs with code-level findings. Differentiate with chains, business logic, and agent-specific attack patterns)
+
+**March 2026 Competition Update:** 48% of cybersecurity pros now rank agentic AI as the #1 attack vector (Dark Reading). OpenAI acquired Promptfoo ($86M) consolidating AI red-teaming. Claude Code Review runs parallel agents averaging 7.5 issues per large PR. HackerOne split leaderboards (human vs AI collective) and launched Hai Insight to filter hallucinated hackbot reports. Programs will increasingly auto-triage AI-generated submissions — human hunters must provide chains, business context, and two-account proof that AI tools cannot.
 
 **Session Brief Format:**
 

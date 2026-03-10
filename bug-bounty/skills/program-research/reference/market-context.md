@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.79.0)*
+*Last updated: March 2026 (v0.86.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
@@ -307,3 +307,8 @@ Key program-relevant trends:
 - **Vibe-coded apps**: 2,000+ vulns in 5,600 apps (Escape.tech) — systematically vulnerable new target class
 - **Unit 42 2026 Global IR Report**: attacks accelerated 4x YoY; identity weaknesses in 89% of incidents
 - **Google 2025 zero-day review**: 90 zero-days; 48% targeted enterprise technology (new high)
+- **Bug bounty market alternate projection**: $1.19B (2024) → $3.98B by 2032 at 16.3% CAGR (Verified Market Research)
+- **48% of cybersecurity pros** rank agentic AI as #1 attack vector for 2026 (Dark Reading poll)
+- **Promptfoo acquired by OpenAI** (March 9): $86M valuation; frontier labs consolidating AI red-team tooling
+- **Claude Code Review** (March 9-10): multi-agent PR review at $15-$25/review; 84% finding rate on large PRs; <1% rejection rate
+- **OWASP Red Teaming Vendor Eval v1.0** (March 6): first standard for evaluating AI red teaming providers

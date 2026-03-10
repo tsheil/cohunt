@@ -365,22 +365,22 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## March 2026 Patch Tuesday Cluster (Microsoft)
 
-**What it is:** Microsoft's March 2026 Patch Tuesday addressed 83 CVEs including 2 zero-days and 4 actively exploited vulnerabilities. Follows February's unprecedented 6 zero-days.
+**What it is:** Microsoft's March 11, 2026 Patch Tuesday addressed 79-83 CVEs (BleepingComputer: 79 flaws; Tenable: 83 including Edge/Chromium) with 2 publicly disclosed zero-days and 3 Critical vulnerabilities. Follows February's unprecedented 6 zero-days.
 
 **Key CVEs:**
 
 | CVE | CVSS | Component | Type |
 |-----|------|-----------|------|
-| CVE-2026-21262 | Critical | SQL Server | Privilege escalation to sysadmin (zero-day) |
+| CVE-2026-21262 | Critical | SQL Server | Privilege escalation to sysadmin (zero-day, publicly disclosed) |
+| CVE-2026-26144 | Critical | Microsoft Excel | Info disclosure **exploitable via Copilot Agent mode** |
 | CVE-2026-26113 | Critical | Microsoft Office | Remote code execution |
-| CVE-2026-26111 | Critical | Windows RRAS | Remote code execution |
 | CVE-2026-24983 | 7.8 | Win32 Kernel | EoP → SYSTEM (actively exploited) |
 | CVE-2026-24985 | 6.8 | FAT File System | RCE via VHD files (actively exploited) |
 | CVE-2026-24993 | 7.8 | MMC | RCE via .msc files (actively exploited) |
 
-**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; check Office for RCE via crafted documents. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
+**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; check Office for RCE via crafted documents; **test Excel info disclosure via Copilot Agent mode — first CVE where AI assistant feature is the exploitation vector**. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
 
-**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. VHD/MSC delivery vectors commonly used in phishing chains.
+**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. VHD/MSC delivery vectors commonly used in phishing chains. CVE-2026-26144 is notable as the first Critical CVE exploitable through an AI assistant feature.
 
 ---
 
