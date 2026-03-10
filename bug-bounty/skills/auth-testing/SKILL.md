@@ -379,6 +379,29 @@ WordPress plugins are a top bug bounty target. The most common pattern: AJAX han
 
 ---
 
+## 9. Credential-Based Attacks — "Log In, Don't Break In"
+
+**Cloudflare 2026 data:** 63% of all logins involve previously compromised credentials; 94% of login attempts originate from bots. Attackers are shifting from exploitation to credential abuse — and many applications lack adequate defenses.
+
+### Testing Checklist
+
+```
+□ Credential stuffing resistance — High-volume login with known-breached creds detected/blocked?
+□ Breached password detection — Registration/password-change checks against HIBP or similar?
+□ Bot detection bypass — Login endpoint works without browser headers, JS execution, or CAPTCHA?
+□ Rate limiting scope — Per IP only (bypassable via rotation) or also per username/account?
+□ Account lockout info leak — Does lockout reveal valid usernames (different response for valid vs invalid)?
+□ Credential enumeration — Different error messages for "user not found" vs "wrong password"?
+□ MFA enforcement gaps — MFA on web but not API/mobile/SSO/SAML paths?
+□ Session token entropy — Sequential or predictable patterns in session tokens?
+□ Password spray window — Can you try 1 password across 1000 accounts without triggering lockout?
+□ OAuth/social auth bypass — Can you authenticate via social login even if password MFA is enforced?
+```
+
+**Severity Guidance:** Credential stuffing → mass ATO is Critical. Missing breached-password detection is Medium. Credential enumeration alone is Low-Medium but chains with stuffing for higher impact. Password spray bypassing lockout is High.
+
+---
+
 ## Reference Files
 
 This skill uses progressive disclosure. Detailed reference material is available on demand:

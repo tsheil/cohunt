@@ -105,8 +105,8 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
    Key competitive context (see `ai-hunting/reference/tools-landscape.md` for full landscape):
-   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high), 80x faster than humans, $75M Series B; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
-   - **Codex Security + Claude Code Security + GitHub Taskflow**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge
+   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high, 132 resolved, 303 triaged), 80x faster than humans, $75M Series B ($117M total); pivoting to pre-production scanning — reduces externally-available attack surface; requires human review for all submissions (Level 3-4 autonomy)
+   - **Codex Security + Claude Code Security + GitHub Taskflow + Aikido Infinite + Terra Portal**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge; continuous pentesting (Aikido) and human-governed agentic (Terra) expanding automated coverage
    - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
    - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category
    - **Business logic = 45% of all bounty awards** (Intigriti 2026) — lowest automation pressure
@@ -236,7 +236,10 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **MCP tool poisoning** | MCPTox benchmark: 72.8% attack success on 45 live servers; MCP-ITP automated implicit poisoning; more capable models MORE susceptible (<3% refusal); test tool descriptions for hidden behavioral instructions | ai-hunting/reference/mcp-playbooks.md |
 | **Backup/export endpoint disclosure** | Nginx-UI CVE-2026-27944 (CVSS 9.8) — unauthenticated `/api/backup` returns full backup + AES key in response header; generalizable to any management UI with backup/export/download features; test admin panels, cPanel, pfSense, self-hosted tools | vuln-patterns/reference/infrastructure-vulns.md |
 | **WordPress/CMS AJAX authz** | Greenshift CVE-2026-2371 (100K+ installs) — `wp_ajax_nopriv_*` handler missing `current_user_can()` check → unauthenticated private content leak; grep for `wp_ajax_nopriv_` in plugins to find unprotected AJAX handlers | auth-testing/SKILL.md |
-| **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape | vuln-patterns/reference/infrastructure-vulns.md |
+| **Credential-based attacks** | Cloudflare 2026: 63% logins use compromised creds, 94% bot; test credential stuffing resistance, breached-password detection, bot detection bypass, MFA enforcement gaps across all auth paths (web/mobile/API/SSO) | auth-testing/SKILL.md |
+| **SAP/enterprise deser** | SAP FS-QUO Log4j deser (CVE-2019-17571 CVSS 9.8), SAP NetWeaver Portal upload+deser (CVE-2026-27685 CVSS 9.1), SolarWinds WHD patch bypass (CVE-2025-26399 CVSS 9.8, 3rd bypass CISA KEV); test enterprise portals for deser RCE with alternative gadget chains on patched endpoints | vuln-patterns/reference/infrastructure-vulns.md |
+| **Suggest-and-audit methodology** | Two-stage AI-augmented review: suggest (wide net) → audit (strict validation); GitHub Taskflow Agent found 80+ vulns; 25% confirmed rate for business logic, 38 confirmed IDOR/access control findings; run two passes with fresh context | source-code-audit/SKILL.md |
+| **Windows/infra** | MotW bypass chain (3 in Feb 2026 Patch Tuesday, APT28), SSRF chains, critical infra auth bypass, Chrome sandbox escape, March PT 83 CVEs including SQL Server sysadmin zero-day | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:
 - Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)

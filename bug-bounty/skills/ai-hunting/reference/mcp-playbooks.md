@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-72 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
+72 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps).
 
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 

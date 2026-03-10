@@ -310,6 +310,23 @@ Focus on: AI tooling config files and CI/CD artifacts that create supply chain R
 
 ---
 
+## AI-Augmented Audit: Suggest-and-Audit Pattern
+
+A two-stage methodology proven to find more business logic and auth bugs than single-pass review:
+
+**Stage 1 — Suggest:** Read each component and generate potential vulnerability hypotheses. Cast a wide net — list every possible issue, including speculative ones. Focus on business logic, auth, and data flow.
+
+**Stage 2 — Audit:** With fresh context, validate each hypothesis against the actual source code. Apply strict criteria: only confirm findings with clear evidence (source → sink trace, missing check, or exploitable pattern). Discard speculative findings without code evidence.
+
+**Why it works:** GitHub Security Lab's Taskflow Agent found 80+ vulnerabilities across 40 repositories using this pattern — highest confirmed rate in business logic (25%) and largest absolute count in IDOR/access control (38 confirmed findings). Key AI-discovered CVEs:
+- **CVE-2026-28514** (Rocket.Chat, CVSS 9.3): Missing `await` on `bcrypt.compare()` — suggest-stage flagged async auth pattern, audit-stage confirmed any-password bypass
+- **CVE-2026-25758** (Spree Commerce): Sequential ID enumeration in address endpoints — unauthenticated address data exposure via ID increment
+- **WooCommerce**: Authenticated users could view all guest orders including PII via predictable order identifiers
+
+**When to use:** Any codebase audit where you want to maximize coverage. Especially effective for large repos where single-pass review misses subtle interaction bugs.
+
+---
+
 ## Reference Files
 
 This skill uses progressive disclosure. Detailed reference material is available on demand:

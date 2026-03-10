@@ -363,30 +363,24 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ---
 
-## March 2026 Zero-Day Cluster (Microsoft)
+## March 2026 Patch Tuesday Cluster (Microsoft)
 
-**What it is:** Microsoft's March 2026 Patch Tuesday addressed 67 vulnerabilities including 4 actively exploited zero-days affecting Windows kernel, NTFS, FAT, and MMC. All 4 added to CISA KEV with 21-day patch deadline.
+**What it is:** Microsoft's March 2026 Patch Tuesday addressed 83 CVEs including 2 zero-days and 4 actively exploited vulnerabilities. Follows February's unprecedented 6 zero-days.
 
 **Key CVEs:**
 
-| CVE | CVSS | Component | Type | Vector |
-|-----|------|-----------|------|--------|
-| CVE-2026-24983 | 7.8 | Win32 Kernel Subsystem | EoP → SYSTEM | Use-after-free; post-compromise chains |
-| CVE-2026-24984 | 4.6 | Windows NTFS | Info Disclosure | Physical access + crafted USB → heap memory read; espionage operations |
-| CVE-2026-24985 | 6.8 | Fast FAT File System | RCE | Heap buffer overflow via malicious VHD files; email/shares delivery |
-| CVE-2026-24993 | 7.8 | Microsoft Management Console | RCE | Malformed .msc files → code execution; email/web delivery |
+| CVE | CVSS | Component | Type |
+|-----|------|-----------|------|
+| CVE-2026-21262 | Critical | SQL Server | Privilege escalation to sysadmin (zero-day) |
+| CVE-2026-26113 | Critical | Microsoft Office | Remote code execution |
+| CVE-2026-26111 | Critical | Windows RRAS | Remote code execution |
+| CVE-2026-24983 | 7.8 | Win32 Kernel | EoP → SYSTEM (actively exploited) |
+| CVE-2026-24985 | 6.8 | FAT File System | RCE via VHD files (actively exploited) |
+| CVE-2026-24993 | 7.8 | MMC | RCE via .msc files (actively exploited) |
 
-**Where to look:** Windows endpoints in scope, especially those with USB exposure (CVE-2026-24984) or that process VHD/MSC files. Follows February 2026's unprecedented 6 actively exploited zero-days.
+**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; check Office for RCE via crafted documents. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
 
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | VHD file processing | Craft malicious VHD files targeting FAT filesystem handling | Crash or code execution when VHD is mounted |
-| 2 | MSC file delivery | Create .msc files with embedded payloads; test email/web delivery | Code execution when .msc opened by target |
-| 3 | USB-based exfiltration | Test NTFS heap memory disclosure via crafted USB device | Heap memory contents leaked to attacker device |
-
-**Severity Guidance:** Medium-High individually, but the cluster pattern is significant — 4 zero-days in one month following 6 in February indicates active campaign(s). The VHD + MSC delivery vectors are commonly used in phishing chains. Report as part of broader attack surface assessment.
+**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. VHD/MSC delivery vectors commonly used in phishing chains.
 
 ---
 
@@ -493,8 +487,8 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE. See http-desync skill |
 | CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied embeddings. Pattern: AI inference deser |
 | CVE-2026-28514 | Rocket.Chat | 9.3 | Missing `await` on `bcrypt.compare()` → any password accepted. Async auth bypass |
-| CVE-2026-24985 | Windows ICMP | 9.8 | RCE via ICMP — no auth. March 2026 Patch Tuesday zero-day |
-| CVE-2026-24993 | Outlook | 9.8 | EoP zero-day — email auto-triggers on retrieval. March 2026 Patch Tuesday |
+| CVE-2019-17571 | SAP FS-QUO (Log4j) | 9.8 | Unauthenticated RCE via deserialization in Log4j 1.2 SocketServer. March 2026 SAP Patch Day |
+| CVE-2026-27685 | SAP NetWeaver Portal | 9.1 | Malicious content upload + deserialization RCE. March 2026 SAP Patch Day |
 | CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE (3rd bypass). CISA KEV March 2026 |
 | CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite — supply chain vector. Fixed 0.14.2 |
 | CVE-2026-22719 | VMware Aria | 8.1 | Unauth command injection. CISA KEV March 2026. Active exploitation |
