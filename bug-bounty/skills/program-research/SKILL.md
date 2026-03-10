@@ -293,6 +293,25 @@ Before submitting, check:
 
 ---
 
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/market-context.md](reference/market-context.md) | Market metrics, AI automation data, MCP attack surface stats, platform statistics, notable programs, disclosed vulnerabilities, competition landscape, autonomous pentesting tools, industry trends (140+ data points) | ~459 |
+
+**Quick search** — find specific market data without loading the full file:
+```
+grep -n "IDOR\|BOLA\|payout\|reward\|bounty" reference/market-context.md
+grep -n "XBOW\|Shannon\|Codex Security\|autonomous" reference/market-context.md
+grep -n "HackerOne\|Bugcrowd\|Intigriti" reference/market-context.md
+grep -n "MCP\|agentic\|AI vuln\|prompt injection" reference/market-context.md
+grep -n "Apple\|Google\|Microsoft\|Samsung" reference/market-context.md
+```
+
+---
+
 ## Related Skills
 
 - **target-recon** — After researching the program, recon the actual targets

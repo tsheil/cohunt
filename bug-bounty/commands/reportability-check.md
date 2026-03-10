@@ -197,6 +197,46 @@ These findings are almost always N/A on major platforms. Don't report unless you
 
 ---
 
+## AI/MCP-Specific Reportability
+
+AI and MCP findings have unique acceptance criteria. Many triagers are still learning this space — help them by hitting these evidence bars.
+
+### AI/MCP Reportability Rubric
+
+| Gate | What to Prove | Evidence Required |
+|------|--------------|-------------------|
+| **Unauthorized tool action** | Agent performed an action the user didn't request or approve | Full request/response chain showing: (1) user's original prompt, (2) injected instruction, (3) agent's unauthorized action. Video strongly recommended |
+| **Cross-user / cross-tenant impact** | Finding affects users other than the attacker | Two-account proof: attacker's injection → victim's data exposed or modified. Show tenant isolation failure if multi-tenant |
+| **Session persistence** | Injected instructions survive across conversations | Demonstrate: (1) inject in session A, (2) close session, (3) open session B, (4) injection still active. Timestamp evidence |
+| **Cost amplification** | Finding causes disproportionate resource consumption | Quantify: "$X in API credits consumed per attack request" or "142x token amplification" — real dollar amounts |
+| **Data exfiltration path** | Sensitive data leaves the system via AI channel | Show complete exfil chain: injection → data access → data transmitted to attacker-controlled endpoint. HTTP logs as proof |
+
+### Common AI/MCP N/A Patterns
+
+| Finding | Why Often N/A | Upgrade Path |
+|---------|-------------|-------------|
+| System prompt extraction (no secrets) | Low impact — most programs treat this as informational | Show the system prompt contains API keys, internal URLs, or credentials |
+| Basic chatbot jailbreak | Safety filter bypass alone is usually informational unless program explicitly scopes it | Chain with data access, unauthorized action, or output injection (XSS/SQLi) |
+| Prompt injection on your own session | Self-only impact, same as self-XSS | Demonstrate indirect injection (attacker plants payload, victim triggers it) |
+| MCP tool description disclosure | Tool descriptions are often meant to be visible | Show descriptions contain credentials, internal endpoints, or injection payloads |
+| Theoretical "could potentially" agent abuse | Speculative impact = N/A | Demonstrate actual unauthorized action with concrete evidence |
+| DoS via large prompt | Resource exhaustion without amplification = Low | Quantify amplification ratio (e.g., 1KB input → 100MB processing) |
+
+### AI/MCP Severity Calibration
+
+```
+Critical: Cross-user data exfiltration via AI, RCE through agent tool abuse,
+          persistent memory poisoning affecting all users
+High:     Single-user data exfil with indirect injection, unauthorized tool
+          actions with real impact, credential exposure via AI channel
+Medium:   Session-scoped injection requiring user interaction, cost
+          amplification with measurable but bounded impact
+Low:      Self-only system prompt leak, safety bypass without chain,
+          theoretical agent abuse without demonstrated impact
+```
+
+---
+
 ## Tips
 
 1. **Run this check early** — 10 minutes of assessment saves 2 hours writing a doomed report

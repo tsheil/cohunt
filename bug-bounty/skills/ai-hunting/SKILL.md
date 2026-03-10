@@ -244,6 +244,16 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~445 |
 | [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (140+ data points) | ~259 |
 
+**Quick search** — find specific content without loading full files:
+```
+grep -n "OWASP\|Agentic Top 10\|MCP Top 10\|ASI0" reference/agent-attack-patterns.md
+grep -n "tool poisoning\|name collision\|sampling\|OAuth\|schema" reference/mcp-playbooks.md
+grep -n "XBOW\|Shannon\|Codex Security\|ZeroPath\|Ghost Security" reference/tools-landscape.md
+grep -n "IDEsaster\|DXT\|Cursor\|Copilot\|VS Code" reference/ide-supply-chain.md
+grep -n "prompt injection\|jailbreak\|system prompt\|indirect injection" reference/llm-testing.md
+grep -n "CVE-\|CVSS\|incident\|breach\|exploit" reference/ai-case-studies.md
+```
+
 ---
 
 ## Related Skills

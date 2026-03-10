@@ -75,6 +75,24 @@ Tell me what you know: "I want to hunt on Shopify. I'm good at API bugs and XSS.
 
 ---
 
+### Actor Matrix (Required)
+
+Map every user role and its access boundaries. This matrix drives all authorization testing.
+
+| Role | Access Level | Key Endpoints | Test Account Ready? |
+|------|-------------|---------------|---------------------|
+| Unauthenticated | Public only | [endpoints] | N/A |
+| Free user | Basic features | [endpoints] | □ Account created |
+| Paid user | Premium features | [endpoints] | □ Account created |
+| Admin | Full management | [endpoints] | □ Account created |
+| API-only | Programmatic access | [endpoints] | □ Token obtained |
+| Service account | Internal operations | [endpoints] | □ If testable |
+
+**Multi-tenant:** □ Accounts in 2+ tenants | **Webhook receiver:** □ Set up for callbacks
+**Two-account minimum:** Every auth test requires Account A and Account B at different privilege levels.
+
+---
+
 ### Scope Boundaries
 
 **In Scope — Hunt These:**

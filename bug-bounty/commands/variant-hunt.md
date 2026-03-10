@@ -137,6 +137,47 @@ Hunt for:
    □ Check for custom code that reintroduces the pattern
 ```
 
+### Strategy 6: AI/MCP Component Variants
+
+When a vulnerability is found in one AI/MCP component, the same pattern almost always exists in sibling components — different MCP servers, different AI frameworks, or different transports.
+
+```
+Given: Command injection in MCP server wrapping kubectl (CVE-2026-XXXXX)
+Hunt for:
+□ Other CLI-wrapping MCP servers (git, nmap, ffuf, biome, sqlmap)
+□ Same server, different tool endpoints (server has 10 tools, only 1 tested)
+□ Same parameter, different transport (HTTP vs stdio vs SSE)
+□ Same pattern in competitor products (Cursor → Windsurf → Claude Code)
+□ Gateway layer (MCP-to-OpenAPI gateway passes params unsanitized)
+```
+
+```
+Given: Prompt injection in AI assistant feature
+Hunt for:
+□ Same injection via different input channels (chat, file upload, API, email)
+□ Indirect injection surfaces (shared docs, issue titles, webhook payloads)
+□ Cross-transport: injection blocked in HTTP but works via WebSocket/SSE
+□ Schema drift: tool definitions changed since last audit (hidden params, altered defaults)
+□ Different agent modes: injection works in one model/temperature but not another
+```
+
+**AI/MCP Variant Checklist:**
+
+| Source Pattern | Variant Targets |
+|---|---|
+| MCP tool poisoning | Other tools on same server, other servers in same deployment, tool shadowing via similar names |
+| OAuth scope confusion | SCIM/JIT provisioning drift, API key scope vs OAuth scope, service account residual perms |
+| CLI-wrapper injection | Every `child_process.exec()` or `subprocess(shell=True)` in the server — search source for all instances |
+| Prompt injection in feature A | Same injection in features B, C, D — especially features added after A was hardened |
+| Transport-parity gap | Security control on HTTP but missing on WebSocket subscriptions (CVE-2026-30241 pattern) |
+| Config/rules file poisoning | `.cursorrules` → `.github/copilot-instructions.md` → `.claude/settings.json` → `.windsurf/rules` |
+
+**Methodology:**
+1. Identify the root cause class (injection sink, missing validation, transport gap)
+2. Enumerate all components that share the same pattern (same SDK, same developer, same architecture)
+3. Test each systematically — AI/MCP ecosystems are young and fixes are often applied to one component but not siblings
+4. Each confirmed variant on a different component is a separate report
+
 ---
 
 ## Output Format

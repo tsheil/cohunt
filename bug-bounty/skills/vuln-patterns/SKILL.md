@@ -483,10 +483,17 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, n8n/workflow, edge framework, HTTP/3 race, React RSC | ~330 |
 | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | CSS exfil, Node.js bypass, SSRF chains, remote desktop, MDM, webmail RCE, critical infra, MotW bypass | ~220 |
 
+**Quick search** — find specific vuln patterns without loading full files:
+```
+grep -n "payment\|checkout\|subscription\|state machine\|race" reference/business-logic.md
+grep -n "MCP\|tool poisoning\|LPCI\|agentic\|prompt injection" reference/ai-mcp-vulns.md
+grep -n "GraphQL\|JWT\|OAuth\|n8n\|workflow\|React RSC" reference/web-vulns.md
+grep -n "SSRF\|MDM\|Ivanti\|MotW\|Chrome\|ICS\|appliance" reference/infrastructure-vulns.md
+grep -n "CVE-\|CVSS\|bypass\|RCE\|escalation" reference/infrastructure-vulns.md
+```
+
 ---
 
-## Usage
+With target context from `target-recon`, patterns are tailored to the detected stack. Without context, you get the full checklist.
 
-With target context from `target-recon`, patterns are tailored to the detected stack. Without context, you get the full checklist. Ask mid-hunt: "I found a URL parameter that reflects — what XSS patterns should I try?"
-
-**Related:** target-recon (stack ID), program-research (payout priorities), report-writing (writeups), hunt-plan (structured sessions), ai-hunting (AI/LLM patterns).
+**Related:** target-recon (stack ID), program-research (payout priorities), report-writing (writeups), ai-hunting (AI/LLM patterns).

@@ -44,6 +44,7 @@ When you know the target's technology, focus your testing:
 | **MCP integrations** | Tool poisoning, rug pull attacks, command injection (CVE-2025-6514, CVSS 10.0), eval() epidemic, SDK cross-client leaks, WebSocket hijacking, sandbox/container escape, TypeScript type confusion, cross-system data exfiltration | 8,000+ servers exposed; 30+ CVEs in 60 days; CVE-2026-25049 TS sandbox escape; CVE-2026-27001/27002 OpenClaw sandbox+Docker escape; Adversa AI TOP 25; VulnerableMCP.info tracks CVEs |
 | **Agentic AI apps** | Agent goal hijack, tool misuse, privilege escalation, memory poisoning, rogue agents, regex denylist bypass in framework shell tools | OWASP Top 10 for Agentic Applications (Dec 2025); CVE-2026-2256 MS-Agent regex bypass; Gravitee: 88% of orgs had AI agent incidents, 47% unmonitored; compounds with MCP vulns |
 | **MCP protocol layer** | Token mismanagement, command injection, supply chain poisoning, tool poisoning, shadow servers, insecure data handling | OWASP MCP Top 10 (2026); 30+ CVEs in 60 days; map findings to MCP01-MCP10 |
+| **MCP-to-API gateways** | Parameter injection via unsanitized path/query/header values, approval bypass, auth scope confusion | CVE-2026-29791 (Agentgateway SSRF), CVE-2026-28466 (OpenClaw approval bypass); gateway acts as trust boundary — bypass it to reach backend APIs directly |
 | **LLM frameworks** | Serialization injection, unsafe deserialization, prompt cascading through streaming ops | LangGrinch (CVE-2025-68664, CVSS 9.3) in LangChain Core; test serialization paths in LangChain, LlamaIndex, Haystack |
 | **Web3/Blockchain** | Reentrancy, access control, oracle manipulation, flash loan attacks | $3B+ in Web3 losses H1 2025; access control flaws caused $953.2M; OWASP Smart Contract Top 10 ranks access control #1 |
 | **Hardware/IoT** | Firmware extraction, JTAG/UART access, BLE attacks, default credentials | 88% increase in hardware vulns (Bugcrowd 2025), Samsung paying up to $1M |
@@ -385,3 +386,67 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 6 | Firebase Realtime DB rules | Access `<project>.firebaseio.com/.json` | Full database dump if rules allow public read |
 
 **Severity Guidance:** Critical when API keys grant paid service access or PII is exposed. High for database read access without authentication. The Supabase `anon` key in client code is **safe only if RLS is properly configured** — testing RLS is the key step. Report as broken access control (CWE-284) or sensitive data exposure (CWE-200).
+
+---
+
+## Filename Canonicalization + TOCTOU Upload Bypass
+
+**What it is:** File upload validation that checks the filename at upload time but processes a different canonical form later — enabling extension filter bypass via Unicode characters, null bytes, or encoding inconsistencies that survive validation but are stripped during storage or execution.
+
+**Key CVE:** CVE-2026-28289 (FreeScout, CVSS 10.0, zero-click RCE) — Zero-Width Space character (U+200B) inserted into filename passes extension validation (`.php\u200B` ≠ `.php`) but is stripped when the file is written to disk, resulting in a valid `.php` file. Chained with email attachment processing for zero-click exploitation.
+
+**Why it matters:** This is a **generalized pattern** beyond one CVE. Any file upload system that validates the filename in one form but stores/executes it in another canonical form is vulnerable. The TOCTOU gap between validation and storage is the root cause.
+
+**Where to look:**
+- File upload endpoints (profile pictures, attachments, imports, document uploads)
+- Email attachment processing (helpdesks, ticketing systems, CRMs)
+- Any system that sanitizes filenames after validation rather than before
+- Self-hosted apps with file-based execution (PHP, JSP, ASP)
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Zero-Width Space injection | Upload `shell.ph\u200Bp` or `shell.p\u200Bhp` — insert U+200B within the extension | File saved as `shell.php` after invisible char stripped |
+| 2 | Zero-Width Non-Joiner | Try U+200C (ZWNJ), U+200D (ZWJ), U+FEFF (BOM) in filename | Any invisible Unicode stripped between validation and storage |
+| 3 | Right-to-Left Override | Use U+202E to visually reverse extension: `shell\u202Ephj.php` appears as `shell.jhp` | Filename canonicalized to executable extension |
+| 4 | Null byte truncation | Upload `shell.php%00.jpg` or `shell.php\x00.jpg` | Extension check sees `.jpg`, file stored as `shell.php` |
+| 5 | Double extension + config | Upload `shell.php.jpg` — check if server has `AddHandler` for `.php` anywhere in name | Apache processes file as PHP despite `.jpg` extension |
+| 6 | Case normalization gap | Upload `shell.PHP` on case-insensitive filesystem with case-sensitive validation | Validation allows `.PHP`, server executes as PHP |
+
+**Key principle:** The TOCTOU gap between "what the validator sees" and "what the filesystem stores" is the vulnerability. Test every invisible or transformable character class — not just Zero-Width Space.
+
+**Severity Guidance:** Critical when chaining to RCE via webshell upload. High when bypassing extension restrictions to store executable content. The zero-click variant (email attachments) is Critical because no user interaction is required.
+
+---
+
+## SSRF Validation Gap Pattern (Webhook/Notification/Import)
+
+**What it is:** SSRF filters that validate hostnames against loopback addresses (`127.0.0.1`, `::1`) but fail to block RFC 1918 private ranges (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) or cloud metadata endpoints.
+
+**Key CVEs (March 2026 cluster — 5 SSRFs in 1 week):**
+- CVE-2026-29332 (Soft Serve Git, CVSS 9.1) — LFS endpoint SSRF to internal services
+- CVE-2026-29335 (Ghostfolio, CVSS 9.3) — asset import → AWS IMDS credential theft
+- CVE-2026-28291 (Wallos, CVSS 8.8) — notification tester SSRF
+- CVE-2026-28293 (Plane, CVSS 8.5) — webhook URL SSRF
+- CVE-2026-28294 (PinchTab, CVSS 7.5) — download endpoint SSRF
+
+**Common root cause:** Validators check `is_loopback` but not private range membership. Many validation libraries default to blocking only `127.0.0.1` and `::1`.
+
+**Where to look:**
+- Webhook configuration (Slack, Discord, custom webhook URLs)
+- Notification tester endpoints ("Send test notification")
+- Asset/file import via URL (image import, RSS feed, URL preview)
+- Download/export features that fetch external resources
+
+**Test patterns:**
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | RFC 1918 bypass | Request `http://10.0.0.1/`, `http://172.16.0.1/`, `http://192.168.1.1/` | Internal service responses (loopback blocked but private IPs aren't) |
+| 2 | Cloud metadata | Request `http://169.254.169.254/latest/meta-data/` (AWS), `http://metadata.google.internal/` (GCP) | IAM credentials, instance metadata |
+| 3 | IPv6 mapped addresses | Request `http://[::ffff:10.0.0.1]/` or `http://[0:0:0:0:0:ffff:a00:1]/` | IPv4 private address reached via IPv6 notation |
+| 4 | Decimal/octal IP encoding | Request `http://2130706433/` (127.0.0.1 as decimal) or `http://0177.0.0.1/` (octal) | Loopback reached via non-standard encoding |
+| 5 | Redirect chain | Host `http://attacker.com/redirect` → 302 to `http://10.0.0.1/` | Validator checks initial URL, follows redirect to internal |
+
+**Severity Guidance:** Critical when cloud metadata credentials are accessible (IMDS → full account compromise). High when internal services are reachable. The pattern is systematic — if one webhook/import endpoint is vulnerable, test ALL URL-accepting endpoints on the same application.

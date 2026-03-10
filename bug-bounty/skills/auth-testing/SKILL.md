@@ -283,3 +283,22 @@ Auth bugs need clear impact statements. Use this structure:
 - **Business impact** — regulatory (GDPR, HIPAA), financial, reputational consequences
 - **No theoretical attacks** — demonstrate actual exploitation, not just misconfiguration
 - **Screenshots/recordings** — show the authorization check failing with evidence
+
+---
+
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/auth-mechanisms.md](reference/auth-mechanisms.md) | OAuth/OIDC attacks (silent redirect, ConsentFix), JWT flaws (JWE-PlainJWT CVE-2026-29000), session management, MFA bypass, password reset poisoning, SSO/SAML, rate limiting, modern identity (Passkeys, SCIM, DPoP) | ~353 |
+
+**Quick search** — find specific auth mechanism patterns:
+```
+grep -n "OAuth\|redirect_uri\|ConsentFix\|silent redirect" reference/auth-mechanisms.md
+grep -n "JWT\|JWE\|algorithm\|PlainJWT\|CVE-2026-29000" reference/auth-mechanisms.md
+grep -n "session\|cookie\|fixation\|hijack" reference/auth-mechanisms.md
+grep -n "MFA\|2FA\|TOTP\|bypass" reference/auth-mechanisms.md
+grep -n "SAML\|SSO\|SCIM\|Passkey\|WebAuthn\|DPoP" reference/auth-mechanisms.md
+```

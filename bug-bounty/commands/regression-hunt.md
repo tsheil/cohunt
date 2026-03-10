@@ -108,6 +108,38 @@ Hunt where the code just changed. New features, API versions, scope additions, a
    □ Test mobile clients — web patched but mobile app still sends old request format?
 ```
 
+### AI/MCP Component Change Detection
+
+AI features and MCP integrations change frequently and silently — perfect regression targets.
+
+```
+1. MCP Server Updates:
+   □ Diff tools/list response — new tools, changed descriptions, added parameters
+   □ Schema drift: compare tool schemas between versions for hidden changes
+   □ Check if new tool endpoints bypass existing security controls
+   □ Test if tool descriptions now contain injectable content
+   □ Verify auth scopes haven't expanded silently
+
+2. Agent Configuration Changes:
+   □ Diff system prompts — removed restrictions, new capabilities
+   □ Check if new model version handles injection differently
+   □ Test if temperature/sampling changes affect safety behavior
+   □ Look for new tool integrations (tools/list count increased)
+   □ Check MCP server versions against CVE databases
+
+3. Permission Model Changes:
+   □ Test OAuth scopes — did upgrade add new scopes to existing tokens?
+   □ Check SCIM/JIT provisioning — do auto-provisioned accounts inherit old perms?
+   □ Verify approval workflows — did update bypass human-in-the-loop gates?
+   □ Test gateway allowlists — did new API routes get added without auth rules?
+
+4. LLM Framework Updates:
+   □ Search changelogs for "security" or "fix" — test if fix is complete
+   □ Check for hardcoded permissive defaults (allow_dangerous_code=True pattern)
+   □ Verify serialization paths — framework updates often change deser behavior
+   □ Test if new features introduce eval()/exec() sinks
+```
+
 ## High-Signal Change Indicators
 
 | Signal | Why It Matters | Where to Look |
@@ -119,6 +151,9 @@ Hunt where the code just changed. New features, API versions, scope additions, a
 | New user role/tier | IDOR between role boundaries | Admin, enterprise, trial user flows |
 | Mobile app major release | New features often ship without full security review | App store changelogs, decompiled APKs |
 | Infrastructure migration | Cloud misconfigs during transition | DNS changes, new IP ranges, CDN switch |
+| AI/MCP integration added | New attack surface, immature security | MCP server configs, AI feature announcements, tools/list changes |
+| Agent model swap | Different model = different injection behavior | Changelog mentions model upgrade, response quality changes |
+| File upload changes | New canonicalization bugs, extension handling | Upload endpoints, attachment processing, import features |
 
 ## Output
 

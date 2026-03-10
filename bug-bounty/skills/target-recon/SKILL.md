@@ -238,6 +238,15 @@ This skill uses progressive disclosure. Detailed reference material is available
 |------|----------|-------|
 | [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~200 |
 
+**Quick search** — find specific JS analysis patterns:
+```
+grep -n "source map\|sourceMappingURL\|\.map" reference/javascript-analysis.md
+grep -n "secret\|API_KEY\|token\|credential\|password" reference/javascript-analysis.md
+grep -n "webpack\|chunk\|bundle\|build" reference/javascript-analysis.md
+grep -n "React\|Angular\|Vue\|Next.js" reference/javascript-analysis.md
+grep -n "endpoint\|route\|path\|/api/" reference/javascript-analysis.md
+```
+
 ---
 
 ## Advanced Recon Techniques

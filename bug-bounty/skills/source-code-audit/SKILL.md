@@ -289,7 +289,16 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/framework-patterns.md](reference/framework-patterns.md) | Language-specific anti-patterns (10 languages/frameworks), AI/LLM integration audit patterns, MCP server audit patterns | ~200 |
+| [reference/framework-patterns.md](reference/framework-patterns.md) | Language-specific anti-patterns (10 languages/frameworks), AI/LLM integration audit patterns, MCP server audit patterns | ~246 |
+
+**Quick search** — find language/framework-specific patterns:
+```
+grep -n "Node\|Express\|JavaScript\|TypeScript" reference/framework-patterns.md
+grep -n "Python\|Django\|Flask" reference/framework-patterns.md
+grep -n "PHP\|Laravel\|Java\|Spring\|Go\|Rust" reference/framework-patterns.md
+grep -n "AI/LLM\|prompt\|injection\|MCP\|tool_call" reference/framework-patterns.md
+grep -n "type erasure\|Content-Type\|deserialization" reference/framework-patterns.md
+```
 
 ---
 

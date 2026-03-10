@@ -74,24 +74,36 @@ Add observations, findings, or ideas to the running session log.
 /session-notes add endpoint: /api/internal/health returns server info
 ```
 
-**Structured finding format (use when logging confirmed findings):**
+**Finding Card (use when logging confirmed or likely findings):**
 
-When a note is a confirmed or likely finding, prompt for and use this structured format:
+When a note is a confirmed or likely finding, prompt for and use this format. Every field exists because it determines whether the finding pays out:
 
 ```markdown
-### Finding: [Short Name]
-- **Vulnerability:** [Type — e.g., IDOR, XSS, SSRF]
+### Finding Card: [Short Name]
+- **Vulnerability:** [Type — CWE ID if known, e.g., IDOR (CWE-639)]
+- **Boundary Crossed:** [What security boundary? e.g., user→admin, tenant-A→tenant-B, unauth→auth]
+- **Who Is Harmed:** [Specific victim — "any authenticated user", "tenant admin", "API consumer"]
 - **URL:** [Exact endpoint]
 - **Parameter:** [Affected parameter or field]
 - **Payload:** [Exact payload used]
+- **Second Account Proof:** [How two accounts demonstrate the issue — "Token A reads User B's data"]
 - **Reproduction:** [Numbered steps from zero state]
-- **Impact:** [What an attacker achieves]
+- **Impact:** [Real-world consequence — data leak, financial loss, account takeover]
+- **Scope Status:** [Confirmed in scope / Gray area — check policy / Out of scope]
+- **Duplicate Risk:** [LOW/MEDIUM/HIGH — checked hacktivity? prior disclosures?]
+- **Chain Dependency:** [Standalone finding / Needs [X] to be impactful]
+- **Stronger Variant:** [What would elevate severity? Read→write? Single-user→all-users?]
 - **Severity Estimate:** [Critical/High/Medium/Low]
 - **Evidence:** [Response snippet, status code, or screenshot reference]
 - **Status:** [Ready to report / Needs more work / Needs chain]
 ```
 
-This structured format feeds directly into `/write-report` and `/triage-findings` — no information is lost in the handoff.
+**Why these fields matter:**
+- `Boundary Crossed` + `Who Is Harmed` → determines if it's a real vulnerability vs. informational
+- `Second Account Proof` → most auth bugs get N/A without two-account demonstration
+- `Scope Status` + `Duplicate Risk` → prevents wasted report-writing time
+- `Chain Dependency` + `Stronger Variant` → guides next testing steps
+- This format feeds directly into `/write-report`, `/triage-findings`, and `/reportability-check` — no information is lost in the handoff.
 
 **Categorization:**
 

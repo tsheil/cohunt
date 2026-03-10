@@ -193,6 +193,30 @@ Produce a complete workflow map in this structure:
 
 ---
 
+## B2B SaaS Pattern Library
+
+B2B SaaS apps have recurring workflow patterns that produce consistent bounties. When mapping a B2B target, check these first:
+
+| Pattern | Invariants to Test | Common Findings |
+|---------|-------------------|-----------------|
+| **Team invite flow** | Invite can only be accepted by intended email; expired invites are invalid; invite cannot elevate beyond inviter's own role | IDOR: accept invite meant for another user; Role escalation: modify invite payload to request admin; Reuse: expired/revoked invite still works |
+| **SCIM/JIT provisioning** | Auto-provisioned users inherit only default role; deprovisioned users lose all access immediately; group membership maps correctly | Residual access: deprovisioned user retains API tokens; Group confusion: SCIM group maps to wrong role; Race: provision + deprovision simultaneously |
+| **Seat/license enforcement** | Org cannot exceed licensed seat count; downgraded plan loses premium features; billing reflects actual usage | Seat bypass: add user via API after hitting limit; Feature persistence: downgrade plan, premium features still accessible; Ghost seats: deleted users still count |
+| **Approval queue** | Requester cannot approve their own request; approved amount cannot exceed policy; rejected requests cannot be resubmitted without changes | Self-approval: modify approval request to set approver = requester; Amount tampering: change amount after approval; Skip queue: submit directly to execution endpoint |
+| **Export/import** | Exported data scoped to user's permissions; import validates data format and ownership; bulk operations respect rate limits | IDOR export: export another org's data by changing tenant ID; Import injection: CSV/XLSX with formula injection or oversized data; Scope escape: import references resources from another tenant |
+| **Webhook replay** | Webhook signature is validated; replay of old webhook payloads is rejected; webhook cannot target internal URLs | Signature bypass: remove or forge HMAC signature; Replay: resend old webhook with valid signature; SSRF: set webhook URL to internal endpoint |
+| **Support impersonation** | Support agent access is logged; impersonation session has time limit; impersonated actions are attributed correctly | Audit gap: support actions not logged; Session persistence: impersonation outlives intended window; Elevation: support session grants higher privileges than target user |
+| **SSO/SAML** | SSO-required orgs block password login; SAML assertion cannot be replayed; IdP response covers the correct audience | Password fallback: SSO-enforced org allows password login via API; Assertion replay: reuse SAML response; Audience confusion: assertion for app A accepted by app B |
+
+**Testing methodology for each pattern:**
+1. Map the happy path — understand normal behavior for each workflow
+2. Identify the invariants — what rules must hold?
+3. Test each invariant violation — can you break the rule via API/parameter tampering?
+4. Test cross-tenant — do the same operations work across tenant boundaries?
+5. Test timing — race conditions at state transitions (concurrent invite accept, simultaneous approval)
+
+---
+
 ## When to Use This Command
 
 | Situation | Use /workflow-map |
@@ -203,6 +227,7 @@ Produce a complete workflow map in this structure:
 | Target has subscription/billing | Map plan changes, upgrades, refunds |
 | Target has multi-tenant architecture | Map isolation boundaries |
 | Target has API with state-changing operations | Map the API's state machine |
+| Target is B2B SaaS | Start with the B2B pattern library above |
 
 ---
 

@@ -286,6 +286,26 @@ Common API vulnerability chains that elevate severity:
 
 ---
 
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/api-patterns.md](reference/api-patterns.md) | GraphQL federation, mass assignment, JWT bypass, rate limit evasion, webhook SSRF, API gateway misconfigs, microservice patterns | ~283 |
+
+**Quick search** — find specific patterns without loading the full file:
+```
+grep -n "GraphQL\|federation\|persisted query" reference/api-patterns.md
+grep -n "mass assignment\|JSON API\|HATEOAS" reference/api-patterns.md
+grep -n "JWT\|API key\|authentication bypass" reference/api-patterns.md
+grep -n "rate limit\|distributed\|evasion" reference/api-patterns.md
+grep -n "webhook\|callback\|SSRF" reference/api-patterns.md
+grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" reference/api-patterns.md
+```
+
+---
+
 ## Related Skills & Commands
 
 - `vuln-patterns` — Individual vulnerability class patterns (IDOR, XSS, SSRF, etc.)

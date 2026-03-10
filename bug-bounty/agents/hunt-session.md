@@ -100,6 +100,51 @@ Step 10: Generate first 3 tests with exact payloads + evidence capture checklist
 Step 11: Compile into session brief with explicit stop conditions
 ```
 
+**Finding Gate (Required — apply to every candidate finding):**
+
+Before investing time on any potential finding, force it through these 5 checks. If any check fails, either strengthen the finding or move on:
+
+```
+┌─ FINDING GATE ──────────────────────────────────────────────┐
+│ □ 1. TRUST BOUNDARY — What security boundary was crossed?   │
+│      (user→admin, tenant-A→tenant-B, unauth→auth)           │
+│      If none: NOT a finding                                  │
+│ □ 2. PROOF — Do you have two-account evidence?               │
+│      (Account A's token accessing Account B's data)          │
+│      If single-account only: NEEDS STRENGTHENING             │
+│ □ 3. SCOPE — Is this asset and vuln type in scope?           │
+│      (Check program policy, not just domain)                 │
+│      If out of scope: STOP                                   │
+│ □ 4. DUPLICATE RISK — Has this been disclosed before?        │
+│      (Check hacktivity, disclosed CVEs, common patterns)     │
+│      If HIGH duplicate: deprioritize or find variant          │
+│ □ 5. IMPACT — Can you articulate real-world harm?            │
+│      (Data leak, financial loss, account takeover)            │
+│      If "informational": chain or STOP                       │
+└──────────────────────────────────────────────────────────────┘
+Pass: Log as Finding Card (see /session-notes format) → continue testing
+Fail: Note what's missing → either fix it or move to next target
+```
+
+When a finding passes the gate, capture it immediately as a **Finding Card**:
+
+```markdown
+### Finding Card: [Short Name]
+- **Vulnerability:** [Type — CWE if known]
+- **Boundary Crossed:** [e.g., user→admin, tenant-A→tenant-B]
+- **Who Is Harmed:** [Specific victim — "any user", "tenant admin", etc.]
+- **Second Account Proof:** [How two accounts demonstrate the issue]
+- **Scope Status:** [Confirmed in scope / Gray area / Needs check]
+- **Duplicate Risk:** [LOW/MEDIUM/HIGH + rationale]
+- **Chain Dependency:** [Standalone / Needs X to be impactful]
+- **Stronger Variant:** [What would make this higher severity?]
+- **URL + Payload:** [Exact endpoint and request]
+- **Impact:** [Real-world consequence for victim]
+- **Severity Estimate:** [Critical/High/Medium/Low]
+```
+
+This card format feeds directly into `/write-report` and `/reportability-check`.
+
 **Prioritization Framework:**
 
 When building the hunt plan, score each target area:
@@ -136,6 +181,11 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **Sandbox/container escape** | AI agent sandbox escape (CVE-2026-27001/27002), TypeScript type confusion (CVE-2026-25049 CVSS 9.4), confirmation bypass (CVE-2026-24887) | ai-hunting/reference/agent-attack-patterns.md |
 | **AI app misconfigurations** | Firebase/Supabase misconfig in AI wrapper apps (196/198 iOS apps), hardcoded secrets (72% Android), vibe-coded products | ai-hunting/reference/ai-case-studies.md |
 | **Vibe-coded apps** | Supabase RLS bypass, Firebase open storage, client-side API key extraction (1.5M keys exposed in Moltbook), missing auth — **2,000+ vulns in 5,600 apps** (Escape.tech) | vuln-patterns/reference/web-vulns.md |
+| **File upload canonicalization** | Zero-Width Space filename bypass (CVE-2026-28289 CVSS 10.0), null byte truncation, Unicode normalization, TOCTOU between validation and storage — zero-click via email attachments | vuln-patterns/reference/web-vulns.md |
+| **SSRF validation gaps** | Webhook/notification/import endpoints blocking loopback but not RFC 1918 — 5 SSRFs in 1 week (March 2026), cloud metadata access, redirect chains | vuln-patterns/reference/web-vulns.md |
+| **Transport-parity gaps** | Security controls on HTTP but not WebSocket/SSE (CVE-2026-30241 Mercurius depth bypass), GraphQL subscription abuse, MCP stdio vs HTTP inconsistencies | vuln-patterns/reference/web-vulns.md |
+| **B2B SaaS workflows** | Invite flows, SCIM/JIT provisioning, seat enforcement, approval queues, export/import IDOR, webhook replay, support impersonation — test invariant violations | /workflow-map command |
+| **MCP-to-API gateways** | Unsanitized param passthrough (CVE-2026-29791 Agentgateway), approval bypass (CVE-2026-28466), auth scope confusion at gateway boundary | vuln-patterns/reference/ai-mcp-vulns.md |
 | **Workflow automation** | n8n Ni8mare (CVE-2026-21858 CVSS 10.0, ~100K servers), content-type bypass, workflow expression injection (CVE-2026-25049 CVSS 9.9) | vuln-patterns/reference/infrastructure-vulns.md |
 | **Cloud SSO trust abuse** | Cross-tenant auth bypass (CVE-2026-24858 FortiOS CVSS 9.4), first-party trust abuse (ConsentFix), SSO token scope validation | vuln-patterns/reference/infrastructure-vulns.md |
 | **MDM/enterprise mgmt** | Ivanti EPMM bash arithmetic expansion (CVE-2026-1281/1340 CVSS 9.8, mass exploitation), SolarWinds WHD multi-stage RCE (CVE-2025-40551), VMware Aria migration path (CVE-2026-22719 CISA KEV) | vuln-patterns/reference/infrastructure-vulns.md |
@@ -230,7 +280,7 @@ At the top of every response during the hunt session, output a markdown checklis
 - [x] Parse target + recent changes
 - [x] Program research
 - [ ] Target recon (external + authenticated)
-- [ ] Build actor matrix
+- [ ] Build actor matrix (roles + test accounts + webhook + tenant)
 - [ ] Scope cross-reference
 - [ ] Score automation pressure
 - [ ] Map workflows (actors, states, invariants)
@@ -238,6 +288,7 @@ At the top of every response during the hunt session, output a markdown checklis
 - [ ] Prioritize targets
 - [ ] Generate first 3 tests + evidence checklist
 - [ ] Compile session brief
+- [ ] Findings: [0 cards logged — apply Finding Gate to each]
 ```
 
 Update the checklist as each step completes. This gives the hunter clear visibility into what's done, what's in progress, and what's next. If a step is skipped or fails, mark it with `~` and a note (e.g., `- [~] Program research — no public program found, using VDP`).
