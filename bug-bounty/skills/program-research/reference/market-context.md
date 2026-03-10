@@ -1,21 +1,20 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v0.75.0)*
+*Last updated: March 2026 (v0.79.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
+
+> **For AI/MCP-specific market data**, see `ai-hunting/reference/market-context.md`. For AI security tools, see `ai-hunting/reference/tools-landscape.md`. This file focuses on bug bounty program economics and hunter-relevant competitive data.
 
 ## Table of Contents
 
 - [Key Market Metrics](#key-market-metrics)
-- [AI & Automation Market Data](#ai--automation-market-data)
-- [MCP Security Attack Surface](#mcp-security-attack-surface)
+- [AI & Automation Summary](#ai--automation-summary)
 - [Platform & Vendor Statistics](#platform--vendor-statistics)
 - [Notable Programs & Expansions](#notable-programs--expansions)
 - [Notable Disclosed Vulnerabilities](#notable-disclosed-vulnerabilities)
 - [Hacker Demographics](#hacker-demographics)
 - [Competition Landscape](#competition-landscape)
-- [AI Security Tools & Startups](#ai-security-tools--startups)
-- [Autonomous Pentesting Tools](#autonomous-pentesting-tools)
 - [Industry Trends & Predictions](#industry-trends--predictions)
 
 ---
@@ -42,57 +41,18 @@ Reference data for program evaluation. Loaded on demand when program-research ne
 
 ---
 
-## AI & Automation Market Data
+## AI & Automation Summary
+
+Key program-evaluation metrics for AI scope. For detailed AI/MCP attack surface data, tools, and techniques, see `ai-hunting/reference/market-context.md` and `ai-hunting/reference/tools-landscape.md`.
 
 | Metric | Value | Source |
 |--------|-------|--------|
 | AI vulnerability reports | 210% increase YoY | HackerOne 2025 |
-| Prompt injection reports | 540% increase YoY | HackerOne 2025 |
 | Programs with AI in scope | 1,121 (270% YoY increase) | HackerOne 2025 |
-| Autonomous AI valid reports | 560+ submitted on HackerOne | HackerOne 2025 |
-| Hacker AI adoption | 82% (up from 64% in 2023) | Bugcrowd 2026 Report |
-| AI security startup funding Q4 2025 | $2.17B across 28 deals — **8x growth** over two years | Industry analysis 2026 |
-| Enterprise AI readiness | Only 34% have AI-specific security controls; <40% conduct regular AI testing | Help Net Security 2026 |
-| Shadow AI breach cost | $670,000 additional cost vs standard breach; 1 in 5 orgs breached via unauthorized AI | Help Net Security 2026 |
-| Prompt injection in production AI | 73%+ of deployments affected; only 34.7% have defenses | Security audits 2025 |
-| AI coding tool CVEs | GitHub Copilot RCE (9.6), Cursor IDE (9.8), MS Copilot (9.3); IDEsaster campaign: 30+ vulns, 24 CVEs across 10+ AI IDEs | 2025-2026 |
-| Cisco vs DeepSeek R1 | 50/50 jailbreak prompts succeeded (100% bypass rate) | Cisco Q1 2025 |
-| Enterprise agentic AI deployment | 79% of companies deployed; only 34% have AI-specific security controls | PwC AI Agent Survey 2025 |
-| Cisco AI Security readiness gap | 83% plan agentic AI, only **29% ready** to secure; autonomous agents in OODA loops create lateral movement risk | Cisco State of AI Security 2026 |
-| Agentic AI as #1 threat | 48% of cybersecurity professionals rank agentic AI as top attack vector for 2026, outranking deepfakes, ransomware, supply chain | Dark Reading poll 2026 |
-| CrowdStrike AI-enabled attacks | 89% YoY surge; avg eCrime breakout time now 29 minutes; 90+ orgs compromised via prompt injection in 2025 | CrowdStrike 2026 Global Threat Report |
-| Multi-turn prompt injection success | Up to 92% success rates across 8 open-weight models | Academic research 2026 |
-| Prompt injection meta-analysis | Attack success rates exceed 85% vs state-of-the-art defenses; 18 defense mechanisms analyzed — most achieve <50% mitigation | arXiv:2601.17548 Jan 2026 |
-| Ransomware AI involvement | ~80% of ransomware attacks now involve AI | MIT Sloan 2026 |
-| Tenable AI/MCP risk | 70% of orgs integrated AI/MCP packages without centralized security oversight; 18% granted AI admin permissions rarely audited | Tenable Cloud & AI Risk Report 2026 |
-| Non-human identity risk | AI agents/service accounts represent higher risk (52%) than human users (37%) in cloud environments | Tenable 2026 |
-| Enterprise CART adoption | 60% of large enterprises using continuous automated red teaming by 2026 | Industry 2026 |
-| Enterprise agentic AI failure costs | 64% of $1B+ companies lost >$1M from AI failures | Help Net Security 2026 |
-| Gravitee AI agent security | **3+ million AI agents** in corporations; **88% reported security incidents**; **47% of agents not monitored** (~1.5M at risk); only 14.4% have full security approval | Gravitee 2026 |
-
----
-
-## MCP Security Attack Surface
-
-| Metric | Value | Source |
-|--------|-------|--------|
-| MCP CVEs filed | 50+ CVEs by March 2026 (30 in 60 days) — AI's fastest-growing attack surface | MCP Security Research 2026 |
-| MCP servers exposed | **42,665 exposed instances** (5,194 actively vulnerable); 8,000+ publicly exposed (Feb 2026) | Security research 2026 |
-| MCP servers lacking auth | 38% of 500+ scanned servers completely lack authentication | MCP Security Research 2026 |
-| MCP auth security | 88% of MCP servers require credentials; 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth | Astrix State of MCP Security 2025 |
-| MCP eval() epidemic | 7 RCE CVEs in February 2026 alone — all from unsanitized user input to eval()/exec() | DEV Community 2026 |
-| MCP SDK-level flaws | CVE-2026-25536 (TypeScript SDK cross-client data leak), CVE-2026-29787 (memory service info disclosure) | Security advisories 2026 |
-| MCP classic vuln patterns | 82% Path Traversal, 67% Code Injection, 34% Command Injection across 2,614 MCP implementations | Endor Labs 2026 |
-| Enkrypt AI MCP scan results | Top 1,000 MCP servers: **33% critical vulns**, averaging **5.2 vulns per server** | Enkrypt AI 2026 |
-| MCPTox benchmark | Tool poisoning attack success rates exceed **60%** across 1,312 malicious test cases on GPT-4o-mini, o1-mini, DeepSeek-R1, Phi-4 | arXiv 2026 |
-| ClawJacked WebSocket hijack | Malicious websites hijack local AI agents via WebSocket — full remote control of localhost agents | The Hacker News Feb 2026 |
-| OpenClaw supply chain crisis | 1,184+ malicious skills across ClawHub; 8 critical CVEs in 6 weeks; 42,665 exposed instances; 824+ actively malicious skills out of 10,700+; infostealers now target OpenClaw file paths | Security research 2025-2026 |
-| ToxicSkills ecosystem audit | 3,984 agent skills audited: 36% contain prompt injection, 1,467 malicious payloads, 13.4% critical-level issues; SKILL.md to shell access in 3 lines of markdown | Snyk Feb 2026 |
-| CoSAI MCP Security Whitepaper | 12 core threat categories, ~40 distinct threats; developed by EY, Google, IBM, Meta, Microsoft, NVIDIA, PayPal, Snyk, Trend Micro, Zscaler | CoSAI Jan 2026 |
-| OWASP Agentic Top 10 2026 | ASI01-ASI10: Goal Hijacking, Tool Misuse, Identity/Privilege Abuse, Supply Chain, Code Execution, Memory Poisoning, Inter-Agent Comms, Cascading Failures, Trust Exploitation, Rogue Agents | OWASP December 2025 |
-| OWASP MCP Top 10 | MCP01-MCP10: Token Mismanagement, Privilege Escalation, Command Injection, Supply Chain, Auth, Tool Poisoning, Shadow Servers, Insecure Data, Input Validation, Logging | OWASP 2026 |
-| OWASP AIVSS | AI Vulnerability Scoring System v0.5 — extends CVSS for AI risks (autonomy, non-determinism, tool use); v1.0 at RSA March 2026 | OWASP 2025-2026 |
-| OWASP AI Testing Guide | v1.0 — first comprehensive standard for AI Trustworthiness testing | OWASP November 2025 |
+| Hacker AI adoption | 82% (up from 64% in 2023) | Bugcrowd 2026 |
+| AI security startup funding Q4 2025 | $2.17B across 28 deals (8x growth over 2 years) | Industry 2026 |
+| Enterprise AI readiness gap | Only 34% have AI-specific security controls | Help Net Security 2026 |
+| MCP CVEs filed | 50+ by March 2026 (30 in 60 days) | MCP Security Research 2026 |
 
 ---
 
@@ -330,138 +290,20 @@ Competition awareness:
 
 ---
 
-## AI Security Tools & Startups
-
-- **AISLE** found all 12 OpenSSL zero-days (Jan 2026), 100+ CVEs across 30+ projects including all 14 OpenSSL CVEs in 2025; demonstrated full-loop capability (discover, validate, patch) — sets new bar for AI-discovered bugs
-- **Codex Security** (OpenAI, formerly Aardvark) — launched publicly **March 6, 2026**; **92% recall** on golden benchmarks; 1.2M commits scanned, 792 critical findings; 84% noise reduction; reported **14 CVEs** across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh; **$10M in API credits** committed for open-source security; available to ChatGPT Enterprise/Business/Edu
-- **Claude Code Security** launched Feb 20, 2026 — found 14 high-severity bugs and 22 CVEs in Firefox (fixes in Firefox 148); 500+ vulnerabilities total in production open-source codebases; Mozilla Firefox partnership; bugs undetected for decades
-- **ZAST.AI** raised $10M total, 119 CVEs assigned, "zero false positive" approach — new competitor for automated code scanning
-- **Trend Micro AESIR** — AI-powered zero-day discovery (21 CVEs across NVIDIA, Tencent, MLflow, MCP tooling)
-- **Semgrep AI-Powered Detection** — multimodal AppSec engine: deterministic + LLM reasoning; detects IDORs, broken auth; filters 1 in 5 false positives
-- **Novee Security** — **$51.5M** Seed + Series A; AI penetration testing platform from Unit 8200/Talpiot veterans; proprietary model achieves **90% accuracy** on constrained web exploitation (55%+ better than frontier LLMs at ~65%)
-- **Maze** — **$31M** funded; AI agents model analyst workflows; proves 80-90% of findings are false positives
-- **Terra Security** raised **$38M total** (Series A $30M led by Felicis, Sep 2025) — first agentic-AI continuous pentesting platform, Fortune 100 clients
-- **DeepKeep** launched AI agent attack surface scanner (March 2026) — maps enterprise risk across Microsoft, Agentforce, OpenAI Agents, CrewAI, Amazon Bedrock AgentCore, n8n, and Make frameworks
-- **Enkrypt AI MCP Scanner** — top 1,000 MCP servers: 33% critical vulns, averaging 5.2 vulns per server; 43% high-risk rate
-- **Cisco MCP Scanner** — open source, 3 scanning engines
-- **Snyk Agent Scan** — scans AI agents, MCP servers, Claude Skills; auto-discovers Claude Code/Desktop, Cursor, Gemini CLI, Windsurf configs; background mode for company-wide monitoring
-- **Akto** — AI agent security platform with 1,000+ real-world agent exploits; continuous red teaming + runtime guardrails; recognized by Gartner
-- **Repello SkillCheck** — browser-based skill scanner; upload skill zip, get security score (0-100); catches prompt injection, env var exfiltration, payload delivery
-- **mcp-scan -> Snyk**: Invariant Labs mcp-scan (standard MCP security scanner) acquired by Snyk; v0.4.2 released Feb 2026
-- **MCPScan.ai** — MCP server security scanning
-- **AgentShield Benchmark** — first open benchmark for 6 AI agent security tools; 537 test cases; 95%+ PI detection but weak tool abuse detection
-- **Endor Labs AURI** — free MCP-integrated security intelligence for agentic coding; found 7 OpenClaw vulns; only 10% of AI-generated code is secure
-- **HexStrike AI MCP server** — enables AI agents to autonomously run 150+ security tools
-
----
-
-## Autonomous Pentesting Tools
-
-- **AWS Security Agent** (preview re:Invent Dec 2025) — multi-agent continuous on-demand pentesting
-- **Hadrian** — attack-surface-driven 24/7 autonomous pentesting; real-time testing triggered by attack surface changes
-- **BlacksmithAI** (March 2026) — open-source multi-agent pentesting framework; each agent specializes in different assessment phases
-- **PentAGI** (Feb 2026) — Go-based multi-agent pentesting with PostgreSQL + Neo4j; 20+ tools in isolated Docker environments
-- **Assail Ares** launched from stealth (Jan 2026) — autonomous API/web/mobile pentesting
-- **Zen-AI-Pentest** — wraps 20+ tools (Nmap, SQLMap, Metasploit, Burp, Nuclei, BloodHound) with AI orchestration; CI/CD integration
-- **Penligent.ai** — "first true end-to-end AI pentest agent" with natural language interface and OODA loop feedback; autonomous payload generation
-- **RunSybil** — AI-driven pentesting with coordinated autonomous agents; built by OpenAI/Bishop Fox/CrowdStrike alumni
-- **Shannon** — fully autonomous white-box pentesting; 96.15% on XBOW benchmark; GitHub's fastest-rising security project
-- **Aikido Infinite/Attack** — autonomous agents pentest every deployment, validate, remediate, retest; found 7 CVEs in Coolify including RCE as root across 52,000+ instances
-- **Shannon AI bug bounty service** — AI-powered recon, exploitation, and report writing for HackerOne, Bugcrowd, Intigriti programs
-- **Burp Suite with Burp AI** (Professional 2025.2+) — Explore Issue autonomously investigates scanner findings; Explainer generates AI explanations in Repeater; BAC false positive reduction
-- **OWASP ZAP 2.17.0** (Dec 2025) — MCP integration for AI-powered web security testing; free/open-source AI-augmented scanning
-- **Shift for Caido** — AI plugin for Caido proxy: English-command control, context-aware wordlists, AI-powered HTTP modification
-- **Cecuro AI** — DeFi security agent (92% detection in exploited contracts)
-- By 2027, "manual pentesting" predicted to become a boutique service; 99% of vulnerability assessments will be agentic
-
----
-
 ## Industry Trends & Predictions
 
-- As XSS and SQLi become easier to mitigate, organizations shift rewards toward identity, access, and business logic flaws
-- Continuous assurance testing is replacing annual pentests as the industry standard
-- **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming and creating new consulting/testing demand
-- **NIST CAISI** launched formal AI agent security standards; RFI on AI Agent Security (Mar 2026); Agent Identity and Authorization concept paper (Apr 2026)
-- **Google 2025 zero-day review**: 90 zero-days tracked in 2025; 48% targeted enterprise technology (new high)
-- **Vibe Hacking**: attackers use AI to lower hacking barrier; low-effort AI-built attacks beating enterprise defenses
-- **A2A Protocol vulnerabilities**: Google Agent-to-Agent protocol: identity spoofing, capability forgery, task chain poisoning, trust graph attacks
-- **GRP-Obliteration**: single unlabeled prompt removes LLM safety alignment via inverted GRPO training; GPT-OSS-20B attack success rate: 13% -> 93%
-- **Autonomous jailbreak agents**: large reasoning models as autonomous adversaries achieve 97.14% jailbreak success rate across 9 target models
-- **ZombieAgent**: zero-click ChatGPT memory poisoning via malicious email -> long-term memory corruption -> self-propagation
-- **Side-channel timing attacks**: Whisper Leak achieves >98% AUPRC classification across 28 LLMs via packet timing analysis
-- **Inter-agent trust exploitation**: 82.4% of LLMs execute malicious payloads from peer agents they'd refuse from users
-- **Cascading failure propagation**: single compromised agent poisons 87% of downstream decisions within 4 hours in multi-agent systems
-- **Autonomous ransomware**: first confirmed AI-orchestrated attacks in 2025; fully autonomous pipelines predicted for 2026
-- **MCP security is AI's fastest-growing attack surface** — 30+ CVEs in 60 days; 7 RCE CVEs in February 2026 alone
-- **Supply chain compromise growth**: nearly quadrupled since 2020 (IBM X-Force 2026)
-- **Ransomware group surge**: 49% YoY increase (IBM X-Force 2026)
-- **OpenAI Lockdown Mode**: system prompt protection for enterprise deployments
-- **Docker MCP Horror Stories**: 5-part series documenting real MCP attacks: WhatsApp exfiltration, GitHub injection, localhost breach, supply chain attack
-- **Log-To-Leak attack class**: new MCP privacy attack silently exfiltrates via malicious logging tool; preserves task quality
-- **PoisonedRAG**: first knowledge corruption attack on RAG systems; semantic poisoning of retrieval databases
-- **MINJA memory poisoning**: 95%+ injection success against production AI agents with persistent memory; temporally decoupled attacks
-- **GTG-1002 incident**: first documented state-sponsored espionage primarily orchestrated by AI agent; autonomous Claude Code executed 80-90% of intrusion lifecycle
-- **PromptPwnd CI/CD injection**: AI agents in GitHub Actions/GitLab CI leak secrets via prompt injection; 5+ Fortune 500 confirmed affected
-- **Rules File Backdoor**: invisible Unicode in `.cursorrules`/`.github/copilot-instructions.md` weaponizes AI IDE config files
-- **RoguePilot**: passive prompt injection via GitHub issues -> Copilot GITHUB_TOKEN theft in Codespaces
-- **Clinejection**: prompt injection turning AI coding bots into supply chain vectors via GitHub Actions pipelines
-- **Semantic chaining jailbreak**: individually benign instructions chained to produce forbidden output; bypasses input AND output filtering
-- **H-CoT chain-of-thought hijacking**: OpenAI o1 rejection drops from 99% to <2%; affects o1/o3, DeepSeek-R1, Gemini 2.0 Flash Thinking
-- **AgentLeak multi-agent privacy**: multi-agent systems introduce unmonitored inter-agent channels; 27.2% vs 43.2% output leakage
-- **OMNI-LEAK cascade injection**: single injection cascades through multi-agent orchestrator pattern; 1/500 success rate leaks data in 5 days
-- **Kali MCP server command injection**: Official Kali Linux MCP server has `subprocess` with `shell=True`; textbook command injection
-- **FailSafe 2025**: access control flaws caused $953.2M in losses; logic flaws another $63M
-- **Shai-Hulud supply chain worm**: 454,648 malicious npm packages in 2025; 99% of all open-source malware
-- **IDEsaster campaign**: 30+ vulns across 10+ AI coding tools, 24 CVEs; extension recommendation attacks via OpenVSX
-- **Denial-of-wallet via MCP**: 142.4x token amplification via MCP overthinking loops; severe financial risk
-- **Invisible Unicode prompt injection**: Unicode tag chars (E0000-E007F) encode hidden instructions in normal text; exploited HackerOne Hai
-- **AI Recommendation Poisoning**: 50+ unique poisoning prompts from 31 companies across 14 industries
-- **IBM X-Force 2026**: 300K+ ChatGPT credentials exposed via infostealer malware; 44% increase in public-facing app exploitation
-- **AISLE AI CVE discoveries**: 100+ CVEs across 30+ projects; 13/14 OpenSSL CVEs in 2025
-- **Codex Security refined performance**: discovered 14 CVEs across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh
-- **Agent skill supply chain threat**: ToxicSkills study found 36% of ClawHub skills contain prompt injection
-- **Bugcrowd FedRAMP Moderate** (March 2026): first crowdsourced security platform cleared for U.S. federal agencies, sponsored by CISA
-- **HackerOne AI Research Safe Harbor** (January 2026): platform-wide opt-in for AI system testing, separate from Gold Standard Safe Harbor
-- **Intigriti Global Hacker Ambassador Program** (March 4, 2026): early access to private programs; 125,000+ ethical hackers
-- **NVIDIA private AI bounty on Intigriti**: explicit AI-focused private program + public VDP for all NVIDIA assets
-- **Zscaler 2026 AI Security Report**: 100% enterprise failure rate; median 16 min to first critical; AI/ML activity +91% YoY
-- **Unit42 in-the-wild IDPI catalog**: 22 distinct payload techniques in production telemetry; first documented ad review evasion
-- **Langflow CSV Agent RCE** (CVE-2026-27966, CVSS 9.8): hardcoded `allow_dangerous_code=True` → prompt injection to RCE
-- **Joseph Thacker (rez0) critical window**: 2026 is "massively important" — 2x submissions predicted; internal AI code review will commoditize external bug bounty in 1-2 years
-- **curl ended bug bounty** (January 2026): first shutdown from AI slop — 8x submission spike, 5% genuine, 0 AI-only real findings in 6 years
-- **Wallarm API ThreatStats 2026**: AI-related API threats +400% YoY; 36% of AI vulns are also API vulns
-- **Cisco State of AI Security 2026**: AI vulnerabilities from research now materializing in production incidents
-- **OpenClaw privacy breach scale**: 42K+ exposed instances, 1.5M leaked API tokens; 93% had critical auth bypass
-- **Penetrify autonomous red team** (March 3, 2026): first fully autonomous AI red team; CI/CD integration; from $50/mo
-- **GHOSTCREW MCP-based toolkit** (January 2026): open-source, integrates Metasploit/Nmap/SQLMap; 450+ GitHub stars
-- **Pynt MCP exploit probability** (March 2026): 10 MCP plugins = 92% exploit probability; 72% of MCPs expose sensitive capabilities; 281 configs analyzed; real exploits observed: HTML→shell, email→code exec, Slack→terminal (VentureBeat/Pynt)
-- **Enkrypt AI 1,000 MCP server scan** (March 2026): 33% critical vulns, 5.2 avg per server; K8s MCP server: 26 vulns (6 CVSS 9.8); malicious Postmark MCP exfiltrated emails
-- **ChatGPT MCP integration** (March 2026): ChatGPT connects to any remote MCP server; malicious servers are most immediate threat for Enterprise/Business users
-- **CVE-2026-23864** (React Server Components DoS, CVSS 7.5): crafted HTTP requests crash Next.js servers via OOM/CPU exhaustion
-- **RondoDox botnet**: mass exploitation of React2Shell CVE-2025-55182 against IoT and web servers
-- **Apple SRD 2026**: iPhone 17 with Memory Integrity Enforcement; "Target Flags" for objective exploitability; expanded categories
-- **Noma x OWASP Red Team Playbook** (March 2026): agentic AI red team framework with dynamic attack generation
-- **March 2026 Patch Tuesday**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's 6 actively exploited zero-days
-- **Android March 2026**: 129 vulnerabilities patched; Qualcomm zero-day CVE-2026-21385 under active exploitation (234 chipsets)
-- **HackerOne $25K self-vuln** (Report #3000510): `.json` endpoint leaked reporters' emails, OTP codes, phone numbers, graphql tokens; fixed in 2 days
-- **Dell RecoverPoint CVE-2026-22769** (CVSS 10.0): hardcoded credentials exploited by UNC6201 (China-nexus) since mid-2024
-- **BlacksmithAI** (March 2, 2026): open-source multi-agent AI pentesting framework (GPL-3.0); Docker-based with mini-kali container
-- **CyberStrikeAI threat intel**: AI tool weaponized to breach 600+ FortiGate devices across 55 countries; CrowdStrike reports 89% increase in AI-enabled attacks
-- **Healthcare AI $14M breach**: patient records exfiltrated via prompt injection over 3 months (Moltwire); only 17% of enterprises adopted agentic AI
-- **Apple bounty evolution**: max payout now $5M+ (base $2M + Lockdown Mode bonus); iPhone 17 Security Research Device with Memory Integrity Enforcement
-- **HackerOne hackbot policy** (Feb 2026): mandated "hacker-in-the-loop" for all AI tools; split leaderboard into humans vs AI collectives; HackerOne does not train models on researcher submissions
-- **XBOW enterprise pivot**: completed HackerOne mission; GA product now working with large banks and tech firms on pre-production scanning; $75M Series B ($117M total)
-- **30 MCP CVEs in 60 days** (Feb-Mar 2026): MCP is AI's fastest-growing attack surface; 38% of 500+ scanned servers lack auth entirely
-- **Claude DXT zero-click RCE** (LayerX, CVSS 10.0): 50+ DXT extensions run unsandboxed; Anthropic declined to fix; PromptJacking (Koi AI, CVSS 8.9) found AppleScript injection in 3 official extensions
-- **Claude Cowork shipped with known vuln**: file exfiltration via Anthropic API whitelist bypass; disclosed Oct 2025, launched unpatched Jan 2026
-- **Cisco SD-WAN CVE-2026-20127** (CVSS 10.0): auth bypass exploited since 2023 by UAT-8616 APT; novel software downgrade chaining technique
-- **Microsoft March 2026**: 4 zero-days (kernel UAF, NTFS USB, FAT VHD, MMC .msc); follows February's 6 zero-days — 10 actively exploited zero-days in 2 months
-- **Android/Qualcomm CVE-2026-21385**: integer overflow affecting 200+ chipsets; targeted exploitation; CISA KEV
-- **D-Link CVE-2026-0625** (CVSS 9.3): DNSChanger zero-day on EoL routers; no patch; exploited since Nov 2025
-- **Cisco FMC dual CVSS 10.0** (CVE-2026-20079 + CVE-2026-20131): unauthenticated RCE as root via Java deserialization; affects FMC 6.4.0-10.0.0; no workaround
-- **ingress-nginx EOL RCE** (CVE-2026-3288, CVSS 8.8): annotation injection at project end-of-life; 50%+ of K8s clusters affected; no patch at advisory
-- **Brave unseeable prompt injection**: hidden near-transparent text passes OCR in AI browsers; hijacks authenticated sessions; novel agentic browser attack class
-- **48% of respondents** believe agentic AI will be top attack vector by end of 2026 (DarkReading); only 29% report readiness to secure agentic AI
-- **Unit 42 IDPI delivery breakdown**: in-the-wild delivery methods — visible plaintext 37.8%, HTML attribute cloaking 19.8%, CSS rendering suppression 16.9%; autonomous ransomware demo completed in ~25 minutes
-- **Smithery.ai path traversal**: fly.io token leaked granting access to 3,000+ MCP server apps; API keys/auth tokens captured from thousands of clients (GitGuardian)
-- **Unit 42 2026 Global IR Report**: attacks accelerated 4x YoY; identity weaknesses exploited in 89% of incidents; 87% of attacks involved multiple attack surfaces
+> **For AI/MCP security tools, attack techniques, and incident catalog**, see `ai-hunting/reference/tools-landscape.md`, `ai-hunting/reference/market-context.md`, and `ai-hunting/reference/ai-case-studies.md`.
+
+Key program-relevant trends:
+
+- XSS/SQLi rewards declining — programs shifting toward identity, access control, and business logic flaws
+- Continuous assurance testing replacing annual pentests as industry standard
+- **EU AI Act compliance deadline August 2, 2026** — driving mandatory AI red teaming demand
+- **Business logic = 45% of all bounty awards** (Intigriti 2026); **IDOR rewards surging** (+23% payout, +29% valid reports YoY)
+- **Access control flaws** caused $953.2M in losses; logic flaws another $63M (FailSafe 2025)
+- **Supply chain compromise** nearly quadrupled since 2020 (IBM X-Force 2026); 454,648 malicious npm packages in 2025
+- **curl ended bug bounty** (Jan 2026) — first shutdown from AI slop; confirmed-rate dropped below 5%
+- **Joseph Thacker (rez0)**: 2x submissions predicted in 2026; internal AI code review will commoditize external bug bounty in 1-2 years
+- **Vibe-coded apps**: 2,000+ vulns in 5,600 apps (Escape.tech) — systematically vulnerable new target class
+- **Unit 42 2026 Global IR Report**: attacks accelerated 4x YoY; identity weaknesses in 89% of incidents
+- **Google 2025 zero-day review**: 90 zero-days; 48% targeted enterprise technology (new high)

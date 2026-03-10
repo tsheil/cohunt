@@ -270,6 +270,28 @@ Before writing a report, run this checklist:
 
 ---
 
+## B2B SaaS Enterprise Workflows
+
+The highest-value, lowest-competition attack surface. B2B SaaS admin workflows combine business logic with authorization and are systematically undertested by autonomous tools.
+
+> **Detailed playbook:** Read `reference/b2b-saas-playbook.md` for complete test patterns covering SCIM, SSO/JIT, invitations, role sync, seat enforcement, data export/import, support impersonation, audit logs, approval workflows, webhooks, and billing.
+
+**Quick routing — test these first on any B2B SaaS target:**
+
+| Surface | Key Test | Why It Pays |
+|---------|----------|-------------|
+| SCIM provisioning | Cross-tenant user creation via SCIM token scope bypass | Critical — admin access in wrong tenant |
+| SSO/JIT | JIT into wrong tenant via email domain collision | Critical — cross-tenant account creation |
+| Invitations | Role escalation on invite acceptance | High — join as admin instead of viewer |
+| Seat enforcement | Exceed seat limits via API (UI-only enforcement) | Medium-High — licensing bypass |
+| Support impersonation | Impersonate admin user from support agent context | Critical — full ATO at scale |
+| Data exports | IDOR on export endpoint (`org_id` swap) | High — bulk data exfiltration |
+| Approval workflows | Self-approval or approval bypass via direct API call | High — separation of duties bypassed |
+| Webhooks | SSRF via webhook URL (RFC 1918 ranges, cloud metadata) | High — internal network access |
+| Billing | Plan confusion — premium features at free-tier price | High — revenue loss |
+
+---
+
 ## Related Skills
 
 - **vuln-patterns** — Quick reference for all vulnerability classes

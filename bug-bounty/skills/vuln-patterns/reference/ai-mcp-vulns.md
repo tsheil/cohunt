@@ -298,124 +298,19 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 
 ## Real-World AI/MCP References
 
-- **GitHub MCP server breach** -- attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT
-- **CVE-2025-6514 (mcp-remote, CVSS 10.0)** -- critical OS command injection; malicious MCP servers send crafted authorization_endpoint for RCE (437K+ downloads affected)
-- **CVE-2025-68145/68143/68144 (Git MCP server)** -- three CVEs in Anthropic's Git MCP server enabling RCE via prompt injection
-- **CVE-2026-27825 (mcp-atlassian)** -- critical unauthenticated RCE and SSRF in MCP server
-- **CVE-2026-30861 (WeKnora Stdio RCE, CVSS 9.9)** -- blacklisted args bypassed via `-p` flag with `npx node`; unrestricted user registration allows unauthenticated access
-- **CVE-2026-30860 (WeKnora DB Query RCE, CVSS 9.9)** -- SQL injection via PostgreSQL array/row expressions bypasses validation; chains with large object operations for full RCE
-- **CVE-2026-30855 (WeKnora Multi-Tenant Auth Bypass, CVSS 8.8)** -- broken access control in tenant management endpoints; any authenticated user reads/modifies/deletes any tenant; open registration means unauthenticated attacker registers → full cross-tenant ATO + LLM API key leakage from tenant configs. Related: CVE-2026-30858 (DNS rebinding SSRF), CVE-2026-30857 (cross-tenant knowledge base cloning). Pattern: multi-tenant AI platforms with open registration are goldmines. Fixed v0.3.2
-- **CVE-2026-30856 (MCP Tool Name Collision, CVSS 5.9)** -- ambiguous `mcp_{service}_{tool}` naming enables system prompt exfiltration via tool name confusion
-- **CVE-2026-1470 (n8n Expression Engine, CVSS 9.9)** -- deprecated JavaScript `with` statement bypasses constructor/prototype blocking in expression sandbox
-- **CVE-2026-0863 (n8n Python Code Node, CVSS 8.5)** -- sandbox escape for arbitrary Python execution on "Internal" configuration mode
-- **CVE-2026-25056 (n8n Merge Node, CVSS 9.4)** -- SQL Query mode allows arbitrary file write to server filesystem
-- **CVE-2026-21516/21523/21256 (GitHub Copilot, Feb 2026)** -- prompt injection triggers command injection across VS Code, Visual Studio, and JetBrains; targets API keys and cloud credentials
-- **Full-Schema Poisoning (CyberArk, March 2026)** -- tool poisoning extends beyond descriptions to entire tool schema (parameters, return types, annotations); merely loading a poisoned tool into context is sufficient for exploitation without calling it
-- **Supabase Cursor agent** -- privileged agent processed support tickets as commands; attackers embedded SQL to exfiltrate integration tokens
-- **Anthropic Filesystem-MCP** -- sandbox escape + symlink/containment bypass enabling arbitrary file access and code execution
-- **WhatsApp exfiltration via tool poisoning** -- Invariant Labs demonstrated a malicious MCP server silently exfiltrating a user's entire WhatsApp history via tool poisoning combined with a legitimate whatsapp-mcp server
-- **8,000+ MCP servers** found publicly exposed (Feb 2026), 492 identified as vulnerable (lacking auth or encryption)
-- **CVE-2025-49596 (MCP Inspector, CVSS 9.4)** -- critical RCE in Anthropic's own MCP Inspector tool (Oligo Security)
-- **CVE-2025-53967 (Figma MCP server)** -- RCE through command injection via unvalidated user input in shell commands
-- **OpenClaw supply chain attack** -- 1,184 malicious skills across ClawHub (~1 in 5 packages); largest confirmed supply chain attack on AI agent infrastructure
-- **ToxicSkills (Snyk, Feb 2026)** -- 3,984 agent skills audited: 36% contain prompt injection, 1,467 malicious payloads; 2.9% fetch and execute content from external endpoints at runtime
-- **Clinejection (Snyk, 2026)** -- prompt injection turning AI coding bots into supply chain vectors through GitHub Actions pipelines
-- **AI Recommendation Poisoning (Microsoft, Feb 2026)** -- 50+ unique poisoning prompts from 31 companies across 14 industries embedded in web content to manipulate AI assistant recommendations
-- **Anthropic AI espionage disruption (Feb 2026)** -- Claude Code jailbroken as autonomous pentest orchestrator; 150GB exfiltrated from Mexican government
-- **FortiGate AI-augmented breach (Jan-Feb 2026)** -- 600+ devices across 55+ countries compromised using GenAI; data exfiltration within 4 minutes
-- **Endor Labs MCP analysis (2,614 implementations)** -- 82% vulnerable to Path Traversal, 67% to Code Injection, 34% to Command Injection
-- **MCP auth security** -- 88% of MCP servers require credentials, but 53% rely on insecure long-lived static secrets; only 8.5% use modern OAuth (Astrix)
-- **Adversa AI MCP Security TOP 25** -- definitive catalog of 25 MCP vulnerability categories
-- **40+ MCP CVEs in Q1 2026** -- attack surface spans three layers: MCP servers, protocol libraries (SDKs), and MCP client machines
-- **eval() epidemic (Feb 2026)** -- 7 RCE CVEs in one month, all from user input reaching eval()/exec(); CVE-2026-25546, CVE-2026-0755 (CVSS 9.8), CVE-2026-0756, CVE-2026-27203
-- **CVE-2026-25536 (MCP TypeScript SDK)** -- SDK-level cross-client data leak; responses leak across client boundaries when single McpServer instance is reused
-- **ClawJacked (Feb 2026)** -- malicious websites hijack local OpenClaw AI agents via WebSocket connections; full remote control of localhost-bound agents
-- **Salami slicing (Repello AI, 2026)** -- gradual constraint bypass; procurement agent manipulated to approve $5M in fraudulent orders across 10 transactions (Unit42)
-- **SANDWORM_MODE (Socket, Feb 2026)** -- npm worm with "McpInject" module; 48-hour delayed activation; steals SSH keys, AWS creds, .env files for 9 LLM providers
-- **DockerDash Meta-Context Injection (Noma, Feb 2026)** -- Docker image labels compromise environment via Ask Gordon AI MCP Gateway; fixed Desktop 4.50.0
-- **Copilot CLI allowlist bypass (PromptArmor, March 2026)** -- `env curl | env sh` bypasses read-only validator; CVE-2026-29783
-- **Enkrypt AI scan of top 1,000 MCP servers** -- 33% had critical vulnerabilities, averaging 5.2 vulns per server
-- **MCPTox benchmark** -- tool poisoning attack success rates exceed 60% across 1,312 malicious test cases
-- **CVE-2026-0621 (MCP TypeScript SDK ReDoS)** -- catastrophic backtracking via crafted URI template variables; 100% CPU utilization DoS
-- **CVE-2026-25904 (Pydantic-AI MCP)** -- SSRF via overly permissive Deno sandbox; project **archived**, will not be patched
-- **ChainLeak (Chainlit, March 2026)** -- CVE-2026-22218 + CVE-2026-22219 chained for full cloud compromise; arbitrary file read + SSRF
-- **LangChain SSRF via redirect (CVE-2026-27795)** -- RecursiveUrlLoader fails to handle HTTP redirects; attacker URL redirects to AWS metadata
-- **ForcedLeak (Varonis, March 2026)** -- CVSS 9.4 vulnerability chain in Salesforce Agentforce; CRM data exfiltration via form prompt injection
-- **PleaseFix/PerplexedBrowser (Zenity Labs, March 2026)** -- zero-click agentic browser hijack via calendar invites; 1Password credential theft
-- **PromptPwnd (Aikido, Jan 2026)** -- CI/CD pipeline injection exploiting AI agents in GitHub Actions; 5+ Fortune 500 confirmed affected
-- **RoguePilot (GitHub Codespaces)** -- Copilot processes injected prompt from hidden HTML comments in issues -> GITHUB_TOKEN exfiltrated
-- **Rules File Backdoor (Pillar Security)** -- `.cursorrules`, `.github/copilot-instructions.md` weaponized with invisible Unicode characters
-- **EchoLeak (CVE-2025-32711, CVSS 9.3)** -- first real-world zero-click prompt injection in production; email -> Copilot -> exfiltration
-- **CVE-2026-22807 (vLLM, Critical)** -- AI inference engine loads Hugging Face `auto_map` dynamic modules without `trust_remote_code` gating; attacker-controlled Python in model repo executes at server startup. Fixed v0.14.0. Pattern: model metadata as code execution vector
-- **CVE-2026-23947 (Orval OpenAPI codegen)** -- `x-enumDescriptions` embedded without escaping in generated TypeScript; JSDoc closer `*/` + JS code creates executeable output. Pattern: code generators processing untrusted API specs
-- **CVE-2026-27826 (mcp-atlassian SSRF)** -- high-severity SSRF via header-controlled Atlassian base URLs; companion to RCE CVE-2026-27825. Pattern: MCP connector endpoints processing user-controlled headers
-- **Endor Labs classic vulns in MCP** -- MCP servers inherit CWE-22 (path traversal) and CWE-77 (command injection) at scale; root cause: treating LLM-generated inputs as trusted. 2,614 implementations analyzed: 82% vulnerable to path traversal, 67% to code injection, 34% to command injection
-- **Prompt injection 84% success in agentic systems** -- OWASP Agentic Top 10 data: attack success rates reach 84% in agentic systems; production exploits carry CVSS 9.0+ scores
-- **Reprompt (Varonis, Jan 2026)** -- single-click data exfiltration via Microsoft Copilot `q` URL parameter injection
-- **MCPJam Inspector RCE (CVE-2026-23744)** -- unauthenticated HTTP endpoint installs arbitrary MCP servers; listens on 0.0.0.0
-- **OpenClaw CVE crisis** -- 8 critical CVEs in 6 weeks; 42,665 exposed instances, 5,194 actively vulnerable; 824+ malicious skills in registry
-- **MINJA memory injection** -- 95%+ injection success rates against production AI agents; temporally decoupled attacks
-- **Denial-of-Wallet (arXiv:2602.14798)** -- MCP overthinking loops amplify token consumption up to 142.4x
-- **HackerOne Hai invisible prompt injection** (Cyrex) -- Unicode tag characters (E0000-E007F) embedded invisible instructions; manipulated AI triage assistant
-- **IDEsaster campaign** -- 30+ vulnerabilities across 10+ AI coding tools, 24 CVEs; 94+ Chromium CVEs affecting 1.8M developers
-- **IDE extension namespace squatting** (Koi Security, 2026) -- AI IDEs recommend nonexistent extensions from OpenVSX; attackers register namespaces, serve malware to 1.8M+ developers
-- **CVE-2026-29787 (mcp-memory-service)** -- `/api/health/detailed` leaks OS version, CPU count, memory, disk, database path without auth
-- **CVE-2026-27896 (MCP Go SDK)** -- JSON parser handles field names case-insensitively, enabling crafted MCP responses to bypass validation
-- **CVE-2025-53109 (symlink bypass)** -- exploits file operation vulnerabilities to modify privileged files; system takeover if MCP server runs with elevated privileges
-- **CVE-2026-2256 (MS-Agent, CVSS 9.8)** -- ModelScope Shell tool regex denylist bypassed via command obfuscation; prompt injection -> full system compromise; public PoC
-- **CVE-2026-22812 (OpenCode, CVSS 8.8)** -- unauthenticated local HTTP server with permissive CORS; any website achieves shell command execution
-- **CVE-2026-25049 (n8n, CVSS 9.4)** -- TypeScript type confusion sandbox escape; destructuring-based sanitization bypass; novel attack class
-- **CVE-2026-21877 (n8n Git Node)** -- code injection via Git Node enabling RCE on both self-hosted and n8n Cloud; part of 6-CVE batch
-- **CVE-2026-27001/27002 (OpenClaw)** -- sandbox escape + Docker container escape; total OpenClaw CVE count exceeds 10
-- **Gravitee AI agent security** -- 3+ million AI agents in corporations; 88% reported security incidents; 47% not monitored; only 14.4% have full security approval
-- **Palo Alto Unit42 MCP Sampling Attacks** (2026) -- three vectors: resource theft, conversation hijacking, covert tool invocation
-- **Docker MCP Horror Stories** -- WhatsApp exfil, GitHub injection heist, drive-by localhost breach, supply chain attack -- all following the Lethal Trifecta pattern
-- **Log-To-Leak framework** (ICLR 2026) -- malicious logging tools silently exfiltrate user data while preserving task quality; tested across 5 MCP servers and 4 LLM agents
-- **ContextCrush** (Noma Labs, Feb 2026) -- Context7 MCP server supply chain; "Custom Rules" served verbatim to AI coding assistants with no sanitization
-- **Clawdbot/Moltbot** (Jan 2026) -- 2,000+ MCP gateways exposed on Shodan within 72 hours; RedLine, Lumma, Vidar infostealers added config dirs to target lists
-- **LangGrinch (CVE-2025-68664, CVSS 9.3)** -- serialization injection in LangChain Core; single prompt cascades through streaming deserialization; ~847M downloads affected
-- **CVE-2025-64106 (Cursor IDE, CVSS 8.8)** -- MCP installation flow manipulation allowing arbitrary command execution via trust assumption abuse
-- **CVE-2025-54135/54136 (Cursor MCPoison)** -- persistent code execution via MCP trust bypass; patched within two days
-- **PoisonedRAG** (USENIX Security 2025) -- first knowledge corruption attack on RAG systems; semantic poisoning bypasses embedding similarity defenses
-- **Claude Code supply chain CVEs** -- CVE-2025-59536 (CVSS 8.7, code injection via Hooks config) and CVE-2026-21852 (CVSS 5.3, API key exfiltration via ANTHROPIC_BASE_URL)
-- **CyberStrikeAI weaponization** (Jan-Feb 2026) -- open-source AI offensive tool deployed across 55 countries against FortiGate firewalls
-- **React2Shell (CVE-2025-55182, CVSS 10.0)** -- pre-auth RCE in React Server Components; exploited in-the-wild within hours; became #1 most exploited CVE on HackerOne
-- **Shai-Hulud supply chain worm** -- 454,648 malicious npm packages in 2025 (99% of all open-source malware); dependency cooldowns (7-14 days) would have prevented 80%
-- **Second-order cross-agent prompt injection** -- ServiceNow Now Assist: first documented cross-agent privilege escalation in production multi-agent system
-- **OpenClaw Browser Relay CDP** (CVE-2026-28458, CVSS 7.5) -- unauthenticated `/cdp` WebSocket endpoint enables cookie/session theft from all browser tabs
-- **OpenClaw Sandbox Bridge** (CVE-2026-28468) -- unauthenticated localhost requests; full compromise of all sandboxed browser sessions
-- **AI app Firebase/Supabase epidemic** (Barrack.ai) -- 20+ AI app breaches; 196/198 iOS AI apps had public Firebase rules; 72% of Android AI apps had hardcoded keys
-- **LLM-assisted deanonymization** (arXiv:2602.16800) -- LLM agents identify anonymous users with 25-67% recall at $1-4 per identification
-- **Kali Linux MCP server command injection** -- official Kali MCP server uses `subprocess` with `shell=True`; textbook command injection (evilsocket)
-- **n8n Ni8mare** (CVE-2026-21858, CVSS 10.0) -- unauthenticated RCE in ~100K n8n servers via Content-Type confusion in Form Webhook
-- **Operation Bizarre Bazaar** (Pillar Security, Jan 2026) -- 35,000 LLMjacking sessions; 60% of traffic shifted to MCP reconnaissance
-- **Exploitation speed** -- 28.96% of KEVs exploited on or before CVE publication day in 2025; vulnerability exploitation #1 cause of incidents at 40% (IBM X-Force)
-- **30 MCP CVEs filed in 60 days** (Adversa AI March 2026) — fastest-growing AI attack surface
-- **38% of 500+ scanned MCP servers** completely lack authentication (2026 scan)
-- **40.71% average attack success rate** across 9 LLM models in MCP Security Bench (MSB, ICLR 2026); stronger models MORE vulnerable due to superior tool-calling compliance
-- **43% of MCP implementations** tested in March 2025 contained command injection flaws; 30% permitted unrestricted URL fetching
-- **Cursor Workspace Trust disabled** (Oasis Security) -- Cursor ships with Workspace Trust disabled by default; `.vscode/tasks.json` auto-executes without user confirmation
-- **Copilot CLI shell RCE (CVE-2026-29783)** -- bash parameter expansion patterns (`${var@P}`, `${!var}`) bypass safety layer that misclassified dangerous commands as "read-only"
-- **PleaseFix 1Password breach path** -- Perplexity Comet agent hijacked to access 1Password vaults; initial fix bypassed with `view-source:file:///`; 120-day disclosure timeline
-- **Docker MCP Defender + Gateway** -- runtime detection of tool poisoning and data exfiltration (Defender) + infrastructure-level sandboxed execution (Gateway)
-- **mcp-scan (Invariant Labs -> Snyk)** -- standard MCP security scanner; v0.4.2 released Feb 2026; detects tool poisoning, rug pulls, cross-origin escalation
-- **Microsoft Entra ID (CVE-2025-55241, CVSS 10.0)** -- Global Administrator privilege escalation via Actor Tokens authentication mechanism
-- **AWS CodeBuild vulnerability** (Wiz) -- critical flaw allowing hijacking of official AWS GitHub repositories and leaking secrets from build logs
-- **Notion AI indirect prompt injection** -- attacker plants instructions in shared workspace content; Notion AI processes them as trusted
-- **MCP attack surface acceleration** (March 2026) -- Adversa AI published MCP Security TOP 25 with red team guides and defensive playbooks
-- **Schema Drift** (ecap0/AgentAudit, March 2026) -- Silent expansion of MCP tool schemas between version updates without changelog entries; previous audits become outdated; 194 packages audited with 118 findings across 68 packages
-- **Context Pivoting** (ecap0/AgentAudit, Feb 2026) -- MCP lateral movement via shared agent context in multi-server deployments; malicious server manipulates agent into calling other servers' tools with attacker-controlled parameters
-- **Full Schema Poisoning (FSP)** (Adversa AI, March 2026) -- Structural compromise of tool schema definitions beyond description poisoning — hidden parameters, altered return types, malicious default values bypass description-only scanners
-- **ICON defense** (March 2026) -- two-stage indirect prompt injection defense via attention collapse detection + Mitigating Rectifier; significantly reduces attack success rates; emerging defense to test against
-- **Check Point Claude Code Hooks** (CVE-2025-59536 / CVE-2026-21852, Feb 2026) -- hooks auto-execute shell commands on session launch; `ANTHROPIC_BASE_URL` setting redirects API keys to attacker server before trust prompt
-- **CVE-2026-27966** (Langflow CSV Agent, CVSS 9.8) -- hardcoded `allow_dangerous_code=True` enables prompt injection → RCE via Python REPL; no auth required; fixed v1.8.0. Pattern: search LLM framework code for hardcoded permissive defaults
-- **CVE-2026-3680** (biome-mcp-server, CVSS 5.3) -- command injection via `child_process` wrapping CLI tool; unauthenticated. Pattern: MCP servers wrapping CLI tools without input sanitization
-- **CVE-2026-28466** (OpenClaw gateway approval bypass) -- gateway fails to sanitize approval fields, allowing clients to bypass human-in-the-loop execution gating
-- **OpenClaw privacy breach** (March 2026) -- 42,000+ exposed instances, 1.5M leaked API tokens, 35K leaked emails; 93% of exposed instances had critical auth bypass; minimum safe version 2026.2.26
-- **Zscaler 2026 AI Security Report** -- 100% enterprise AI failure in red team testing; median 16 minutes to first critical failure; 90% compromised in under 90 minutes
-- **Unit42 In-the-Wild IDPI** (March 2026) -- first systematic catalog of 22 distinct indirect prompt injection techniques observed in real-world telemetry; includes ad review evasion (first documented case)
-- **MCP Security Bench (MSB, ICLR 2026)** -- 12 attack types, 2,000 instances, 9 LLM agents tested; stronger models MORE vulnerable due to superior tool-calling compliance; 40.71% average attack success
-- **CVE-2026-29791 (Agentgateway, March 2026)** -- MCP-to-OpenAPI gateway missing parameter sanitization; path, query, and header values pass unsanitized from MCP tool calls to HTTP requests; SSRF/injection at gateway boundary; fixed v0.12.0. Pattern: MCP gateways as trust boundary bypass
-- **CVE-2026-28289 (FreeScout, CVSS 10.0)** -- zero-click RCE via Zero-Width Space (U+200B) in email attachment filename; bypasses extension validation at upload, stripped at storage → valid .php webshell. Generalized pattern: filename canonicalization + TOCTOU upload bypass
-- **SSRF CVE cluster (March 2026, 5 in 1 week)** -- Soft Serve Git (9.1), Ghostfolio (9.3 → AWS IMDS), Wallos (8.8), Plane (8.5), PinchTab (7.5); common root cause: validators check `is_loopback` but not RFC 1918 ranges. Pattern: webhook/notification/import SSRF wave
-- **CVE-2026-30241 (Mercurius GraphQL)** -- `queryDepth` limit enforced on HTTP but not WebSocket subscriptions → DoS via unbounded nesting; fixed v16.8.0. Pattern: transport-parity security gap (security control on one transport, missing on another)
+> **Full CVE catalog and incident database:** See `ai-hunting/reference/ai-case-studies.md`, `ai-hunting/reference/agent-attack-patterns.md`, `ai-hunting/reference/mcp-playbooks.md`, and `ai-hunting/reference/ide-supply-chain.md`. This section lists only the key patterns for quick test routing.
+
+**Core attack families for test planning:**
+
+| Pattern Family | Key CVE/Example | Root Cause | Test First |
+|---|---|---|---|
+| MCP eval()/exec() RCE | 7 CVEs in Feb 2026 | Unsanitized LLM input to eval() | Any MCP server wrapping CLI tools |
+| MCP client infrastructure RCE | CVE-2025-6514 (mcp-remote, CVSS 9.6) | Untrusted OAuth metadata → shell injection | MCP clients with OAuth flows |
+| AI IDE project file RCE | CVE-2025-59536 (Claude Code hooks) | Repo configs auto-execute pre-trust | Any AI IDE processing project configs |
+| Tool/schema poisoning | Full Schema Poisoning (CyberArk) | Hidden params, altered return types | MCP tool registries, marketplace apps |
+| Agentic browser hijack | PleaseFix zero-click | Calendar → code execution chain | Any AI with browser + calendar integration |
+| Confused deputy | Claude DXT zero-click (CVSS 10.0) | Low-trust data → high-privilege executor | AI bridging data sources to code execution |
+| Supply chain worm | SANDWORM_MODE, ToxicSkills | npm/skill registry poisoning | Agent skill marketplaces |
+| Cross-agent escalation | ServiceNow Now Assist | Low-priv agent → high-priv agent | Multi-agent systems |
+| Gateway trust bypass | CVE-2026-29791 (Agentgateway) | Unsanitized MCP-to-HTTP param passthrough | MCP gateways/proxies |
+| Memory/RAG poisoning | MINJA (95%+ success), PoisonedRAG | Persistent injection across sessions | Any AI with persistent memory or RAG |

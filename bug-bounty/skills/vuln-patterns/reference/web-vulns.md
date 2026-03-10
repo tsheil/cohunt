@@ -4,23 +4,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 
 ## Table of Contents
 
-- [Tech Stack Patterns](#tech-stack-patterns)
-- [GraphQL](#graphql)
-- [JWT (JSON Web Token)](#jwt-json-web-token)
-- [OAuth 2.0 / OpenID Connect](#oauth-20--openid-connect)
-- [API Rate Limiting & Resource Exhaustion](#api-rate-limiting--resource-exhaustion)
-- [AI/Agent Attack Surface Routing](#aiagent-attack-surface-routing)
-- [n8n / Workflow Automation Sandbox Escapes](#n8n--workflow-automation-sandbox-escapes)
-- [Edge Framework Path Normalization Bypass](#edge-framework-path-normalization-bypass)
-- [GraphQL WebSocket Subscription Depth Bypass](#graphql-websocket-subscription-depth-bypass)
-- [Admin Panel Logic Errors — Typo-to-RCE Pattern](#admin-panel-logic-errors--typo-to-rce-pattern)
-- [HTTP/3 Race Conditions (QUICker)](#http3-race-conditions-quicker)
-- [DNS Rebinding SSRF Bypass (TOCTOU)](#dns-rebinding-ssrf-bypass-toctou)
-- [React Server Components DoS](#react-server-components-dos)
-- [Vibe-Coded Application Attack Surface](#vibe-coded-application-attack-surface)
-- [Error-Based Blind SSTI Detection (PortSwigger #1)](#error-based-blind-ssti-detection-portswigger-1-2025)
-- [ORM Leaking via Search & Filter (PortSwigger #2)](#orm-leaking-via-search--filter-portswigger-2-2025)
-- [SSRF via HTTP Redirect Loops (PortSwigger #3)](#ssrf-via-http-redirect-loops-portswigger-3-2025)
+[Tech Stack Patterns](#tech-stack-patterns) | [GraphQL](#graphql) | [JWT](#jwt-json-web-token) | [OAuth 2.0](#oauth-20--openid-connect) | [Rate Limiting](#api-rate-limiting--resource-exhaustion) | [AI/Agent Routing](#aiagent-attack-surface-routing) | [n8n Sandbox Escape](#n8n--workflow-automation-sandbox-escapes) | [Path Normalization](#edge-framework-path-normalization-bypass) | [GraphQL WS Depth](#graphql-websocket-subscription-depth-bypass) | [Admin Panel Logic](#admin-panel-logic-errors--typo-to-rce-pattern) | [HTTP/3 Race](#http3-race-conditions-quicker) | [DNS Rebinding SSRF](#dns-rebinding-ssrf-bypass-toctou) | [RSC DoS](#react-server-components-dos) | [Vibe-Coded Apps](#vibe-coded-application-attack-surface) | [Data Pipeline SSTI](#data-pipeline-template-injection-ssti--ssrf) | [PortSwigger #1-3](#error-based-blind-ssti-detection-portswigger-1-2025) | [Stream Backpressure DoS](#stream-backpressure-dos-nodejs) | [Async Auth Bypass](#async-auth-bypass-missing-await)
 
 > **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
 
@@ -483,12 +467,33 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ---
 
-## Filename Canonicalization + TOCTOU Upload Bypass
+## Cross-Reference Patterns
 
-> **Canonical source:** See [parser-differentials.md → Filename Canonicalization](parser-differentials.md#filename-canonicalization) for full test patterns (U+200B, ZWNJ, RTLO, null byte, double extension, case folding). Key CVE: CVE-2026-28289 (FreeScout, CVSS 10.0, zero-click RCE via Zero-Width Space in attachment filename).
+- **Filename Canonicalization + TOCTOU Upload Bypass:** See [parser-differentials.md](parser-differentials.md#filename-canonicalization) — U+200B/ZWNJ/RTLO/null byte patterns, CVE-2026-28289 (FreeScout CVSS 10.0)
+- **SSRF Validation Gap (Webhook/Import):** See [infrastructure-vulns.md](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) — RFC 1918 bypass, cloud metadata, March 2026 CVE cluster
 
 ---
 
-## SSRF Validation Gap Pattern (Webhook/Notification/Import)
+## Stream Backpressure DoS (Node.js)
 
-> **Canonical source:** See [infrastructure-vulns.md → SSRF via Webhook, Notification, and Import Endpoints](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) for full test patterns (RFC 1918 bypass, cloud metadata, IPv6 mapped, decimal/octal encoding, redirect chains) and March 2026 CVE cluster (5 SSRFs in 1 week).
+**CVE-2026-25224** (Fastify 5.7.0-5.7.2, High). `sendWebStream` ignores TCP backpressure — slow client → unbounded memory → OOM crash. Fixed 5.7.3.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Slow-read client | Request large streaming response, read at 1 byte/second | Server memory grows until crash |
+| 2 | Parallel slow clients | 50+ slow connections to streaming endpoints | Amplified memory exhaustion |
+
+**Where this pays:** Node.js apps with streaming endpoints (file downloads, SSE). Programs with DoS in scope.
+
+---
+
+## Async Auth Bypass (Missing `await`)
+
+**CVE-2026-28514** (Rocket.Chat, CVSS 9.3). Missing `await` on `bcrypt.compare()` returns truthy Promise → any password accepted.
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Wrong password | Login with valid username + random password | Authentication succeeds |
+| 2 | Microservice isolation | Test each auth service independently (SSO, API gateway, main app) | Different async handling per service |
+
+**Where this pays:** Node.js/TypeScript with async auth. Source code grep: `bcrypt.compare(`, `verify(`, `authenticate(` WITHOUT `await`. Also: `if (someAsyncCheck())` — Promise is always truthy.

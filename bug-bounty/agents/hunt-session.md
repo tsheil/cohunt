@@ -72,16 +72,12 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **MEDIUM** (AI tools cover 40-80%) | Standard IDOR, common auth bypass, API enumeration | **FAST-TRACK** — test quickly, don't spend hours |
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
-   Key competitive landscape (March 2026):
-   - **XBOW**: **#1 on HackerOne US leaderboard** — 1,060+ reports, 54 critical/242 high in 90 days; 85% custom solve rate; launched **Pentest On-Demand** (automated, 5 business days); expanding into network appliances; still operating at loss; **academic paper (arXiv:2506.23592) notes all findings required human review** — Level 3-4 autonomy, not fully autonomous
-   - **Codex Security**: 1.2M commits scanned, 792 critical/10,561 high issues; reported vulns in OpenSSH, GnuTLS, PHP; multi-stage pipeline (context → threat model → sandbox validation → patches)
-   - **Claude Code Security + Anthropic Code Review**: 500+ production vulns, 22 Firefox CVEs; agentic multi-step reasoning (avg 21.2 independent tool calls); pattern-matching vulns are AI territory
-   - **GitHub Taskflow Agent**: 80+ vulns in 40 repos; **IDOR/access control = largest absolute count** (38 confirmed); business logic 25% confirmed rate; validates structured audit approach
-   - **ZeroPath**: AI-native SAST detecting business logic + chained vulns (RSAC 2026 finalist, $5M)
-   - **SecureClaw**: 55 OWASP-aligned audit checks for OpenClaw agents — establishes defensive baseline
-   - **AgentShield**: tools catching 95%+ prompt injections **miss most unauthorized tool calls** — focus on tool misuse
-   - AI agents solve 9/10 directed challenges but **degrade in realistic undirected scenarios** (Wiz Cyber Model Arena)
-   - **IDOR rewards surging**: +23% payout increase, +29% valid reports YoY (HackerOne 2026); fastest-growing payout category
+   Key competitive context (see `ai-hunting/reference/tools-landscape.md` for full landscape):
+   - **XBOW**: #1 HackerOne US leaderboard; 85% custom solve rate; pivoting to pre-production scanning — reduces program competition but also reduces externally-available attack surface
+   - **Codex Security + Claude Code Security + GitHub Taskflow**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge
+   - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
+   - **IDOR rewards surging**: +23% payout, +29% valid reports YoY — fastest-growing payout category
+   - **Business logic = 45% of all bounty awards** (Intigriti 2026) — lowest automation pressure
 
 6. **Map workflows** — For the target's core features, apply `/workflow-map` thinking: actors, states, invariants, abuse cases. Business logic = 45% of bounty awards (Intigriti 2026).
 
