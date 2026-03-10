@@ -75,42 +75,9 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ### Access Control / IDOR
 
-**What it is:** Accessing or modifying resources belonging to other users by manipulating identifiers.
+**→ Use [auth-testing](../auth-testing/SKILL.md) for full IDOR/BOLA/BFLA testing.** Auth-testing owns all access control patterns — BOLA discovery, bypass techniques, impact escalation, multi-tenant isolation, and CVSS scoring templates. IDOR is the **#1 high-severity bug class** (~50% of all high/critical findings).
 
-**Where to look:**
-- Any endpoint with user-controlled IDs (numeric, UUID, encoded)
-- API endpoints: `/api/users/{id}`, `/api/orders/{id}`, `/api/files/{id}`
-- Download/export endpoints
-- Account settings and profile endpoints
-- Admin/management panels
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Horizontal access | Change numeric ID to another user's | Other user's data returned |
-| 2 | Vertical access | Use low-priv token on admin endpoints | Admin data/actions accessible |
-| 3 | ID enumeration | Increment/decrement sequential IDs | Valid responses for other users |
-| 4 | UUID prediction | Check if UUIDs are v1 (time-based) | Predictable pattern |
-| 5 | Encoded IDs | Decode base64/hex IDs, modify, re-encode | Access to other records |
-| 6 | Parameter pollution | Add duplicate ID params: `?id=1&id=2` | Server uses unexpected value |
-| 7 | HTTP method switch | Try GET→POST, POST→PUT on same endpoint | Different auth checks per method |
-| 8 | Object reference in body | Change IDs in JSON request body | Server trusts body over session |
-| 9 | Indirect references | Manipulate filenames, slugs, or paths | Access to unauthorized resources |
-| 10 | State manipulation | Change object status via ID reference | Skip workflow steps |
-
-**Bypasses when blocked:**
-- Wrap ID in array: `{"id": [2]}` instead of `{"id": 2}`
-- Use string: `{"id": "2"}` instead of numeric
-- Add `.json` extension to path
-- URL encode the ID parameter name
-- Try GraphQL if REST is protected (or vice versa)
-- Change API version: `/v1/` → `/v2/`
-
-**Recent IDOR incidents (2025-2026):**
-- **Flowise IDOR** (2026): PUT `/api/v1/loginmethod` — any low-priv user overwrites SSO config of any org; no ownership validation on `organizationId`. Pattern: AI/ML platform admin endpoints lack tenant isolation
-- **HackerOne Report #3000510** ($25K): `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token — HackerOne's own platform
-- **Trend**: IDOR reports grew **116% over 5 years** (+29% YoY); #1 vuln for government (18%), medtech (36%), professional services (31%) programs (HackerOne 2025)
+**Quick test (first 30 seconds):** Swap any user-controlled ID between two accounts. Check GET, PUT, DELETE. If blocked, try method switching, parameter pollution, or API version downgrade — full bypass list in auth-testing.
 
 ---
 

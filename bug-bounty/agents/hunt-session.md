@@ -57,7 +57,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | Archetype | Signals | Primary Skills | Top Vuln Classes |
    |-----------|---------|---------------|-----------------|
    | **B2B SaaS** | Multi-tenant, org/team model, SCIM/SSO, seat limits | business-logic, auth-testing | Tenant isolation, IDOR, privilege escalation, invite/approval bypass |
-   | **Consumer App** | User profiles, social features, payments, mobile | vuln-patterns, client-side-security | XSS, IDOR, payment bypass, race conditions |
+   | **Consumer App** | User profiles, social features, payments, mobile | auth-testing, vuln-patterns, client-side-security | IDOR, XSS, payment bypass, race conditions |
    | **API-First** | Developer docs, API keys, webhooks, rate limits | api-security, auth-testing | Broken auth, BOLA/BFLA, rate limiting, GraphQL introspection |
    | **AI Product** | Chatbot, copilot, agent, MCP integrations | ai-hunting, vuln-patterns | Prompt injection, tool abuse, memory poisoning, agent hijacking |
    | **Infrastructure** | Network appliances, management consoles, VPN | vuln-patterns (infra ref) | Auth bypass, command injection, deserialization, default creds |

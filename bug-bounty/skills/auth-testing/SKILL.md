@@ -93,6 +93,12 @@ Don't just read — demonstrate write/delete:
 - Delete another user's resources (destructive)
 - Act as another user (full impersonation)
 
+### Recent IDOR Incidents (2025-2026)
+
+- **Flowise IDOR** (2026): PUT `/api/v1/loginmethod` — any low-priv user overwrites SSO config of any org; no ownership validation on `organizationId`. Pattern: AI/ML platform admin endpoints lack tenant isolation
+- **HackerOne Report #3000510** ($25K): `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token — HackerOne's own platform
+- **Trend**: #1 vuln for government (18%), medtech (36%), professional services (31%) programs (HackerOne 2025)
+
 ---
 
 ## 2. Broken Function-Level Authorization (BFLA)
