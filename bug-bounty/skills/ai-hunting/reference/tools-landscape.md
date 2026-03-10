@@ -373,6 +373,8 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Chaining bugs across different application components
 - Social engineering vectors and creative attack paths
 - 72% of hackers find more critical vulnerabilities when working in teams (Bugcrowd 2026)
+- AI agents don't use standard fuzzing tools — implement own wordlists, failing challenges when lists lack necessary terms (Wiz AI vs Humans 2026)
+- AI agent multi-tool false positive epidemic: agents flag "information disclosure" because files contain word "password" in explanations, not actual sensitive data (Bugcrowd AI agents blog, March 2026); "fully unattended pen testing" tools still require human intervention — behavior varies greatly by prompt and context
 
 **Your Role:** Use autonomous tools for coverage; manually verify and chain findings to create reportable exploits. By mid-2026, "AI as an accelerated, supervised staff member" is the dominant model in offensive security. Security leaders are moving toward continuous, data-driven exposure management combining human intelligence with automation. Researchers predict that by 2028 most cybersecurity actions will be autonomous, with humans teleoperating.
 

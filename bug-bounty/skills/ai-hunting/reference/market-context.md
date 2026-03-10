@@ -102,6 +102,10 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **97% of AI-related incidents** stemmed from basic access control flaws (HackerOne 2025)
 - **Critical CVEs in AI coding tools**: GitHub Copilot RCE (CVE-2025-53773, CVSS 9.6), Cursor IDE (CVSS 9.8), Microsoft Copilot (CVSS 9.3)
 - **Joseph Thacker prediction**: 2x bug submissions in 2026 driven by AI coding agents
+- **Prompt injection 84% success rate** in agentic systems with auto-execution; production exploits now carry CVSS 9.0+ scores (OWASP Agentic Top 10 data)
+- **CVE-2026-22807 (vLLM)**: AI inference engine loads Hugging Face `auto_map` modules without `trust_remote_code` gating → attacker-controlled Python executes at server startup. Pattern: model metadata as code execution vector
+- **VDP as compliance baseline** (March 2026): NIST CSF 2.0, ISO 27001, and EU CRA all explicitly reference coordinated vulnerability disclosure; not having a VDP is "like not having a privacy policy in 2018"
+- **Bugcrowd AI agent false positives**: researchers building multi-agent bounty systems report agents flagging "information disclosure" because files contain word "password" in explanations, not as actual sensitive data; "fully unattended" claims overstated
 
 ---
 

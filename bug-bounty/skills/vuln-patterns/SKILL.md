@@ -428,8 +428,10 @@ Quick checks when you find an AI-powered feature:
 
 | 6 | Confused deputy (DXT/MCP) | Trigger AI to chain low-risk data → high-risk action (e.g., calendar invite → code execution) | High-Critical (LayerX DXT CVSS 10.0) |
 | 7 | AI platform unauth RCE | Test unauthenticated API endpoints on AI orchestration platforms (Langflow CVE-2025-3248 CVSS 9.8: `/api/v1/validate/code`) | Critical |
+| 8 | AI inference model poisoning | If target runs vLLM/similar, test if malicious model repos execute code at startup via `auto_map` without `trust_remote_code` (CVE-2026-22807) | Critical |
+| 9 | Code generator injection | If target uses OpenAPI code generators, test `x-enumDescriptions` with JSDoc closer `*/` + code (CVE-2026-23947, Orval) | High-Critical |
 
-If any of these hit: switch to the `ai-hunting` skill for deep testing (68 MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains).
+If any of these hit: switch to the `ai-hunting` skill for deep testing (62+ MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains).
 
 > **Full AI/LLM patterns + MCP + agentic attacks:** See [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) or use the `ai-hunting` skill directly
 

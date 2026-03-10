@@ -274,6 +274,12 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-21385 (Qualcomm Android, CVSS 7.8): integer overflow in graphics/display component affecting 230+ chipset models; limited targeted exploitation (likely spyware/nation-state); part of Google March 2026 Android update patching 129 vulnerabilities including critical System RCE (CVE-2026-0006)
 - Image-based prompt injection (arXiv:2603.03637, March 2026): black-box attack embeds instructions in natural images invisible to humans; 64% success rate against GPT-4-turbo — new multimodal attack vector
 - Trail of Bits Comet audit (February 20, 2026): 4 prompt injection techniques against Perplexity's agentic browser exfiltrating private Gmail data; TRAIL trust zone taxonomy defines INJECTION/CTX_IN/CTX_OUT/REV_CTX_IN violation categories
+- CVE-2026-22807 (vLLM, Critical): AI inference engine loads Hugging Face `auto_map` dynamic modules without `trust_remote_code` gating — attacker-controlled Python executes at server startup. Pattern: model metadata as executable code. Fixed v0.14.0
+- CVE-2026-23947 (Orval OpenAPI codegen): `x-enumDescriptions` in untrusted OpenAPI specs inject arbitrary TypeScript/JavaScript into generated clients via JSDoc closer technique. Pattern: code generators processing untrusted API specs
+- CVE-2026-27826 (mcp-atlassian SSRF): high-severity SSRF via header-controlled Atlassian base URLs; companion to RCE CVE-2026-27825
+- CVE-2026-24457 (OpenMQ, CVSS 9.1): arbitrary file read + potential RCE via unsafe parsing in OpenMQ Broker; message broker as file system access vector
+- Endor Labs "classic vulns meet AI infra" (March 2026): MCP servers inherit CWE-22/CWE-77 at scale; 82% of 2,614 implementations vulnerable to path traversal; root cause is architectural assumption that LLM inputs are trusted
+- VDP as compliance requirement (March 2026): NIST CSF 2.0, ISO 27001, EU CRA all reference coordinated vulnerability disclosure; not having VDP now equivalent to missing privacy policy
 
 ---
 

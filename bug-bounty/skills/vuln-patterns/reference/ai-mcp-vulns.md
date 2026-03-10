@@ -346,6 +346,11 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 - **RoguePilot (GitHub Codespaces)** -- Copilot processes injected prompt from hidden HTML comments in issues -> GITHUB_TOKEN exfiltrated
 - **Rules File Backdoor (Pillar Security)** -- `.cursorrules`, `.github/copilot-instructions.md` weaponized with invisible Unicode characters
 - **EchoLeak (CVE-2025-32711, CVSS 9.3)** -- first real-world zero-click prompt injection in production; email -> Copilot -> exfiltration
+- **CVE-2026-22807 (vLLM, Critical)** -- AI inference engine loads Hugging Face `auto_map` dynamic modules without `trust_remote_code` gating; attacker-controlled Python in model repo executes at server startup. Fixed v0.14.0. Pattern: model metadata as code execution vector
+- **CVE-2026-23947 (Orval OpenAPI codegen)** -- `x-enumDescriptions` embedded without escaping in generated TypeScript; JSDoc closer `*/` + JS code creates executeable output. Pattern: code generators processing untrusted API specs
+- **CVE-2026-27826 (mcp-atlassian SSRF)** -- high-severity SSRF via header-controlled Atlassian base URLs; companion to RCE CVE-2026-27825. Pattern: MCP connector endpoints processing user-controlled headers
+- **Endor Labs classic vulns in MCP** -- MCP servers inherit CWE-22 (path traversal) and CWE-77 (command injection) at scale; root cause: treating LLM-generated inputs as trusted. 2,614 implementations analyzed: 82% vulnerable to path traversal, 67% to code injection, 34% to command injection
+- **Prompt injection 84% success in agentic systems** -- OWASP Agentic Top 10 data: attack success rates reach 84% in agentic systems; production exploits carry CVSS 9.0+ scores
 - **Reprompt (Varonis, Jan 2026)** -- single-click data exfiltration via Microsoft Copilot `q` URL parameter injection
 - **MCPJam Inspector RCE (CVE-2026-23744)** -- unauthenticated HTTP endpoint installs arbitrary MCP servers; listens on 0.0.0.0
 - **OpenClaw CVE crisis** -- 8 critical CVEs in 6 weeks; 42,665 exposed instances, 5,194 actively vulnerable; 824+ malicious skills in registry
