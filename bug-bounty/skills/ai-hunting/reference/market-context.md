@@ -42,7 +42,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **HackerOne Hai** AI validation agent launched February 2026 — 56% reduction in vulnerability validation time
 - **HackerOne leaderboard split** (March 2026): separated individual researchers vs AI-powered collectives; new transparency framework distinguishes human vs machine contributions
 - **HackerOne Hai Insight Agent** (March 2026): launched to combat hackbot hallucination — filters false/hallucinated vulnerabilities that appear legitimate because LLMs generate them; positions validation as core platform capability
-- **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026)
+- **HackerOne AI policy** (Feb 2026): researcher submissions NOT used to train AI models; **Good Faith AI Research Safe Harbor** (Jan 2026). Background: HackerOne's AI service launch triggered researcher concerns about zero-day reports being used as LLM training data — studies show models can memorize and regurgitate sensitive fragments, creating risk if hostile actors gain indirect access. Policy clarification followed community pushback
 - **HackerOne Agentic PTaaS** (January 2026): continuous testing with **88% accuracy**, fix-verified findings; trained on proprietary exploit intelligence
 - **IBM Granite AI Bug Bounty** (HackerOne): up to **$100K** to test Granite models with Granite Guardian guardrails; focus on jailbreaks in enterprise environments
 - **Intigriti adopted CVSS V4** for all new submissions starting 2026
@@ -86,6 +86,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **IDOR/IAC surge**: valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; improper access control up **18% YoY**; IDOR is #1 vuln class for government (18%), medtech (36%), and professional services (31%) programs
 - **70% of researchers** now combine human creativity with AI tools ("bionic hackers") for report writing, PoC generation, exploit code refinement, and technology research (HackerOne 2025)
 - **210% increase** in AI vulnerability reports; **540% jump** in prompt injection reports
+- **Top hunter composition** (2025): ~40% AI bugs, remainder split across IDOR, CSRF, information disclosure, and business logic — AI is now the plurality finding class for elite researchers
 - **339% increase** in bounties for AI vulnerabilities YoY
 - **Prompt injection in 73%+ of production AI deployments** assessed; only 34.7% have dedicated defenses
 - **AI agent attack success rates 66-84%** when testing against auto-execution systems
@@ -133,7 +134,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Enterprise AI readiness gap**: only 34% have AI-specific security controls; less than 40% test AI regularly
 - **3+ million AI agents** in corporations; **88% reported security incidents**; **47% not monitored** (Gravitee 2026)
 - **Enterprise AI failure costs**: 64% of $1B+ companies lost more than $1M to AI failures (Help Net Security 2026)
-- **Shadow AI breaches** cost **$670,000 more** than standard incidents; 1 in 5 orgs reported breaches linked to unauthorized AI
+- **Shadow AI breaches** cost **$670,000 more** than standard incidents; 1 in 5 orgs reported breaches linked to unauthorized AI. Bugcrowd 2026 prediction: shadow AI is the new shadow IT — employees creating unauthorized AI agents with privileged access will drive major IP compromise incidents. **Hunter angle:** test whether target's AI features expose unsanctioned agent endpoints or unmonitored tool integrations
 - **97% of organizations** with AI breaches lacked basic access controls; 63% pasted sensitive data into chatbots
 - **Non-human identities** (AI agents, service accounts) represent **higher risk (52%)** than human users (37%) in cloud (Tenable 2026)
 - **48% of cybersecurity professionals** identify agentic AI as the #1 attack vector heading into 2026 (Dark Reading)

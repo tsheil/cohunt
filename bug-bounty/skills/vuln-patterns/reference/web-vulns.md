@@ -355,7 +355,7 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 - **45% of AI-generated code** contains classic OWASP Top 10 vulnerabilities (Contrast Security 2026)
 - **20% of vibe-coded apps** have serious vulnerabilities or configuration errors (Wiz 2026)
 
-**Why it matters for bug bounty:** Startups using vibe-coding platforms often run bug bounty programs (especially crypto/Web3). The vulnerabilities are trivial to find and consistently high-severity. AI coding agents commonly suggest permissive policies like `USING (true)` to fix permission errors — making entire databases public.
+**Why it matters for bug bounty:** Startups using vibe-coding platforms often run bug bounty programs (especially crypto/Web3). The vulnerabilities are trivial to find and consistently high-severity. AI coding agents commonly suggest permissive policies like `USING (true)` to fix permission errors — making entire databases public. Bugcrowd 2026 prediction: vibe coding is also enabling "garden-variety" crimeware creation — democratized engineering capability + financial pressure is creating a new wave of amateur malware that itself contains exploitable vulnerabilities.
 
 **Where to look:**
 - Applications built on Supabase, Firebase, or similar BaaS platforms

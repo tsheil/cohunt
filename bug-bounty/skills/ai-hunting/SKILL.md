@@ -11,6 +11,31 @@ description: AI-assisted bug hunting workflows and AI/LLM-specific vulnerability
 
 82% of hackers now use AI in their workflows (Bugcrowd 2026). The key is **AI amplification, not replacement** — LLMs handle pattern matching and code analysis while you focus on logic, chaining bugs, and manual verification. 72% of hackers find more critical vulnerabilities when collaborating in teams. Pair AI-augmented workflows with team-based hunting for maximum impact.
 
+### AI OPSEC — Protecting Your Hunting Data
+
+**Critical:** Sharing target source code, internal endpoints, or proprietary API schemas with public AI services (ChatGPT, Claude, Gemini) risks violating bug bounty program terms and can get you **banned**. Programs increasingly monitor for unauthorized data disclosure.
+
+| Risk | Mitigation |
+|------|------------|
+| **Source code leakage** | Use local/private LLMs (Ollama, LM Studio) for code analysis of in-scope targets |
+| **Endpoint disclosure** | Strip target-identifying info before pasting into public LLMs |
+| **Program ban** | Check program policy on AI tool usage before sharing any target data |
+| **Confirmation bias** | AI acts as an echo chamber — if you think you found something, the LLM will agree. Always validate with manual testing before reporting |
+| **Training data risk** | Your prompts may become training data. Never paste API keys, tokens, or credentials into public LLMs |
+
+### Precise Prompt Crafting for Hunting
+
+Vague prompts produce vague results. Use surgical prompts targeting specific vulnerability patterns:
+
+| Bad Prompt | Good Prompt |
+|-----------|-------------|
+| "Find bugs in this code" | "Analyze this Express route handler for SSRF via the `url` parameter — check if the URL is validated before `fetch()` is called" |
+| "Is this secure?" | "Check if this JWT verification uses `algorithms: ['HS256']` with the RSA public key, enabling algorithm confusion (CVE-2015-9235)" |
+| "Review for vulnerabilities" | "Trace all paths from `req.body` to database queries in this controller — list any that skip parameterized queries" |
+| "Check this API" | "Given this OpenAPI spec, generate 5 test cases for mass assignment on the `PATCH /users/{id}` endpoint targeting admin-only fields" |
+
+**Pattern:** Specify the vulnerability class, the input source, the dangerous sink, and the specific technique. Include CVE references when testing for known patterns.
+
 ### AI-Assisted Recon Workflows
 
 | Phase | AI Task | Output |
@@ -174,12 +199,15 @@ When a target has AI/LLM features (chatbots, AI assistants, code generators, con
 
 **curl ended its bug bounty** (Jan 2026) after AI submissions overwhelmed the team — first program shutdown attributed to AI slop. Over 6 years, the program paid $90K+ for 81 genuine vulnerabilities, but by 2025 ~20% of submissions were AI slop and only 5% of all submissions were genuine. Not a single AI-only-generated submission discovered a real vulnerability. Submission volume spiked 8x while quality cratered — a cautionary signal for all programs.
 
+**Platform response:** HackerOne launched **Hai Insight Agent** (March 2026) to filter hallucinated hackbot reports before triage. Programs are now using AI validation to detect and auto-close AI slop — submitting unverified AI output wastes your reputation.
+
 **Before submitting:**
 1. Reproduce the finding yourself (Burp, curl, manual testing)
 2. Include specific payloads and reproduction steps
 3. Screenshot or video proof
 4. Call out AI-assisted analysis transparently
 5. Verify AI output against reality — don't trust confidence levels alone
+6. Guard against **confirmation bias** — if you asked an LLM "is this a vulnerability?" and it said yes, that means nothing. Test it manually
 
 ---
 
