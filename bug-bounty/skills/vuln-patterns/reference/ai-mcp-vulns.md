@@ -266,6 +266,36 @@ Additional patterns beyond the core 10 in SKILL.md. Use alongside the base AI/LL
 
 ---
 
+## MCP Client Infrastructure RCE
+
+**What it is:** Exploiting MCP client-side infrastructure (proxies, remote connectors) to achieve RCE on the developer's machine — not the server, but the client connecting to it.
+
+**Key CVE:** CVE-2025-6514 (mcp-remote, CVSS 9.6, 437K+ npm downloads): OS command injection via malicious `authorization_endpoint` in MCP OAuth metadata. First documented MCP client RCE in real-world deployment.
+
+| # | Fingerprint | Test | Reportable If |
+|---|---|---|---|
+| 1 | Check if target uses mcp-remote v0.0.5-0.1.15 | Set up rogue MCP server with malicious OAuth endpoint | Client executes OS commands from untrusted URL |
+| 2 | Other MCP clients with OAuth flows | Inject commands in authorization/token endpoint URLs | Client processes untrusted URLs without sanitization |
+| 3 | MCP proxy/gateway implementations | Test for SSRF or command injection in server-provided URLs | Proxy follows server-controlled redirects to internal targets |
+
+**Sibling surfaces:** Any MCP client that fetches OAuth metadata from untrusted servers. Check `authorization_endpoint`, `token_endpoint`, `jwks_uri` for injection.
+
+## Claude Code Project File RCE
+
+**What it is:** RCE and API token exfiltration via malicious project configuration files — clone a repo, get compromised. (Check Point Research, Feb 2026)
+
+**Key CVEs:** CVE-2025-59536 (hooks → RCE), CVE-2026-21852 (env var → API key exfil, no user interaction)
+
+| # | Fingerprint | Test | Reportable If |
+|---|---|---|---|
+| 1 | Target uses Claude Code with hooks | Include malicious hook commands in `.claude/settings.json` | Shell commands execute on session launch |
+| 2 | `ANTHROPIC_BASE_URL` in project config | Set env var to redirect API calls to attacker server | API keys captured before trust dialog |
+| 3 | `.mcp.json` with rogue server configs | Include malicious MCP server in repo config | Rogue tools registered on project open |
+
+**Sibling surfaces:** Any AI IDE that auto-processes project config files. Check `.cursorrules`, `.amazonq/mcp.json`, `.github/copilot-instructions.md`, `CLAUDE.md` for similar patterns.
+
+---
+
 ## Real-World AI/MCP References
 
 - **GitHub MCP server breach** -- attacker planted prompt injection in a public GitHub issue, causing the AI assistant to exfiltrate private repo contents using the server's over-privileged PAT

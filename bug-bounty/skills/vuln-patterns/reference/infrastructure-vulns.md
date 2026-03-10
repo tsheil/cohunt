@@ -453,3 +453,29 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | 3 | Version fingerprinting | Identify FMC version via login page, API responses, or HTTP headers | Versions 6.4.0-10.0.0 are vulnerable |
 
 **Severity Guidance:** Critical (CVSS 10.0). Firewall management consoles control all network security policies. Unauthenticated RCE as root = complete network compromise. Two CVSS 10.0s in the same product is extremely rare — indicates fundamental architecture issues.
+
+---
+
+## ICS/OT Controller RCE
+
+> **Target gate:** Only when recon reveals ICS/OT/SCADA scope or Delta Electronics products.
+
+**What it is:** Stack buffer overflow in industrial automation controller software — unauthenticated remote code execution against operational technology systems.
+
+**Key CVE:** CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8, March 9 2026): unauthenticated remote attacker → arbitrary code execution or DoS against industrial control systems. Affects process control, manufacturing, and critical infrastructure.
+
+| # | Fingerprint | Test | Reportable If |
+|---|---|---|---|
+| 1 | Shodan: `Delta COMMGR` or `DVP` protocol | Send oversized buffer to COMMGR2 service port | Service crash or controlled memory corruption |
+| 2 | Recon reveals Delta PLC/HMI infrastructure | Check for exposed COMMGR2 management interface | Unauthenticated access to management console |
+
+**Severity:** Critical. ICS/OT systems control physical processes — RCE can result in safety incidents, production disruption, environmental damage.
+
+---
+
+## Active Exploitation Updates (March 2026)
+
+> **Target gate:** Only relevant when recon reveals VMware Aria or Qualcomm Android device scope.
+
+- **CVE-2026-22719** (VMware Aria Operations, CVSS 8.1): unauthenticated command injection. Added to CISA KEV March 2026; actively exploited; federal agencies required to patch by March 24, 2026. **Test:** Identify VMware Aria instances via `/ui/` login page → test command injection vectors on management endpoints
+- **CVE-2026-21385** (Qualcomm Android, March 2026): memory corruption in Qualcomm component. Added to CISA KEV March 3; Google confirmed limited targeted exploitation. Affects 129 Android vulnerabilities patched in March update. **Test:** Only relevant for mobile programs; check target's Android patch level against March 2026 bulletin

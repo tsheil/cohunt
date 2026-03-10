@@ -146,6 +146,8 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **OWASP FinBot CTF** reference application for practicing agentic security skills
 - **Promptware Kill Chain** (arxiv:2601.09625): 7-stage model; 21 of 36 attacks traverse 4+ stages
 - **Adversa AI MCP Security TOP 25** — definitive catalog with red team guides and defensive playbooks
+- **CoSAI MCP Security White Paper** (January 2026, OASIS): 12 core threat categories, ~40 distinct threats — THE reference taxonomy alongside OWASP MCP Top 10; mapped to recon signals and test procedures in mcp-playbooks.md
+- **AI-driven DAST revolution** (2026): auto-discover endpoints from source code reduces setup from weeks to hours; traditional DAST vendors integrating agentic AI for continuous testing — competitive pressure on manual assessment workflows
 
 ---
 
@@ -153,6 +155,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 - **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024
 - **32.1% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck 2026)
+- **IBM X-Force 2026**: vulnerability exploitation now **#1 initial attack vector at 40%** (up from 26% prior year); validates that exploitation speed is outpacing patch cycles — hunters should prioritize recently-patched CVEs in programs where patch lag is visible
 - **884 KEVs** identified in 2025; exploitation was #1 cause of incidents at 40% (IBM X-Force)
 - **FIRST CVE forecast** (Feb 2026): predicted median 59,427 new CVEs (first year to exceed 50,000)
 - **AI-enabled attacks** surged 89% YoY; average eCrime breakout time now 29 minutes, fastest 27 seconds (CrowdStrike 2026)
@@ -332,4 +335,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Gemini-in-Chrome CVE-2026-0628** (March 2026): Google Gemini AI integration in Chrome browser with disclosed vulnerability; AI browser integrations expanding Chrome's attack surface
 - **Adversa AI March 2026 digest**: GenAI attacks becoming large-scale production operations; Anthropic exposure of massive distillation attacks; Microsoft discovery of widespread recommendation poisoning; industrial-scale incidents driving defense architecture evolution
 - **Microsoft recommendation poisoning** (March 2026): widespread poisoning of AI recommendation systems documented; pattern: systemic manipulation of AI-mediated content delivery at scale
+- **Anthropic Code Review** (March 9, 2026): agentic multi-step reasoning loop for security research; builds on Claude Code Security (500+ vulns, 22 Firefox CVEs); continuous improvement of AI-driven code review — competitive pressure on pattern-matching bounty submissions
+- **SecureClaw** (Adversa AI, February 2026): first open-source OWASP-aligned security plugin for OpenClaw AI agents; 55 automated audit checks; addresses OpenClaw supply chain crisis (42,665 exposed instances)
+- **XBOW Palo Alto GlobalProtect discovery** (March 2026): found vulnerability in Palo Alto GlobalProtect VPN; demonstrates AI agent capability expanding beyond web apps into enterprise network security appliances
 

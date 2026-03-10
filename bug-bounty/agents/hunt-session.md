@@ -73,10 +73,11 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation | **INVEST** — this is where bounties pay |
 
    Key competitive landscape (March 2026):
-   - **XBOW**: pivoting to pre-production scanning (reduces direct competition); 85% custom challenge solve rate; 1,060+ reports on HackerOne
-   - **Codex Security + Claude Code Security**: enterprise source scanning (pattern-matching vulns are AI territory)
+   - **XBOW**: pivoting to pre-production scanning; 85% custom challenge solve rate; 1,060+ reports; discovered Palo Alto GlobalProtect VPN vuln — expanding beyond web into network appliances
+   - **Codex Security + Claude Code Security + Anthropic Code Review**: enterprise source scanning + agentic multi-step reasoning (pattern-matching vulns are AI territory)
    - **GitHub Taskflow Agent**: 80+ vulns in 40 open-source repos (auth bypasses, IDORs, token leaks)
    - **ZeroPath**: AI-native SAST detecting business logic + chained vulns (RSAC 2026 finalist)
+   - **SecureClaw**: 55 OWASP-aligned audit checks for OpenClaw agents — establishes defensive baseline
    - AI agents solve 9/10 directed challenges but **degrade in realistic undirected scenarios** (Wiz Cyber Model Arena)
 
 6. **Map workflows** — For the target's core features, apply `/workflow-map` thinking: actors, states, invariants, abuse cases. Business logic = 45% of bounty awards (Intigriti 2026).
@@ -333,9 +334,9 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Target Feature | Primary Test Pattern | Reference |
 |---|---|---|
 | Chatbot / AI assistant | Prompt injection, system prompt extraction, output XSS | ai-hunting SKILL.md |
-| MCP integrations | Tool poisoning, SSRF, credential scope, sampling attacks | ai-hunting/reference/mcp-playbooks.md |
+| MCP integrations | Tool poisoning, SSRF, credential scope, sampling attacks, **CoSAI T1-T12 threat routing** | ai-hunting/reference/mcp-playbooks.md |
 | AI agent with tools | Excessive agency, cross-agent escalation, goal hijacking | ai-hunting/reference/agent-attack-patterns.md |
-| AI coding IDE | Supply chain via configs, extension squatting, Chromium flaws | ai-hunting/reference/agent-attack-patterns.md |
+| AI coding IDE | Supply chain via configs, extension squatting, Chromium flaws, **mcp-remote client RCE (CVE-2025-6514)** | ai-hunting/reference/ide-supply-chain.md |
 | Agentic browser | PleaseFix zero-click hijack, credential theft, file exfiltration, adaptive injection | ai-hunting/reference/agent-attack-patterns.md |
 | CI/CD with AI bots | Pipeline injection via issues/PRs, secret exfiltration | ai-hunting/reference/agent-attack-patterns.md |
 | RAG / retrieval | Zero-click indirect injection, vector DB poisoning | ai-hunting/reference/mcp-playbooks.md |
@@ -344,6 +345,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Workflow automation (n8n, Make) | Content-Type confusion, unauthenticated webhooks | vuln-patterns SKILL.md |
 | Windows/infrastructure components | MotW bypass, SSRF chains, remote desktop, MDM, critical infra auth | vuln-patterns/reference/infrastructure-vulns.md |
 | Claude Desktop Extensions (DXT) | Zero-click RCE, AppleScript injection, API whitelist exfiltration | ai-hunting/reference/ide-supply-chain.md |
+| MCP client infrastructure | mcp-remote RCE (CVE-2025-6514), OAuth metadata injection, proxy/gateway URL handling | vuln-patterns/reference/ai-mcp-vulns.md |
 | SD-WAN / network management | Auth bypass, peering exploitation, software downgrade chains | vuln-patterns/reference/infrastructure-vulns.md |
 
 *Hunter-Level:*

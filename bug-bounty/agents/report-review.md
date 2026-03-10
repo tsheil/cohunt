@@ -137,10 +137,11 @@ AI/LLM VULNERABILITY REPORTS (check if applicable)
   MCP & Protocol Layer:
 □ MCP-related finding identifies the specific MCP server, version, and affected tool
 □ MCP sampling attack specifies the vector: resource theft, conversation hijacking, or covert tool invocation
-□ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings
+□ OWASP MCP Top 10 risk ID cited if targeting MCP-specific behavior (MCP01-MCP10) — complements Agentic Top 10 for protocol-layer findings; also reference **CoSAI threat IDs (T1-T12)** for protocol-layer taxonomy alignment (see mcp-playbooks.md CoSAI routing matrix)
 □ eval()/exec() epidemic (MCP servers): if finding involves unsanitized input to eval/exec in MCP servers, reference the 7 RCE CVEs in February 2026 sharing this root cause — systematic pattern, not isolated incident
 □ MCP SDK cross-client data leak: if finding involves data leaking between client sessions, reference CVE-2026-25536 (TypeScript SDK); this is a protocol-level flaw affecting all implementations using shared instances
 □ WebSocket agent hijacking (ClawJacked): if finding involves cross-origin WebSocket access to local AI agents, demonstrate that any webpage can connect — no user interaction required; full agent control with all permissions
+□ MCP client infrastructure RCE: if finding involves MCP proxy/gateway/bridge components, reference CVE-2025-6514 (mcp-remote, CVSS 9.6, 437K+ npm downloads) — malicious MCP server provides crafted OAuth metadata → client passes unsanitized URL to shell → OS command injection; pattern applies to all MCP clients processing server-provided URLs
 □ MCP installation flow abuse (Cursor MCPoison pattern): demonstrates trust assumption bypass during MCP server installation or setup
 □ MCP health/diagnostic info disclosure: if finding involves unauthenticated info leakage from health endpoints, reference CVE-2026-29787 — document what system data is exposed (OS, CPU, memory, database paths)
 □ MCP sampling attacks: if finding involves MCP servers using the sampling feature as an injection vector, reference Palo Alto Unit42 — demonstrate server becoming "active prompt author" enabling resource theft, session manipulation, or unauthorized content generation

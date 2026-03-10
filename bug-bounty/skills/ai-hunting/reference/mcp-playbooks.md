@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-69 test procedures for MCP vulnerabilities: OWASP MCP Top 10, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
+70 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
 
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
@@ -8,10 +8,33 @@
 
 ## Table of Contents
 
-- [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [69 Test Procedures](#69-mcp-test-procedures)
-- [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples) | [Implementation Stats](#mcp-implementation-vulnerability-stats)
+- [CoSAI MCP Threat Routing](#cosai-mcp-threat-routing-matrix) | [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026)
+- [70 Test Procedures](#70-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
 - [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026)
+
+---
+
+## CoSAI MCP Threat Routing Matrix
+
+The CoSAI (Coalition for Secure AI) MCP Security White Paper (OASIS, January 2026) defines 12 threat categories with ~40 distinct threats. Use this matrix to route from recon signals to first tests.
+
+| CoSAI Category | Recon Signal | First Test | Proof Required | Stop If |
+|---|---|---|---|---|
+| **T1: Identity Spoofing** | MCP server lacks auth, shared PATs | Spoof client identity to server | Unauthorized tool invocation with spoofed identity | Auth enforced per-client |
+| **T2: Privilege Escalation** | Broad-scope tokens, missing RBAC | Call tools beyond token scope | Action completed with insufficient privilege | Scope-limited tokens, least-privilege enforced |
+| **T3: Tool Poisoning** | Community/third-party MCP servers | Inject hidden instructions in tool description | AI follows injected instructions to call unintended tools | Description-only content ignored by model |
+| **T4: Data Exfiltration** | MCP with file/DB access tools | Prompt injection → exfil via tool calls | Sensitive data reaches attacker-controlled endpoint | Tool responses sanitized, no external fetch |
+| **T5: Input Validation** | CLI-wrapping servers, eval/exec patterns | Command injection via tool parameters | OS command executed (Procedures #65, #69, #70) | Input sanitized, parameterized execution |
+| **T6: Rug Pull / Supply Chain** | npm/pip MCP packages, auto-updates | Check for post-install behavior changes | Tool behavior differs from documented specification | Pinned versions, signed packages |
+| **T7: Denial of Service** | Recursive tool calls, unbounded loops | Trigger overthinking loop (Procedure #50) | Token amplification >10x expected | Rate limiting, loop detection |
+| **T8: Cross-System Chaining** | Multi-server MCP deployments | Pivot from compromised server to adjacent tools | Data accessed across server boundaries | Server isolation, no shared context |
+| **T9: Logging/Audit Gaps** | No observable audit trail for tool calls | Execute sensitive action, check for audit record | Action unlogged or log missing key details | Comprehensive audit logging |
+| **T10: Transport Security** | HTTP (not HTTPS), no mTLS | MITM tool call traffic | Intercepted/modified tool parameters | TLS enforced, certificate pinned |
+| **T11: Schema Integrity** | Versioned MCP servers, auto-update | Compare tool schemas across versions | Schema expanded without changelog (Schema Drift) | Schema pinning, version audit |
+| **T12: Sampling Abuse** | Servers using `sampling/createMessage` | Inject instructions via sampling request | Session hijacked or covert tool invoked (Procedures #66-68) | Sampling disabled or user-confirmed |
+
+**Usage:** During hunt-session, map each discovered MCP server against these 12 categories. Cite CoSAI threat IDs (T1-T12) alongside OWASP MCP risk IDs (MCP01-MCP10) in reports for strongest framing.
 
 ---
 
@@ -416,41 +439,17 @@ Pynt analyzed 281 MCP configurations from real-world agent frameworks and plugin
 
 ## Enkrypt AI MCP Scanner Findings (March 2026)
 
-Enkrypt AI scanned 1,000+ MCP servers: **33% had critical vulnerabilities** (avg 5.2 per server), worst case K8s MCP server had 26 vulns (6 CVSS 9.8). Malicious Postmark MCP silently exfiltrated every email it processed.
+1,000+ servers scanned: **33% critical vulns** (avg 5.2/server, worst case 26 vulns). Malicious Postmark MCP silently exfiltrated every email.
 
-**Test Procedure (#62): MCP Server Vulnerability Scan**
-1. Submit target to Enkrypt AI MCP Scanner (enkryptai.com/mcp-scan) or Cisco MCP Scanner
-2. Review severity scores and cross-reference against known MCP CVE patterns
-3. For self-hosted: deploy Enkrypt Secure MCP Gateway for runtime AI safety filtering
-
-**Maps to:** MCP03 (Insecure MCP Server Design) + MCP07 (Supply Chain)
+**Test Procedure (#62): MCP Server Vulnerability Scan** — Submit to Enkrypt AI (enkryptai.com/mcp-scan) or Cisco MCP Scanner; cross-reference against known CVE patterns. **Maps to:** MCP03 + MCP07
 
 ---
 
 ## New MCP Patterns (March 2026)
 
-### Keysight Confused Deputy MCP Command Injection
+**Test Procedure (#63): Confused Deputy via STDIO MCP Server** (Keysight ATI) — STDIO MCP servers run with user privileges. Test: identify STDIO servers → check for shell-reaching parameters → induce LLM to pass attacker-controlled params → verify privilege level. **Maps to:** MCP03 + CWE-441
 
-Keysight ATI (January 2026): STDIO transport MCP servers run with user privileges — malicious servers already operate inside the trusted boundary without needing to break isolation.
-
-**Test Procedure (#63): Confused Deputy via STDIO MCP Server**
-1. Identify MCP servers using STDIO transport (local execution, not remote HTTP/SSE)
-2. Check if exposed tools accept parameters that reach shell execution paths
-3. Test if the LLM can be induced to pass attacker-controlled parameters to privileged tools
-4. Verify: does the MCP server run with the same privileges as the user? (Most STDIO servers do)
-
-**Maps to:** MCP03 (Insecure MCP Server Design) + CWE-441 (Unintended Proxy or Intermediary)
-
-### MCP Health/Debug Endpoint Reconnaissance
-
-CVE-2026-29787: health endpoints expose OS version, Python version, CPU count, memory, disk usage, database paths without auth. Pattern: HTTP-transport MCP servers expose debug/health endpoints leaking recon data.
-
-**Test Procedure (#64): MCP Health Endpoint Info Disclosure**
-1. Enumerate: `/api/health`, `/api/health/detailed`, `/health`, `/status`, `/debug`
-2. Check if endpoints respond without auth (especially `MCP_ALLOW_ANONYMOUS_ACCESS=true`)
-3. Verify binding: `0.0.0.0` (network-exposed) vs `127.0.0.1` (localhost-only)
-
-**Maps to:** MCP03 + CWE-200 (Information Exposure)
+**Test Procedure (#64): MCP Health Endpoint Info Disclosure** (CVE-2026-29787) — Enumerate `/api/health`, `/health`, `/status`, `/debug`; check for unauth responses exposing OS/CPU/memory/DB paths. **Maps to:** MCP03 + CWE-200
 
 ### MCP Kubernetes Command Injection (GHSA-gjv4-ghm7-q58q)
 
@@ -467,31 +466,21 @@ mcp-server-kubernetes: command injection via unsanitized parameters in kubectl-w
 
 Palo Alto Unit 42 identified three attack vectors through MCP sampling — the mechanism letting MCP servers request LLM completions from the client. A compromised server becomes an active prompt author:
 
-**Three attack vectors:** (1) **Resource Theft** — hidden instructions consume victim's API credits. (2) **Conversation Hijacking** — persistent instructions affect the entire session. (3) **Covert Tool Invocation** — sampling requests invoke other tools without user awareness.
+**Three attack vectors:** (1) **Resource Theft** — hidden instructions consume victim's API credits (#66: monitor token consumption vs expected, intercept for hidden instructions). (2) **Conversation Hijacking** — persistent instructions affect the entire session (#67: inject via sampling, test if instructions survive across tool boundaries). (3) **Covert Tool Invocation** — sampling requests invoke other tools without user awareness (#68: monitor tool invocations during sampling, check for unprompted execution).
 
-**Test Procedure (#66): MCP Sampling Resource Theft**
-1. Identify MCP servers that use sampling capabilities (`sampling/createMessage`)
-2. Monitor token consumption during tool calls — compare expected vs actual usage
-3. Intercept sampling requests and check for hidden instructions unrelated to the tool's purpose
-4. Verify if the server receives completed content that the user never sees
-
-**Test Procedure (#67): MCP Sampling Session Hijacking**
-1. Connect a test MCP server that injects persistent instructions via sampling requests
-2. After the sampling completes, test if injected instructions affect subsequent non-MCP interactions
-3. Check if sampling-injected context survives across tool call boundaries
-4. Verify if users can detect or revoke sampling-injected instructions
-
-**Test Procedure (#68): MCP Sampling Covert Tool Invocation**
-1. Monitor all tool invocations during MCP sampling requests
-2. Check if sampling responses trigger tool calls the user didn't explicitly request
-3. Test if filesystem, network, or code execution tools activate without confirmation
-4. Verify audit logs capture tool calls initiated through sampling chains
-
-**Maps to:** MCP02 (Tool Poisoning) + MCP06 (Excessive Permissions) + ASI05 (Excessive Agency)
+All three: identify MCP servers using `sampling/createMessage`, test each vector independently. **Maps to:** MCP02 + MCP06 + ASI05 + CoSAI T12
 
 **Test Procedure (#69): Exec-Namespace Reflection Bypass**
-1. Identify MCP servers using Python `exec()`/`eval()` with pre-loaded namespaces (diagram generators, code runners, data processors)
-2. Test reflection bypasses: `getattr(__builtins__, '__import__')('os').system('id')`, `getattr(os, 'sys'+'tem')('id')`, string concat evasion `eval('o'+'s.sy'+'stem("id")')` — defeats regex blocklists
-3. Verify if namespace includes `os`, `subprocess`, `importlib`, `shutil`, or `pathlib` — any pre-loaded module exploitable via `getattr`/`__import__`
+1. Identify MCP servers using Python `exec()`/`eval()` with pre-loaded namespaces
+2. Test reflection bypasses: `getattr(__builtins__, '__import__')('os').system('id')`, string concat evasion `eval('o'+'s.sy'+'stem("id")')` — defeats regex blocklists
+3. Verify if namespace includes `os`, `subprocess`, `importlib`, `shutil`, or `pathlib`
 
-**Maps to:** MCP03 (Sandbox Escape) + CWE-94 (Code Injection)
+**Maps to:** MCP03 + CWE-94 + CoSAI T5
+
+**Test Procedure (#70): MCP Client Infrastructure RCE (mcp-remote)**
+1. Identify MCP clients using `mcp-remote` proxy (437K+ npm downloads, versions 0.0.5-0.1.15)
+2. Set up rogue MCP server returning malicious `authorization_endpoint` in OAuth metadata
+3. Verify: does client execute OS commands from untrusted server-provided URLs? (CVE-2025-6514, CVSS 9.6)
+4. Test other MCP clients for similar untrusted-URL-to-execution paths in OAuth/auth flows
+
+**Maps to:** MCP01 (Token Mismanagement) + CWE-78 + CoSAI T5/T6
