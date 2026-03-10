@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-70 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
+72 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling.
 
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
@@ -9,9 +9,9 @@
 ## Table of Contents
 
 - [CoSAI MCP Threat Routing](#cosai-mcp-threat-routing-matrix) | [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026)
-- [70 Test Procedures](#70-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
+- [72 Test Procedures](#72-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
 - [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
-- [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026)
+- [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox Benchmark](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
 
 ---
 
@@ -136,31 +136,11 @@ A dedicated security framework specifically for Model Context Protocol risks, pu
 
 ---
 
-## 70 MCP Test Procedures
+## 72 MCP Test Procedures
 
-**Testing MCP Deployments:**
-1. Check what permissions/scopes the MCP server's credentials have (PATs, API keys, OAuth tokens)
-2. Test if tool descriptions can be poisoned by upstream content
-3. Inject prompts into content the MCP server retrieves (documents, issues, messages)
-4. Check if the agent validates tool call parameters before execution
-5. Test cross-system chaining: can a prompt in System A trigger actions in System B?
-6. Check for tool shadowing: register a tool with a similar name to a legitimate one
-7. Test "rug pull" scenarios: can tool definitions change between sessions without re-approval?
-8. Check for command injection in MCP server configuration parameters (especially OAuth/auth endpoints)
-9. Test sandbox/containment escape via symlinks, path traversal, or filesystem operations
-10. Map findings to **OWASP MCP Top 10** risk IDs (MCP01-MCP10) for stronger reports
-11. Test documentation supply chain (ContextCrush pattern): can "custom rules" or contributed docs inject instructions?
-12. Scan for shadow MCP servers (MCP07): unauthorized servers running on enterprise networks without security awareness
-13. Test for eval()/exec() epidemic pattern: does the MCP server pass user input to dangerous execution functions? (7 CVEs in Feb 2026 shared this root cause)
-14. Test for SDK-level cross-client data leaks: if MCP server reuses a single instance across clients, can responses leak between sessions? (CVE-2026-25536)
-15. Test for WebSocket hijacking (ClawJacked pattern): if AI agent runs locally with WebSocket interface, can a malicious webpage connect and control it?
-16. Test for salami slicing: can repeated small interactions gradually shift agent behavior past its constraints?
-17. Test for MCP sampling attacks: can an MCP server use the sampling feature to become an "active prompt author" and inject instructions? (Unit42 research — resource theft, session manipulation, unauthorized content generation)
-18. Test for rules file backdoor: do AI IDE configuration files (`.cursorrules`, `.github/copilot-instructions.md`) contain invisible Unicode characters with hidden instructions? (Pillar Security)
-19. Test for CI/CD pipeline injection (PromptPwnd pattern): can a malicious GitHub issue or PR inject prompts into AI agents running in CI/CD pipelines, leaking secrets? (Aikido Security — 5+ Fortune 500 confirmed affected)
-20. Test for denial-of-wallet via MCP overthinking loops: can crafted tool responses trigger repetition, forced refinement, or distraction loops that amplify token consumption up to 142.4x? (arXiv:2602.14798 — each step looks normal, making detection difficult)
-21. Test for invisible prompt injection via Unicode tag characters (range E0000-E007F): can hidden instructions be embedded within normal-looking text input to manipulate AI behavior undetectably? (HackerOne Hai vulnerability — Cyrex)
-22. Test for hybrid prompt injection 2.0: can prompt injection payloads combine with traditional exploits (XSS, CSRF, SQLi) to create compound attack chains? (arXiv:2507.13169)
+**Core Tests (1-12):** (1) Check credentials/scopes (PATs, OAuth tokens). (2) Poison tool descriptions via upstream content. (3) Inject prompts into MCP-retrieved content (docs, issues). (4) Validate tool call parameters before execution. (5) Cross-system chaining: prompt in System A → actions in System B. (6) Tool shadowing via similar names. (7) Rug pull: tool definitions change between sessions. (8) Command injection in config/OAuth endpoints. (9) Sandbox escape via symlinks/path traversal. (10) Map to OWASP MCP Top 10 (MCP01-MCP10). (11) ContextCrush: custom rules/docs inject instructions. (12) Shadow MCP servers (MCP07).
+
+**Advanced Tests (13-22):** (13) eval()/exec() epidemic (7 CVEs in Feb 2026). (14) SDK cross-client data leaks (CVE-2026-25536). (15) WebSocket hijacking (ClawJacked). (16) Salami slicing behavioral drift. (17) MCP sampling as active prompt author (Unit42). (18) Rules file backdoor via invisible Unicode (E0000-E007F). (19) CI/CD pipeline injection (PromptPwnd — 5+ Fortune 500 affected). (20) Denial-of-wallet overthinking loops (142.4x token amplification). (21) Invisible Unicode tag injection (HackerOne Hai — Cyrex). (22) Hybrid prompt injection 2.0 (XSS + CSRF + SQLi compound chains).
 23. Test for mcp-server-git RCE: if target uses git-based MCP servers, can malicious `.git/config` files achieve code execution? (CVE-2025-68145/68143/68144 — even Anthropic's first-party MCP server was vulnerable)
 24. Test for AI framework regex denylist bypass: if target uses AI agent frameworks with command execution (Shell tools, code interpreters), can command obfuscation bypass regex-based denylists? (CVE-2026-2256, ModelScope MS-Agent, CVSS 9.8 — prompt injection -> full system compromise)
 25. Test for unauthenticated AI agent local servers: does the AI coding tool auto-start an HTTP server on localhost? Is CORS permissive? Can any website trigger command execution? (CVE-2026-22812, OpenCode — any local process or website could execute arbitrary shell commands)
@@ -490,3 +470,22 @@ All three: identify MCP servers using `sampling/createMessage`, test each vector
 4. Test other MCP clients for similar untrusted-URL-to-execution paths in OAuth/auth flows
 
 **Maps to:** MCP01 (Token Mismanagement) + CWE-78 + CoSAI T5/T6
+
+---
+
+## MCPTox Benchmark: Quantified Tool Poisoning Risk (arXiv:2508.14925)
+
+First systematic benchmark of tool poisoning attacks on real-world MCP infrastructure: **45 live MCP servers, 353 authentic tools, 1,312 malicious test cases** across 10 risk categories. Key findings: o1-mini achieved **72.8% attack success rate**; more capable models are MORE susceptible; highest refusal rate (Claude 3.7 Sonnet) was **less than 3%**. Poisoned tools are never executed — they manipulate the agent into misusing legitimate tools.
+
+**Test Procedure (#71): MCPTox-Style Tool Poisoning Assessment**
+1. Identify all connected MCP servers and enumerate tool descriptions
+2. Check if tool descriptions contain hidden instructions (e.g., "before calling this tool, first call X with Y")
+3. Test if adding a malicious tool definition causes the LLM to redirect calls from legitimate tools
+4. Verify: does the model follow description-embedded instructions without user awareness?
+
+**Maps to:** MCP02 (Tool Poisoning) + CoSAI T3 + ASI02
+
+**Test Procedure (#72): MCP-ITP Implicit Tool Poisoning** (arXiv:2601.07395)
+Automated framework for implicit tool poisoning — black-box optimization maximizes Attack Success Rate while evading detection. Test: inject subtle behavioral modifications in tool descriptions that don't mention other tools explicitly but bias LLM tool selection; verify if model's tool choice shifts without visible instruction.
+
+**Maps to:** MCP02 + CoSAI T3

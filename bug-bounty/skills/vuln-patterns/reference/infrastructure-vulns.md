@@ -248,33 +248,16 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Key CVE:** CVE-2026-3545 (CVSS 9.6) — sandbox escape via insufficient data validation in Chrome's Navigation component.
 
-**Why it matters:** Chrome sandbox escapes are rare and extremely high value ($100K+ in Google's VRP). This CVE demonstrates that Navigation component data validation is an active variant analysis target.
+**Why it matters:** Chrome sandbox escapes are rare and extremely high value ($100K+ in Google's VRP). AI IDEs like Cursor and Windsurf ship legacy Chromium builds with 94+ known vulnerabilities.
 
-**Where to look:** Applications embedding Chromium (Electron, CEF-based apps) may inherit navigation validation flaws. AI IDEs like Cursor and Windsurf ship legacy Chromium builds with 94+ known vulnerabilities (OX Security research).
-
-**Test patterns:**
+**Where to look:** Applications embedding Chromium (Electron, CEF-based apps) may inherit navigation validation flaws.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
 | 1 | Navigation data validation | Craft navigation events with malformed or unexpected data types | Sandbox boundary crossed during navigation |
 | 2 | Embedded Chromium version check | Identify Chromium version in Electron/CEF apps | Unpatched versions vulnerable to known sandbox escapes |
-| 3 | Cross-origin navigation abuse | Test navigation flows between different origin contexts | Privilege escalation across origin boundaries |
 
-**Severity Guidance:** Critical. Sandbox escapes enable full system compromise from a web page. Variant analysis across Chromium navigation code paths is high-value.
-
----
-
-## Industrial Control System RCE (March 2026)
-
-**Key CVEs:**
-- **CVE-2026-3630** (Delta Electronics COMMGR2, CVSS 9.8): stack buffer overflow enabling unauthenticated remote RCE in industrial communication gateway
-- **CVE-2026-20079/20131** (Cisco FMC, dual CVSS 10.0): unauthenticated remote root access on Cisco Firepower Management Center
-
-**Why it matters:** ICS/OT targets are increasingly in scope for enterprise bug bounty programs. Critical infrastructure vendors like Cisco and Delta have VDPs and some run bounty programs.
-
-**Where to look:** Internet-exposed management interfaces for network appliances, SCADA gateways, and industrial controllers. Use Shodan/Censys to identify exposed instances.
-
-**Severity Guidance:** Critical (CVSS 9.8-10.0). These represent the highest-severity bug class. Report with clear network exposure evidence.
+**Severity Guidance:** Critical. Sandbox escapes enable full system compromise. Also test ICS/OT targets: CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8, stack buffer overflow in industrial gateway).
 
 ---
 
@@ -361,8 +344,9 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 **What it is:** Authentication bypass in network management planes — SD-WAN controllers, EoL routers, VPN gateways — enabling unauthenticated administrative access to devices managing entire network fabrics.
 
 **Key CVEs (Feb-March 2026):**
-- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root via software downgrade-then-restore. CISA KEV + Emergency Directive ED 26-03, 24-hour patch mandate. Largest attack spike **March 4, 2026**. Rogue peer joined to management plane; post-exploitation: version downgrade → old privesc → restore
-- **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` endpoint — unauthenticated DNS modification ("DNSChanger") on EoL devices (DSL-2740R, DSL-2640B, DSL-2780B, DSL-526B). Exploited in the wild since November 2025. **No patch available** — devices EoL since 2020
+- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root via software downgrade-then-restore. CISA KEV + Emergency Directive ED 26-03, 24-hour patch mandate. Largest attack spike **March 4, 2026**. Post-exploitation: version downgrade → old privesc → restore
+- **CVE-2026-20128/20122** (Cisco Catalyst SD-WAN Manager, actively exploited March 2026): credential file exposure (20128) + authenticated API file overwrite (20122). Activity spike March 4 coincided with 20127; ACSC + CISA advisories. Post-exploitation: **web shell deployment confirmed**, lateral movement between SD-WAN deployments
+- **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` — unauthenticated DNS modification on EoL devices. Exploited since November 2025. **No patch** — devices EoL since 2020
 
 **Where to look:** Cisco SD-WAN (vSmart/vManage), EoL routers still in production, Fortinet/Ivanti VPN gateways. Shodan: `Cisco SD-WAN`, `vManage`, `D-Link DSL`.
 
@@ -497,4 +481,5 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2026-24985 | Windows ICMP | 9.8 | RCE via ICMP — no auth/interaction required. March 2026 Patch Tuesday zero-day. Pattern: network protocol handlers processing malformed packets without bounds checking |
 | CVE-2026-24993 | Outlook | 9.8 | EoP zero-day — specially crafted email triggers automatically on retrieval by server. No preview pane required. March 2026 Patch Tuesday. Pattern: email-triggered pre-auth exploitation |
 | CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE — untrusted data deserialized → cmd exec on host. CISA KEV March 2026. Pattern: Java deserialization in enterprise web help desk products |
+| CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite without authentication — supply chain attack vector: replace legitimate release binaries with backdoored payloads. Fixed Gogs 0.14.2. Pattern: LFS/artifact registries with missing authz on object storage |
 | CVE-2026-22719 | VMware Aria | 8.1 | Command injection — unauth attacker executes arbitrary commands. CISA KEV March 2026. Active exploitation in the wild. Pattern: management console command injection |
