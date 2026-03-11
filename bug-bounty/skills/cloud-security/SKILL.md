@@ -261,23 +261,23 @@ Cloud analytics platforms (Looker Studio, Power BI, Tableau Cloud, Databricks) c
 
 ### LeakyLooker Pattern (Tenable, March 2026)
 
-Nine cross-tenant vulnerabilities in Google Looker Studio enabled arbitrary SQL queries on victims' databases across GCP projects. Key attack paths:
+Nine cross-tenant vulnerabilities in Google Looker Studio across multiple distinct issue types:
 
 | # | Vector | How It Works | Impact |
 |---|--------|-------------|--------|
-| 1 | Connector credential inheritance | Clone a public report → cloned report retains original owner's database credentials | Arbitrary SQL on victim's BigQuery/Spanner/PostgreSQL |
-| 2 | Report copy credential theft | Copy-report feature preserves source owner's auth → DELETE/UPDATE access | Data modification or destruction |
-| 3 | One-click data exfiltration | Shared report forces victim's browser to execute queries against attacker-controlled project → full database reconstruction from logs | Mass data exfiltration via browser proxy |
+| 1 | Stored-credential inheritance (PostgreSQL-like connectors) | Clone a public report → cloned report retains original owner's database credentials | Read/write access to victim's PostgreSQL/MySQL databases |
+| 2 | Linking API abuse (BigQuery/Spanner) | Separate API paths allow arbitrary query execution across GCP projects | Cross-project data access via BigQuery/Spanner |
+| 3 | Browser-proxied exfiltration | Shared report forces victim's browser to execute queries against attacker-controlled project → data reconstructed from logs | Mass data exfiltration via browser proxy |
 
-**Where to hunt this pattern:**
+**Where to hunt this pattern** (Looker Studio confirmed; others are untested hunt hypotheses):
 
 | Platform | Test | What to look for |
 |----------|------|-----------------|
-| **Google Looker Studio** | Clone public reports with database connectors | Cloned report queries original owner's data |
-| **Power BI** | Shared datasets, embedded reports | Dataset credential sharing across tenants |
-| **Tableau Cloud** | Published datasources with embedded credentials | Cross-site datasource access |
-| **Databricks** | Shared notebooks with Unity Catalog | Cross-workspace table access |
-| **Metabase** | Shared dashboards, public question links | Database credential leakage via shared artifacts |
+| **Google Looker Studio** | Clone public reports with database connectors | Cloned report queries original owner's data (confirmed by Tenable) |
+| **Power BI** | Shared datasets, embedded reports | Dataset credential sharing across tenants (hypothesis) |
+| **Tableau Cloud** | Published datasources with embedded credentials | Cross-site datasource access (hypothesis) |
+| **Databricks** | Shared notebooks with Unity Catalog | Cross-workspace table access (hypothesis) |
+| **Metabase** | Shared dashboards, public question links | Database credential leakage via shared artifacts (hypothesis) |
 
 **Hunt heuristic:** Any cloud analytics tool that allows sharing/copying reports while using service-level database credentials is a candidate. Test: Can you access data from a project/tenant you don't own by copying or viewing a shared report?
 
