@@ -46,6 +46,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **API-First** | Developer docs, API keys, webhooks, rate limits | api-security, auth-testing | Broken auth, BOLA/BFLA, rate limiting, GraphQL introspection |
    | **AI Product** | Chatbot, copilot, agent, MCP integrations | ai-hunting, vuln-patterns | Prompt injection, tool abuse, memory poisoning, agent hijacking |
    | **Infrastructure** | Network appliances, management consoles, VPN | infrastructure-security, auth-testing | Auth bypass, command injection, deserialization, default creds, MotW bypass |
+   | **Desktop App** | Electron, Tauri, CEF, browser extensions, protocol handlers | browser-desktop-security, client-side-security | Preload bridge RCE, extension privilege escalation, protocol handler injection, auto-updater abuse |
    | **Mobile-First** | iOS/Android apps, deep links, certificate pinning | mobile-security, api-security | API backend vulns, deep link hijacking, local data exposure |
 
 2. **Setup & State Fixtures (REQUIRED before hunting, AFTER scope gate)** — The gap between a good plan and a payable bug is almost always **missing test state**. Only invest in setup after program research confirms the target is worth hunting (go/caution, not no-go). Before any testing, force the hunter through this setup checklist:

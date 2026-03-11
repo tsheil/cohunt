@@ -41,6 +41,7 @@ For deep dives, route to the specialized skill or reference file:
 | **GraphQL, JWT format, OAuth format** | [reference/web-vulns.md](reference/web-vulns.md) |
 | **Workflow automation (n8n, Airflow, Temporal)** | [infrastructure-security](../infrastructure-security/SKILL.md) |
 | **Infrastructure, MotW, SSRF chains, MDM, remote desktop, firewalls, backup appliances** | [infrastructure-security](../infrastructure-security/SKILL.md) + [reference/infrastructure-vulns.md](../infrastructure-security/reference/infrastructure-vulns.md) |
+| **Electron, Tauri, browser extensions, protocol handlers, desktop app security** | [browser-desktop-security](../browser-desktop-security/SKILL.md) |
 | **DOM XSS, prototype pollution, PostMessage, CSP/CORS** | [client-side-security](../client-side-security/SKILL.md) |
 | **CI/CD, GitHub Actions, dependency confusion, supply chain** | [supply-chain-security](../supply-chain-security/SKILL.md) |
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |

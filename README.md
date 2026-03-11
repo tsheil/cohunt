@@ -6,7 +6,7 @@ A plugin marketplace for security research and bug bounty hunting. Built for [Cl
 
 | Plugin | How it helps | Connectors |
 |--------|-------------|------------|
-| **[bug-bounty](./bug-bounty)** | Full hunting lifecycle — recon targets, research programs, map business logic workflows, audit source code, test for vulns, check reportability, hunt variants, write reports, and plan engagements. 16 skills, 18 commands, 2 agents. Works standalone with curl/dig and web search, supercharged with platform and asset discovery connectors. | HackerOne, Bugcrowd, Shodan, Censys, SecurityTrails, GitHub |
+| **[bug-bounty](./bug-bounty)** | Full hunting lifecycle — recon targets, research programs, map business logic workflows, audit source code, test for vulns, check reportability, hunt variants, write reports, and plan engagements. 17 skills, 18 commands, 2 agents. Works standalone with curl/dig and web search, supercharged with platform and asset discovery connectors. | HackerOne, Bugcrowd, Shodan, Censys, SecurityTrails, GitHub |
 
 
 ## Getting Started
