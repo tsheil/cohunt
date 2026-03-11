@@ -1,22 +1,120 @@
 ---
 name: cloud-security
-description: Cloud security misconfiguration patterns for AWS, GCP, and Azure. Use when a target is cloud-hosted, uses cloud services (S3, GCS, Azure Blob, Lambda, Cloud Functions), or when recon reveals cloud infrastructure. Trigger with "cloud misconfig", "S3 bucket", "AWS security", "GCP security", "Azure security", "cloud enumeration", "serverless security", "metadata endpoint", "cloud storage", "IAM", or when target-recon identifies cloud hosting. Also activates when SSRF testing reveals cloud metadata endpoints, or when storage URLs (s3.amazonaws.com, storage.googleapis.com, blob.core.windows.net) appear in scope. For SSRF techniques to reach cloud metadata, use vuln-patterns. For CI/CD pipeline attacks in cloud environments, use supply-chain-security.
+description: Cloud security misconfiguration patterns for AWS, GCP, and Azure — storage, identity, serverless, metadata, AI/ML services, and multi-cloud pivots. Use when a target is cloud-hosted, uses cloud services (S3, GCS, Azure Blob, Lambda, Cloud Functions, SageMaker, Vertex AI, Bedrock, Azure OpenAI), or when recon reveals cloud infrastructure. Trigger with "cloud misconfig", "S3 bucket", "AWS security", "GCP security", "Azure security", "cloud enumeration", "serverless security", "metadata endpoint", "cloud storage", "IAM", "SageMaker", "Vertex AI", "Bedrock", "Azure OpenAI", "cloud AI", "multi-cloud", "workload identity", "federation", or when target-recon identifies cloud hosting. Also activates when SSRF testing reveals cloud metadata endpoints, or when storage URLs (s3.amazonaws.com, storage.googleapis.com, blob.core.windows.net) appear in scope. For SSRF techniques to reach cloud metadata, use vuln-patterns. For CI/CD pipeline attacks in cloud environments, use supply-chain-security. For prompt injection and model-behavior attacks on AI features, use ai-hunting (cloud-security owns IAM/network/storage/backing-store for AI services; ai-hunting owns model-behavior attacks).
 ---
 
-Cloud misconfiguration patterns for bug bounty hunting. Covers storage, compute, identity, serverless, and metadata attack surfaces across AWS, GCP, and Azure.
+# Cloud Security Misconfiguration Patterns
+
+Cloud misconfigs are consistently rewarded in bug bounties — storage exposure, metadata SSRF, IAM overreach, and AI/ML service misconfigurations. This skill covers all three major providers plus the rapidly growing AI cloud attack surface.
+
+## Quick Start — First 5 Minutes
+
+1. **Storage** — Find bucket/container names from JS, subdomains, error pages. `curl https://{bucket}.s3.amazonaws.com/` — look for `<ListBucketResult>`.
+2. **Metadata** — Any SSRF? Hit `http://169.254.169.254/latest/meta-data/`. If IMDSv2, try redirect/DNS rebinding bypass.
+3. **IAM keys** — Search JS, `.env`, CI configs, Terraform state for `AKIA*` (AWS), JSON key files (GCP), `?sv=` SAS tokens (Azure).
+4. **Serverless** — Find Lambda/Function URLs. Test `?code=` key exposure, anonymous invoke, event injection.
+5. **AI services** — Target uses SageMaker/Vertex/Bedrock/Azure OpenAI? Test API parity, backing-store exposure, execution identity overreach. See [reference/cloud-ai-ml.md](reference/cloud-ai-ml.md).
+
+If you find something, run `/scope-check` first (cloud assets are often vendor-owned), then `/reportability-check` before `/write-report`.
+
+---
 
 ## Execution Flow
 
 ```
-1. Identify cloud provider(s) from recon data or user input
-2. Enumerate cloud-specific attack surface (storage, compute, APIs)
-3. Test storage misconfigurations
-4. Test metadata/SSRF paths
-5. Test identity and access misconfigurations
-6. Test serverless-specific issues
-7. Check for secrets and credential exposure
-8. Synthesize findings with cloud-specific impact assessment
+1. Identify cloud provider(s) from recon data
+2. Run scope gate — is this the target's asset or vendor infrastructure?
+3. Enumerate cloud attack surface (storage, compute, APIs, AI services)
+4. Test storage misconfigurations
+5. Test metadata/SSRF paths
+6. Test identity and access misconfigurations
+7. Test serverless and AI/ML service issues
+8. Check for secrets and credential exposure
+9. Test multi-cloud federation and lateral movement
+10. Run validation loop before reporting
 ```
+
+---
+
+## Scope Gate (Run First)
+
+Cloud findings get N/A'd fast when the asset is vendor-owned. Before testing:
+
+| Signal | Verdict |
+|--------|---------|
+| S3 bucket owned by AWS, not the program | **Out of scope** — vendor infrastructure |
+| Azure Blob on `microsoft.com` tenant | **Out of scope** — verify target ownership |
+| GCS bucket matches target's naming convention | **Likely in scope** — verify with program policy |
+| Cloud metadata via SSRF on in-scope target | **In scope** — the SSRF is the finding |
+| AI service endpoint (SageMaker/Vertex/Bedrock) | **Check** — endpoint itself is often AWS/GCP-owned; the misconfiguration in target's setup is the finding |
+
+When in doubt: `/scope-check <finding>`. Cloud scope is the #1 reason for wasted cloud reports.
+
+---
+
+## Decision Logic — When to Invest vs. Move On
+
+| Signal | Action |
+|--------|--------|
+| Public bucket listing returns `<ListBucketResult>` | **INVEST** — enumerate objects, check for PII/creds/backups |
+| SSRF reaches metadata, returns IAM role name | **INVEST** — extract creds, test what the role can access |
+| Leaked access key (`AKIA*`) found in JS/source | **INVEST** — `aws sts get-caller-identity`, enumerate permissions |
+| Public bucket listing but only static assets (images, CSS) | **LOG + MOVE ON** — report as low/medium, don't spend hours |
+| IMDSv2 enforced, no redirect/rebinding bypass works | **MOVE ON** — note the hardening, test other surfaces |
+| Cognito identity pool returns unauthenticated ID | **INVEST** — test what the unauthenticated role can access (often surprising) |
+| Function URL responds to unauthenticated requests | **INVEST** — test what the function does, check for injection/data exposure |
+| AI service endpoint accessible but only returns your own data | **MOVE ON** — self-only access is not a finding |
+| Federation trust allows cross-account assume-role | **INVEST** — test what the assumed role can access in the other account |
+| Terraform state file found in public bucket | **CRITICAL** — contains full infrastructure map, secrets, connection strings |
+
+**Time-boxing:** Spend max 30 minutes on cloud enumeration per provider. If no high-signal indicators after 30 minutes, move to another attack surface.
+
+---
+
+## Cloud Report Killers
+
+These patterns get N/A or Informational — don't waste time reporting:
+
+| Pattern | Why It's N/A |
+|---------|-------------|
+| Public bucket with only static assets (CSS, images, fonts) | No sensitive data — by design |
+| Bucket exists but returns 403 on all operations | Access denied = working as intended |
+| SSRF to metadata but IMDSv2 blocks it | Hardened — no impact demonstrated |
+| Exposed endpoint returning only your own data | Self-only access, no cross-user impact |
+| Theoretical IAM abuse without demonstrated artifact/data access | Need to prove actual access, not just permissions |
+| SAS token in URL with narrow scope (single blob, short expiry) | By-design functionality |
+| AI endpoint accessible but behind proper auth | Not a misconfig |
+| Subdomain takeover on non-cloud-hosted asset | Wrong skill — use `target-recon` |
+
+---
+
+## Validation Loop (Before Reporting)
+
+Before writing up any cloud finding, run these checks:
+
+```
+┌─ CLOUD FINDING VALIDATION ──────────────────────────────────────┐
+│ □ 1. SCOPE — Is this the target's cloud asset, not the vendor's?│
+│      Run /scope-check if uncertain                               │
+│ □ 2. DATA PLANE — Did you access actual sensitive data?          │
+│      (Creds, PII, backups, source code, Terraform state)         │
+│      If only static assets: downgrade severity                   │
+│ □ 3. CONTROL PLANE — Can you modify resources?                   │
+│      (Write to bucket, invoke function, assume role)             │
+│      Demonstrate the action, don't just claim it                 │
+│ □ 4. CROSS-BOUNDARY — Does this cross a trust boundary?          │
+│      (Unauth→auth, tenant-A→tenant-B, user→admin)               │
+│ □ 5. EVIDENCE — Capture:                                         │
+│      - HTTP requests/responses showing the access                │
+│      - Redacted samples of sensitive data found                  │
+│      - IAM role/policy showing excessive permissions             │
+│      - Two-account proof if access control issue                 │
+│ □ 6. REPRODUCIBILITY — Can another person reproduce this?        │
+│      (Not dependent on your specific AWS account, IP, etc.)      │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+---
 
 ## Cloud Storage Misconfigurations
 
@@ -33,29 +131,19 @@ The most common and consistently rewarded cloud bug class.
 | 5 | Bucket policy exposure | `curl https://{bucket}.s3.amazonaws.com/?policy` |
 | 6 | Presigned URL abuse | Check if presigned URLs have excessive expiry or broad permissions |
 | 7 | Cross-account access | Authenticated requests from your own AWS account to target buckets |
-| 8 | Bucket name enumeration | HTTP 403 = exists, 404 = doesn't — enumerate naming patterns |
-| 9 | Object version exposure | `curl https://{bucket}.s3.amazonaws.com/?versions` — access deleted files |
-| 10 | Website-enabled bucket | `curl http://{bucket}.s3-website-{region}.amazonaws.com/` |
+| 8 | Object version exposure | `curl https://{bucket}.s3.amazonaws.com/?versions` — access deleted files |
 
-**Finding bucket names:**
-- Subdomains pointing to S3 (CNAME records)
-- JavaScript source referencing S3 URLs
-- Error pages leaking bucket names
-- Response headers containing `x-amz-*` values
-- robots.txt / sitemap.xml referencing S3 paths
+**Finding bucket names:** Subdomains (CNAME → `s3.amazonaws.com`), JavaScript source, error pages, `x-amz-*` headers, robots.txt/sitemap.xml.
 
-### Google Cloud Storage (GCS)
+### GCS
 
 | # | Pattern | Test |
 |---|---------|------|
 | 1 | Public bucket listing | `curl https://storage.googleapis.com/{bucket}/` |
 | 2 | Public object read | `curl https://storage.googleapis.com/{bucket}/{object}` |
-| 3 | Unauthenticated upload | `curl -X PUT -d "test" https://storage.googleapis.com/upload/storage/v1/b/{bucket}/o?uploadType=media&name=test.txt` |
-| 4 | IAM policy exposure | `curl https://storage.googleapis.com/storage/v1/b/{bucket}/iam` |
-| 5 | allUsers / allAuthenticatedUsers | Check if roles granted to public principal |
-| 6 | Bucket metadata | `curl https://storage.googleapis.com/storage/v1/b/{bucket}` |
-| 7 | Object ACL | `curl https://storage.googleapis.com/storage/v1/b/{bucket}/o/{object}/acl` |
-| 8 | Signed URL abuse | Test expiry, scope, and reuse of signed URLs |
+| 3 | IAM policy exposure | `curl https://storage.googleapis.com/storage/v1/b/{bucket}/iam` |
+| 4 | allUsers / allAuthenticatedUsers | Check if roles granted to public principal |
+| 5 | Signed URL abuse | Test expiry, scope, and reuse of signed URLs |
 
 ### Azure Blob Storage
 
@@ -63,89 +151,39 @@ The most common and consistently rewarded cloud bug class.
 |---|---------|------|
 | 1 | Public container listing | `curl "https://{account}.blob.core.windows.net/{container}?restype=container&comp=list"` |
 | 2 | Public blob read | `curl https://{account}.blob.core.windows.net/{container}/{blob}` |
-| 3 | Anonymous write | Attempt PUT to public containers |
-| 4 | SAS token abuse | Check for overly permissive shared access signatures in URLs |
-| 5 | SAS token in source | Search JS/HTML for `?sv=` parameters containing SAS tokens |
-| 6 | Account enumeration | DNS resolution of `{name}.blob.core.windows.net` |
-| 7 | Snapshot access | Append `?snapshot={timestamp}` to access point-in-time versions |
-| 8 | Soft-deleted blobs | List with `?comp=list&include=deleted` |
+| 3 | SAS token abuse | Check for overly permissive shared access signatures in URLs |
+| 4 | SAS token in source | Search JS/HTML for `?sv=` parameters containing SAS tokens |
+| 5 | Snapshot access | Append `?snapshot={timestamp}` to access point-in-time versions |
+| 6 | Soft-deleted blobs | List with `?comp=list&include=deleted` |
+
+---
 
 ## Cloud Metadata / SSRF
 
-When you find SSRF, cloud metadata endpoints are the highest-impact targets.
+When you find SSRF, cloud metadata endpoints are the highest-impact targets. See `vuln-patterns` for SSRF techniques.
 
-### AWS IMDSv1 / IMDSv2
+### Endpoints by Provider
 
-```
-# IMDSv1 (no authentication required)
-http://169.254.169.254/latest/meta-data/
-http://169.254.169.254/latest/meta-data/iam/security-credentials/
-http://169.254.169.254/latest/meta-data/iam/security-credentials/{role-name}
-http://169.254.169.254/latest/user-data
-
-# IMDSv2 (requires token — test if target enforces it)
-TOKEN=$(curl -X PUT http://169.254.169.254/latest/api/token -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/
-
-# Alternative endpoints
-http://[fd00:ec2::254]/latest/meta-data/  # IPv6
-http://169.254.169.254/latest/dynamic/instance-identity/document  # Instance identity
-```
-
-**What to extract from AWS metadata:**
-- IAM role credentials (AccessKeyId, SecretAccessKey, Token)
-- Instance identity document (account ID, region, instance ID)
-- User-data scripts (often contain secrets, bootstrap configs)
-- Network interfaces and security group info
-
-### GCP Metadata
-
-```
-# Requires Metadata-Flavor header
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token
-curl -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/project/attributes/
-
-# Alternative
-http://169.254.169.254/computeMetadata/v1/  # Also works
-```
-
-**What to extract from GCP metadata:**
-- Service account access tokens (OAuth2)
-- Project-level attributes and secrets
-- Instance attributes and startup scripts
-- Kubernetes service account tokens (on GKE)
-
-### Azure IMDS
-
-```
-curl -H "Metadata: true" "http://169.254.169.254/metadata/instance?api-version=2021-02-01"
-curl -H "Metadata: true" "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/"
-
-# Managed identity token
-curl -H "Metadata: true" "http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://storage.azure.com/"
-```
-
-**What to extract from Azure IMDS:**
-- Managed identity access tokens (for Azure services)
-- Subscription ID, resource group, VM name
-- Custom data and user data
+| Provider | Endpoint | Header Required | What to Extract |
+|----------|----------|-----------------|-----------------|
+| **AWS IMDSv1** | `http://169.254.169.254/latest/meta-data/iam/security-credentials/{role}` | None | IAM creds (AccessKeyId, SecretAccessKey, Token) |
+| **AWS IMDSv2** | Same, but requires PUT for token first | `X-aws-ec2-metadata-token` | Same — test if IMDSv2 is actually enforced |
+| **GCP** | `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token` | `Metadata-Flavor: Google` | OAuth2 access token, project attributes |
+| **Azure** | `http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https://management.azure.com/` | `Metadata: true` | Managed identity tokens, subscription/resource info |
+| **ECS** | `http://169.254.170.2/` | None | Container task credentials |
 
 ### SSRF Bypasses for Metadata
 
-When basic `169.254.169.254` is blocked:
-
 | Bypass | Technique |
 |--------|-----------|
-| Decimal IP | `http://2852039166/` (169.254.169.254 as decimal) |
+| Decimal IP | `http://2852039166/` |
 | Hex IP | `http://0xa9fea9fe/` |
-| Octal IP | `http://0251.0376.0251.0376/` |
 | IPv6 mapped | `http://[::ffff:169.254.169.254]/` |
 | DNS rebinding | Point your domain at 169.254.169.254 |
 | Redirect | SSRF to your server → 302 redirect to metadata |
-| URL encoding | `http://169.254.169.254%23@your-domain/` |
 | Alternate domains | `http://metadata.google.internal/` (GCP) |
-| Container endpoints | `http://169.254.170.2/` (ECS task metadata) |
+
+---
 
 ## Identity & Access Misconfigurations
 
@@ -153,25 +191,22 @@ When basic `169.254.169.254` is blocked:
 
 | # | Pattern | Test |
 |---|---------|------|
-| 1 | Overprivileged access keys | Leaked keys → enumerate permissions with `aws iam get-user`, `aws sts get-caller-identity` |
+| 1 | Overprivileged access keys | Leaked keys → `aws sts get-caller-identity`, enumerate permissions |
 | 2 | AssumeRole chain | Enumerate roles, test cross-account assume-role paths |
-| 3 | Cognito identity pool | Check for unauthenticated identity pool access — `aws cognito-identity get-id` |
-| 4 | Cognito user pool | Test for self-registration, attribute manipulation |
-| 5 | STS token from SSRF | Metadata credentials → escalate via STS |
-| 6 | Lambda execution role | Invoke function → check what role it runs with |
-| 7 | EC2 instance profile | SSRF → metadata → role credentials |
-| 8 | S3 bucket policy wildcards | `Principal: "*"` or `Principal: {"AWS": "*"}` |
-| 9 | Long-term access key exposure | Enumerate exposed IAM access keys (Crimson Collective pattern, March 2026: ~570GB exfiltrated from Red Hat GitLab via exposed keys) | Unauthorized API access using leaked long-term credentials |
+| 3 | Cognito identity pool | Unauthenticated pool access — `aws cognito-identity get-id` |
+| 4 | Cognito user pool | Self-registration, attribute manipulation |
+| 5 | STS from SSRF | Metadata creds → escalate via STS |
+| 6 | S3 bucket policy wildcards | `Principal: "*"` or `Principal: {"AWS": "*"}` |
+| 7 | Long-term key exposure | Crimson Collective pattern (March 2026): ~570GB exfiltrated via exposed keys |
 
 ### GCP IAM
 
 | # | Pattern | Test |
 |---|---------|------|
-| 1 | allUsers binding | Check if roles are granted to allUsers or allAuthenticatedUsers |
-| 2 | Service account key exposure | Search for JSON key files in repos, configs |
+| 1 | allUsers binding | Roles granted to allUsers or allAuthenticatedUsers |
+| 2 | Service account key exposure | JSON key files in repos, configs, Docker images |
 | 3 | Default service account | Compute Engine default SA often has project-editor role |
-| 4 | OAuth consent screen | Test if app can request broad scopes |
-| 5 | Workload identity | GKE pods with overprivileged service accounts |
+| 4 | Workload identity | GKE pods with overprivileged service accounts |
 
 ### Azure AD / Entra ID
 
@@ -181,41 +216,27 @@ When basic `169.254.169.254` is blocked:
 | 2 | Overprivileged managed identity | VM/function identity with broad role assignments |
 | 3 | Tenant enumeration | `https://login.microsoftonline.com/{domain}/.well-known/openid-configuration` |
 | 4 | Guest user escalation | Guest accounts with access to internal resources |
-| 5 | Conditional access gaps | Test from different locations, devices, risk levels |
-| 6 | Actor Token abuse | Test Actor Tokens authentication mechanism for privilege escalation — CVE-2025-55241 (CVSS 10.0) enabled Global Administrator takeover |
-| 7 | Token exchange attacks | Test token exchange flows between services for privilege escalation via intermediate tokens |
+| 5 | Actor Token abuse | CVE-2025-55241 (CVSS 10.0) — Global Administrator takeover |
+| 6 | Conditional access gaps | Test from different locations, devices, risk levels |
+
+---
 
 ## Serverless Security
 
-### AWS Lambda
+| Provider | # | Pattern | Test |
+|----------|---|---------|------|
+| **AWS Lambda** | 1 | Event injection | Inject payloads through API Gateway, S3, SNS, SQS event sources |
+| | 2 | Environment variables | SSRF → metadata → function config; secrets in env vars |
+| | 3 | Layer poisoning | Public layers that could be modified |
+| | 4 | /tmp persistence | Data persists between warm invocations |
+| **GCP Functions** | 1 | Unauthenticated invocation | `allUsers` has `cloudfunctions.functions.invoke` |
+| | 2 | Source code exposure | `gcloud functions describe` reveals source location |
+| | 3 | Service account token | Access token via metadata endpoint |
+| **Azure Functions** | 1 | Function key exposure | `?code=` parameter in URLs, source code |
+| | 2 | Anonymous auth | `authLevel: anonymous` |
+| | 3 | Host key leakage | Master key → access to all functions |
 
-| # | Pattern | Test |
-|---|---------|------|
-| 1 | Event injection | Inject payloads through event sources (API Gateway, S3, SNS, SQS) |
-| 2 | Environment variables | Functions often store secrets in env vars — SSRF → metadata → function config |
-| 3 | /tmp persistence | Data persists in /tmp between warm invocations |
-| 4 | Layer poisoning | Check if function uses public layers that could be modified |
-| 5 | Dependency confusion | Function packages pulling from public registries |
-| 6 | Timeout abuse | Long-running operations for resource exhaustion |
-| 7 | Cold start injection | Modify initialization code path via environment manipulation |
-
-### GCP Cloud Functions / Cloud Run
-
-| # | Pattern | Test |
-|---|---------|------|
-| 1 | Unauthenticated invocation | Check if `allUsers` has `cloudfunctions.functions.invoke` |
-| 2 | Source code exposure | `gcloud functions describe` may reveal source location |
-| 3 | Service account token | Access token via metadata endpoint from within function |
-| 4 | Environment variable secrets | Similar to Lambda — secrets in env vars |
-
-### Azure Functions
-
-| # | Pattern | Test |
-|---|---------|------|
-| 1 | Function key exposure | Check for `?code=` parameter in URLs, source code |
-| 2 | Anonymous authentication | Functions configured with `authLevel: anonymous` |
-| 3 | Managed identity escalation | Function identity with broad Azure role assignments |
-| 4 | Host key leakage | Master key exposure allows access to all functions |
+---
 
 ## Kubernetes / Container Security
 
@@ -227,52 +248,55 @@ When the target runs on Kubernetes (EKS, GKE, AKS):
 | 2 | Kubelet API | `curl -k https://{node-ip}:10250/pods` |
 | 3 | etcd exposure | `curl http://{ip}:2379/v2/keys/` |
 | 4 | Service account token | `/var/run/secrets/kubernetes.io/serviceaccount/token` |
-| 5 | Dashboard exposure | Check for unauthenticated Kubernetes Dashboard |
-| 6 | Helm tiller | Legacy Helm 2 Tiller API (port 44134) |
-| 7 | Container escape | Privileged containers, mounted Docker socket |
+| 5 | Dashboard exposure | Unauthenticated Kubernetes Dashboard |
+| 6 | Container escape | Privileged containers, mounted Docker socket |
+| 7 | RBAC misconfiguration | ClusterRoleBinding with `cluster-admin` to default SA |
 | 8 | Network policy gaps | Pod-to-pod communication without restriction |
-| 9 | ConfigMap/Secret exposure | Secrets stored as base64 in ConfigMaps |
-| 10 | RBAC misconfiguration | ClusterRoleBinding with `cluster-admin` to default SA |
+
+---
 
 ## Secrets & Credential Exposure
 
-Cloud-specific secrets to hunt for:
-
 | Secret Type | Where to Find | Impact |
 |-------------|---------------|--------|
-| AWS access keys | Source code, env vars, CI configs | Full account access |
+| AWS access keys (`AKIA*`) | Source code, env vars, CI configs | Full account access |
 | GCP service account JSON | Repos, Docker images, configs | Project-level access |
 | Azure client secrets | App configs, env vars | Tenant-level access |
 | Kubernetes kubeconfig | Developer machines, CI pipelines | Cluster admin |
-| Cloud storage URLs with tokens | JavaScript, API responses | Data access |
-| Database connection strings | Environment variables, configs | Data breach |
-| Terraform state files | Public S3/GCS buckets | Full infrastructure map |
+| SAS tokens / presigned URLs | JavaScript, API responses | Data access |
+| Terraform state files | Public S3/GCS buckets | Full infrastructure map + secrets |
 | `.env` files | Public repos, misconfigured servers | Multiple services |
 
-## Cloud-Specific Impact Assessment
+---
 
-When reporting cloud misconfigurations, frame impact in terms of:
-
-1. **Data exposure** — What sensitive data is accessible? PII, credentials, business data?
-2. **Lateral movement** — Can the misconfiguration be used to access other cloud resources?
-3. **Privilege escalation** — Can a low-privilege finding lead to admin access?
-4. **Persistence** — Can an attacker maintain access after the initial misconfiguration is fixed?
-5. **Blast radius** — How many accounts, services, or users are affected?
-
-### Severity Guidelines
+## Severity Guidelines
 
 | Finding | Typical Severity | Notes |
 |---------|-----------------|-------|
-| Public S3 bucket with PII | Critical–High | Depends on data sensitivity |
-| SSRF to metadata → IAM creds | Critical | Full account compromise potential |
-| Exposed service account key | Critical–High | Depends on key permissions |
-| Unauthenticated Lambda invoke | Medium–High | Depends on function purpose |
-| Public storage listing (no sensitive data) | Low–Medium | Still worth reporting |
-| Subdomain pointing to deprovisioned cloud resource | Medium | Subdomain takeover |
-| Exposed Kubernetes Dashboard | High–Critical | Cluster compromise |
+| Public bucket with PII/creds | Critical-High | Depends on data sensitivity |
+| SSRF → metadata → IAM creds | Critical | Full account compromise |
+| Exposed service account key | Critical-High | Depends on key permissions |
+| AI service backing-store exposed | High-Critical | Training data, prompts, embeddings leaked |
+| Unauthenticated Lambda/Function invoke | Medium-High | Depends on function purpose |
+| Public storage listing (no sensitive data) | Low-Medium | Report but don't oversell |
+| Terraform state in public bucket | Critical | Contains secrets, full infra map |
+| Cross-cloud federation trust abuse | High-Critical | Lateral movement across providers |
+| Exposed Kubernetes Dashboard | High-Critical | Cluster compromise |
+
+---
+
+## Reference Files
+
+| File | Contents |
+|------|----------|
+| [reference/cloud-ai-ml.md](reference/cloud-ai-ml.md) | AI/ML cloud service attack patterns — SageMaker, Vertex AI, Bedrock, Azure OpenAI, API parity testing, backing-store exposure, execution identity overreach |
+| [reference/multi-cloud-pivots.md](reference/multi-cloud-pivots.md) | Workload identity federation, cross-cloud lateral movement, multi-cloud credential chains |
 
 ## Related Skills
 
 - `target-recon` — Identifies cloud hosting during reconnaissance
 - `vuln-patterns` — SSRF patterns for reaching metadata endpoints
 - `source-code-audit` — Find hardcoded cloud credentials in source code
+- `ai-hunting` — Model-behavior attacks (prompt injection, tool poisoning) on AI cloud features
+- `supply-chain-security` — CI/CD pipeline attacks in cloud environments
+- `auth-testing` — OAuth/SSO/IAM access control testing

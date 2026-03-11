@@ -16,7 +16,7 @@ bug-bounty/
 │   ├── source-code-audit/        # Security code review (progressive disclosure)
 │   ├── api-security/             # API-specific testing (REST, GraphQL, gRPC) (progressive disclosure)
 │   ├── auth-testing/             # Auth & authorization testing
-│   ├── cloud-security/           # Cloud misconfigurations (AWS, GCP, Azure)
+│   ├── cloud-security/           # Cloud misconfigurations (AWS, GCP, Azure, AI/ML services) (progressive disclosure)
 │   ├── mobile-security/          # Mobile app testing (iOS, Android)
 │   ├── http-desync/              # HTTP smuggling, cache poisoning, race conditions
 │   ├── client-side-security/     # Browser/frontend security (DOM XSS, CSP, XS-Leaks)
