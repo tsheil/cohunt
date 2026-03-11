@@ -101,10 +101,47 @@ Use this template when generating recon reports. Fill in each section based on f
 ### Medium Interest
 - [Finding worth investigating]
 
-### Next Steps
-1. [Recommended next action]
-2. [Second priority]
-3. [Third priority]
+---
+
+## Authenticated Recon (include when accounts are available)
+
+### State Fixtures
+
+| Fixture | Status | Notes |
+|---------|--------|-------|
+| **Account A** (role: [role]) | [Ready/Blocked] | [Username, role details] |
+| **Account B** (role: [role]) | [Ready/Blocked] | [Username, role details] |
+| **OAST Collector** | [Ready/Not set up] | [Collaborator URL or interactsh ID] |
+| **Pending invite** | [Created/N/A] | [Details] |
+| **Downgraded account** | [Created/N/A] | [Was premium, now free] |
+| **API tokens** | [Ready/N/A] | [Token A (role), Token B (role)] |
+
+### Role-Endpoint Matrix
+
+| Endpoint | Method | Free | Paid | Admin | Notes |
+|----------|--------|------|------|-------|-------|
+| /api/[path] | GET | ✓ | ✓ | ✓ | [Public data] |
+| /api/[path] | DELETE | ✗ | ✗ | ✓ | [Test target: BOLA] |
+| /api/[path] | PUT | ✗ | ✓ | ✓ | [Test target: privilege escalation] |
+
+**Test targets:** [count] ✗ cells identified for auth bypass testing
+
+### Tenant Boundary Map (if multi-tenant)
+
+| Boundary | Isolation Method | Test Vector |
+|----------|-----------------|-------------|
+| [Org data] | [URL path / header / subdomain] | [Swap org_id between tenants] |
+| [Shared resources] | [ID-based] | [Access cross-tenant IDs] |
+
+---
+
+## First 10 Test Cases
+
+| # | Target | Test | Expected Vuln | Route To |
+|---|--------|------|--------------|----------|
+| 1 | [endpoint] | [what to do] | [vulnerable response] | [skill] |
+| 2 | [endpoint] | [what to do] | [vulnerable response] | [skill] |
+| ... | ... | ... | ... | ... |
 
 ---
 

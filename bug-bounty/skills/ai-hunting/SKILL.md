@@ -316,7 +316,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, Phantom/Sage ADR/SACR UADP, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~495 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~364 |
 | [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md) | Advanced jailbreak techniques: JBF, TAO-Attack, autonomous jailbreak agents (97.14%), Unit42 IDPI catalog, encoding/multilingual/visual bypasses, semantic chaining, hybrid XSS+PI | ~189 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (150+ data points), Phantom/Sage ADR/SACR UADP stats | ~403 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (160+ data points), Phantom/Sage ADR/SACR UADP stats, IronCurtain, Agent 365, XBOW CVE-2026-21536 | ~417 |
 
 **Quick search** — find specific content without loading full files:
 ```

@@ -1,11 +1,11 @@
 ---
 name: target-recon
-description: Recons a web target — fingerprints tech stack, enumerates subdomains, detects WAF/CDN, maps the attack surface. Works with curl/dig and web search. ALWAYS use this skill FIRST when a user mentions any target domain, URL, or application name — it should fire before any vulnerability testing. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on", "what changed recently", "new features", "scope additions", "recent changes", "check security headers", "list endpoints", "API discovery". Use proactively when user mentions a target domain and hasn't done recon yet. For program research (rewards, scope, competition), use program-research. For testing vulnerabilities found during recon, use vuln-patterns or the specific skill for that vuln class. For cloud asset enumeration, use cloud-security.
+description: Recons a web target — external fingerprinting AND authenticated attack surface mapping. Fingerprints tech stack, enumerates subdomains, detects WAF/CDN, then maps roles, endpoints, and tenant boundaries behind login. Outputs a role-endpoint matrix, state fixtures checklist, and first 10 test cases ready for hunting. ALWAYS use this skill FIRST when a user mentions any target domain, URL, or application name — it should fire before any vulnerability testing. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on", "what changed recently", "new features", "scope additions", "recent changes", "check security headers", "list endpoints", "API discovery", "map endpoints per role", "role-endpoint matrix", "authenticated recon", "set up test accounts". Use proactively when user mentions a target domain and hasn't done recon yet. For program research (rewards, scope, competition), use program-research. For testing vulnerabilities found during recon, use vuln-patterns or the specific skill for that vuln class. For cloud asset enumeration, use cloud-security.
 ---
 
 # Target Recon
 
-Get a complete external view of any web target before hunting using curl, dig, and web search.
+Map the full attack surface — external perimeter AND authenticated internals — before hunting. External recon finds the front door. Authenticated recon finds the bugs that pay.
 
 ## Quick Start — First 5 Minutes
 
@@ -21,7 +21,7 @@ If you find something interesting, run full recon. If you have a finding, run `/
 
 ## Output Format
 
-**→ Use the full output template at [reference/output-template.md](reference/output-template.md).** Sections: Quick Take, Target Profile, Tech Stack, Security Headers, Subdomain Inventory, Interesting Paths, WAF/CDN Analysis, Attack Surface Summary, Sources.
+**→ Use the full output template at [reference/output-template.md](reference/output-template.md).** Sections: Quick Take, Target Profile, Tech Stack, Security Headers, Subdomain Inventory, Interesting Paths, WAF/CDN Analysis, Attack Surface Summary, **State Fixtures, Role-Endpoint Matrix, Tenant Boundary Map, First 10 Test Cases**, Sources.
 
 ---
 
@@ -172,7 +172,8 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~200 |
+| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~266 |
+| [reference/output-template.md](reference/output-template.md) | Full recon output template — external recon + state fixtures + role-endpoint matrix + tenant map + first 10 test cases | ~151 |
 
 **Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md`
 
@@ -280,17 +281,10 @@ Map the target's full network footprint:
 
 ## Recon Variations
 
-### Quick Fingerprint
-Focus on: Headers, tech stack, security headers only
-
-### Full Domain Recon
-Focus on: Everything — subdomains, paths, WAF, full assessment
-
-### Subdomain Hunt
-Focus on: Maximum subdomain enumeration, takeover checks
-
-### Pre-Hunt Recon
-Focus on: Attack surface mapping tied to program scope
+- **Quick Fingerprint** — Headers, tech stack, security headers only
+- **Full Domain Recon** — Everything: subdomains, paths, WAF, authenticated recon, full assessment
+- **Subdomain Hunt** — Maximum subdomain enumeration, takeover checks
+- **Pre-Hunt Recon** — Attack surface mapping tied to program scope
 
 ---
 
@@ -360,9 +354,34 @@ When a subdomain's CNAME points to an unclaimed external service, anyone can cla
 
 ## Authenticated Recon
 
-External recon finds the perimeter. Authenticated recon maps the real attack surface — the endpoints, roles, and data flows that only exist behind login. Most high-severity bugs (IDOR, privilege escalation, business logic) live here.
+External recon finds the perimeter. Authenticated recon maps the real attack surface. **Most high-severity bounties (IDOR, privilege escalation, business logic) live here.** Do this immediately after external recon.
 
-### Per-Role Endpoint Mapping
+### State Fixture Setup (REQUIRED before authenticated recon)
+
+The gap between a good plan and a payable bug is almost always **missing test state**:
+
+```
+┌─ FIXTURE CHECKLIST ────────────────────────────────────────────┐
+│ □ ACCOUNTS: 2+ at different privilege levels                    │
+│   (free + paid, user + admin, tenant-A + tenant-B)              │
+│   Can't create these? → BLOCKER — note it, adjust plan          │
+│ □ ROLES: Inventory every role the app supports                  │
+│   (free, paid, admin, support, API-only, service account)       │
+│ □ OAST COLLECTOR: Blind callback receiver ready                 │
+│   (Burp Collaborator, interactsh, webhook.site)                 │
+│ □ PENDING STATES: Create at least one of each available:        │
+│   - Pending invite (sent but not accepted)                      │
+│   - Pending approval (awaiting admin action)                    │
+│   - Downgraded plan (premium → free, test retained access)      │
+│   - In-progress export/import job                               │
+│ □ API TOKEN PAIR: Tokens from 2 different users/roles           │
+│ □ TOOLS: Burp/mitmproxy intercepting, browser profiles set      │
+└────────────────────────────────────────────────────────────────┘
+```
+
+**Why:** Single-account testing is the #1 reason auth bugs get missed. Two accounts at different privilege levels is the minimum for any IDOR/BOLA/BFLA testing. Pending states catch state-transition bugs that pay $2K-$15K.
+
+### Per-Role Endpoint Mapping → Role-Endpoint Matrix
 
 ```
 For each user role (free, paid, admin, support, API-only):
@@ -377,8 +396,12 @@ For each user role (free, paid, admin, support, API-only):
    GET /api/admin/stats   |  ✗   |  ✗   |   ✓   |  ✗
    PUT /api/billing       |  ✗   |  ✓   |   ✓   |  ✓
 
-5. Test every ✗ cell — can the blocked role actually access it?
+5. Every ✗ cell is a test target — try accessing with the blocked role
+6. Pay special attention to: DELETE endpoints, admin-only GETs,
+   export/billing endpoints, and endpoints with user IDs in the path
 ```
+
+**This matrix IS a key recon deliverable.** Include it in the output. It directly generates test cases for auth-testing.
 
 ### Hidden Route Discovery
 
@@ -416,9 +439,57 @@ For each user role (free, paid, admin, support, API-only):
 □ Import features — CSV/file upload import — test for XXE, SSRF, path traversal
 ```
 
+---
+
+## Bridge to Testing — First 10 Test Cases
+
+After recon (external + authenticated), generate the first 10 test cases sorted by payout likelihood. This is the final recon deliverable — the hunter should be able to start testing immediately.
+
+```
+Priority order for test case generation:
+1. IDOR on endpoints with user IDs in path (from role-endpoint matrix ✗ cells)
+2. Privilege escalation — lower role accessing admin-only endpoints
+3. Tenant isolation bypass — cross-tenant resource access (if multi-tenant)
+4. Downgrade retained access — premium endpoints after plan downgrade
+5. Business logic — payment/billing/checkout manipulation
+6. SSRF — any URL input (webhooks, imports, preview, unfurl features)
+7. Pending state abuse — cancel/modify after approval submitted
+8. API version downgrade — v1 endpoints with weaker auth than v2
+9. Mass assignment — add "role":"admin" or "verified":true to POST/PUT bodies
+10. Race conditions — single-use actions (coupons, invites) via parallel requests
+```
+
+**For each test case, output:**
+- Target endpoint and method
+- What to test (exact request modification)
+- Expected vulnerable vs. expected safe behavior
+- Which skill to route to (auth-testing, business-logic, api-security, etc.)
+
+**Example:**
+```
+Test #1: IDOR on DELETE /api/v2/projects/:id
+  → Send Account B's project ID with Account A's token
+  → Vulnerable: 200/204 + project actually deleted
+  → Safe: 403 Forbidden
+  → Deep dive: auth-testing → BOLA section
+
+Test #2: Privilege escalation on GET /api/admin/users
+  → Call with free-tier token (from role-endpoint matrix: ✗ for Free)
+  → Vulnerable: 200 + user list returned
+  → Safe: 403 or 401
+  → Deep dive: auth-testing → BFLA section
+
+Test #3: Tenant isolation on GET /api/orgs/{org_id}/billing
+  → Swap org_id from Tenant A to Tenant B's org_id
+  → Vulnerable: 200 + Tenant B's billing data
+  → Safe: 403 or 404
+  → Deep dive: business-logic → multi-tenant section
+```
+
 ## Related Skills
 
 - **program-research** — Research the bug bounty program before hunting
 - **cloud-security** — Deep cloud misconfig testing when recon reveals cloud infrastructure
 - **hunt-plan** (command) — Turn recon into a prioritized hunting plan
 - **auth-testing** — Deep dive on authentication and authorization testing after authenticated recon
+- **business-logic** — Business logic vulnerability testing after workflow mapping
