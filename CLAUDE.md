@@ -7,7 +7,7 @@ This is a **file-based Claude Code plugin** with no code or infrastructure. All 
 ```
 bug-bounty/
 ├── .claude-plugin/plugin.json    # Plugin metadata and version
-├── skills/                        # 14 domain knowledge modules (SKILL.md files)
+├── skills/                        # 15 domain knowledge modules (SKILL.md files)
 │   ├── ai-hunting/               # AI-assisted hunting + LLM vuln patterns (progressive disclosure)
 │   ├── vuln-patterns/            # Testing patterns for 50+ vuln classes
 │   ├── business-logic/           # Payment flows, state machines, subscription bypass (#1 bounty class)
@@ -21,6 +21,7 @@ bug-bounty/
 │   ├── http-desync/              # HTTP smuggling, cache poisoning, race conditions
 │   ├── client-side-security/     # Browser/frontend security (DOM XSS, CSP, XS-Leaks)
 │   ├── supply-chain-security/    # CI/CD, dependency confusion, GitHub Actions
+│   ├── file-processing/          # File upload, import, archive extraction, parser abuse
 │   └── report-writing/           # Bug bounty report structure
 ├── agents/                        # 2 autonomous workflow agents (flat .md files)
 │   ├── hunt-session.md           # End-to-end hunting orchestrator

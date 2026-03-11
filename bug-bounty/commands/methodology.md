@@ -181,7 +181,7 @@ Step 7: Add tool recommendations for each phase
 - "API" → Heavy authorization testing, IDOR, rate limiting, API versioning
 - "auth" → Session management, OAuth, JWT, 2FA bypass, password reset
 - "payments" → Race conditions, price manipulation, currency confusion, coupon abuse
-- "file upload" → Extension bypass, content-type manipulation, path traversal, polyglots
+- "file upload" → Full processing chain: validation bypass, archive extraction, parser abuse, import-from-URL SSRF (invoke file-processing skill)
 - "cloud" → Storage misconfigs, SSRF to metadata, IAM issues (invoke cloud-security skill)
 - "mobile" → API key extraction, certificate pinning bypass, deep link abuse
 

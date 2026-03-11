@@ -146,7 +146,7 @@ AI features and MCP integrations change frequently and silently — perfect regr
 |--------|---------------|---------------|
 | New OAuth/SSO integration | Auth changes = fresh attack surface | Login page, /oauth/, /saml/ |
 | Payment flow changes | Money movement = high severity | Checkout, subscription, refund endpoints |
-| New file upload feature | Parser bugs, path traversal, SSRF | Upload endpoints, profile pictures, imports |
+| New file upload feature | Parser bugs, path traversal, SSRF — see `file-processing` skill | Upload endpoints, profile pictures, imports |
 | API versioning bump | Old auth checks may not carry forward | /api/v2/, /api/v3/ vs /api/v1/ |
 | New user role/tier | IDOR between role boundaries | Admin, enterprise, trial user flows |
 | Mobile app major release | New features often ship without full security review | App store changelogs, decompiled APKs |

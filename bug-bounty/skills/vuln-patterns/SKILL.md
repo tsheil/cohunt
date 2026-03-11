@@ -39,6 +39,7 @@ For deep dives, route to the specialized skill or reference file:
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
+| **File upload, import, preview, archive extraction, parser abuse** | [file-processing](../file-processing/SKILL.md) |
 | **Parser differentials, Unicode normalization, canonicalization** | [reference/parser-differentials.md](reference/parser-differentials.md) |
 | **Error-based blind SSTI, SSTI polyglots (PortSwigger #1)** | [reference/web-vulns.md](reference/web-vulns.md#error-based-blind-ssti-detection-portswigger-1-2025) |
 | **ORM leaking via search/filter (PortSwigger #2)** | [reference/web-vulns.md](reference/web-vulns.md#orm-leaking-via-search--filter-portswigger-2-2025) |
@@ -309,21 +310,9 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ---
 
-### File Upload
+### File Upload & Processing
 
-**What it is:** Exploiting file upload functionality to achieve code execution, XSS, or data exfiltration.
-
-**Where to look:** Profile images, document uploads, import features, any file upload endpoint.
-
-| # | Test | Method | Goal |
-|---|------|--------|------|
-| 1 | Extension bypass | `.php.jpg`, `.php%00.jpg`, double extension `.php.png` | Code execution |
-| 2 | Content-type mismatch | Set `image/jpeg` but send PHP content | Bypass MIME check |
-| 3 | SVG/HTML XSS | Upload SVG with `<script>` or `.html` with JS | Stored XSS |
-| 4 | Path traversal | Filename: `../../../etc/passwd` (see Path Traversal section above) | File overwrite |
-| 5 | Polyglot file | Valid image with embedded PHP | Bypass image validation |
-| 6 | XXE via file | Upload XML/DOCX with XXE payload | Internal file read |
-| 7 | Zero-width space | Filename with U+200B: `shell.ph​p.png` (CVE-2026-28289, CVSS 10.0) | Extension filter bypass → webshell |
+> **Full coverage:** Use the dedicated [file-processing](../file-processing/SKILL.md) skill for the complete file processing chain — upload validation bypass, archive extraction (Zip Slip), server-side parser abuse (ImageMagick, ffmpeg, wkhtmltopdf), import-from-URL SSRF, signed URL manipulation, and cross-tenant file access. Quick tests: extension bypass (`.php.jpg`, U+200B), SVG/HTML XSS, import-from-URL SSRF, Zip Slip path traversal.
 
 ---
 

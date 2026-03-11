@@ -83,7 +83,7 @@ Tell me what you know: "I want to hunt on Shopify. I'm good at API bugs and XSS.
 | Archetype | Signals | Primary Skills | Top Vuln Classes |
 |-----------|---------|---------------|-----------------|
 | **B2B SaaS** | Multi-tenant, org/team model, SCIM/SSO, seat limits | business-logic, auth-testing | Tenant isolation, IDOR, privilege escalation |
-| **Consumer App** | User profiles, social features, payments, mobile | vuln-patterns, client-side-security | XSS, IDOR, payment bypass, race conditions |
+| **Consumer App** | User profiles, social features, payments, mobile | vuln-patterns, client-side-security, file-processing | XSS, IDOR, payment bypass, upload bugs |
 | **API-First** | Developer docs, API keys, webhooks, rate limits | api-security, auth-testing | BOLA/BFLA, broken auth, rate limiting |
 | **AI Product** | Chatbot, copilot, agent, MCP integrations | ai-hunting, vuln-patterns | Prompt injection, tool abuse, memory poisoning |
 | **Infrastructure** | Network appliances, management consoles, VPN | vuln-patterns (infra ref) | Auth bypass, command injection, default creds |

@@ -57,6 +57,7 @@ Based on your situation, I'll send you to the best workflow:
 | Hunting an AI/LLM target | `ai-hunting` skill | LLM prompt injection, MCP vulns, agent attacks |
 | Testing a mobile app | `mobile-security` skill | iOS/Android-specific testing patterns |
 | Testing APIs (REST, GraphQL, gRPC) | `api-security` skill | API-specific vulnerability patterns |
+| Testing file upload, import, or processing | `file-processing` skill | Upload bypass, archive extraction, parser abuse |
 | Testing auth or session management | `auth-testing` skill | OAuth, JWT, SSO, session fixation patterns |
 | Cloud infrastructure target | `cloud-security` skill | AWS/GCP/Azure misconfiguration patterns |
 | HTTP smuggling or cache poisoning | `http-desync` skill | Desync, request splitting, race conditions |
