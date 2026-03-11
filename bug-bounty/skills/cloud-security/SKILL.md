@@ -255,6 +255,34 @@ When the target runs on Kubernetes (EKS, GKE, AKS):
 
 ---
 
+## Cloud SaaS Analytics — Cross-Tenant Data Access
+
+Cloud analytics platforms (Looker Studio, Power BI, Tableau Cloud, Databricks) connect to backend databases using service credentials. Connector misconfigurations create cross-tenant data access — one customer's report can query another customer's data.
+
+### LeakyLooker Pattern (Tenable, March 2026)
+
+Nine cross-tenant vulnerabilities in Google Looker Studio enabled arbitrary SQL queries on victims' databases across GCP projects. Key attack paths:
+
+| # | Vector | How It Works | Impact |
+|---|--------|-------------|--------|
+| 1 | Connector credential inheritance | Clone a public report → cloned report retains original owner's database credentials | Arbitrary SQL on victim's BigQuery/Spanner/PostgreSQL |
+| 2 | Report copy credential theft | Copy-report feature preserves source owner's auth → DELETE/UPDATE access | Data modification or destruction |
+| 3 | One-click data exfiltration | Shared report forces victim's browser to execute queries against attacker-controlled project → full database reconstruction from logs | Mass data exfiltration via browser proxy |
+
+**Where to hunt this pattern:**
+
+| Platform | Test | What to look for |
+|----------|------|-----------------|
+| **Google Looker Studio** | Clone public reports with database connectors | Cloned report queries original owner's data |
+| **Power BI** | Shared datasets, embedded reports | Dataset credential sharing across tenants |
+| **Tableau Cloud** | Published datasources with embedded credentials | Cross-site datasource access |
+| **Databricks** | Shared notebooks with Unity Catalog | Cross-workspace table access |
+| **Metabase** | Shared dashboards, public question links | Database credential leakage via shared artifacts |
+
+**Hunt heuristic:** Any cloud analytics tool that allows sharing/copying reports while using service-level database credentials is a candidate. Test: Can you access data from a project/tenant you don't own by copying or viewing a shared report?
+
+---
+
 ## Secrets & Credential Exposure
 
 | Secret Type | Where to Find | Impact |
@@ -282,6 +310,7 @@ When the target runs on Kubernetes (EKS, GKE, AKS):
 | Terraform state in public bucket | Critical | Contains secrets, full infra map |
 | Cross-cloud federation trust abuse | High-Critical | Lateral movement across providers |
 | Exposed Kubernetes Dashboard | High-Critical | Cluster compromise |
+| Cross-tenant analytics connector abuse | High-Critical | Arbitrary SQL on victim's databases (LeakyLooker pattern) |
 
 ---
 
