@@ -7,6 +7,8 @@ description: Recons a web target — external fingerprinting AND authenticated a
 
 Map the full attack surface — external perimeter AND authenticated internals — before hunting. External recon finds the front door. Authenticated recon finds the bugs that pay.
 
+**Priority order:** Authenticated recon (Steps 3-4) is where payable bugs live — IDOR, privilege escalation, business logic, tenant isolation. Do Steps 0-2 quickly, then invest most time in Steps 3-4. External enumeration (Steps 5-9) runs after or in parallel.
+
 ## Quick Start — First 5 Minutes
 
 1. **Headers** — `curl -sI https://[target]` — Server, X-Powered-By, cookies, security headers.
@@ -70,293 +72,13 @@ Run these curl commands:
 - Security header presence and configuration
 - Interesting disallowed paths from robots.txt
 
-### Step 3: Subdomain Enumeration (Always)
+### Step 3: Authenticated Recon (Where the Money Is)
 
-```
-Run these lookups:
-1. Certificate Transparency: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
-2. DNS records: dig [domain] A AAAA CNAME TXT CAA +short (avoid deprecated ANY)
-3. Name servers: dig ns [domain] +short
-4. Mail servers: dig mx [domain] +short
-5. Passive DNS: web search "site:securitytrails.com [domain]" for historical records
-6. For each discovered subdomain: curl -sI → Status and server
-7. Check for subdomain takeover indicators (CNAME to unclaimed services)
-```
+**Most high-severity bounties (IDOR, privilege escalation, business logic) live behind login.** If you have or can create an account, do this NOW — before spending hours on external enumeration.
 
-**Extract:**
-- Subdomain inventory from certificate transparency
-- DNS record types and values
-- Live vs. dead subdomains
-- Takeover candidates (dangling CNAMEs)
-- Interesting subdomains (staging, api, admin, dev, internal)
+> **No credentials yet?** Skip to Step 5 (subdomain enumeration) and return here after getting access.
 
-### Step 4: WAF/CDN Detection (Always)
-
-```
-Check for WAF/CDN:
-1. Inspect response headers for CDN signatures
-2. Check for WAF-specific headers or cookies
-3. Compare direct IP vs domain response
-4. Test with common WAF trigger payloads in User-Agent
-5. Note rate limiting behavior
-```
-
-### Step 5: Synthesize
-
-```
-1. Combine all sources
-2. Map technology stack
-3. Assess security posture from headers
-4. Identify attack surface areas
-5. Prioritize targets by interest level
-6. Generate next steps
-```
-
-### Step 6: Google Dorking & OSINT
-
-```
-Search for exposed assets and data:
-1. site:[target] filetype:pdf OR filetype:xlsx OR filetype:doc → Sensitive documents
-2. site:[target] inurl:admin OR inurl:dashboard OR inurl:panel → Admin interfaces
-3. site:[target] inurl:api OR inurl:swagger OR inurl:graphql → API documentation
-4. site:[target] "password" OR "secret" OR "api_key" → Leaked credentials in pages
-5. site:[target] ext:env OR ext:yml OR ext:conf → Configuration files
-6. "[target]" site:pastebin.com OR site:github.com → Leaked data on third parties
-7. intitle:"index of" site:[target] → Directory listings
-8. inurl:".git" site:[target] → Exposed git repositories
-9. site:github.com "[target]" ".env" OR "mcp.json" OR ".cursorrules" → AI config + secret leaks in repos
-10. web.archive.org/web/*/[target]/* → Wayback Machine: discover deprecated endpoints, old API versions, removed features still accessible
-11. site:github.com "[target]" "password" OR "secret_key" OR "api_key" → Deep GitHub search for leaked secrets
-12. site:github.com "[target]" filename:.env OR filename:config → Config files in public repos
-```
-
-### Step 6b: AI/MCP Configuration Artifact Discovery
-
-```
-Check for exposed AI agent and MCP configuration files:
-1. curl -s https://[target]/.claude/settings.json → Claude Code config
-2. curl -s https://[target]/CLAUDE.md → Project instructions (may leak internal architecture)
-3. curl -s https://[target]/.mcp.json → MCP server configs (may contain API keys, internal URLs)
-4. curl -s https://[target]/.cursor/mcp.json → Cursor MCP config
-5. curl -s https://[target]/.amazonq/mcp.json → Amazon Q Developer config
-6. curl -s https://[target]/.cursorrules → Cursor system prompts (may reveal business logic)
-7. curl -s https://[target]/.github/copilot-instructions.md → Copilot custom instructions
-8. curl -s https://[target]/AGENTS.md → Agent definitions
-9. Web search: site:github.com "[company]" ".mcp.json" OR "CLAUDE.md" OR ".cursorrules"
-```
-
-**Why:** AI config files are the new `.env` — developers commit them with embedded API keys, internal URLs, MCP server credentials, and system prompts that reveal architecture. MCP configs often contain OAuth tokens or PATs with broad scopes. `.cursorrules` and `CLAUDE.md` files expose internal business logic that aids further exploitation.
-
-### Step 7: JavaScript Analysis (Always for SPAs)
-
-```
-For any SPA target (React, Angular, Vue, Next.js):
-1. Extract all JavaScript file URLs from page source
-2. Check each JS file for .map source maps (append .map to URL)
-3. Run secret patterns against all JS files (API keys, tokens, internal URLs)
-4. Extract API endpoints from fetch/axios/XHR calls
-5. Map SPA routes for hidden/admin pages
-6. Check for __NEXT_DATA__, window.__CONFIG__, Redux state exposure
-7. Enumerate webpack chunks for lazy-loaded modules
-```
-
-**Why this matters:** JavaScript recon is yielding $5K-$25K payouts for hidden endpoints and exposed credentials. Every SPA ships its attack surface to the browser.
-
-> **Full JavaScript analysis methodology, tools, secret patterns, and framework techniques:** See [reference/javascript-analysis.md](reference/javascript-analysis.md)
-
----
-
-## Reference Files
-
-This skill uses progressive disclosure. Detailed reference material is available on demand:
-
-| File | Contents | Lines |
-|------|----------|-------|
-| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~266 |
-| [reference/output-template.md](reference/output-template.md) | Full recon output template — external recon + state fixtures + role-endpoint matrix + tenant map + first 10 test cases | ~151 |
-
-**Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md`
-
----
-
-## Advanced Recon Techniques
-
-### Favicon Hash Enumeration
-
-```
-Use favicon hashes to discover related infrastructure hidden behind different domains:
-1. Download favicon: curl -sL https://[target]/favicon.ico -o favicon.ico
-2. Calculate Shodan/Censys hash (mmh3 or MD5)
-3. Search Shodan: http.favicon.hash:[hash]
-4. Search Censys: services.http.response.favicons.hashes=[hash]
-5. Discover: staging servers, internal tools, acquisition targets, forgotten instances
-```
-
-**Why:** Shared favicons reveal infrastructure belonging to the same organization across different domains, IPs, and cloud providers. Often exposes forgotten or unprotected instances running the same software.
-
-### Origin IP Discovery via Certificate Transparency
-
-```
-Bypass WAF/CDN to find the real origin server:
-1. Search crt.sh: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
-2. Extract all cert-associated IPs from historical DNS (SecurityTrails, PassiveTotal)
-3. Check if origin responds directly: curl -sI -H "Host: [domain]" https://[origin-IP]
-4. Compare responses from CDN vs direct-to-origin
-5. Look for: staging certs, internal hostnames, pre-CDN DNS records
-```
-
-**Why:** Direct origin access bypasses WAF rules, rate limits, and CDN-based security. Many programs pay High for WAF bypass → origin access chains.
-
-### Copyright Notice Mining
-
-```
-Find related, untested infrastructure via shared copyright notices:
-1. Extract copyright text from target's footer/about/legal pages
-2. Web search: "[exact copyright text]" -site:[target-domain]
-3. Discover: sister companies, acquired properties, white-label deployments
-4. Check if discovered hosts share the same tech stack and vulnerabilities
-```
-
-**Why:** Related domains often share codebases but have weaker security configurations. White-label deployments frequently lack the hardening of the primary product.
-
-### Virtual Host Fuzzing
-
-```
-Discover hidden virtual hosts on the same IP:
-1. Resolve target IP: dig +short [target]
-2. Fuzz Host header: ffuf -u https://[IP] -H "Host: FUZZ.[domain]" -w subdomains.txt -fs [default-size]
-3. Also try: internal, staging, admin, dev, test, api, beta, legacy
-4. Check for: different responses, authentication prompts, admin panels
-```
-
-**Why:** Virtual hosts on the same IP often share the same server but have different access controls. Internal vhosts may lack authentication entirely.
-
-### Method-Aware Route Discovery
-
-Standard recon uses GET exclusively. Many routes only respond to POST/PUT/DELETE/PATCH and are invisible to GET-based crawling.
-
-**Step 1: Discover methods from docs and JS (safe, no side effects):**
-```
-1. Extract methods from OpenAPI/Swagger spec (definitive source)
-2. Grep JS bundles for fetch/axios calls with method: "POST"/"PUT"/"DELETE"
-3. Check for X-HTTP-Method-Override or _method patterns in JS source
-```
-
-**Step 2: Probe with OPTIONS (safe, read-only):**
-```
-curl -sI -X OPTIONS https://[target]/api/[endpoint] → Check Allow header
-Note: Allow header is often generic (framework/proxy default) — treat as hint, not proof
-```
-
-**Step 3: Test mutating methods safely (only against owned test data):**
-```
-Use YOUR OWN account's objects (IDs you created) or clearly non-existent IDs:
-1. curl -s -X POST https://[target]/api/[path] -d '{}' -H 'Content-Type: application/json'
-2. curl -s -X PUT https://[target]/api/[path]/[YOUR-ID] -d '{}' -H 'Content-Type: application/json'
-3. curl -s -X DELETE https://[target]/api/[path]/[YOUR-ID]
-Compare: 405 (method not allowed) vs 200/403 (route exists) reveals real routing
-```
-
-**High-value signals:**
-- POST/PUT accepted but not exposed in UI → undocumented write endpoints
-- Different response schema between GET and POST on same path → hidden create functionality
-- PATCH accepted where PUT returns 405 → framework-specific routing gaps
-
-**Why:** Hidden write endpoints behind GET-only routes are where BOLA/BFLA and mass assignment bugs live. Automated scanners are overwhelmingly GET-centric.
-
-### ASN & CIDR Enumeration
-
-```
-Map the target's full network footprint:
-1. Find ASN: dig TXT [target].origin.asn.cymru.com +short → Get ASN number
-2. Get CIDR ranges: whois -h whois.radb.net -- '-i origin AS[number]' → All IP ranges
-3. Web search: "[company name]" site:bgp.he.net → BGP routing info
-4. Reverse DNS on CIDR: for ip in range; dig -x $ip +short → Find hostnames
-5. Cross-reference: subdomains from crt.sh + IPs from ASN → Complete IP-to-domain mapping
-```
-
-**Why:** Organizations often have assets across multiple CIDR ranges that aren't discoverable via DNS alone. ASN enumeration reveals forgotten infrastructure, acquired company assets, and internal systems with public IPs.
-
----
-
-## Recon Variations
-
-- **Quick Fingerprint** — Headers, tech stack, security headers only
-- **Full Domain Recon** — Everything: subdomains, paths, WAF, authenticated recon, full assessment
-- **Subdomain Hunt** — Maximum subdomain enumeration, takeover checks
-- **Pre-Hunt Recon** — Attack surface mapping tied to program scope
-
----
-
-## CLI Execution Rules
-
-When running external recon tools via shell, follow these rules to avoid blowing up the context window with raw output:
-
-| Tool | Use This Flag | Why |
-|------|--------------|-----|
-| `nmap` | `-oG -` (greppable) or `-oX -` (XML) | Raw stdout is verbose; greppable output is parseable |
-| `ffuf` | `-o results.json -of json` | Parse JSON file instead of streaming stdout |
-| `nuclei` | `-j -o results.json` | JSON output; filter by severity with `-s critical,high` |
-| `subfinder` | `-o subs.txt` | Write to file, read selectively |
-| `httpx` | `-json -o live.json` | Structured output for tech fingerprinting |
-| `amass` | `-json output.json` | Structured enumeration results |
-| `dig` | `+short` | Minimal output for DNS lookups |
-| `curl` | `-sS -D -` | Silent with headers; pipe through `head -100` for large responses |
-
-**General rules:**
-- Always redirect large outputs to files and read selectively — never dump raw stdout into context
-- For brute-forcers, cap results: `head -50` or use tool-native limits
-- Filter by severity/confidence before loading results — not everything is relevant
-- When a tool returns >100 lines, summarize findings instead of including raw output
-
----
-
-## Tips for Better Recon
-
-1. **Provide the root domain** — "recon example.com" casts a wider net than "recon www.example.com"
-2. **Mention the program** — "recon example.com for their HackerOne program" helps scope the work
-3. **Ask for depth** — "deep recon" vs "quick fingerprint" adjusts thoroughness
-4. **Chain with hunt-plan** — Run recon first, then `/hunt-plan` to turn findings into action
-
----
-
-## Cloud Asset Discovery During Recon
-
-When recon reveals cloud indicators, route to **cloud-security** skill for deeper testing:
-
-- **S3 buckets** — Subdomain patterns like `assets.example.com` → check CNAME for `s3.amazonaws.com`; test `https://example-assets.s3.amazonaws.com` for public listing
-- **Azure blobs** — Look for `*.blob.core.windows.net` CNAMEs; test container enumeration
-- **GCS objects** — `storage.googleapis.com/example-*` patterns from subdomain/cert data
-- **Cloud metadata** — Internal IPs (`169.254.169.254`) in DNS records suggest cloud infrastructure → test for SSRF to metadata endpoints
-
-### Subdomain Takeover Detection
-
-When a subdomain's CNAME points to an unclaimed external service, anyone can claim it and serve content on the target's domain.
-
-| Service | CNAME Pattern | Fingerprint (HTTP Response) |
-|---------|--------------|---------------------------|
-| GitHub Pages | `*.github.io` | "There isn't a GitHub Pages site here" |
-| Heroku | `*.herokuapp.com` | "No such app" |
-| AWS S3 | `*.s3.amazonaws.com` | "NoSuchBucket" |
-| Azure | `*.azurewebsites.net` | "Error 404 - Web app not found" |
-| Shopify | `shops.myshopify.com` | "Sorry, this shop is currently unavailable" |
-| Fastly | `*.fastly.net` | "Fastly error: unknown domain" |
-| Pantheon | `*.pantheonsite.io` | "404 error unknown site!" |
-| Surge.sh | `*.surge.sh` | "project not found" |
-
-**Testing procedure:**
-1. During subdomain enumeration, flag any CNAME matching above patterns
-2. Attempt to claim the service (e.g., create matching GitHub Pages repo)
-3. Verify you can serve content on the target's subdomain
-4. Severity: Medium ($500-$5K) — enables phishing, cookie theft, CSP bypass
-
----
-
-## Authenticated Recon
-
-External recon finds the perimeter. Authenticated recon maps the real attack surface. **Most high-severity bounties (IDOR, privilege escalation, business logic) live here.** Do this immediately after external recon.
-
-### State Fixture Setup (REQUIRED before authenticated recon)
+#### State Fixture Setup (REQUIRED)
 
 The gap between a good plan and a payable bug is almost always **missing test state**:
 
@@ -381,7 +103,7 @@ The gap between a good plan and a payable bug is almost always **missing test st
 
 **Why:** Single-account testing is the #1 reason auth bugs get missed. Two accounts at different privilege levels is the minimum for any IDOR/BOLA/BFLA testing. Pending states catch state-transition bugs that pay $2K-$15K.
 
-### Per-Role Endpoint Mapping → Role-Endpoint Matrix
+#### Per-Role Endpoint Mapping → Role-Endpoint Matrix
 
 ```
 For each user role (free, paid, admin, support, API-only):
@@ -403,7 +125,7 @@ For each user role (free, paid, admin, support, API-only):
 
 **This matrix IS a key recon deliverable.** Include it in the output. It directly generates test cases for auth-testing.
 
-### Hidden Route Discovery
+#### Hidden Route Discovery
 
 ```
 □ Predictable admin paths — /admin, /internal, /debug, /status, /_admin
@@ -417,7 +139,7 @@ For each user role (free, paid, admin, support, API-only):
 □ AI/MCP config files — /.mcp.json, /.claude/, /.cursor/mcp.json, /.amazonq/, /CLAUDE.md, /AGENTS.md
 ```
 
-### Multi-Tenant Isolation Probing
+#### Multi-Tenant Isolation Probing
 
 ```
 □ Tenant ID in URL — /orgs/{tenant_id}/resource → swap tenant IDs
@@ -428,7 +150,7 @@ For each user role (free, paid, admin, support, API-only):
 □ API key scoping — does API key for tenant A work against tenant B endpoints?
 ```
 
-### Webhook & Integration Mapping
+#### Webhook & Integration Mapping
 
 ```
 □ Outgoing webhooks — where does the app send data? Test for SSRF via webhook URL
@@ -439,11 +161,9 @@ For each user role (free, paid, admin, support, API-only):
 □ Import features — CSV/file upload import — test for XXE, SSRF, path traversal
 ```
 
----
+### Step 4: First 10 Test Cases
 
-## Bridge to Testing — First 10 Test Cases
-
-After recon (external + authenticated), generate the first 10 test cases sorted by payout likelihood. This is the final recon deliverable — the hunter should be able to start testing immediately.
+After authenticated recon, generate the first 10 test cases sorted by payout likelihood. This is the final recon deliverable — the hunter should be able to start testing immediately.
 
 ```
 Priority order for test case generation:
@@ -485,6 +205,268 @@ Test #3: Tenant isolation on GET /api/orgs/{org_id}/billing
   → Safe: 403 or 404
   → Deep dive: business-logic → multi-tenant section
 ```
+
+---
+
+### Step 5: Subdomain Enumeration
+
+```
+Run these lookups:
+1. Certificate Transparency: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
+2. DNS records: dig [domain] A AAAA CNAME TXT CAA +short (avoid deprecated ANY)
+3. Name servers: dig ns [domain] +short
+4. Mail servers: dig mx [domain] +short
+5. Passive DNS: web search "site:securitytrails.com [domain]" for historical records
+6. For each discovered subdomain: curl -sI → Status and server
+7. Check for subdomain takeover indicators (CNAME to unclaimed services)
+```
+
+**Extract:** Subdomain inventory, DNS records, live vs. dead subdomains, takeover candidates, interesting subdomains (staging, api, admin, dev, internal).
+
+### Step 6: WAF/CDN Detection
+
+```
+Check for WAF/CDN:
+1. Inspect response headers for CDN signatures
+2. Check for WAF-specific headers or cookies
+3. Compare direct IP vs domain response
+4. Test with common WAF trigger payloads in User-Agent
+5. Note rate limiting behavior
+```
+
+### Step 7: Google Dorking & OSINT
+
+```
+Search for exposed assets and data:
+1. site:[target] filetype:pdf OR filetype:xlsx OR filetype:doc → Sensitive documents
+2. site:[target] inurl:admin OR inurl:dashboard OR inurl:panel → Admin interfaces
+3. site:[target] inurl:api OR inurl:swagger OR inurl:graphql → API documentation
+4. site:[target] "password" OR "secret" OR "api_key" → Leaked credentials in pages
+5. site:[target] ext:env OR ext:yml OR ext:conf → Configuration files
+6. "[target]" site:pastebin.com OR site:github.com → Leaked data on third parties
+7. intitle:"index of" site:[target] → Directory listings
+8. inurl:".git" site:[target] → Exposed git repositories
+9. site:github.com "[target]" ".env" OR "mcp.json" OR ".cursorrules" → AI config + secret leaks
+10. web.archive.org/web/*/[target]/* → Wayback Machine: deprecated endpoints, old API versions
+11. site:github.com "[target]" "password" OR "secret_key" OR "api_key" → Leaked secrets
+12. site:github.com "[target]" filename:.env OR filename:config → Config files in public repos
+```
+
+#### AI/MCP Configuration Artifact Discovery
+
+```
+Check for exposed AI agent and MCP configuration files:
+1. curl -s https://[target]/.claude/settings.json → Claude Code config
+2. curl -s https://[target]/CLAUDE.md → Project instructions (may leak internal architecture)
+3. curl -s https://[target]/.mcp.json → MCP server configs (may contain API keys, internal URLs)
+4. curl -s https://[target]/.cursor/mcp.json → Cursor MCP config
+5. curl -s https://[target]/.amazonq/mcp.json → Amazon Q Developer config
+6. curl -s https://[target]/.cursorrules → Cursor system prompts (may reveal business logic)
+7. curl -s https://[target]/.github/copilot-instructions.md → Copilot custom instructions
+8. curl -s https://[target]/AGENTS.md → Agent definitions
+9. Web search: site:github.com "[company]" ".mcp.json" OR "CLAUDE.md" OR ".cursorrules"
+```
+
+**Why:** AI config files are the new `.env` — developers commit them with embedded API keys, internal URLs, MCP server credentials, and system prompts that reveal architecture.
+
+### Step 8: JavaScript Analysis (Always for SPAs)
+
+```
+For any SPA target (React, Angular, Vue, Next.js):
+1. Extract all JavaScript file URLs from page source
+2. Check each JS file for .map source maps (append .map to URL)
+3. Run secret patterns against all JS files (API keys, tokens, internal URLs)
+4. Extract API endpoints from fetch/axios/XHR calls
+5. Map SPA routes for hidden/admin pages
+6. Check for __NEXT_DATA__, window.__CONFIG__, Redux state exposure
+7. Enumerate webpack chunks for lazy-loaded modules
+```
+
+**Why:** JavaScript recon yields $5K-$25K payouts for hidden endpoints and exposed credentials.
+
+> **Full JavaScript analysis methodology, tools, secret patterns, and framework techniques:** See [reference/javascript-analysis.md](reference/javascript-analysis.md)
+
+### Step 9: Synthesize
+
+```
+1. Combine all sources (fingerprint + auth recon + external recon)
+2. Map technology stack
+3. Assess security posture from headers
+4. Identify attack surface areas
+5. Prioritize targets by interest level
+6. Generate next steps — route to appropriate skills
+```
+
+---
+
+## Reference Files
+
+This skill uses progressive disclosure. Detailed reference material is available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~266 |
+| [reference/output-template.md](reference/output-template.md) | Full recon output template — external recon + state fixtures + role-endpoint matrix + tenant map + first 10 test cases | ~151 |
+
+**Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md`
+
+---
+
+## Cloud Asset Discovery During Recon
+
+When recon reveals cloud indicators, route to **cloud-security** skill for deeper testing:
+
+- **S3 buckets** — Subdomain patterns like `assets.example.com` → check CNAME for `s3.amazonaws.com`; test `https://example-assets.s3.amazonaws.com` for public listing
+- **Azure blobs** — Look for `*.blob.core.windows.net` CNAMEs; test container enumeration
+- **GCS objects** — `storage.googleapis.com/example-*` patterns from subdomain/cert data
+- **Cloud metadata** — Internal IPs (`169.254.169.254`) in DNS records suggest cloud infrastructure → test for SSRF to metadata endpoints
+
+### Subdomain Takeover Detection
+
+When a subdomain's CNAME points to an unclaimed external service, anyone can claim it and serve content on the target's domain.
+
+| Service | CNAME Pattern | Fingerprint (HTTP Response) |
+|---------|--------------|---------------------------|
+| GitHub Pages | `*.github.io` | "There isn't a GitHub Pages site here" |
+| Heroku | `*.herokuapp.com` | "No such app" |
+| AWS S3 | `*.s3.amazonaws.com` | "NoSuchBucket" |
+| Azure | `*.azurewebsites.net` | "Error 404 - Web app not found" |
+| Shopify | `shops.myshopify.com` | "Sorry, this shop is currently unavailable" |
+| Fastly | `*.fastly.net` | "Fastly error: unknown domain" |
+| Pantheon | `*.pantheonsite.io` | "404 error unknown site!" |
+| Surge.sh | `*.surge.sh` | "project not found" |
+
+**Testing procedure:**
+1. During subdomain enumeration, flag any CNAME matching above patterns
+2. Attempt to claim the service (e.g., create matching GitHub Pages repo)
+3. Verify you can serve content on the target's subdomain
+4. Severity: Medium ($500-$5K) — enables phishing, cookie theft, CSP bypass
+
+---
+
+## Advanced Recon Techniques
+
+### Favicon Hash Enumeration
+
+```
+Use favicon hashes to discover related infrastructure:
+1. Download favicon: curl -sL https://[target]/favicon.ico -o favicon.ico
+2. Calculate Shodan/Censys hash (mmh3 or MD5)
+3. Search Shodan: http.favicon.hash:[hash]
+4. Search Censys: services.http.response.favicons.hashes=[hash]
+```
+
+**Why:** Shared favicons reveal infrastructure across different domains and cloud providers — staging servers, internal tools, forgotten instances.
+
+### Origin IP Discovery via Certificate Transparency
+
+```
+Bypass WAF/CDN to find the real origin server:
+1. Search crt.sh: curl -s "https://crt.sh/?q=%25.[domain]&output=json" | jq
+2. Extract cert-associated IPs from historical DNS (SecurityTrails, PassiveTotal)
+3. Check if origin responds: curl -sI -H "Host: [domain]" https://[origin-IP]
+4. Compare responses from CDN vs direct-to-origin
+```
+
+**Why:** Direct origin access bypasses WAF rules, rate limits, and CDN-based security. Programs pay High for WAF bypass → origin access chains.
+
+### Copyright Notice Mining
+
+```
+Find related, untested infrastructure via shared copyright notices:
+1. Extract copyright text from target's footer/about/legal pages
+2. Web search: "[exact copyright text]" -site:[target-domain]
+3. Discover: sister companies, acquired properties, white-label deployments
+```
+
+**Why:** Related domains often share codebases but have weaker security configurations.
+
+### Virtual Host Fuzzing
+
+```
+Discover hidden virtual hosts on the same IP:
+1. Resolve target IP: dig +short [target]
+2. Fuzz Host header: ffuf -u https://[IP] -H "Host: FUZZ.[domain]" -w subdomains.txt -fs [default-size]
+3. Also try: internal, staging, admin, dev, test, api, beta, legacy
+```
+
+**Why:** Internal vhosts may lack authentication entirely.
+
+### Method-Aware Route Discovery
+
+Standard recon uses GET exclusively. Many routes only respond to POST/PUT/DELETE/PATCH and are invisible to GET-based crawling.
+
+**Step 1: Discover methods from docs and JS (safe, no side effects):**
+```
+1. Extract methods from OpenAPI/Swagger spec (definitive source)
+2. Grep JS bundles for fetch/axios calls with method: "POST"/"PUT"/"DELETE"
+3. Check for X-HTTP-Method-Override or _method patterns in JS source
+```
+
+**Step 2: Probe with OPTIONS (safe, read-only):**
+```
+curl -sI -X OPTIONS https://[target]/api/[endpoint] → Check Allow header
+Note: Allow header is often generic (framework default) — treat as hint, not proof
+```
+
+**Step 3: Test mutating methods safely (only against owned test data):**
+```
+Use YOUR OWN account's objects or clearly non-existent IDs:
+1. curl -s -X POST https://[target]/api/[path] -d '{}' -H 'Content-Type: application/json'
+2. curl -s -X PUT https://[target]/api/[path]/[YOUR-ID] -d '{}' -H 'Content-Type: application/json'
+3. curl -s -X DELETE https://[target]/api/[path]/[YOUR-ID]
+Compare: 405 (method not allowed) vs 200/403 (route exists) reveals real routing
+```
+
+**Why:** Hidden write endpoints behind GET-only routes are where BOLA/BFLA and mass assignment bugs live.
+
+### ASN & CIDR Enumeration
+
+```
+Map the target's full network footprint:
+1. Find ASN: dig TXT [target].origin.asn.cymru.com +short
+2. Get CIDR ranges: whois -h whois.radb.net -- '-i origin AS[number]'
+3. Web search: "[company name]" site:bgp.he.net
+4. Reverse DNS on CIDR: for ip in range; dig -x $ip +short
+5. Cross-reference: subdomains from crt.sh + IPs from ASN
+```
+
+---
+
+## Recon Variations
+
+- **Quick Fingerprint** — Headers, tech stack, security headers only
+- **Full Domain Recon** — Everything: subdomains, paths, WAF, authenticated recon, full assessment
+- **Subdomain Hunt** — Maximum subdomain enumeration, takeover checks
+- **Pre-Hunt Recon** — Attack surface mapping tied to program scope
+
+---
+
+## CLI Execution Rules
+
+When running external recon tools via shell, follow these rules to avoid blowing up the context window:
+
+| Tool | Use This Flag | Why |
+|------|--------------|-----|
+| `nmap` | `-oG -` (greppable) or `-oX -` (XML) | Raw stdout is verbose |
+| `ffuf` | `-o results.json -of json` | Parse JSON instead of streaming stdout |
+| `nuclei` | `-j -o results.json` | Filter by severity with `-s critical,high` |
+| `subfinder` | `-o subs.txt` | Write to file, read selectively |
+| `httpx` | `-json -o live.json` | Structured tech fingerprinting |
+| `amass` | `-json output.json` | Structured enumeration results |
+| `dig` | `+short` | Minimal DNS output |
+| `curl` | `-sS -D -` | Silent with headers; pipe through `head -100` |
+
+**Rules:** Redirect large outputs to files. Cap brute-forcer results (`head -50`). Filter by severity before loading. Summarize >100-line outputs.
+
+---
+
+## Tips for Better Recon
+
+1. **Provide the root domain** — "recon example.com" casts a wider net than "recon www.example.com"
+2. **Mention the program** — "recon example.com for their HackerOne program" helps scope the work
+3. **Ask for depth** — "deep recon" vs "quick fingerprint" adjusts thoroughness
+4. **Chain with hunt-plan** — Run recon first, then `/hunt-plan` to turn findings into action
 
 ## Related Skills
 

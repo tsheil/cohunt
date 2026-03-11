@@ -82,11 +82,12 @@ When a note is a confirmed or likely finding, prompt for and use this format. Ev
 ### Finding Card: [Short Name]
 - **Vulnerability:** [Type — CWE ID if known, e.g., IDOR (CWE-639)]
 - **Boundary Crossed:** [What security boundary? e.g., user→admin, tenant-A→tenant-B, unauth→auth]
+- **Proof Type:** [two-account / unauth / direct / OAST / race / cache-desync / code-path / supply-chain]
 - **Who Is Harmed:** [Specific victim — "any authenticated user", "tenant admin", "API consumer"]
 - **URL:** [Exact endpoint]
 - **Parameter:** [Affected parameter or field]
 - **Payload:** [Exact payload used]
-- **Second Account Proof:** [How two accounts demonstrate the issue — "Token A reads User B's data"]
+- **Evidence:** [Proof matching the type — two requests for IDOR, callback for blind XSS, etc.]
 - **Reproduction:** [Numbered steps from zero state]
 - **Impact:** [Real-world consequence — data leak, financial loss, account takeover]
 - **Scope Status:** [Confirmed in scope / Gray area — check policy / Out of scope]
@@ -94,16 +95,16 @@ When a note is a confirmed or likely finding, prompt for and use this format. Ev
 - **Chain Dependency:** [Standalone finding / Needs [X] to be impactful]
 - **Stronger Variant:** [What would elevate severity? Read→write? Single-user→all-users?]
 - **Severity Estimate:** [Critical/High/Medium/Low]
-- **Evidence:** [Response snippet, status code, or screenshot reference]
 - **Status:** [Ready to report / Needs more work / Needs chain]
 ```
 
+**This is the canonical Finding Card format** — used by `/session-notes`, the `hunt-session` agent, `/write-report`, `/triage-findings`, and `/reportability-check`. All handoffs use this schema.
+
 **Why these fields matter:**
 - `Boundary Crossed` + `Who Is Harmed` → determines if it's a real vulnerability vs. informational
-- `Second Account Proof` → most auth bugs get N/A without two-account demonstration
+- `Proof Type` + `Evidence` → guides what evidence to capture; most auth bugs get N/A without two-account demonstration
 - `Scope Status` + `Duplicate Risk` → prevents wasted report-writing time
 - `Chain Dependency` + `Stronger Variant` → guides next testing steps
-- This format feeds directly into `/write-report`, `/triage-findings`, and `/reportability-check` — no information is lost in the handoff.
 
 **Categorization:**
 

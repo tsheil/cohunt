@@ -189,25 +189,7 @@ Pass: Log as Finding Card (see /session-notes format) → continue testing
 Fail: Note what's missing → either fix it or move to next target
 ```
 
-When a finding passes the gate, capture it immediately as a **Finding Card**:
-
-```markdown
-### Finding Card: [Short Name]
-- **Vulnerability:** [Type — CWE if known]
-- **Boundary Crossed:** [e.g., user→admin, tenant-A→B, unauth→internal]
-- **Proof Type:** [two-account / unauth / direct / OAST / race / cache-desync / code-path / supply-chain]
-- **Who Is Harmed:** [Specific victim — "any user", "tenant admin", etc.]
-- **Evidence:** [Proof matching the type — two requests for IDOR, callback hit for blind XSS, smuggled request for desync, etc.]
-- **Scope Status:** [Confirmed in scope / Gray area / Needs check]
-- **Duplicate Risk:** [LOW/MEDIUM/HIGH + rationale]
-- **Chain Dependency:** [Standalone / Needs X to be impactful]
-- **Stronger Variant:** [What would make this higher severity?]
-- **URL + Payload:** [Exact endpoint and request]
-- **Impact:** [Real-world consequence for victim]
-- **Severity Estimate:** [Critical/High/Medium/Low]
-```
-
-This card format feeds directly into `/write-report` and `/reportability-check`.
+When a finding passes the gate, capture it immediately using the **canonical Finding Card format** (defined in `/session-notes`). Key fields: Vulnerability, Boundary Crossed, Proof Type, Who Is Harmed, URL, Parameter, Payload, Evidence, Reproduction, Impact, Scope Status, Duplicate Risk, Chain Dependency, Stronger Variant, Severity Estimate, Status. This format feeds directly into `/write-report` and `/reportability-check` — no information is lost in handoff.
 
 **Prioritization Framework:**
 
