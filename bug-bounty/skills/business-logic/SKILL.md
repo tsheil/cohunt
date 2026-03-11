@@ -17,16 +17,7 @@ The #1 bounty-paying class (45% of all awards, Intigriti 2026) and the area wher
 
 If you have a hit, run `/reportability-check` before `/write-report`. If blocked or it looks patched, run `/variant-hunt`.
 
-**B2B SaaS targets — test these first** (highest value, lowest competition):
-
-| Surface | Key Test | Why It Pays |
-|---------|----------|-------------|
-| SCIM provisioning | Cross-tenant user creation via SCIM token scope bypass | Critical — admin access in wrong tenant |
-| SSO/JIT | JIT into wrong tenant via email domain collision | Critical — cross-tenant account creation |
-| Invitations | Role escalation on invite acceptance | High — join as admin instead of viewer |
-| Support impersonation | Impersonate admin from support agent context | Critical — full ATO at scale |
-| Data exports | IDOR on export endpoint (`org_id` swap) | High — bulk data exfiltration |
-| Approval workflows | Self-approval or bypass via direct API call | High — separation of duties bypassed |
+**B2B SaaS targets** — see the [expanded routing table](#b2b-saas-enterprise-workflows) below for 12 test surfaces including SCIM, SSO, invitations, connectors, shared links, and real-time collab.
 
 ---
 
@@ -41,6 +32,20 @@ Autonomous tools (XBOW, Shannon, Codex Security) scan for technical patterns —
 - **Low duplicate risk** — each finding is application-specific
 
 **Severity guidance:** Business logic bugs often score Medium-High on CVSS but pay High-Critical bounties because programs weight financial and business impact beyond the CVSS formula.
+
+### CVE-Grounded Patterns — Variant-Hunt These
+
+Every category below has real-world CVEs. Use these as variant-hunting templates: find the same pattern class in your target.
+
+| CVE | CVSS | Product | Pattern | Variant-Hunt Target |
+|-----|------|---------|---------|---------------------|
+| CVE-2026-30823 | 8.8 | Flowise (AI workflow) | IDOR on `PUT /api/v1/loginmethod` — any low-priv user overwrites SSO config of any org, enables Enterprise-only features without license, redirects auth flow → ATO | Any SaaS with org-scoped settings: test plan/feature/SSO endpoints with cross-org IDs |
+| CVE-2026-30956 | 9.9 | OneUptime (monitoring) | Client-supplied `is-multi-tenant-query` + `projectid` headers bypass all tenant isolation — server trusts headers over auth context → cross-tenant data exposure + password reset token leak → ATO | Any multi-tenant SaaS: look for internal-only headers (`X-Tenant-Id`, `X-Org-Id`) that skip permission checks when forged |
+| CVE-2025-56426 | — | Bagisto CMS (e-commerce) | Cart price manipulation via `unit_price` parameter accepted without server-side validation | Any e-commerce checkout: modify price/quantity/discount fields in intercepted requests |
+| CVE-2024-58248 | — | nopCommerce (e-commerce) | No locking on order placement → race condition allows duplicate gift card redemption | Any single-use action (coupons, credits, gift cards): HTTP/2 single-packet parallel requests |
+| CVE-2025-3530 | 7.5 | WP Simple Shopping Cart | External control of assumed-immutable web parameter — client-submitted price accepted as authoritative | Any checkout where price/fee/tax fields transit in the request body |
+
+**Key insight:** Business logic CVEs cluster in three areas: (1) feature/plan bypass via IDOR on settings endpoints, (2) multi-tenant header trust violations, and (3) client-side price authority. Test all three on every SaaS target.
 
 ---
 
