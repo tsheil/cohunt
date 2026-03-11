@@ -64,6 +64,7 @@ Key program-evaluation metrics for AI scope. For detailed AI/MCP attack surface 
 | Bug bounty high/critical rate | 25% of submissions | HackerOne 2025 |
 | Top vulnerability type (bounty) | XSS (but declining) | HackerOne 2025 |
 | Fastest growing vuln class | Authorization flaws (IDOR, BOLA) | HackerOne 2025 |
+| IAC award growth | **134% YoY** to $4M+ (Improper Access Control) | HackerOne 2026 |
 | Declining vuln classes | XSS, SQLi | HackerOne 2025 |
 | Hacker team collaboration | 72% say teams yield better results | Bugcrowd 2026 |
 | Hardware vulns | 88% increase | Bugcrowd CISO Report 2025 |

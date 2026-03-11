@@ -83,7 +83,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 ## AI Vulnerability Trends
 
 - **HackerOne valid issues**: 78,042 valid vulnerabilities found (+12% YoY); XSS still #1 at 18% of reports but **down 10% since 2023** — declining payouts
-- **IDOR/IAC surge**: valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; improper access control up **18% YoY**; IDOR is #1 vuln class for government (18%), medtech (36%), and professional services (31%) programs
+- **IDOR/IAC surge**: valid IDOR reports grew **116% over 5 years** and jumped **29% YoY**; **IAC awards up 134% YoY to $4M+**; improper access control up **18% YoY**; IDOR is #1 vuln class for government (18%), medtech (36%), and professional services (31%) programs
 - **70% of researchers** now combine human creativity with AI tools ("bionic hackers") for report writing, PoC generation, exploit code refinement, and technology research (HackerOne 2025)
 - **210% increase** in AI vulnerability reports; **540% jump** in prompt injection reports
 - **Top hunter composition** (2025): ~40% AI bugs, remainder split across IDOR, CSRF, information disclosure, and business logic — AI is now the plurality finding class for elite researchers
@@ -282,6 +282,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Keysight MCP confused deputy** (January 2026): documented MCP command injection taxonomy — STDIO transport servers run with user privileges, creating confused deputy scenario; detection signatures added to ATI-2025-25 StrikePack
 - **Contrast Security MCP Server**: defensive MCP server bridging IAST vulnerability data with AI agents for context-aware remediation; provides complete taint-flow trace from source to sink
 - **OpenAnt (Knostic, March 6, 2026)**: open-source LLM vulnerability scanner with two-stage detect + exploit pipeline; supports 6 languages; Apache 2.0
+- **Quantro Security VM.Analyst** (March 10, 2026): autonomous AI agents for vulnerability management; founded by ex-CrowdStrike/Tenable/Qualys engineers; backed by Gradient (Google AI fund); normalizes data across VM platforms, CMDBs, and cloud security suites; assesses risk in context of compensating controls
 - **Claude Code macOS keychain fix** (March 2026): keychain corruption when using multiple OAuth MCP servers; large OAuth metadata overflows security buffer leaving stale credentials; trust dialog bug silently enabled all `.mcp.json` servers on first run
 - **March 2026 Patch Tuesday preview**: 2 confirmed zero-days (Windows SmartScreen bypass, Outlook flaw); follows February's unprecedented 6 actively exploited zero-days
 - **Krebs on Security OpenClaw exposure** (March 8, 2026): OpenClaw web admin interfaces exposed to internet with full credential configurations (API keys, OAuth secrets, signing keys); Meta AI safety director lost 200+ emails after agent ignored STOP commands

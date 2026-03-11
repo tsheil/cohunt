@@ -259,6 +259,9 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Severity Guidance:** Critical. Sandbox escapes enable full system compromise. Also test ICS/OT targets: CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8, stack buffer overflow in industrial gateway).
 
+**Node.js `vm` Sandbox Escape via Host Object Exposure:**
+**Key CVE:** CVE-2026-30957 (OneUptime Synthetic Monitors, CVSS 9.9) — user-defined monitoring scripts run in Node.js `vm` context that inadvertently exposes live Playwright `browser`/`page` objects. Attacker invokes Playwright APIs to spawn arbitrary executables on the probe server. **Pattern:** Any platform using `vm`/`vm2`/`isolated-vm` that passes capability-bearing host objects (Playwright, Puppeteer, `child_process`, database clients) into the sandbox. Also: CVE-2026-25049 (n8n, CVSS 9.4) — JavaScript `with` statement escapes expression sandbox; CVE-2026-30887 (OneUptime Probe, unsandboxed code execution). **Where to look:** Monitoring platforms, workflow automation, CI/CD custom script runners, serverless function sandboxes, low-code platforms with custom code blocks.
+
 ---
 
 ## Cloud SSO Trust Model Abuse

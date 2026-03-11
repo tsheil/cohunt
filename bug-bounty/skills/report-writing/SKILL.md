@@ -308,6 +308,12 @@ Triagers now specifically watch for these AI-generated report patterns:
 
 ---
 
+## Reference Files
+
+- **`reference/ai-llm-report-checklist.md`** — 119+ item checklist for AI/LLM vulnerability reports (prompt injection, memory/agent exploitation, MCP & protocol layer, supply chain & IDE, frameworks & scoring). Load when reviewing or writing AI/LLM-related findings.
+
+---
+
 ## Related Skills
 
 - **program-research** — Research the program before reporting (know the scope, rewards, and what gets N/A'd)

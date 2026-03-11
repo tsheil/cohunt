@@ -337,31 +337,10 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ### Race Conditions
 
-**What it is:** Exploiting timing between check and use of a resource to achieve unintended behavior.
+**What it is:** Exploiting timing between check and use of a resource (TOCTOU) via parallel requests. **Quick test:** Send 20 parallel requests to any single-use action (coupon, invite, vote) via HTTP/2 single-packet attack. Look for double-spend, duplicate rewards, or limit bypass.
 
-**Where to look:**
-- Payment/checkout flows
-- Coupon/gift card redemption
-- Account balance operations
-- Invitation/join workflows
-- Rate-limited actions
-- File upload processing
-
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | TOCTOU (time of check to time of use) | Send parallel requests that modify the same resource | Double-spend, duplicate rewards |
-| 2 | Limit bypass | Send N parallel requests to a rate-limited endpoint (e.g., coupon use) | More successful uses than allowed |
-| 3 | Balance manipulation | Concurrent withdrawal/transfer requests | Balance goes negative or doubles |
-| 4 | Invite race | Accept same invite from two sessions simultaneously | Duplicated permissions or roles |
-| 5 | File overwrite | Upload two files concurrently to the same resource path | Unintended overwrite or data leak |
-| 6 | Session race | Trigger password change + sensitive action in parallel | Action completes under old session |
-| 7 | Last-byte sync | Use Turbo Intruder/HTTP/2 single-packet attack for precise timing | Sub-millisecond race windows exploitable |
-
-**Tools:** Turbo Intruder (Burp extension), HTTP/2 single-packet attack technique, `race-the-web`.
-
-> **For advanced race condition techniques** (single-packet attack, last-byte sync, HTTP/2 multiplexing, session-based races): See [http-desync](../http-desync/SKILL.md)
+> **Business impact racing** (payment flows, subscriptions, financial operations): See [business-logic](../business-logic/SKILL.md)
+> **Protocol techniques** (single-packet attack, last-byte sync, HTTP/2 multiplexing, session-based races): See [http-desync](../http-desync/SKILL.md)
 
 ---
 

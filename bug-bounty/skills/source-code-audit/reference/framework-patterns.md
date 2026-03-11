@@ -33,6 +33,7 @@ Language and framework-specific vulnerability patterns for source code audits. R
 | `child_process.exec()` with string interpolation | Command injection |
 | API data processing with unsanitized input (CWE-94) | Code injection — CVE-2026-25888 (Chartbrew, CVSS 8.8): improperly sanitized input in API data processing enables arbitrary code execution |
 | Missing `await` on async crypto in auth paths | Auth bypass — CVE-2026-28514 (Rocket.Chat, CVSS 9.3): un-awaited `bcrypt.compare()` returns Promise (truthy in JS) → any password accepted; search for `bcrypt.compare`, `argon2.verify`, `scrypt` calls without `await` in authentication code |
+| Node.js `vm`/`vm2` sandbox with exposed host objects | RCE — CVE-2026-30957 (OneUptime, CVSS 9.9): Playwright `browser`/`page` objects exposed into `vm` sandbox; user invokes Playwright APIs to spawn executables. Search for `vm.createContext` passing Playwright, Puppeteer, `child_process`, or DB client references into sandbox |
 
 ---
 
