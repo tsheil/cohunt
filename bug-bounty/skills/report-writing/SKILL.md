@@ -9,20 +9,13 @@ Write bug bounty reports that get triaged fast, avoid N/A, and maximize payout. 
 
 ## What I Need From You
 
-**Required:**
-- What vulnerability you found (type, location)
-- How to reproduce it (steps, payloads, requests)
+**Best input: a Finding Card** from `/session-notes` — all 15 fields map directly to report sections. The `Boundary Crossed`, `Proof Type`, `Who Is Harmed`, `Scope Status`, and `Duplicate Risk` fields are critical for report quality and often determine whether a report gets paid.
 
-**Helps a lot:**
-- Target program and platform
-- Impact you observed (what data was exposed, what action was possible)
-- Screenshots or HTTP request/response pairs
-- Your CVSS estimate (I'll validate or suggest adjustments)
+**Minimum:** What vulnerability you found and how to reproduce it.
 
-**Optional:**
-- Proof of concept code or script
-- Video recording reference
-- Related vulnerabilities or chaining potential
+**Helps a lot:** Target program/platform, impact observed, HTTP request/response pairs, CVSS estimate.
+
+**Optional:** PoC code/script, video reference, related vulnerabilities or chaining potential.
 
 ---
 
@@ -136,16 +129,9 @@ curl -X POST https://api.example.com/endpoint \
 
 ### Step 1: Gather Finding Details
 
-```
-From the user, collect:
-1. Vulnerability type (XSS, IDOR, SSRF, SQLi, etc.)
-2. Exact location (URL, endpoint, parameter)
-3. Reproduction steps (what they did)
-4. What they observed (response, behavior change)
-5. Target program (if known)
-```
+**If Finding Card provided:** Map all 15 fields directly — `Vulnerability`→CWE+title, `Boundary Crossed`→impact framing, `Proof Type`→evidence structure, `Who Is Harmed`→affected scope, `Evidence`→proof section, `Duplicate Risk`→prior art section, `Chain Dependency`→chain documentation, `Stronger Variant`→additional testing notes. Only write if `Status=Ready`.
 
-If the user provides incomplete info, ask specifically for what's missing. Don't guess reproduction steps.
+**If no Finding Card:** Collect minimum: vulnerability type, location (URL/endpoint/parameter), reproduction steps, observed behavior, target program. If incomplete, ask specifically — don't guess reproduction steps.
 
 ### Step 2: Classify and Score
 

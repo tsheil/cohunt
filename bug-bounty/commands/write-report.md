@@ -83,13 +83,27 @@ From the user, extract:
 If anything critical is missing → ASK before writing.
 ```
 
-**If the user has session notes:** When the finding comes from `/session-notes` structured format (containing **Vulnerability**, **URL**, **Payload**, **Reproduction**, **Impact** fields), map those fields directly into the report:
-- `Vulnerability` → CWE classification + title
-- `URL` + `Parameter` → Affected asset in reproduction steps
-- `Payload` → PoC section
-- `Reproduction` → Reproduction steps (expand with HTTP details)
-- `Impact` → Impact section (strengthen with business context)
-- `Severity Estimate` → Starting point for CVSS calculation
+**If the user has a Finding Card:** When the finding comes from `/session-notes` Finding Card format, map ALL fields directly into the report — these fields were designed to survive the handoff:
+
+| Finding Card Field | Maps To |
+|---|---|
+| `Vulnerability` | CWE classification + report title |
+| `Boundary Crossed` | Impact section — what security boundary was violated |
+| `Proof Type` | Determines evidence structure (two-account, unauth, OAST, etc.) |
+| `Who Is Harmed` | Impact section — affected users/scope |
+| `URL` + `Parameter` | Affected asset in reproduction steps |
+| `Payload` | PoC section |
+| `Evidence` | Proof section (screenshots, response diffs, callback logs) |
+| `Reproduction` | Reproduction steps (expand with HTTP details) |
+| `Impact` | Impact section (strengthen with business context) |
+| `Scope Status` | Verify in-scope before writing; flag gray areas |
+| `Duplicate Risk` | Add "Prior Art" section if HIGH; reference disclosed reports |
+| `Chain Dependency` | If chained: document each link separately, then combined impact |
+| `Stronger Variant` | Note in "Additional Testing" section if not yet pursued |
+| `Severity Estimate` | Starting point for CVSS calculation |
+| `Status` | Only write if Status=Ready; if Needs Chain, chain first |
+
+Missing fields from the Finding Card should be flagged as questions, not guessed.
 
 ### Step 2: Classify and Score
 

@@ -384,9 +384,19 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2026-23669 | Critical | Print Spooler | RCE — PrintNightmare-adjacent pattern |
 | CVE-2026-26114 | 8.8 | SharePoint Server | Deserialization RCE (on-prem SP 2016/2019/SE) |
 
-**Test patterns:** **RRAS RCE (CVE-2026-26111)** enables unauth SYSTEM on exposed RRAS; **Office Preview Pane** (CVE-2026-26110/26113) — exploitation requires only file preview; **Print Spooler** (CVE-2026-23669) echoes PrintNightmare; **SharePoint deser** (CVE-2026-26114): .NET deser on on-prem SP 2016/2019/SE; **Excel via Copilot** (CVE-2026-26144) — first Critical where AI assistant is exploitation vector. **Variant analysis:** ZDI noted CVE-2026-23668 combined two separate GDI locking issues — GDI lock/release variant hunting is productive.
+**Additional bounty-relevant CVEs (CrowdStrike analysis: 46 EoP, 16 RCE, 10 info disclosure across 82 total):**
 
-**Severity Guidance:** 8 Critical CVEs, 2 unauth RCE. Preview Pane is a recurring Office attack vector. CVE-2026-26144 Copilot Agent exfil represents a new pattern class.
+| CVE | CVSS | Component | Type |
+|-----|------|-----------|------|
+| CVE-2026-26125 | 8.6 | Payment Orchestrator Service | EoP via missing authentication — **bounty-relevant**: test payment/billing service endpoints for unauthenticated access |
+| CVE-2026-23651 | 6.7 | ACI Confidential Containers | EoP via regex flaw — regex-based auth bypass in container isolation |
+| CVE-2026-26124 | 6.7 | ACI Confidential Containers | EoP via path traversal — container escape pattern |
+| CVE-2026-26122 | 6.5 | ACI Confidential Containers | Info disclosure via insecure defaults — default-config exposure |
+| CVE-2026-23674 | Critical | MapUrlToZone | Security feature bypass — URL zone restriction bypass |
+
+**Test patterns:** **RRAS RCE (CVE-2026-26111)** enables unauth SYSTEM on exposed RRAS; **Office Preview Pane** (CVE-2026-26110/26113) — exploitation requires only file preview; **Payment Orchestrator (CVE-2026-26125)** — missing auth on billing services, test payment/orchestrator endpoints for unauth access; **ACI container escape (CVE-2026-26124)** — path traversal in container isolation; **MapUrlToZone bypass (CVE-2026-23674)** — URL zone restriction bypass, generalizable to any URL-zone-based security; **SharePoint deser** (CVE-2026-26114): .NET deser on on-prem SP 2016/2019/SE; **Excel via Copilot** (CVE-2026-26144) — first Critical where AI assistant is exploitation vector. **Variant analysis:** ZDI noted CVE-2026-23668 combined two separate GDI locking issues — GDI lock/release variant hunting is productive.
+
+**Severity Guidance:** 8+ Critical CVEs, 2 unauth RCE. Preview Pane is a recurring Office attack vector. CVE-2026-26144 Copilot Agent exfil represents a new pattern class. CVE-2026-26125 missing auth on payment services is a bounty-relevant pattern.
 
 ---
 
@@ -420,17 +430,11 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - **CVE-2026-20131** (Cisco Secure FMC, CVSS 10.0): unauthenticated RCE as root via crafted Java byte stream. Exploits Apache Commons Collections/Spring gadget chains. Affects versions 6.4.0-10.0.0; no workaround
 - **CVE-2026-20079** (Cisco Secure FMC, CVSS 10.0): paired with CVE-2026-20131 — dual CVSS 10.0 in the same product
 
-**Where to look:** Cisco FMC/FTD management consoles (ports 443, 8305), Palo Alto Panorama, FortiManager, Check Point SmartConsole. Shodan: `Cisco Firepower`.
+**Where to look:** Cisco FMC/FTD (ports 443, 8305), Palo Alto Panorama, FortiManager, Check Point SmartConsole. Shodan: `Cisco Firepower`.
 
-**Test patterns:**
+**Test patterns:** (1) Java deser probe → send crafted serialized objects to management endpoints; (2) Gadget chain detection → test Commons Collections, Spring, ROME chains → watch for DNS/HTTP callbacks; (3) Version fingerprint → versions 6.4.0-10.0.0 vulnerable.
 
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Java deserialization probe | Send crafted serialized Java objects to management endpoints | ClassNotFoundException or execution indicators |
-| 2 | Gadget chain detection | Test for Commons Collections, Spring, and other known gadget chains | Deserialization-triggered behavior (DNS, HTTP callbacks) |
-| 3 | Version fingerprinting | Identify FMC version via login page, API responses, or HTTP headers | Versions 6.4.0-10.0.0 are vulnerable |
-
-**Severity Guidance:** Critical (CVSS 10.0). Firewall management consoles control all network security policies. Unauthenticated RCE as root = complete network compromise. Two CVSS 10.0s in the same product is extremely rare — indicates fundamental architecture issues.
+**Severity Guidance:** Critical (dual CVSS 10.0). Unauth RCE as root on firewall management = complete network compromise.
 
 ---
 
@@ -440,15 +444,11 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk <= 12.8.7 Hotfix 1, CVSS 9.8) — unauthenticated Java deserialization RCE that **bypasses the patch for CVE-2024-28988** (the original deser RCE). Added to CISA KEV March 9, 2026; actively exploited. The original fix blocked specific gadget chains but left the deserialization endpoint accessible with alternative payloads.
 
-**Where to look:** Any product previously patched for deserialization vulnerabilities — SolarWinds WHD, Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware products.
+**Where to look:** Any product previously patched for deser — SolarWinds WHD, Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware.
 
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Alternative gadget chains | If a product was patched for deser RCE, test with different ysoserial chains (CommonsCollections, Spring, ROME, BeanUtils) | RCE via gadget chain not covered by patch |
-| 2 | Endpoint reachability | Verify the deserialization endpoint is still accessible after patch | Endpoint accepts serialized objects even if some chains blocked |
-| 3 | Version-specific bypass | Check if hotfix/patch version still processes serialized input | Incomplete patch — new gadget works on patched version |
+**Test patterns:** (1) Alternative gadget chains → test CommonsCollections, Spring, ROME, BeanUtils on patched endpoints; (2) Endpoint reachability → verify deser endpoint still accepts objects post-patch; (3) Version-specific bypass → test if hotfix processes serialized input via different chain.
 
-**Severity Guidance:** Critical (CVSS 9.8). Patch bypass variants are high-value — they demonstrate incomplete fixes. Cross-link: `/variant-hunt` command.
+**Severity Guidance:** Critical (CVSS 9.8). Patch bypass variants are high-value — demonstrate incomplete fixes. Use `/variant-hunt`.
 
 ---
 
@@ -469,16 +469,14 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Key CVE:** CVE-2026-27944 (Nginx UI < 2.3.3, CVSS 9.8) — `/api/backup` accessible without auth; AES-256 encryption key + IV leaked in `X-Backup-Security` response header. Attacker downloads full backup → decrypts with leaked key → obtains admin creds, session tokens, TLS private keys → full takeover.
 
-**Where to look:** Any admin panel, management console, or infrastructure UI with backup/export/download functionality — especially Nginx-UI, cPanel, Plesk, Webmin, pfSense, OPNsense, Proxmox, any self-hosted tool with a settings export feature.
+**Where to look:** Any admin panel/management console with backup/export/download — Nginx-UI, cPanel, Plesk, Webmin, pfSense, OPNsense, Proxmox, any self-hosted tool with settings export.
 
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Unauth backup endpoint | Request `/api/backup`, `/backup`, `/export`, `/download` without session cookie | Backup file returned (zip, tar, JSON, SQL dump) |
-| 2 | Key leakage in headers | Inspect all response headers on backup endpoints | Encryption keys, IVs, passwords in `X-*` headers |
-| 3 | Backup content analysis | Download and examine backup contents | Credentials, API keys, TLS private keys, DB connection strings |
-| 4 | Settings export bypass | Try `/api/settings/export`, `/admin/config/download` without auth | Configuration files with embedded secrets |
+| # | Test | What to look for |
+|---|------|-----------------|
+| 1 | Request `/api/backup`, `/backup`, `/export`, `/download` without auth | Backup file returned + encryption keys/IVs in `X-*` response headers |
+| 2 | Try `/api/settings/export`, `/admin/config/download` without auth | Config files with embedded creds, API keys, TLS private keys |
 
-**Severity Guidance:** Critical (CVSS 9.8). Unauthenticated access to backups containing credentials = full system compromise. Report immediately — active data exposure.
+**Severity Guidance:** Critical (CVSS 9.8). Unauth backup access with embedded creds = full system compromise.
 
 ---
 
