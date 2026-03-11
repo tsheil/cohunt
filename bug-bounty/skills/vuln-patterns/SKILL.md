@@ -55,6 +55,7 @@ For deep dives, route to the specialized skill or reference file:
 | **ETag length leak, XSS-Leak Chrome pool (PortSwigger #6, #8)** | [client-side-security](../client-side-security/SKILL.md) XS-Leaks table |
 | **Next.js cache poisoning, H2 CONNECT (PortSwigger #7, #9)** | [http-desync](../http-desync/SKILL.md) cache + smuggling sections |
 | **SAML void canonicalization (PortSwigger-adjacent)** | [reference/parser-differentials.md](reference/parser-differentials.md#void-canonicalization--new-attack-class-2025) |
+| **Edge/serverless differentials (encoded-slash, cookie injection, SSE injection)** | [api-security](../api-security/SKILL.md#edgeserverless-differentials) |
 
 The patterns below cover the **core web vulnerability classes** that don't have a dedicated skill. For anything listed above, route to the specialized skill for deeper coverage.
 

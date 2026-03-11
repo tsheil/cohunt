@@ -207,7 +207,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 
 **Fix Pattern:** Bind the state to a session cookie — set a session cookie when user approves consent, generate state and bind it server-side, verify state matches session on callback.
 
-**Timeline:** Reported July-August 2025; fixed September 2025; MCP spec updated November 25, 2025 to mandate OAuth 2.1 + PKCE. Obsidian Security expanded disclosure March 2026 with additional affected clients.
+**Timeline:** Reported July-August 2025; fixed September 2025; MCP spec updated November 25, 2025 — authorization is **optional** per spec but when implemented over HTTP must follow OAuth 2.1 + PKCE + RFC 8707 Resource Indicators. Obsidian Security expanded disclosure March 2026 with additional affected clients.
 
 ---
 
@@ -270,7 +270,7 @@ Multiple one-click account takeover vulnerabilities in Remote MCP servers discov
 - **Enkrypt AI scan of top 1,000 MCP servers**: 33% had critical vulnerabilities, averaging **5.2 vulnerabilities per server**
 - **MCPTox benchmark results**: tool poisoning attack success rates exceed **60%** on models like GPT-4o-mini, o1-mini, DeepSeek-R1, and Phi-4 across 1,312 malicious test cases
 - **CyberArk advanced tool poisoning variants**: malicious instructions embedded not just in descriptions but in function names, parameter types, required fields arrays, and default values — bypass description-only scanning
-- **MCP protocol now mandates OAuth 2.1 + PKCE** for authentication; Protected Resource Metadata (PRM) mandatory; Resource Indicators required (2025-11-25 spec update)
+- **MCP authorization is optional** per spec; when implemented over HTTP, follows OAuth 2.1 + PKCE + PRM + RFC 8707 Resource Indicators (2025-11-25 spec update) — but 38% of servers skip auth entirely
 - **BlueRock MCP Trust Registry** (March 2026): analyzed **7,000+ MCP servers** — **36.7% exposed to SSRF** vulnerabilities
 - **Docker MCP Defender + Gateway**: Docker published "MCP Horror Stories" series; MCP Defender provides runtime detection of tool poisoning and data exfiltration; Docker MCP Gateway provides infrastructure-level protection with sandboxed execution
 - **Log-To-Leak Framework** (ICLR 2026 submission): new class of prompt-level privacy attacks targeting tool invocation — covertly forces agents to invoke a malicious logging tool to exfiltrate data. Evaluated across 5 real-world MCP servers and 4 LLM agents

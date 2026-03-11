@@ -255,7 +255,7 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 **Bugcrowd:** Map findings to Bugcrowd VRT (Vulnerability Rating Taxonomy). AI Triage Assistant has 98% P1 accuracy and 98% duplicate detection confidence — ensure critical findings are unambiguously framed. CrowdMatch AI matches researchers to programs; check if this program favors specific vuln classes. Check if program uses managed triage vs. self-managed.
 
-**Intigriti:** Follow their severity guidelines — **all new submissions use CVSS V4** starting 2026 (ensure Attack Requirements metric is properly scored). Enhanced bonus criteria for quality, variant research, and exceptional PoCs. Note if program is private/public. Check for program-specific rules on AI vulnerability reporting. Won Security Innovation of the Year 2025 — fastest-growing platform with expanding program portfolio including Nvidia.
+**Intigriti:** Follow their severity guidelines — Intigriti defaults to CVSS 3.0; program admins can switch to **CVSS 4.0** (check program details for which version applies). If CVSS 4.0, ensure Attack Requirements (AT) metric is properly scored. Enhanced bonus criteria for quality, variant research, and exceptional PoCs. Note if program is private/public. Check for program-specific rules on AI vulnerability reporting. Won Security Innovation of the Year 2025 — fastest-growing platform with expanding program portfolio including Nvidia.
 
 **Self-hosted programs:** Check their VDP for specific formatting requirements. Response times vary widely — note if program has SLA commitments. No AI triage — reports reviewed by internal teams who may be less experienced with newer vuln classes (LPCI, MCP attacks). Provide extra context and references.
 

@@ -489,12 +489,9 @@ Role confusion jailbreak exploiting chat template tokens (arXiv:2602.16958, Feb 
 | ZombieAgent char exfil | Email | ChatGPT with memory | Character-at-a-time URL construction | Radware, Jan 2026 |
 | SpAIware | Any processed content | ChatGPT persistent memory | Memory save → ongoing surveillance | ScienceDirect 2026 |
 | Copilot Agent exfil | Excel file (zero-click) | Microsoft Copilot Agent mode | Unintended network egress from Excel | CVE-2026-26144, Critical |
+| Agentic Collapse | Public chat (zero-click) | AI RAG agent → osTicket | Semantic coercion bypasses WAF — agent executes vuln tool | CVE-2026-22200, Penligent |
+| ShadowLeak | Crafted email (zero-click) | ChatGPT Deep Research + Gmail | Server-side exfil, no UI indicator | Radware, Sept 2025 |
 
-**Reportability Proof Model** — A finding in this class is reportable when all five elements are present:
-1. **Victim session**: attacker can place content where AI will process it without victim action (or with minimal interaction)
-2. **Privileged tool/data**: AI has access to sensitive data or dangerous tools beyond what the entry point implies
-3. **Exfil sink**: data reaches attacker-controlled endpoint (URL, email, API, constructed link)
-4. **Second-user harm**: impact extends beyond the attacker's own account (other users' data, org-wide CRM, shared resources)
-5. **Stop conditions**: document what the AI *should* have refused — the missing trust boundary check
+**Reportability:** All five must be present — (1) victim-accessible content placement, (2) privileged tool/data behind agent, (3) exfil sink (URL/email/API), (4) second-user harm, (5) missing trust boundary the AI should have enforced.
 
-**Quick tests:** calendar→RCE | email→file exfil | form→CRM data | Slack→API abuse | Excel→network egress | issue→cred theft | RSS→backdoor. Maps to ASI01 + ASI02 + ASI05. **Full DXT details:** [ide-supply-chain.md](ide-supply-chain.md)
+**Quick tests:** calendar→RCE | email→file exfil | form→CRM data | Slack→API abuse | Excel→network egress | issue→cred theft | RSS→backdoor | **chat→legacy-tool-RCE** (agentic collapse). Maps to ASI01 + ASI02 + ASI05. **Full DXT details:** [ide-supply-chain.md](ide-supply-chain.md)

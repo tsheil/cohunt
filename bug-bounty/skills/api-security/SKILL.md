@@ -320,6 +320,40 @@ Common API vulnerability chains that elevate severity:
 
 ---
 
+## Edge/Serverless Differentials
+
+Edge runtimes (Cloudflare Workers, Vercel Edge, Netlify Edge, AWS Lambda@Edge) handle requests differently from origin servers — creating auth and parsing gaps that are systematically undertested. These are high-yield Q1 2026 patterns.
+
+### Quick Probes (5 minutes)
+
+| # | Test | How | What to look for |
+|---|------|-----|-----------------|
+| 1 | Encoded-slash auth bypass | `GET /api/admin%2Fusers` — encoded `/` in path | Edge normalizes but origin doesn't (or vice versa), bypassing path-based auth rules |
+| 2 | Cookie-attribute injection | Set cookie with `; Domain=.target.com; SameSite=None` in parameters reflected into `Set-Cookie` | Session fixation, scope expansion — CVE-2026-29086 (Hono) |
+| 3 | SSE field injection | Inject `\n\nevent: ` or `\ndata: ` in parameters reflected into Server-Sent Events stream | Event stream manipulation — CVE-2026-29085 (Hono) |
+| 4 | Transport-parity gap | Test same endpoint over HTTP vs WebSocket vs SSE | Security controls enforced on HTTP but not WS/SSE — CVE-2026-30241 (Mercurius depth bypass) |
+| 5 | Edge cache key poisoning | Vary `Host`, `X-Forwarded-Host`, query params on cached endpoints | Cache key excludes auth header — serve one user's response to another |
+
+### Why This Matters
+
+Edge runtimes apply WAF rules, rewrites, and caching **before** the request reaches application logic. When edge and origin disagree on URL parsing, header semantics, or content types, security controls can be bypassed entirely. Key patterns:
+
+- **Path normalization differential** — Edge decodes `%2F` → `/` before routing, origin receives decoded path. Auth middleware matching `/admin/*` sees `/admin%2Fusers` as non-matching on one layer but matching on the other.
+- **Header injection via edge** — Edge workers may set `Set-Cookie` or SSE response headers using request parameters. If the edge worker doesn't sanitize `\r\n`, `\n`, or `;` characters, attackers inject additional cookie attributes or SSE events.
+- **Transport inconsistency** — GraphQL depth limits, rate limits, and auth checks enforced on HTTP but not on WebSocket subscriptions or SSE streams. Test every security control across all transports the API supports.
+
+### Detection During Recon
+
+When target-recon finds these signals, route here:
+- `CF-Ray`, `x-vercel-id`, `x-nf-request-id` headers → edge runtime present
+- `__NEXT_DATA__` or `/_next/` paths → Next.js (often on Vercel Edge)
+- `workers.dev` subdomains or `wrangler.toml` → Cloudflare Workers
+- GraphQL endpoint with WebSocket upgrade → test transport parity
+
+**Severity:** Edge auth bypass = High-Critical. Cookie injection = Medium-High. SSE injection = Medium. Transport-parity gap with auth bypass = High.
+
+---
+
 ## Reference Files
 
 This skill uses progressive disclosure. Detailed reference material is available on demand:
@@ -336,6 +370,7 @@ grep -n "JWT\|API key\|authentication bypass" ${CLAUDE_SKILL_DIR}/reference/api-
 grep -n "rate limit\|distributed\|evasion" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 grep -n "webhook\|callback\|SSRF" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "edge\|serverless\|encoded-slash\|SSE\|transport" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 ```
 
 ---
