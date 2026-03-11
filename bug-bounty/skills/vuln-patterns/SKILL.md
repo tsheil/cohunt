@@ -7,13 +7,19 @@ description: Testing patterns and checklists for web vulnerability classes that 
 
 Concrete testing patterns for the vulnerability classes that pay bounties. Not theory — actionable test cases you can run against a target right now.
 
-## Quick Start — First 5 Minutes
+## Quick Start — First 5 Minutes (What Actually Pays)
 
-1. **IDOR** — Swap any user-controlled ID between two accounts (numeric, UUID, slug). Check GET, PUT, DELETE.
-2. **Auth bypass** — Call admin/paid endpoints with a low-priv token. Try `/api/v1/` if `/api/v2/` is blocked.
-3. **SSRF** — Any URL input (webhook, import, preview)? Send `http://169.254.169.254/latest/meta-data/`.
-4. **Path traversal** — Any file download/export/view endpoint? Send `../../../etc/passwd` in the filename parameter.
-5. **Injection** — Search/sort/filter params: `' OR 1=1--` (SQL), `{{7*7}}` (SSTI), `${7*7}` (EL).
+Commodity vulns (basic XSS/SQLi/SSRF) are now AI-tool territory. These 5 tests target the bug classes that pay bounties in 2026.
+
+**Pre-req:** You need a logged-in multi-user app with 2+ accounts at different roles/tiers. If you don't have that yet, run `/recon` first to set up state fixtures.
+
+1. **Auth boundary** — Two accounts, different roles. Take Account A's token, call 3 endpoints that should be Account B-only. Check response body, not just status code (soft-200s lie).
+2. **Workflow/state abuse** — Find a multi-step flow (checkout, approval, onboarding). Call step 3's API directly, skipping steps 1-2. Also test pending states: accept invite with modified role, complete downgraded-plan export, trigger approval on already-rejected request.
+3. **Tenant swap** — Any `org_id`, `tenant_id`, or `workspace_id` in requests? Swap it. Test admin/settings/export endpoints first — these are systematically under-tested.
+4. **Feature gate** — Downgrade from paid to free tier. Do premium API endpoints still respond? Test both UI-hidden and API-level enforcement.
+5. **Race the limit** — Find a single-use action (coupon, invite, vote). Send 20 parallel requests via HTTP/2 single-packet attack. Did it execute more than once?
+
+**Still need commodity vuln tests?** They're below — but probe quickly (≤5 min each) and only on private programs, legacy stacks, or recently changed surfaces.
 
 If you have a hit, run `/reportability-check` before `/write-report`. If blocked or it looks patched, run `/variant-hunt`.
 
@@ -45,7 +51,7 @@ For deep dives, route to the specialized skill or reference file:
 | **ORM leaking via search/filter (PortSwigger #2)** | [reference/web-vulns.md](reference/web-vulns.md#orm-leaking-via-search--filter-portswigger-2-2025) |
 | **SSRF redirect loops — blind→visible (PortSwigger #3)** | [reference/web-vulns.md](reference/web-vulns.md#ssrf-via-http-redirect-loops-portswigger-3-2025) |
 | **Vibe-coded apps (Supabase RLS, Firebase, API key exposure)** | [reference/web-vulns.md](reference/web-vulns.md#vibe-coded-application-attack-surface) |
-| **SOAPwn .NET SOAP exploitation (PortSwigger #5)** | [source-code-audit framework-patterns.md](../source-code-audit/reference/framework-patterns.md#soapwn-net-soap-web-service-exploitation-portswigger-top-10-2025-5) |
+| **SOAPwn .NET SOAP exploitation (PortSwigger #5)** | [source-code-audit/reference/framework-patterns.md](../source-code-audit/reference/framework-patterns.md#soapwn-net-soap-web-service-exploitation-portswigger-top-10-2025-5) |
 | **ETag length leak, XSS-Leak Chrome pool (PortSwigger #6, #8)** | [client-side-security](../client-side-security/SKILL.md) XS-Leaks table |
 | **Next.js cache poisoning, H2 CONNECT (PortSwigger #7, #9)** | [http-desync](../http-desync/SKILL.md) cache + smuggling sections |
 | **SAML void canonicalization (PortSwigger-adjacent)** | [reference/parser-differentials.md](reference/parser-differentials.md#void-canonicalization--new-attack-class-2025) |

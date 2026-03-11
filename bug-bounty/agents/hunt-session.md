@@ -48,7 +48,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **Infrastructure** | Network appliances, management consoles, VPN | vuln-patterns (infra ref) | Auth bypass, command injection, deserialization, default creds |
    | **Mobile-First** | iOS/Android apps, deep links, certificate pinning | mobile-security, api-security | API backend vulns, deep link hijacking, local data exposure |
 
-2. **Setup & State Fixtures (REQUIRED before hunting)** — The gap between a good plan and a payable bug is almost always **missing test state**. Before any testing, force the hunter through this setup checklist:
+2. **Setup & State Fixtures (REQUIRED before hunting, AFTER scope gate)** — The gap between a good plan and a payable bug is almost always **missing test state**. Only invest in setup after program research confirms the target is worth hunting (go/caution, not no-go). Before any testing, force the hunter through this setup checklist:
 
    ```
    ┌─ SETUP CHECKLIST ──────────────────────────────────────────────┐
@@ -80,9 +80,9 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 
 3. **Ask what changed** — "What's new about this target?" Recent changes (new features, API versions, scope additions, patches, AI rollouts) are the highest-signal attack surface. Route to `/regression-hunt` thinking if changes known.
 
-4. **Research the program** — Use the `program-research` skill to gather program intelligence: scope, rewards, response metrics, disclosed reports, and hunt readiness assessment. Identify disclosed reports to feed `/variant-hunt` thinking.
+4. **Research the program** — Use the `program-research` skill to gather program intelligence: scope, rewards, response metrics, disclosed reports, and hunt readiness assessment. Identify disclosed reports to feed `/variant-hunt` thinking. **Run scope gate immediately after** — verify target assets and vuln types are in scope before investing in fixtures or deep recon. If no-go → stop.
 
-5. **Recon the target** — Use the `target-recon` skill for external recon, then **immediately do authenticated recon**:
+5. **Recon the target** — Use the `target-recon` skill starting with **authenticated recon** (where payable bugs live), then external enumeration in parallel or after:
    - Map endpoints per role → build a **role-endpoint matrix**
    - Identify blocked cells (role X cannot access endpoint Y) → these are your test targets
    - Map tenant boundaries → which resources are shared vs. isolated
@@ -117,11 +117,11 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 ```
 ═══ PHASE 1: PLAN (Steps 1-12) ════════════════════════════════
 Step 1: Classify target archetype (B2B SaaS / Consumer / API-First / AI / Infra / Mobile)
-Step 2: Setup & state fixtures — verify accounts, roles, pending states, tools
-Step 3: Ask "what changed recently?" — route to regression-hunt if applicable
-Step 4: Run program research (web search + platform API if connected)
-Step 5: Run target recon — external then authenticated → build role-endpoint matrix
-Step 6: Cross-reference findings with scope
+Step 2: Ask "what changed recently?" — route to regression-hunt if applicable
+Step 3: Run program research (web search + platform API if connected)
+Step 4: Scope gate — verify target assets and vuln types are in scope BEFORE investing time
+Step 5: Setup & state fixtures — accounts, roles, pending states, tools (skip on no-go)
+Step 6: Run target recon — authenticated-first, then external enumeration in parallel
 Step 7: Score automation pressure per attack surface area (HIGH/MEDIUM/LOW)
 Step 8: Map workflows — actors, states, invariants, abuse cases for core features
 Step 9: Map OWASP frameworks (LLM Top 10, Agentic Top 10, MCP Top 10, Standard Top 10)
@@ -398,11 +398,11 @@ At the top of every response during the hunt session, output a markdown checklis
 ```
 ## Hunt Progress — Phase 1: Plan
 - [x] Classify target archetype
-- [x] Setup & state fixtures (accounts, roles, pending states, tools)
 - [x] Recent changes check
 - [x] Program research
-- [ ] Target recon (external + authenticated → role-endpoint matrix)
-- [ ] Scope cross-reference
+- [ ] Scope gate (verify assets/vuln types in scope before investing time)
+- [ ] Setup & state fixtures (accounts, roles, pending states, tools)
+- [ ] Target recon (authenticated-first → role-endpoint matrix)
 - [ ] Score automation pressure
 - [ ] Map workflows (actors, states, invariants)
 - [ ] OWASP framework mapping
@@ -458,7 +458,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Target Feature | Primary Test Pattern | Reference |
 |---|---|---|
 | Chatbot / AI assistant | Prompt injection, system prompt extraction, output XSS | ai-hunting SKILL.md |
-| MCP integrations | **Start with** [mcp-first-contact.md](ai-hunting/reference/mcp-first-contact.md) for 10-min triage, then tool poisoning, SSRF, credential scope, sampling attacks, **CoSAI T1-T12 threat routing** | ai-hunting/reference/mcp-playbooks.md |
+| MCP integrations | **Start with** mcp-first-contact.md for 10-min triage, then tool poisoning, SSRF, credential scope, sampling attacks, **CoSAI T1-T12 threat routing** | ai-hunting/reference/mcp-playbooks.md |
 | AI agent with tools | Excessive agency, cross-agent escalation, goal hijacking | ai-hunting/reference/agent-attack-patterns.md |
 | AI coding IDE | Supply chain via configs, extension squatting, Chromium flaws, **mcp-remote client RCE (CVE-2025-6514)** | ai-hunting/reference/ide-supply-chain.md |
 | Agentic browser | PleaseFix zero-click hijack, credential theft, file exfiltration, adaptive injection | ai-hunting/reference/agent-attack-patterns.md |
