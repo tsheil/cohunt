@@ -341,6 +341,8 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 - **Moltbook breach** (Wiz, Feb 2026): misconfigured Supabase RLS exposed **1.5M API keys** (OpenAI, Anthropic, AWS, GitHub, Google Cloud), 35K emails, and private agent messages
 - **Lovable platform**: 10% of 1,645 apps leaked sensitive user data; **170 apps with open databases**
 - **Tea dating app**: 72K images including 13K government ID photos via open Firebase storage
+- **69 vulnerabilities in 15 test apps** (Awesome Agents, March 2026): systematic audit of Claude Code, Codex, Cursor, Replit, and Devin found SSRF in **every single AI coding tool** — all five agents introduced SSRF in a URL preview feature, enabling arbitrary internal URL access and credential leakage
+- **Base44 critical auth bypass** (Wiz, March 2026): undocumented registration and email verification endpoints accepted only non-secret `app_id` — full access to private enterprise apps; platform shared JWT tokens used for main Base44 account directly to user-created apps via URL, enabling any hosted app to steal user credentials (CWE-287, CWE-200)
 - Only **10% of AI-generated code is secure** (Endor Labs 2026); **62% of LLM-generated code** contains exploitable vulnerabilities (Cycode 2026)
 - **45% of AI-generated code** contains classic OWASP Top 10 vulnerabilities (Contrast Security 2026)
 - **20% of vibe-coded apps** have serious vulnerabilities or configuration errors (Wiz 2026)
@@ -363,8 +365,11 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 4 | Supabase service role key leak | Check for `service_role` key (bypasses all RLS) in client code or error messages | Full database admin access |
 | 5 | Missing RLS on specific tables | Even with RLS enabled globally, test individual tables — AI often enables RLS on `auth.users` but misses custom tables | Selective data exposure on unprotected tables |
 | 6 | Firebase Realtime DB rules | Access `<project>.firebaseio.com/.json` | Full database dump if rules allow public read |
+| 7 | Platform JWT sharing | If app is hosted on a builder platform (Base44, Lovable), check if the platform's auth JWT is passed to the hosted app via URL or postMessage | App-hosted code can steal the platform user's session — full ATO on the builder platform |
+| 8 | Undocumented registration endpoints | Fuzz for `/register`, `/signup`, `/verify-email` endpoints with minimal parameters (just `app_id` or `project_id`) | Auth bypass via undocumented endpoint that skips normal verification |
+| 9 | AI-introduced SSRF | If the app has URL preview, link unfurling, or OG tag fetching, test with internal URLs (`http://169.254.169.254/`, `http://localhost:PORT/`) | SSRF to cloud metadata or internal services — universal in AI-generated code |
 
-**Severity Guidance:** Critical when API keys grant paid service access or PII is exposed. High for database read access without authentication. The Supabase `anon` key in client code is **safe only if RLS is properly configured** — testing RLS is the key step. Report as broken access control (CWE-284) or sensitive data exposure (CWE-200).
+**Severity Guidance:** Critical when API keys grant paid service access or PII is exposed. High for database read access without authentication. The Supabase `anon` key in client code is **safe only if RLS is properly configured** — testing RLS is the key step. Report as broken access control (CWE-284) or sensitive data exposure (CWE-200). Platform JWT sharing = Critical (ATO on the builder platform). AI-introduced SSRF = High-Critical depending on what's reachable internally.
 
 ---
 
@@ -488,11 +493,4 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 ## NPM Library Command Injection (simple-git)
 
-**CVE-2026-28292** (simple-git 3.15.0–3.32.2, CVSS 9.8). Command injection via unsanitized arguments passed to git subprocess. Affects any Node.js app using `simple-git` for git operations — widely used (10M+ weekly npm downloads).
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Dependency check | `grep -r "simple-git" package.json package-lock.json` | Versions 3.15.0–3.32.2 are vulnerable |
-| 2 | Input-to-git tracing | Find user inputs passed to simple-git methods (`clone`, `pull`, `checkout`, `log`) | Unsanitized branch names, URLs, or paths reaching git CLI |
-
-**Where this pays:** Any Node.js app with git integration (CI/CD dashboards, code review tools, deployment panels). Check `package-lock.json` for `simple-git` versions.
+**CVE-2026-28292** (simple-git 3.15.0–3.32.2, CVSS 9.8). Command injection via unsanitized arguments to git subprocess — 10M+ weekly npm downloads. Test: `grep -r "simple-git" package.json package-lock.json` for vulnerable versions; trace user inputs to `clone`, `pull`, `checkout`, `log` methods. Pays on Node.js apps with git integration (CI/CD dashboards, code review tools, deployment panels).

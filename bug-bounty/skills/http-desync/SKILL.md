@@ -386,6 +386,28 @@ Ask as you go: "I see Cloudflare + nginx in the response headers — what desync
 
 ---
 
+## Validation Gate — Is This Submittable?
+
+Before writing the report, check these desync-specific false positives:
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| Timeout differential between CL and TE | Timeout alone proves parsing difference but not exploitability — must demonstrate smuggled request affecting another user |
+| Cache returns stale content | Normal cache behavior — only a finding if you poison the cache with attacker-controlled content served to other users |
+| HTTP/2 downgrade to HTTP/1.1 detected | Common in proxy architectures — only a finding if the downgrade introduces header injection or smuggling |
+| Race condition without business impact | TOCTOU exists but doesn't affect anything of value — must show double-spend, limit bypass, or state corruption |
+| Single-endpoint race without cross-user impact | Must demonstrate multi-user or multi-resource impact — same-user same-resource races are often Informational |
+
+**Common mistakes in desync/race reports:**
+- Proving CL/TE parsing differential without showing actual request smuggling (another user receives poisoned response)
+- Claiming cache poisoning without demonstrating it serves poisoned content to other users (not just the attacker)
+- Reporting race conditions without showing both transactions completed (two confirmation emails, two database entries)
+- Not providing timing evidence (request timestamps, response correlation) for race findings
+
+**Severity calibration:** CL/TE differential alone = Informational. Smuggling → response poisoning = High-Critical. Cache poisoning → stored XSS = Critical. Race → double-spend = High-Critical. Race → limit bypass = Medium-High.
+
+---
+
 ## Related Skills
 
 - **target-recon** — Identify the proxy/cache/CDN stack before testing desync attacks

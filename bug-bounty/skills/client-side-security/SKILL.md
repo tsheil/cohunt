@@ -420,6 +420,31 @@ If the app stores JWTs in `localStorage` instead of HttpOnly cookies:
 
 ---
 
+## Validation Gate — Is This Submittable?
+
+Before writing the report, check these client-side-specific false positives:
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| Self-XSS (only fires in attacker's own session) | No cross-boundary impact — most programs mark N/A |
+| CSP `unsafe-inline` without a demonstrated XSS chain | Informational weakness, not a vulnerability — chain with actual XSS for High |
+| Missing `X-Frame-Options` on non-sensitive page | Only a finding if you can demonstrate clickjacking on a state-changing action |
+| `Access-Control-Allow-Origin: *` on public API | Only a finding if it returns authenticated/sensitive data with credentials |
+| Prototype pollution without a gadget chain | PP alone is Informational — chain with XSS, DOM clobbering, or auth bypass for High |
+| localStorage token storage | Only a finding if you can demonstrate XSS to steal it — token location alone is low/informational |
+| Source maps exposed in production | Medium (information disclosure) — escalate by showing sensitive logic, hardcoded secrets, or internal API routes |
+
+**Common mistakes in client-side reports:**
+- Reporting reflected XSS that only fires in response headers no browser renders
+- Claiming CORS misconfiguration without demonstrating cross-origin data theft
+- Reporting CSP weaknesses without a working XSS payload that exploits them
+- Submitting prototype pollution without identifying a viable gadget chain
+- Listing missing security headers as separate findings (batch as single informational)
+
+**Severity calibration:** Self-XSS = N/A. PP + gadget → XSS = High. CORS → token theft = High-Critical. DOM XSS in admin panel = Critical. PostMessage → ATO = Critical.
+
+---
+
 ## Tools
 
 | Tool | Use Case |

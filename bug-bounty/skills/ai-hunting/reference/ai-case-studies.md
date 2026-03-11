@@ -388,6 +388,12 @@ Wiz discovered misconfigured Supabase database exposing 1.5M API keys (OpenAI, A
 **Vibe-Coded App Epidemic (2026):**
 Escape.tech scanned 5,600 vibe-coded apps: 2,000+ vulnerabilities, 400+ exposed secrets, 175 PII instances. 10% of Lovable platform apps had open databases. Tea dating app exposed 72K images including 13K government IDs. AI agents commonly suggest `USING (true)` RLS policies. New systematically vulnerable target class for bug bounty.
 
+**69 Vulnerabilities in 5 AI Coding Tools (March 2026):**
+Systematic security audit of Claude Code, Codex, Cursor, Replit, and Devin across 15 test applications found 69 vulnerabilities. SSRF was present in every single tool — all five introduced SSRF in URL preview features, enabling internal URL access and credential leakage. Pattern: AI coding agents consistently fail to implement server-side URL validation, making SSRF a universal defect class in AI-generated code. Hunting heuristic: any vibe-coded app with URL preview, link unfurling, or OG tag fetching is likely SSRF-vulnerable.
+
+**Base44 Critical Auth Bypass (Wiz, March 2026):**
+Wiz found undocumented registration and email verification endpoints that accepted only the non-secret `app_id` value, granting full access to private enterprise applications. Additionally, the platform passed the same JWT used for the main Base44 account directly to user-created apps via URL — any hosted app could steal platform user credentials. Fixed within 24 hours. Pattern: SaaS builder platforms that host user-created apps share dangerous trust boundaries — test JWT/session sharing between platform and hosted apps.
+
 **Wiz Cyber Model Arena (March 2026):**
 257-challenge offensive security benchmark tested 25 agent-model combos. Claude Code + Opus 4.6 ranked #1; Gemini 3 Pro second. AI agents solved 9/10 directed challenges at under $50 total cost but failed when requiring external source searches or creative pivots. In one test, AI made ~500 tool calls in ~1 hour without finding the issue; human found it in ~5 minutes. Key conclusion: human direction + AI execution is the winning model.
 
@@ -487,9 +493,4 @@ AI slop reports are now a **major industry problem** that has caused the first p
 - Overly generic descriptions copied from AI without specific endpoint/payload details
 - AI acting as "an echo chamber and amplifier" — luring you into confirmation bias about a non-existent finding
 
-**Quality Check Before Submitting:**
-1. Reproduce the finding yourself (manually, with tools like Burp or curl)
-2. Include specific payloads and steps in the report
-3. Screenshot or video proof if visual impact (XSS, IDOR data)
-4. Call out any AI-assisted analysis in the "Discovery Method" section (transparency builds trust)
-5. Verify the AI's output against reality — don't trust AI confidence levels alone
+**Quality Check:** (1) Reproduce manually with Burp/curl. (2) Include specific payloads and steps. (3) Screenshot/video proof. (4) Disclose AI assistance in "Discovery Method". (5) Verify AI output against reality.

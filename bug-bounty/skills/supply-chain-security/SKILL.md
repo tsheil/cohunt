@@ -309,6 +309,30 @@ Webhooks bridge CI/CD systems to external services and are frequently misconfigu
 
 ---
 
+## Validation Gate — Is This Submittable?
+
+Before writing the report, check these supply-chain-specific false positives:
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| Workflow uses `pull_request` with write permissions | `pull_request` runs on the fork's code with read-only access by default — only `pull_request_target` gives write access to base repo |
+| Third-party Action used without pinning to SHA | Informational risk — only a finding if you can demonstrate a realistic supply chain attack path (Action is unmaintained, attacker-controllable, or widely used) |
+| CI secret visible in workflow logs | Verify the secret is real and grants access — many are masked or rotated; demonstrate what the secret unlocks |
+| Container registry allows anonymous pull | Public pull is often intentional (open-source images) — only a finding if anonymous push is possible or images contain secrets |
+| Dependency confusion possible (internal name matches public) | Must demonstrate that the build system actually resolves from the public registry — theoretical name collision alone is not a finding |
+| Lockfile not present or not enforced | Informational unless you can demonstrate a practical supply chain attack via dependency resolution |
+
+**Common mistakes in supply-chain reports:**
+- Reporting `GITHUB_TOKEN` permissions as overly broad without demonstrating exploitation of the excess scope
+- Confusing `pull_request` (safe) with `pull_request_target` (dangerous) trigger events
+- Claiming dependency confusion without verifying the target's registry resolution order
+- Submitting stale/unmaintained dependency as a finding without a working exploit
+- Reporting CI misconfigurations on repos that don't run in production environments
+
+**Severity calibration:** Theoretical dependency confusion = Low. CI script injection → RCE = Critical. Anonymous registry push = High-Critical. Workflow secret leak → production access = Critical. `pull_request_target` with checkout of PR code + secret access = Critical.
+
+---
+
 ## How to Use This Skill
 
 ### With a Target

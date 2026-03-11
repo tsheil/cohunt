@@ -65,7 +65,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 |------|-------------|---------|---------------|
 | **A: Human-Only** | Requires business context, domain knowledge, or multi-step reasoning | Business logic, multi-tenant isolation, payment flows, workflow state abuse, subscription bypass | **Low** — each finding is app-specific |
 | **B: Human-Advantaged** | Humans find deeper variants and chains; tools find surface-level | Auth chains (BOLA→privilege escalation), race conditions with business impact, complex SSRF chains, AI/LLM agent exploitation | **Medium** — surface variants automated, deep chains are not |
-| **C: Commodity** | Autonomous tools find 75-85% of instances faster | Basic XSS/SQLi/SSRF, subdomain takeovers, missing headers, simple IDOR, known CVE patterns | **High** — submit only if novel bypass or high impact chain |
+| **C: Commodity** | Autonomous tools find 75-85% of instances faster | Basic XSS/SQLi/SSRF, subdomain takeovers, missing headers, simple IDOR, known CVE patterns | **High** — fast-probe (≤5 min) on private/legacy/self-hosted/recently-changed targets; skip on well-tested public programs |
 
 > **Business logic is 45% of all bounty awards** (Intigriti 2026). Deep dive: [business-logic skill](../business-logic/SKILL.md)
 

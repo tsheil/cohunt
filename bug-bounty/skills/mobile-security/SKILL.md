@@ -369,6 +369,31 @@ Backend-as-a-Service (BaaS) misconfigurations are a **rapidly growing mobile att
 
 ---
 
+## Validation Gate — Is This Submittable?
+
+Before writing the report, check these mobile-specific false positives:
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| Certificate pinning not implemented | Most programs accept this as Low/Informational at best — only High if you demonstrate MITM → credential theft on a real network |
+| Root/jailbreak detection bypass | Bypass alone is Informational — chain with data extraction or privilege escalation |
+| Data stored unencrypted on device | Only a finding with physical access + sensitive data; most programs require remote exploitation |
+| Hardcoded API key in APK/IPA | Only a finding if the key grants access to sensitive data or paid services — many are public/limited keys |
+| Debug logging enabled in release build | Informational unless logs contain tokens, PII, or credentials |
+| Missing `android:exported="false"` on component | Only a finding if you can demonstrate exploitation (data exfiltration, auth bypass, or action trigger) |
+| WebView with JavaScript enabled | Standard behavior — only a finding if the WebView loads attacker-controlled content leading to token theft or RCE |
+
+**Common mistakes in mobile reports:**
+- Reporting insecure storage findings that require physical device access (most programs exclude this)
+- Claiming certificate pinning bypass as High without demonstrating the full MITM attack chain
+- Submitting hardcoded keys without verifying they grant meaningful access
+- Reporting root detection bypass without a follow-up exploit
+- Listing multiple minor issues as separate reports instead of chaining them
+
+**Severity calibration:** Cert pinning bypass alone = Low/Informational. Deep link → WebView XSS → token theft = High. Exported content provider → PII = High. Intent injection → payment trigger = Critical.
+
+---
+
 ## Related Skills
 
 - **target-recon** — Identify mobile API endpoints and infrastructure

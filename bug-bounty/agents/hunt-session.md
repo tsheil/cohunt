@@ -107,7 +107,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
 
    | Automation Pressure | What It Means | Hunter Strategy |
    |---|---|---|
-   | **HIGH** (AI tools cover 80%+) | Simple XSS/SQLi/SSRF, subdomain takeovers, commodity CVE scanning (version detection → known exploit), basic prompt injection | **SKIP** — waste of time, high duplicate risk |
+   | **HIGH** (AI tools cover 80%+) | Simple XSS/SQLi/SSRF, subdomain takeovers, commodity CVE scanning (version detection → known exploit), basic prompt injection | **FAST-PROBE** — spend ≤5 min; skip if public/well-tested target, but test if private program, legacy stack, self-hosted, or recently changed surface |
    | **MEDIUM** (AI tools cover 40-80%) | Standard IDOR, common auth bypass, API enumeration | **FAST-TRACK** — test quickly, don't spend hours |
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
