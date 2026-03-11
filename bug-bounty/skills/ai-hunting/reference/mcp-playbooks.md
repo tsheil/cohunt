@@ -1,6 +1,6 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-77 test procedures for MCP vulnerabilities. **50+ CVEs by March 2026** (30 in 60 days: 43% exec/shell, 20% tooling layer, 13% auth bypass, 10% path traversal, 7% new classes); 38% of 500+ servers lack auth; 43% vulnerable to command execution; 82% of 2,614 implementations vulnerable to CWE-22 (Endor Labs).
+78 test procedures for MCP vulnerabilities. **50+ CVEs by March 2026** (30 in 60 days: 43% exec/shell, 20% tooling layer, 13% auth bypass, 10% path traversal, 7% new classes); 38% of 500+ servers lack auth; 43% vulnerable to command execution; 82% of 2,614 implementations vulnerable to CWE-22 (Endor Labs).
 
 > **New to MCP hunting?** Start with [mcp-first-contact.md](mcp-first-contact.md) — 10-minute triage workflow before diving into these 77 procedures.
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
@@ -9,7 +9,7 @@
 
 ## Table of Contents
 
-- [CoSAI Routing](#cosai-mcp-threat-routing-matrix) | [Vuln Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [77 Test Procedures](#76-mcp-test-procedures)
+- [CoSAI Routing](#cosai-mcp-threat-routing-matrix) | [Vuln Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [78 Test Procedures](#76-mcp-test-procedures)
 - [OAuth ATO](#mcp-oauth-account-takeover) | [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Security Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
 
@@ -463,17 +463,12 @@ Palo Alto Unit 42: MCP sampling lets servers request LLM completions from client
 
 45 live servers, 353 tools, 1,312 test cases: o1-mini achieved **72.8% attack success**; more capable models MORE susceptible; highest refusal (Claude 3.7 Sonnet) < 3%. Poisoned tools manipulate the agent into misusing legitimate tools without executing themselves.
 
-**Test Procedure (#71): MCPTox-Style Tool Poisoning Assessment**
+**Test Procedure (#71/#72): Tool Poisoning Assessment** (MCPTox + ITP arXiv:2601.07395)
 1. Enumerate all tool descriptions from `tools/list`; check for hidden instructions ("before calling X, first call Y with Z")
-2. Test if adding a malicious tool definition redirects LLM calls from legitimate tools
+2. Test if adding a malicious tool definition redirects LLM calls from legitimate tools — both explicit (hidden cross-tool refs) and implicit (behavioral bias without mentioning other tools)
 3. Verify: does model follow description-embedded instructions without user awareness?
 
 **Maps to:** MCP02 (Tool Poisoning) + CoSAI T3 + ASI02
-
-**Test Procedure (#72): MCP-ITP Implicit Tool Poisoning** (arXiv:2601.07395)
-Black-box optimization injects subtle behavioral mods in tool descriptions that bias LLM tool selection without mentioning other tools explicitly. Test: verify if model's tool choice shifts without visible instruction.
-
-**Maps to:** MCP02 + CoSAI T3
 
 **Test Procedure (#73): Azure MCP Server Elevation of Privilege** (CVE-2026-26118, March 2026 Patch Tuesday)
 Test: parameter injection in Azure MCP resource management tool calls; verify if invocations escalate beyond granted RBAC scope; check token scope validation at tool level vs session level.
@@ -497,4 +492,7 @@ Critical ATO vulns in MCP clients (Gemini-CLI, Cherry Studio, VS Code, Windsurf,
 **Test Procedure (#77): SaaS Connector File Download Path Traversal** (CVE-2026-27825 MCPwnfluence, CVSS 9.1)
 mcp-atlassian (4M+ downloads) — `download_attachment` accepts user-supplied path without directory confinement. MCP HTTP transport often on 0.0.0.0 without auth → attacker overwrites `~/.bashrc`/`~/.ssh/authorized_keys` for RCE. Plus `X-Atlassian-*-Url` headers forwarded unvalidated → SSRF (CVE-2026-27826 CVSS 8.2). **Test:** 1) File-download tool with `../../.bashrc` path; 2) Inject `X-*-Url: http://169.254.169.254/` headers; 3) Check 0.0.0.0 binding without auth. **Generalizes to:** all SaaS-bridging MCP connectors with file download (Google Drive, Notion, GitHub, Slack). Fixed v0.17.0.
 
-**Maps to:** MCP01 + CWE-22/CWE-918 + CoSAI T5/T4
+**Test Procedure (#78): Documentation Channel Poisoning via Trusted MCP Server** (ContextCrush, Noma Labs, Feb 2026)
+Context7 MCP server served library owner "Custom Rules" (AI instructions) verbatim to all users — no sanitization, no content filtering, no distinction from legitimate docs. Open registration + gameable credibility signals → attacker registers poisoned library → PoC: instructions to search `.env` files, exfil creds to attacker repo, delete local files. **Test:** 1) Identify MCP servers aggregating user-generated or third-party content (documentation, templates, rules, configs); 2) Register content with embedded agent instructions; 3) Verify if instructions execute via agent's tool access when other users query the library; 4) Check for content sanitization vs verbatim delivery. **Generalizes to:** any MCP server delivering external content into agent context — package registry docs, community templates, marketplace listings. Fixed Context7 Feb 23, 2026.
+
+**Maps to:** MCP02 (Tool Poisoning) + MCP06 (Supply Chain) + CoSAI T3/T6

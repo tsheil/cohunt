@@ -496,3 +496,4 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE (3rd bypass). CISA KEV March 2026 |
 | CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite — supply chain vector. Fixed 0.14.2 |
 | CVE-2026-22719 | VMware Aria | 8.1 | Unauth command injection. CISA KEV March 2026. Active exploitation |
+| CVE-2026-30903 | Zoom Workplace (Win) | 9.6 | Mail feature path control → arbitrary file write → DLL hijack → EoP. Unauth, network, no interaction. < v6.6.0. Pattern: desktop mail/attachment handlers with file path control |
