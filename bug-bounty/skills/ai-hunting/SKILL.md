@@ -93,7 +93,7 @@ Vague prompts produce vague results. Use surgical prompts targeting specific vul
 
 ### MCP (Model Context Protocol)
 
-MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60 days alone), **42,665 exposed instances** (5,194 actively vulnerable), 38% of servers lack authentication, 43% have command injection flaws. **Pynt quantified the risk**: 10 MCP plugins = **92% exploit probability** (281 configs analyzed); Enkrypt AI scanned 1,000+ servers and found **33% had critical vulnerabilities**. ChatGPT can now connect to any remote MCP server, expanding the attack surface to all Enterprise/Business users. New attack vectors in early 2026: **Schema Drift** (silent tool schema expansion between versions), **Context Pivoting** (lateral movement via shared agent context), and **Full Schema Poisoning** (structural schema compromise bypassing description-only scanners). Endor Labs analysis confirmed MCP inherits classical CWE-22/CWE-77 at scale: 82% of 2,614 implementations vulnerable to path traversal.
+MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60 days alone), **42,665 exposed instances** (5,194 actively vulnerable), 38% of servers lack authentication, 43% have command injection flaws. **Pynt quantified the risk**: 10 MCP plugins = **92% exploit probability** (281 configs analyzed); Enkrypt AI scanned 1,000+ servers and found **33% had critical vulnerabilities**. ChatGPT can now connect to any remote MCP server, expanding the attack surface to all Enterprise/Business users. Endor Labs analysis confirmed MCP inherits classical CWE-22/CWE-77 at scale: 82% of 2,614 implementations vulnerable to path traversal. **Docker documented the first full system compromise** via MCP infrastructure (CVE-2025-6514 mcp-remote CVSS 9.6). **Obsidian Security found one-click ATO** in 7 major MCP clients (Gemini-CLI, Cherry Studio, VS Code, Windsurf) via OAuth flow manipulation. Even vendor reference implementations ship vulnerable (Anthropic mcp-server-git: 3 CVEs Jan 2026).
 
 **Top vulnerability classes:**
 
@@ -110,7 +110,7 @@ MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60
 
 **OWASP MCP Top 10 (2026):** MCP01 (Token Mismanagement) through MCP10 (Insufficient Logging) — use risk IDs when framing MCP findings.
 
-**Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
+**Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform. **New to MCP?** Start with the [10-minute triage workflow](reference/mcp-first-contact.md) before diving into full playbooks.
 
 ### MCP Variant Hunting — The 1-to-N Multiplier
 
@@ -130,7 +130,8 @@ MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60
 
 **After finding a patched MCP vuln:** Run `/variant-hunt` (Strategy 6: AI/MCP Component Variants) — test sibling servers, other tool endpoints on the same server, and all transports. Each confirmed variant on a different component is a **separate report**.
 
-> **73 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **New to MCP hunting?** Start with [reference/mcp-first-contact.md](reference/mcp-first-contact.md) — 10-minute triage workflow.
+> **76 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -308,7 +309,8 @@ This skill uses progressive disclosure. Detailed reference material is available
 | File | Contents | Lines |
 |------|----------|-------|
 | [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), Sage ADR, security MCP servers, red teaming frameworks, Pynt/Noma research | ~497 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 73 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks | ~498 |
+| [reference/mcp-first-contact.md](reference/mcp-first-contact.md) | **Start here for MCP.** 10-minute triage: transport discovery, capability enumeration, risk scoring, top 5 tests, evidence checklist, false positive guide | ~170 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 76 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~499 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, Phantom TAE jailbreak, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~500 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~333 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, Phantom/Sage ADR/SACR UADP, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~495 |

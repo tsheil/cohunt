@@ -459,7 +459,7 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Target Feature | Primary Test Pattern | Reference |
 |---|---|---|
 | Chatbot / AI assistant | Prompt injection, system prompt extraction, output XSS | ai-hunting SKILL.md |
-| MCP integrations | Tool poisoning, SSRF, credential scope, sampling attacks, **CoSAI T1-T12 threat routing** | ai-hunting/reference/mcp-playbooks.md |
+| MCP integrations | **Start with** [mcp-first-contact.md](ai-hunting/reference/mcp-first-contact.md) for 10-min triage, then tool poisoning, SSRF, credential scope, sampling attacks, **CoSAI T1-T12 threat routing** | ai-hunting/reference/mcp-playbooks.md |
 | AI agent with tools | Excessive agency, cross-agent escalation, goal hijacking | ai-hunting/reference/agent-attack-patterns.md |
 | AI coding IDE | Supply chain via configs, extension squatting, Chromium flaws, **mcp-remote client RCE (CVE-2025-6514)** | ai-hunting/reference/ide-supply-chain.md |
 | Agentic browser | PleaseFix zero-click hijack, credential theft, file exfiltration, adaptive injection | ai-hunting/reference/agent-attack-patterns.md |

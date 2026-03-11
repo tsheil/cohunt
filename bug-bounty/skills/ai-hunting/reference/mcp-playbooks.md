@@ -1,7 +1,8 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-73 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps).
+76 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps). **Endor Labs confirmed:** 82% of 2,614 MCP implementations vulnerable to CWE-22 (path traversal); classical AppSec vulnerabilities (CWE-22, CWE-77) concentrate in MCP layer at scale.
 
+> **New to MCP hunting?** Start with [mcp-first-contact.md](mcp-first-contact.md) — 10-minute triage workflow before diving into these 76 procedures.
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
 ---
@@ -9,7 +10,7 @@
 ## Table of Contents
 
 - [CoSAI MCP Threat Routing](#cosai-mcp-threat-routing-matrix) | [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026)
-- [73 Test Procedures](#73-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
+- [76 Test Procedures](#76-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
 - [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
 - [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox Benchmark](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
 
@@ -450,11 +451,7 @@ mcp-server-kubernetes: command injection via unsanitized parameters in kubectl-w
 
 ### MCP Sampling Attack Vectors (Unit 42, March 2026)
 
-Palo Alto Unit 42 identified three attack vectors through MCP sampling — the mechanism letting MCP servers request LLM completions from the client. A compromised server becomes an active prompt author:
-
-**Three attack vectors:** (1) **Resource Theft** — hidden instructions consume victim's API credits (#66: monitor token consumption vs expected, intercept for hidden instructions). (2) **Conversation Hijacking** — persistent instructions affect the entire session (#67: inject via sampling, test if instructions survive across tool boundaries). (3) **Covert Tool Invocation** — sampling requests invoke other tools without user awareness (#68: monitor tool invocations during sampling, check for unprompted execution).
-
-All three: identify MCP servers using `sampling/createMessage`, test each vector independently. **Maps to:** MCP02 + MCP06 + ASI05 + CoSAI T12
+Palo Alto Unit 42: MCP sampling lets servers request LLM completions from client — compromised server becomes an active prompt author. **Three vectors:** (1) **Resource Theft** — hidden instructions consume API credits (#66). (2) **Conversation Hijacking** — persistent instructions across tool boundaries (#67). (3) **Covert Tool Invocation** — unprompted tool execution (#68). All three: identify servers using `sampling/createMessage`, test each independently. **Maps to:** MCP02 + MCP06 + ASI05 + CoSAI T12
 
 **Test Procedure (#69): Exec-Namespace Reflection Bypass**
 1. Identify MCP servers using Python `exec()`/`eval()` with pre-loaded namespaces
@@ -463,36 +460,40 @@ All three: identify MCP servers using `sampling/createMessage`, test each vector
 
 **Maps to:** MCP03 + CWE-94 + CoSAI T5
 
-**Test Procedure (#70): MCP Client Infrastructure RCE (mcp-remote)**
-1. Identify MCP clients using `mcp-remote` proxy (437K+ npm downloads, versions 0.0.5-0.1.15)
-2. Set up rogue MCP server returning malicious `authorization_endpoint` in OAuth metadata
-3. Verify: does client execute OS commands from untrusted server-provided URLs? (CVE-2025-6514, CVSS 9.6)
-4. Test other MCP clients for similar untrusted-URL-to-execution paths in OAuth/auth flows
-
-**Maps to:** MCP01 (Token Mismanagement) + CWE-78 + CoSAI T5/T6
-
 ---
 
 ## MCPTox Benchmark: Quantified Tool Poisoning Risk (arXiv:2508.14925)
 
-First systematic benchmark of tool poisoning attacks on real-world MCP infrastructure: **45 live MCP servers, 353 authentic tools, 1,312 malicious test cases** across 10 risk categories. Key findings: o1-mini achieved **72.8% attack success rate**; more capable models are MORE susceptible; highest refusal rate (Claude 3.7 Sonnet) was **less than 3%**. Poisoned tools are never executed — they manipulate the agent into misusing legitimate tools.
+45 live servers, 353 tools, 1,312 test cases: o1-mini achieved **72.8% attack success**; more capable models MORE susceptible; highest refusal (Claude 3.7 Sonnet) < 3%. Poisoned tools manipulate the agent into misusing legitimate tools without executing themselves.
 
 **Test Procedure (#71): MCPTox-Style Tool Poisoning Assessment**
-1. Identify all connected MCP servers and enumerate tool descriptions
-2. Check if tool descriptions contain hidden instructions (e.g., "before calling this tool, first call X with Y")
-3. Test if adding a malicious tool definition causes the LLM to redirect calls from legitimate tools
-4. Verify: does the model follow description-embedded instructions without user awareness?
+1. Enumerate all tool descriptions from `tools/list`; check for hidden instructions ("before calling X, first call Y with Z")
+2. Test if adding a malicious tool definition redirects LLM calls from legitimate tools
+3. Verify: does model follow description-embedded instructions without user awareness?
 
 **Maps to:** MCP02 (Tool Poisoning) + CoSAI T3 + ASI02
 
 **Test Procedure (#72): MCP-ITP Implicit Tool Poisoning** (arXiv:2601.07395)
-Automated framework for implicit tool poisoning — black-box optimization maximizes Attack Success Rate while evading detection. Test: inject subtle behavioral modifications in tool descriptions that don't mention other tools explicitly but bias LLM tool selection; verify if model's tool choice shifts without visible instruction.
+Black-box optimization injects subtle behavioral mods in tool descriptions that bias LLM tool selection without mentioning other tools explicitly. Test: verify if model's tool choice shifts without visible instruction.
 
 **Maps to:** MCP02 + CoSAI T3
 
 **Test Procedure (#73): Azure MCP Server Elevation of Privilege** (CVE-2026-26118, March 2026 Patch Tuesday)
-Crafted input to Azure MCP Server enables privilege escalation. Test: send malformed requests to Azure MCP Server endpoints; test parameter injection in Azure resource management tool calls; verify if tool invocations can escalate beyond granted RBAC scope; check if MCP server validates Azure AD token scope at the tool level vs. session level.
+Test: parameter injection in Azure MCP resource management tool calls; verify if invocations escalate beyond granted RBAC scope; check token scope validation at tool level vs session level.
 
 **Maps to:** MCP04 (Privilege Escalation) + CoSAI T2
 
-**MCP CVE milestone update (March 2026):** 50+ MCP CVEs filed (30 in 60 days); 42,665 exposed instances, 5,194 actively vulnerable; vulnerability rate accelerating, not plateauing. Update header stat from 72 to 73 test procedures.
+**Test Procedure (#74): MCP Client OAuth Metadata Injection** (CVE-2025-6514 pattern, CVSS 9.6)
+mcp-remote (437K+ npm downloads) trusts server-provided OAuth `authorization_endpoint` URL without validation — rogue MCP server returns crafted URL that triggers OS command execution via `open()`. Test: 1) Set up rogue MCP server; 2) Return malicious `authorization_endpoint` with shell metacharacters; 3) Verify command execution on client system (Windows PowerShell subexpression, macOS `open` command injection). **Affects:** Cloudflare Workers, Hugging Face, Auth0 integration guides all recommend mcp-remote. Check client-side MCP proxy tools for similar untrusted-URL-to-shell paths. (Docker "MCP Horror Stories" series documented this as first full system compromise via MCP infra.)
+
+**Maps to:** MCP01 + CWE-78 + CoSAI T5/T6
+
+**Test Procedure (#75): Anthropic mcp-server-git Triple CVE Pattern** (CVE-2025-68143/68144/68145)
+Anthropic's official `mcp-server-git` had 3 CVEs disclosed Jan 20, 2026: `git_init` creates repos at arbitrary paths (no `--repository` boundary validation), path arguments bypass allowed scope, user-controlled args pass unsanitized to Git CLI (argument injection). Test: 1) Call `git_init` with path outside configured repository; 2) Call any file-reading tool with `../../` paths; 3) Inject Git CLI flags via tool arguments (e.g., `--upload-pack="cmd"`). **Pattern:** Vendor's own reference implementations ship vulnerable — test ALL official MCP server packages from major vendors.
+
+**Maps to:** MCP01 + CWE-22/CWE-88 + CoSAI T5
+
+**Test Procedure (#76): MCP OAuth One-Click Account Takeover** (Obsidian Security, July-Aug 2025)
+Critical ATO vulns in MCP clients (Gemini-CLI, Cherry Studio, VS Code, Windsurf, Smithery.ai, Lutra.ai, Glue.ai) via insecure OAuth authorization flow handling — `open()` without URL sanitization enables RCE on client, plus CSRF-style attacks where malicious MCP server acting as both authz server and client steals auth codes. Test: 1) Craft MCP server with malicious OAuth redirect; 2) Verify if client sanitizes authorization URLs; 3) Test for auth code injection via cross-origin redirect; 4) Check if client validates `state` parameter in OAuth callback. 4 CVEs assigned, all fixed by Sept 2025 — but test newer/unaudited MCP clients for same pattern.
+
+**Maps to:** MCP01 + CWE-601/CWE-352 + CoSAI T1/T6
