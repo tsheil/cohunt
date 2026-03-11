@@ -84,6 +84,7 @@ The most common high-severity bug class in API-heavy targets.
 - **Old API versions** — `/api/v1/users/123` when current is v3
 - **GraphQL aliases** — Query same field with different IDs in one request
 - **Numerical overflow** — Negative IDs, MAX_INT, zero
+- **Drop all cookies (unauthenticated)** — When cross-user swap returns 403, strip ALL session cookies and retry as unauthenticated. Endpoints may block cross-user access but allow anonymous access entirely — a common auth logic gap where the check is "is this YOUR resource?" rather than "is this user authenticated?" (XBOW found 2 IDORs in Spree eCommerce v5.2.5 using this: authenticated user got 403, unauthenticated request returned 200 with pre-populated shipping details)
 
 ### Impact Escalation
 

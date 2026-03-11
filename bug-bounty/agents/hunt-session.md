@@ -253,7 +253,7 @@ Avoid competing directly with autonomous tools on:
 - Subdomain enumeration (AI tools are faster and more thorough)
 - Commodity CVE scanning — version detection → known exploit (automated scanners excel here). **Exception:** patch-bypass variants and auth alternate-path discovery (CWE-288) are LOW automation pressure — AI tools can't reason about incomplete fixes or undocumented auth paths
 - Standard prompt injection on chatbots (high duplicate risk — 540% jump in reports)
-- Basic MCP SSRF scanning (BlueRock Trust Registry already catalogued 36.7% of 7,000+ servers as SSRF-vulnerable — low-hanging fruit is mapped)
+- Basic MCP SSRF scanning (BlueRock Trust Registry already catalogued 36.7% of 7,000+ servers as SSRF-vulnerable — low-hanging fruit is mapped). **However:** MCP variant hunting (1 CVE → N sibling servers) remains LOW automation pressure — AI tools can't reason about fix-failure patterns, transport-parity gaps, or schema mutations across independently developed servers
 - Pattern-matching code vulnerabilities (Codex Security + Claude Code Review both launched March 6-10, 2026 — these tools now flood programs with code-level findings. Differentiate with chains, business logic, and agent-specific attack patterns)
 - **GUI-based workflows** — GPT-5.4 (March 5, 2026) has native computer use surpassing human performance (75% OSWorld vs 72.4% human); UI complexity no longer protects manual-only testing surfaces
 

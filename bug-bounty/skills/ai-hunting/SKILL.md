@@ -112,7 +112,25 @@ MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60
 
 **Where to hunt:** Any product integrating MCP servers (Claude Desktop, Cursor, Windsurf, VS Code), enterprise AI agent platforms, open-source `mcp-server-*` repos, huntr platform.
 
-> **62+ MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+### MCP Variant Hunting — The 1-to-N Multiplier
+
+**Why this pays:** Endor Labs found 82% of 2,614 MCP implementations share CWE-22 (path traversal), 67% CWE-94 (code injection), 34% CWE-78 (command injection). Independent developers make identical mistakes because MCP's design encourages shell-wrapping and file access. **Every published MCP CVE has siblings in other servers.**
+
+**Fix-failure patterns** — when a patch exists, try these bypasses:
+
+| Patch Smell / Recon Signal | First Variant to Try | Why It's Likely |
+|---|---|---|
+| Blacklist blocks `../../` | Subdirectory traversal, URL-encoded (`%2e%2e`), null byte, double-encoding | Zen MCP CVE-2025-66689: exact-match blacklist defeated by path variants |
+| `exec()` sanitizes specific chars | Shell expansion (`$(cmd)`, backticks, `${IFS}`), `env` wrapper bypass | Same exec() sink in 5+ independent servers (gemini-mcp, nmap, K8s, Figma, create-mcp-server) |
+| Fix applied to HTTP transport only | Same request via stdio, SSE, or WebSocket | CVE-2026-30241 pattern: controls on one transport, missing on another |
+| Tool schema unchanged since audit | Hidden params added post-approval, altered defaults, type confusion | Full Schema Poisoning: tools silently mutate definitions after initial review |
+| Auth added to primary endpoint | Same tool via gateway, proxy, or SDK fallback path | Approval-vs-execution gap: auth at client layer, missing at server layer |
+| DNS rebinding protections absent | Localhost-bound SSE/StreamableHTTP reachable from browser | CVE-2025-66414/66416: official TS and Python SDKs lacked rebinding protection |
+| Fix covers one server in ecosystem | Same CWE in sibling servers sharing the SDK or wrapping the same CLI | 1 CVE in mcp-server-git → check mcp-server-kubectl, mcp-server-docker, etc. |
+
+**After finding a patched MCP vuln:** Run `/variant-hunt` (Strategy 6: AI/MCP Component Variants) — test sibling servers, other tool endpoints on the same server, and all transports. Each confirmed variant on a different component is a **separate report**.
+
+> **73 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
