@@ -380,10 +380,11 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2026-24983 | 7.8 | Win32 Kernel | EoP → SYSTEM (actively exploited) |
 | CVE-2026-24985 | 6.8 | FAT File System | RCE via VHD files (actively exploited) |
 | CVE-2026-24993 | 7.8 | MMC | RCE via .msc files (actively exploited) |
+| CVE-2026-26114 | 8.8 | SharePoint Server | Deserialization RCE (on-prem SP 2016/2019/SE) |
 
-**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; check Office for RCE via crafted documents; **test Excel info disclosure via Copilot Agent mode — first CVE where AI assistant feature is the exploitation vector**. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
+**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; **SharePoint deser: send crafted serialized payloads to on-prem instances (2016/2019/SE) — classic .NET deser pattern**; **test Excel info disclosure via Copilot Agent mode — first CVE where AI assistant feature is the exploitation vector**. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
 
-**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. VHD/MSC delivery vectors commonly used in phishing chains. CVE-2026-26144 is notable as the first Critical CVE exploitable through an AI assistant feature.
+**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. CVE-2026-26114 SharePoint deser follows the well-established .NET deser chain pattern (ToolShell, CVE-2025-53770). CVE-2026-26144 is the first Critical CVE exploitable through an AI assistant feature.
 
 ---
 

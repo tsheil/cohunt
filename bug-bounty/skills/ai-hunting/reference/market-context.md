@@ -125,6 +125,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Shannon** (Keygraph): open-source autonomous pentester achieving **96.15%** on hint-free XBOW benchmark (100/104 exploits); source-code-aware testing
 - **Terra Security** ($30M Series A): agentic AI continuous PTaaS with human-in-the-loop; hybrid AI + human supervision model validated by Felicis
 - **March 2026 escalation**: Both Anthropic and OpenAI launched enterprise scanning the same week (March 6)
+- **GPT-5.4 native computer use** (March 5, 2026): first general model operating desktops natively — 75% OSWorld (surpassing human 72.4%); 1M token context; with OpenClaw enables autonomous GUI-navigating security testers
 
 ---
 

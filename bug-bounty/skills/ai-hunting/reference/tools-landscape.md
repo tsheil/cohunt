@@ -337,6 +337,11 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Zero false positives** on file read vulnerability tests (vs 18% FP rate with previous models)
 - Key insight: frontier model capability is unlocked by **agentic scaffolding**, not raw model performance — infrastructure matters more than model choice
 
+**GPT-5.4 Native Computer Use (March 5, 2026):**
+- First general-purpose model with **native desktop operation** — issues mouse clicks and keyboard commands from screenshots; **75% OSWorld** (surpassing human 72.4%)
+- 1M token context window enables full-codebase reasoning; combined with OpenClaw agents creates autonomous desktop-operating security testers
+- **Hunter implication:** AI tools can now autonomously navigate browsers, terminals, and GUIs — manual testing workflows that relied on UI complexity as a barrier are no longer safe from automation
+
 **XBOW reached #1 on both the US and global HackerOne leaderboards in 2025**, surpassing every human researcher within 90 days of active operation:
 - Submitted **~1,060 reports in ~90 days** (54 critical, 242 high, 524 medium); cumulative total exceeds **1,400 findings** across the full spectrum: RCE, SQLi, XXE, Path Traversal, SSRF, XSS, Cache Poisoning, Secret Exposure
 - 130 fixes confirmed, 303 triaged awaiting resolution; all fully automated with human review pre-submission
@@ -439,12 +444,9 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **RunSybil** for AI-driven pentesting with coordinated autonomous agents (map, probe, chain exploits); built by OpenAI/Bishop Fox/Rapid7/CrowdStrike alumni; free tier + Pro at $99/mo
 - **Shift** (Caido AI plugin) for AI-augmented proxy workflows — English-command control, context-aware wordlists, Shift Agents micro-agent framework
 - **Aikido Infinite** for self-securing software — autonomous agents pentest every code change (found 7 CVEs in Coolify including RCE as root)
-- **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); demonstrates offensive AI tool proliferation and supply chain risks; do NOT use offensively — listed here for awareness of competitive threat landscape
-- **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned open-source security plugin for OpenClaw agents; **55 audit checks, 5 hardening modules, 3 background monitors** covering OWASP Agentic Top 10, MITRE ATLAS, and CoSAI frameworks; useful for auditing OpenClaw deployments before testing
-- **AgentGuard** — runtime guard for AI agents blocking malicious skills, data leaks, and secret exposure; sub-millisecond latency local PolicyEngine with tamper-evident audit logs; compliance evidence for EU AI Act and SOC 2
-- **Ironclaw** (February 2026) — OpenClaw-inspired Rust agent runtime with defense-in-depth (sandboxing, secret boundaries); open-source alternative focused on security-first agent execution
-- **Nono** (February 2026) — kernel-enforced sandbox CLI and SDK to isolate AI agents with capability controls and safe secret injection; granular permission model for agent containment
-- **Clawsec** (February 2026) — security skill suite for OpenClaw and NanoClaw agents with automated audits, drift detection, and integrity checks; open-source agent hardening toolkit
+- **CyberStrikeAI** (THREAT TOOL) — open-source AI-native Go platform integrating 100+ security tools; weaponized by threat actors to breach FortiGate firewalls across 55 countries (Jan-Feb 2026); listed for competitive threat awareness only
+- **SecureClaw** (Adversa AI, February 2026) — first OWASP-aligned security plugin for OpenClaw; 55 audit checks, 5 hardening modules covering OWASP Agentic Top 10, MITRE ATLAS, CoSAI
+- **AgentGuard / Ironclaw / Nono / Clawsec** — runtime guards, sandboxes, and audit tools for AI agent containment (EU AI Act / SOC 2 compliance); useful for understanding defensive controls when testing agent deployments
 - **Novee Security** ($51.5M funded, January 2026) — AI penetration testing platform with proprietary offensive AI model; founded by Unit 8200/Talpiot veterans; outperformed frontier LLMs (Gemini 2.5 Pro, Claude 4 Sonnet) by over **55%** on constrained web exploitation challenges, achieving **up to 90% accuracy** where general-purpose models plateau at ~65%; transitions red teaming from scheduled events to continuous operational pressure
 - **Maze** ($31M funded) — AI agents for vulnerability management modeling analyst workflows; deploys thousands of agents to investigate cloud data, proving 80-90% of findings are false positives and identifying exploitable ones
 - **Enkrypt AI MCP Scan + Secure MCP Gateway** — automated MCP scanner with CVSS severity scores and line-level references; **scanned 1,000+ MCP servers: 33% had critical vulnerabilities**, averaging 5.2 vulns each; worst case: K8s MCP server with 26 vulns (6 CVSS 9.8); detected malicious Postmark MCP silently exfiltrating emails; open-source Secure MCP Gateway provides real-time AI safety filters; free assessments at enkryptai.com/mcp-scan; GitHub: `enkryptai/secure-mcp-gateway`
