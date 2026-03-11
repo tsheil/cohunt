@@ -296,6 +296,20 @@ Before writing a report, run this checklist:
 | Race condition without evidence of successful double-spend | Show both transactions completed with evidence (database state, two confirmation emails) |
 | "Any user could do this" without specifying prerequisites | List exact requirements: authentication level, account state, feature access |
 
+### When Stuck — Pivot Sequence
+
+If your first approach fails, follow this recovery path before abandoning the target:
+
+```
+Price manipulation blocked? → Test state machine skips (jump step 1→3)
+  → State skips blocked? → Race condition on limits (HTTP/2 single-packet)
+    → Race blocked? → Plan/feature confusion (downgrade, retain premium)
+      → Feature gates solid? → Cross-tenant swap on settings/config endpoints
+        → Tenant isolation solid? → Pivot to auth-testing for BOLA/BFLA
+```
+
+Each pivot targets a different defensive layer. Most apps secure one well but miss others.
+
 ---
 
 ## B2B SaaS Enterprise Workflows

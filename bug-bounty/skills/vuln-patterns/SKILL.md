@@ -428,6 +428,20 @@ When you know the target's technology, focus your testing:
 
 ---
 
+## Validation Gate — Before You Report
+
+| Check | Ask Yourself |
+|-------|-------------|
+| **Server processed it?** | Did the server execute/store the payload, or just reflect it in the response? Reflected-only without execution is often not a finding. |
+| **Cross-boundary impact?** | Can you demonstrate harm to someone other than yourself? Self-XSS and self-SSRF are usually N/A. |
+| **Not documented behavior?** | Some "bugs" are known limitations, documented features, or security trade-offs. Check program policy. |
+| **Full chain shown?** | SQLi → data extracted (not just error-based confirmation). SSRF → internal data read (not just DNS hit). XSS → session theft or action (not just `alert(1)`). |
+| **Reproducible?** | Works in clean browser/session, not just cached/stale state. |
+
+**Common false positives:** Reflected XSS in response headers no browser renders. SSRF to IP that resolves but returns nothing useful. Blind injection with no observable side effect. Open redirect to same domain. CSRF on non-state-changing GET.
+
+---
+
 ## Reference Files
 
 | File | Contents |

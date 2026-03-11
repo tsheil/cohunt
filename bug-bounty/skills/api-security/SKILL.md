@@ -21,6 +21,16 @@ APIs are now the primary digital attack surface. Key stats:
 - **36% of AI vulnerabilities** also qualify as API vulnerabilities — AI and API attack surfaces overlap
 - Companies shipping microservices and multi-cloud APIs faster than they can secure them
 
+## Quick Start — First 5 Minutes
+
+1. **Version downgrade** — If `/api/v2/users` exists, try `/api/v1/users` with the same token. Older versions often lack auth checks.
+2. **Batch IDOR** — Find any batch/bulk endpoint (`/api/batch`, `?ids=1,2,3`). Include another user's IDs in the array.
+3. **GraphQL introspection** — `curl -s -X POST https://target/graphql -H 'Content-Type: application/json' -d '{"query":"{__schema{types{name}}}"}'` → if 200, enumerate mutations.
+4. **Mass assignment** — On any PUT/POST, add `"role":"admin"` or `"verified":true` to the JSON body. Check if the server applies it.
+5. **Method override** — Add `X-HTTP-Method-Override: DELETE` to a GET request. If the server acts on it, auth checks may differ by method.
+
+If you have a hit, run `/reportability-check` before `/write-report`. If blocked, run `/variant-hunt`.
+
 ---
 
 ## API Discovery
@@ -327,6 +337,23 @@ grep -n "rate limit\|distributed\|evasion" ${CLAUDE_SKILL_DIR}/reference/api-pat
 grep -n "webhook\|callback\|SSRF" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 ```
+
+---
+
+## Validation Gate — Is This Submittable?
+
+Before writing the report, check these API-specific false positives:
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| GraphQL introspection enabled | Informational alone — chain with admin mutation access for High |
+| API returns 200 on unauthorized request | Check response body — empty/error body with 200 status = soft denial |
+| Batch endpoint returns other users' public data | Data may be intentionally public; verify it's auth-gated |
+| Rate limit bypass via header rotation | Informational unless you can demonstrate account takeover or data exfil |
+| Mass assignment adds field to response | Field must grant actual privilege or persist; cosmetic changes don't count |
+| Deprecated API version accessible | Only a finding if it lacks auth checks the current version has |
+
+**Severity calibration:** API version downgrade with auth bypass = High. Introspection + admin mutation = High. Batch IDOR on sensitive data = High-Critical. Mass assignment to admin role = Critical. Rate limit bypass alone = Low/Informational.
 
 ---
 

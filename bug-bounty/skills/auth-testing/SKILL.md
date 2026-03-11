@@ -367,6 +367,20 @@ Auth bugs need clear impact statements. Use this structure:
 - **No theoretical attacks** — demonstrate actual exploitation, not just misconfiguration
 - **Screenshots/recordings** — show the authorization check failing with evidence
 
+### When Stuck — Pivot Sequence
+
+If basic BOLA swap and all bypasses fail:
+
+```
+BOLA swap fails? → Try BFLA (admin endpoints with user token)
+  → BFLA blocked? → Middleware regex bypass (query params, path normalization)
+    → Regex holds? → Test unauthenticated access entirely (remove all auth)
+      → Auth required? → Pivot to business-logic for workflow state abuse
+        → Logic solid? → Test OAuth/JWT/session edge cases (auth-mechanisms.md)
+```
+
+**Key insight:** Strong object-level auth (BOLA) often coexists with weak function-level auth (BFLA). If you can't read another user's data, try calling admin-only functions with a regular user token.
+
 ---
 
 ## WordPress/CMS Plugin Authorization Bypass
