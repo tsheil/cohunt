@@ -162,6 +162,33 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 > **IDEsaster (28+ CVEs), Claude DXT, AI-as-C2, Google Antigravity:** See [reference/ide-supply-chain.md](reference/ide-supply-chain.md)
 > **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
+### Agentic Collapse: Legacy Vulns Exploitable via AI Agents
+
+**New attack surface class:** When legacy web applications are wrapped with AI chatbot/agent interfaces, traditional web vulnerabilities become exploitable through **semantic attacks** that can evade conventional HTTP/WAF-centric controls. The AI agent becomes the exploit delivery mechanism.
+
+**Pattern:** Attacker → natural language prompt → AI agent → vulnerable backend tool → exfiltrated data → AI summarizes results back to attacker.
+
+**Illustrative example** (CVE-2026-22200, osTicket via mPDF PHP filter chains): The underlying vuln is a file read exploitable at `PR:N` in default configs. However, when an enterprise wraps osTicket with an AI support chatbot that can invoke `create_ticket_and_export`, an attacker can deliver the PHP filter chain payload through conversational prompts instead of direct HTTP requests. The chatbot's RAG reads the generated PDF, surfacing exfiltrated data in the chat. **The pattern generalizes:** any legacy backend tool accessible to an AI agent inherits the agent's trust boundary and input channel.
+
+**Hunting methodology:**
+
+| Step | Action | What to Look For |
+|------|--------|-----------------|
+| 1 | Identify AI agent interfaces (chatbots, support agents, copilots) | Public-facing chat, internal assistant, any tool-using agent |
+| 2 | **Confirm tool invocation** — verify the agent can actually call backend tools or return privileged data | Ask "what can you do?" or observe tool-use indicators in responses; if the agent is pure chat/RAG with no tool access, this pattern does not apply |
+| 3 | Enumerate specific backend tools the agent can invoke | Probe capabilities, check docs, observe function call patterns |
+| 4 | Map each tool to traditional vuln classes | File operations → path traversal, URL fetching → SSRF, DB queries → SQLi, PDF/doc generation → SSRF/XXE |
+| 5 | Deliver payload via natural language | Craft prompt that causes the agent to pass your payload to the vulnerable tool |
+| 6 | Capture exfiltrated data in agent response | Agent's RAG/summarization surfaces the exploited data |
+
+**Why this matters for bug bounty:**
+- **Severity escalation**: A file read or SSRF reachable via AI agent may inherit a broader trust boundary (unauthenticated access, cross-user scope)
+- **Evasion**: Traditional WAFs inspect HTTP payloads, not semantic intent in natural language — prompt filters and tool-call validation may catch it, but many deployments lack these controls
+- **Growing surface**: Enterprise AI adoption means legacy apps increasingly wrapped with agent interfaces — every internal tool connected to an AI assistant is a potential agentic collapse target
+- **Low competition**: Hunters test either "AI features" or "web vulns" — few test the intersection where AI agents invoke legacy vulnerable tools
+
+**Cross-reference:** For the underlying web vuln patterns, use `vuln-patterns`. For crafting effective prompts, see the [Precise Prompt Crafting](#precise-prompt-crafting-for-hunting) section. The unique skill is **identifying which backend tools the AI can reach and whether those tools have traditional web vulns**.
+
 ---
 
 ## Quick Start — Testing an AI Feature (Without Getting N/A'd)
