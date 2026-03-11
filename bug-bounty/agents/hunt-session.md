@@ -296,27 +296,35 @@ Avoid competing directly with autonomous tools on:
 [Key program details — platform, rewards, response times, go/no-go]
 
 ## Setup & State Fixtures
-[What accounts/roles/states are ready — and what's missing]
-| Fixture | Status | Notes |
-|---------|--------|-------|
-| 2+ accounts (different roles) | ✅/❌ | [details] |
-| Webhook receiver | ✅/❌ | [URL] |
-| Multi-tenant accounts | ✅/❌/N/A | [details] |
-| Pending invite | ✅/❌ | [details] |
-| Pending approval | ✅/❌ | [details] |
-| Downgraded plan | ✅/❌ | [details] |
-| API token pair | ✅/❌ | [details] |
+[What accounts/roles/states are ready — and what's missing. Record transition endpoints and artifacts to reuse.]
+| State ID | Role | Ready | Enter Via | Artifacts to Reuse |
+|----------|------|-------|-----------|-------------------|
+| Account A (active) | [role] | ✅/❌ | — | session, API token |
+| Account B (active) | [role] | ✅/❌ | — | session, API token |
+| downgraded_from_paid | free | ✅/❌/N/A | [endpoint] | old session, export IDs, signed URLs |
+| pending_invite | invited | ✅/❌/N/A | [endpoint] | invite token, accept URL |
+| suspended | member | ✅/❌/N/A | [endpoint] | session cookie, websocket |
+| expired_trial | free | ✅/❌/N/A | time/billing | trial-only artifact IDs |
+| OAST Collector | — | ✅/❌ | — | [Collaborator URL] |
+| Multi-tenant accounts | — | ✅/❌/N/A | — | [tenant A + B tokens] |
 
 ## Recon Summary
 [Key recon findings — tech stack, subdomains, WAF, notable paths]
 
-## Role-Endpoint Matrix
+## Role-Endpoint Matrix (Baseline = active state)
 [Authenticated recon output — which roles can access which endpoints]
 | Endpoint | Unauth | Free | Paid | Admin |
 |----------|--------|------|------|-------|
 | GET /api/users/{id} | ✗ | ✓ (own) | ✓ (own) | ✓ (all) |
 | PUT /api/org/settings | ✗ | ✗ | ✗ | ✓ |
 [Every ✗ cell is a test target — can the blocked role actually access it?]
+
+## Role × State × Endpoint Delta (state-transition bugs)
+[Sparse overlay: only rows where account state SHOULD change access]
+| Card | Role | State | Endpoint | Baseline | Expected | First Probe |
+|------|------|-------|----------|----------|----------|-------------|
+| TC-01 | free | downgraded_from_paid | GET /api/exports/:id | paid-only | deny | reuse pre-downgrade export ID |
+[Source: state fixtures × monetized endpoints. Rank by: durable artifact, async workflow, admin data]
 
 ## Scope Map
 [What's in scope, what's out, gray areas]
@@ -351,13 +359,14 @@ Avoid competing directly with autonomous tools on:
 For each test, use this structured format:
 
 ### Test Card 1: [Name]
-- **Target:** [Exact URL/endpoint]
+- **Tuple:** [role + state + endpoint + method — e.g., free + downgraded_from_paid + GET /api/exports/:id]
+- **Boundary:** [What trust boundary is crossed — role, state-transition, tenant, or entitlement]
 - **Baseline:** [Expected behavior for authorized user — capture this first]
 - **Attack:** [Exact request with payload — what to change and why]
 - **Verify:** [What confirms the bug — specific response field, status code, data]
-- **FP Check:** [What would make this a false positive — e.g., data is public, cached response]
-- **Evidence:** [What to capture — screenshot, response body, two-account comparison]
-- **Pivot If Hit:** [What to test next — escalation, chain opportunity, variant]
+- **FP Check:** [What would make this a false positive — e.g., data is public, cached response, intentional grandfathering]
+- **Evidence:** [What to capture — screenshot, response body, two-account comparison, timestamps]
+- **Pivot If Hit:** [What to test next — sibling endpoints, escalation, chain opportunity, variant]
 - **Pivot If Blocked:** [Alternative approach or next test area]
 
 ## Chain Opportunities
@@ -401,8 +410,8 @@ At the top of every response during the hunt session, output a markdown checklis
 - [x] Recent changes check
 - [x] Program research
 - [ ] Scope gate (verify assets/vuln types in scope before investing time)
-- [ ] Setup & state fixtures (accounts, roles, pending states, tools)
-- [ ] Target recon (authenticated-first → role-endpoint matrix)
+- [ ] Setup & state fixtures (accounts, roles, pending states, transition endpoints, artifacts)
+- [ ] Target recon (authenticated-first → R×E matrix + R×S×E delta matrix)
 - [ ] Score automation pressure
 - [ ] Map workflows (actors, states, invariants)
 - [ ] OWASP framework mapping

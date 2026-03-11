@@ -54,10 +54,13 @@ Step 7: Add tool recommendations for each phase
 - [ ] **OAST collector** — blind XSS/SSRF callback receiver (Burp Collaborator, interactsh, or self-hosted)
 - [ ] **Disposable email** — for password reset, invite, and notification testing
 - [ ] **Webhook receiver** — endpoint to capture outgoing webhook data
-- [ ] **Pending invite** — outstanding invitation token ready for testing
-- [ ] **Pending approval** — item in approval queue (if target has approval workflows)
-- [ ] **Downgraded plan** — account recently downgraded from premium (if target has tiers)
 - [ ] **API token pair** — tokens for both test accounts
+- [ ] **State fixtures** (record transition endpoint + artifacts to reuse after each):
+  - [ ] Pending invite — save invite token and accept URL before testing revocation
+  - [ ] Pending approval — save approval ID and linked resource
+  - [ ] Downgraded plan — save old session, refresh token, export IDs, signed URLs
+  - [ ] Suspended account — save session cookie, API token, websocket connection
+  - [ ] Expired trial — save trial-only artifact IDs
 
 > **BLOCKER:** If you cannot set up 2+ accounts at different privilege levels, you cannot prove most access control bugs. Flag this as a blocker and resolve before proceeding. Options: free trial, demo account, social engineering an invite, or contact the program for test credentials.
 

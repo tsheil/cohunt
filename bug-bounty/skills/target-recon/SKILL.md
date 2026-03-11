@@ -1,6 +1,6 @@
 ---
 name: target-recon
-description: Recons a web target — external fingerprinting AND authenticated attack surface mapping. Fingerprints tech stack, enumerates subdomains, detects WAF/CDN, then maps roles, endpoints, and tenant boundaries behind login. Outputs a role-endpoint matrix, state fixtures checklist, and first 10 test cases ready for hunting. ALWAYS use this skill FIRST when a user mentions any target domain, URL, or application name — it should fire before any vulnerability testing. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on", "what changed recently", "new features", "scope additions", "recent changes", "check security headers", "list endpoints", "API discovery", "map endpoints per role", "role-endpoint matrix", "authenticated recon", "set up test accounts". Use proactively when user mentions a target domain and hasn't done recon yet. For program research (rewards, scope, competition), use program-research. For testing vulnerabilities found during recon, use vuln-patterns or the specific skill for that vuln class. For cloud asset enumeration, use cloud-security.
+description: Recons a web target — external fingerprinting AND authenticated attack surface mapping. Fingerprints tech stack, enumerates subdomains, detects WAF/CDN, then maps roles, states, endpoints, and tenant boundaries behind login. Outputs a Role × State × Endpoint matrix, state fixtures with transition endpoints and durable artifacts, and proof-first test cards ready for hunting. ALWAYS use this skill FIRST when a user mentions any target domain, URL, or application name — it should fire before any vulnerability testing. Trigger with "recon this target", "fingerprint example.com", "enumerate subdomains for", "what tech stack does X use", "map the attack surface of", "Google dork", "OSINT", "subdomain takeover", "ASN lookup", "CIDR range", "JavaScript analysis", "endpoint discovery", "what runs on", "what changed recently", "new features", "scope additions", "recent changes", "check security headers", "list endpoints", "API discovery", "map endpoints per role", "role-endpoint matrix", "authenticated recon", "set up test accounts". Use proactively when user mentions a target domain and hasn't done recon yet. For program research (rewards, scope, competition), use program-research. For testing vulnerabilities found during recon, use vuln-patterns or the specific skill for that vuln class. For cloud asset enumeration, use cloud-security.
 ---
 
 # Target Recon
@@ -23,7 +23,7 @@ If you find something interesting, run full recon. If you have a finding, run `/
 
 ## Output Format
 
-**→ Use the full output template at [reference/output-template.md](reference/output-template.md).** Sections: Quick Take, Target Profile, Tech Stack, Security Headers, Subdomain Inventory, Interesting Paths, WAF/CDN Analysis, Attack Surface Summary, **State Fixtures, Role-Endpoint Matrix, Tenant Boundary Map, First 10 Test Cases**, Sources.
+**→ Use the full output template at [reference/output-template.md](reference/output-template.md).** Sections: Quick Take, Target Profile, Tech Stack, Security Headers, Subdomain Inventory, Interesting Paths, WAF/CDN Analysis, Attack Surface Summary, **State Fixtures (with transition endpoints + artifacts), Role-Endpoint Matrix, Role × State × Endpoint Delta Matrix, Tenant Boundary Map, Proof-First Test Cards**, Sources.
 
 ---
 
@@ -83,25 +83,45 @@ Run these curl commands:
 The gap between a good plan and a payable bug is almost always **missing test state**:
 
 ```
-┌─ FIXTURE CHECKLIST ────────────────────────────────────────────┐
-│ □ ACCOUNTS: 2+ at different privilege levels                    │
-│   (free + paid, user + admin, tenant-A + tenant-B)              │
-│   Can't create these? → BLOCKER — note it, adjust plan          │
-│ □ ROLES: Inventory every role the app supports                  │
-│   (free, paid, admin, support, API-only, service account)       │
-│ □ OAST COLLECTOR: Blind callback receiver ready                 │
-│   (Burp Collaborator, interactsh, webhook.site)                 │
-│ □ PENDING STATES: Create at least one of each available:        │
-│   - Pending invite (sent but not accepted)                      │
-│   - Pending approval (awaiting admin action)                    │
-│   - Downgraded plan (premium → free, test retained access)      │
-│   - In-progress export/import job                               │
-│ □ API TOKEN PAIR: Tokens from 2 different users/roles           │
-│ □ TOOLS: Burp/mitmproxy intercepting, browser profiles set      │
-└────────────────────────────────────────────────────────────────┘
+□ ACCOUNTS: 2+ at different privilege levels (free + paid, user + admin, tenant-A + tenant-B)
+  Can't create these? → BLOCKER — note it, adjust plan
+□ ROLES: Inventory every role the app supports (free, paid, admin, support, API-only, service account)
+□ OAST COLLECTOR: Blind callback receiver ready (Burp Collaborator, interactsh, webhook.site)
+□ API TOKEN PAIR: Tokens from 2 different users/roles
+□ TOOLS: Burp/mitmproxy intercepting, browser profiles set
 ```
 
-**Why:** Single-account testing is the #1 reason auth bugs get missed. Two accounts at different privilege levels is the minimum for any IDOR/BOLA/BFLA testing. Pending states catch state-transition bugs that pay $2K-$15K.
+**State fixtures are test-case generators, not just setup.** For each state below, record the transition endpoint, durable artifacts to reuse post-transition, and whether you achieved it:
+
+```
+STATE FIXTURE TABLE — record for each state you create:
+
+State ID             | Role  | Enter Via                    | Artifacts to Reuse After Transition
+downgraded_from_paid | free  | PUT /api/billing/subscription | old session, refresh token, export IDs, signed URLs
+pending_invite       | invited| POST /api/invites            | invite token, accept URL
+suspended            | member| POST /api/admin/users/:id/suspend | session cookie, API token, websocket
+expired_trial        | free  | time/billing event           | trial-only artifact IDs, feature flags
+pending_approval     | user  | POST /api/approvals          | approval ID, linked resource
+archived_workspace   | admin | DELETE /api/workspaces/:id    | workspace ID, shared link tokens
+```
+
+**Why:** Single-account testing is the #1 reason auth bugs get missed. Two accounts at different privilege levels is the minimum for any IDOR/BOLA/BFLA testing. State-transition bugs pay $2K-$15K — but only if you created the state AND saved artifacts to reuse afterward.
+
+#### Transition Endpoints (Map These First)
+
+State bugs live on the endpoints that **change** account state. Identify these before building the matrix:
+
+```
+□ billing/subscription — downgrade, cancel, plan change, payment failure
+□ user lifecycle — suspend, deactivate, archive, delete, restore
+□ invitations — send, accept, revoke, expire, resend
+□ approvals — submit, approve, reject, cancel
+□ onboarding — complete trial, verify email, activate
+□ async jobs — start export, cancel import, abort processing
+□ credentials — rotate API key, revoke OAuth token, reset password
+```
+
+**After each transition:** immediately retest with the old session/token/artifact. The bug is in what the server **forgets to revoke**.
 
 #### Per-Role Endpoint Mapping → Role-Endpoint Matrix
 
@@ -124,6 +144,22 @@ For each user role (free, paid, admin, support, API-only):
 ```
 
 **This matrix IS a key recon deliverable.** Include it in the output. It directly generates test cases for auth-testing.
+
+#### Role × State × Endpoint Delta Matrix
+
+The role-endpoint matrix above uses **active state** as baseline. Now overlay **state transitions** — these are the highest-value test targets because servers systematically fail to revoke access after state changes.
+
+**Build the delta:** For each state fixture you created, test the endpoints where state SHOULD change access. Only record rows where state matters (sparse — not every combination):
+
+```
+Card  | Role  | State              | Endpoint                     | Baseline | Expected | First Probe
+TC-01 | free  | downgraded_from_paid| GET /api/exports/:id/download | paid-only| deny     | reuse pre-downgrade export ID with stale + fresh token
+TC-02 | invited| pending_invite     | POST /api/invites/:id/accept  | single-use| deny    | replay invite token after admin revokes it
+TC-03 | member| suspended           | GET /api/projects/:id         | ✓ own    | deny all | retry existing session cookie after suspension
+TC-04 | free  | expired_trial       | POST /api/ai/generate         | trial-only| deny   | retry with expired-trial session
+```
+
+**Ranking heuristic:** Prioritize tuples where the endpoint touches a **monetized feature** (exports, AI, billing), uses a **durable artifact** (signed URL, invite token, export ID), or involves an **async workflow** (export job, approval queue). These consistently pay $3K-$15K.
 
 #### Hidden Route Discovery
 
@@ -179,32 +215,29 @@ Priority order for test case generation:
 10. Race conditions — single-use actions (coupons, invites) via parallel requests
 ```
 
-**For each test case, output:**
-- Target endpoint and method
-- What to test (exact request modification)
-- Expected vulnerable vs. expected safe behavior
-- Which skill to route to (auth-testing, business-logic, api-security, etc.)
+**For each test case, use the proof-first test card format** (consistent with hunt-session and hunt-plan):
 
-**Example:**
 ```
-Test #1: IDOR on DELETE /api/v2/projects/:id
-  → Send Account B's project ID with Account A's token
-  → Vulnerable: 200/204 + project actually deleted
-  → Safe: 403 Forbidden
-  → Deep dive: auth-testing → BOLA section
+Test Card TC-01: Retained premium export after downgrade
+  Tuple: free + downgraded_from_paid + GET /api/exports/:id/download
+  Baseline: Before downgrade, paid account downloads export → 200 + file bytes
+  Attack: After downgrade, retry same export ID with stale session + fresh token + signed URL
+  Verify: Vulnerable if any request returns the file. Safe if all return 403/404.
+  FP Check: CDN cache? Intentional grandfathering? Check product docs.
+  Evidence: Plan page showing free status, pre/post responses, export ID, timestamps
+  Route To: auth-testing, business-logic
 
-Test #2: Privilege escalation on GET /api/admin/users
-  → Call with free-tier token (from role-endpoint matrix: ✗ for Free)
-  → Vulnerable: 200 + user list returned
-  → Safe: 403 or 401
-  → Deep dive: auth-testing → BFLA section
-
-Test #3: Tenant isolation on GET /api/orgs/{org_id}/billing
-  → Swap org_id from Tenant A to Tenant B's org_id
-  → Vulnerable: 200 + Tenant B's billing data
-  → Safe: 403 or 404
-  → Deep dive: business-logic → multi-tenant section
+Test Card TC-02: BOLA on DELETE /api/v2/projects/:id
+  Tuple: free + active + DELETE /api/v2/projects/:id (from R×E matrix ✗ cell)
+  Baseline: Account A deletes own project → 204
+  Attack: Account A sends Account B's project ID
+  Verify: Vulnerable if 200/204 + project actually deleted. Safe if 403.
+  FP Check: Is the project shared/public? Single-account test is invalid.
+  Evidence: Two-account comparison, project existence before/after
+  Route To: auth-testing → BOLA section
 ```
+
+**Source test cards from three matrices:** Role × Endpoint ✗ cells (BOLA/BFLA), Role × State delta rows (state-transition bugs), and Tenant Boundary Map (cross-tenant access). Rank by monetized feature first.
 
 ---
 
@@ -225,14 +258,7 @@ Run these lookups:
 
 ### Step 6: WAF/CDN Detection
 
-```
-Check for WAF/CDN:
-1. Inspect response headers for CDN signatures
-2. Check for WAF-specific headers or cookies
-3. Compare direct IP vs domain response
-4. Test with common WAF trigger payloads in User-Agent
-5. Note rate limiting behavior
-```
+Check response headers for CDN signatures (Cloudflare, Akamai, Fastly) and WAF-specific headers/cookies. Compare direct IP vs domain response. Test with common WAF trigger payloads in User-Agent. Note rate limiting behavior.
 
 ### Step 7: Google Dorking & OSINT
 
@@ -288,27 +314,14 @@ For any SPA target (React, Angular, Vue, Next.js):
 
 ### Step 9: Synthesize
 
-```
-1. Combine all sources (fingerprint + auth recon + external recon)
-2. Map technology stack
-3. Assess security posture from headers
-4. Identify attack surface areas
-5. Prioritize targets by interest level
-6. Generate next steps — route to appropriate skills
-```
+Combine all sources (fingerprint + auth recon + external recon). Map tech stack, assess security posture from headers, identify attack surface areas, prioritize by interest level. Generate next steps and route to appropriate skills.
 
 ---
 
 ## Reference Files
 
-This skill uses progressive disclosure. Detailed reference material is available on demand:
-
-| File | Contents | Lines |
-|------|----------|-------|
-| [reference/javascript-analysis.md](reference/javascript-analysis.md) | JS bundle analysis, source map exploitation, secret hunting (14 patterns), SPA route extraction, webpack chunk enumeration, framework-specific techniques | ~266 |
-| [reference/output-template.md](reference/output-template.md) | Full recon output template — external recon + state fixtures + role-endpoint matrix + tenant map + first 10 test cases | ~151 |
-
-**Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/javascript-analysis.md`
+- [reference/javascript-analysis.md](reference/javascript-analysis.md) — JS bundle analysis, source maps, secret patterns, SPA route extraction (~266 lines)
+- [reference/output-template.md](reference/output-template.md) — Full recon output template with state fixtures, R×S×E matrix, test cards (~170 lines)
 
 ---
 
@@ -444,34 +457,12 @@ Map the target's full network footprint:
 
 ## CLI Execution Rules
 
-When running external recon tools via shell, follow these rules to avoid blowing up the context window:
-
-| Tool | Use This Flag | Why |
-|------|--------------|-----|
-| `nmap` | `-oG -` (greppable) or `-oX -` (XML) | Raw stdout is verbose |
-| `ffuf` | `-o results.json -of json` | Parse JSON instead of streaming stdout |
-| `nuclei` | `-j -o results.json` | Filter by severity with `-s critical,high` |
-| `subfinder` | `-o subs.txt` | Write to file, read selectively |
-| `httpx` | `-json -o live.json` | Structured tech fingerprinting |
-| `amass` | `-json output.json` | Structured enumeration results |
-| `dig` | `+short` | Minimal DNS output |
-| `curl` | `-sS -D -` | Silent with headers; pipe through `head -100` |
-
-**Rules:** Redirect large outputs to files. Cap brute-forcer results (`head -50`). Filter by severity before loading. Summarize >100-line outputs.
+Redirect large outputs to files. Use structured output flags: `nmap -oG -`, `ffuf -o results.json -of json`, `nuclei -j -o results.json -s critical,high`, `subfinder -o subs.txt`, `httpx -json -o live.json`, `dig +short`, `curl -sS -D -`. Cap brute-forcer results (`head -50`). Summarize >100-line outputs before loading into context.
 
 ---
 
-## Tips for Better Recon
-
-1. **Provide the root domain** — "recon example.com" casts a wider net than "recon www.example.com"
-2. **Mention the program** — "recon example.com for their HackerOne program" helps scope the work
-3. **Ask for depth** — "deep recon" vs "quick fingerprint" adjusts thoroughness
-4. **Chain with hunt-plan** — Run recon first, then `/hunt-plan` to turn findings into action
-
 ## Related Skills
 
-- **program-research** — Research the bug bounty program before hunting
-- **cloud-security** — Deep cloud misconfig testing when recon reveals cloud infrastructure
-- **hunt-plan** (command) — Turn recon into a prioritized hunting plan
-- **auth-testing** — Deep dive on authentication and authorization testing after authenticated recon
-- **business-logic** — Business logic vulnerability testing after workflow mapping
+- **program-research** — Research the program before hunting | **cloud-security** — Deep cloud testing when recon reveals cloud infra
+- **auth-testing** — Auth/authz testing after authenticated recon | **business-logic** — Business logic after workflow mapping
+- **hunt-plan** (command) — Turn recon into a prioritized plan | Provide root domain + mention program for best results

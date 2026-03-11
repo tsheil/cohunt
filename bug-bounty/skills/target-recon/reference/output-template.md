@@ -107,16 +107,29 @@ Use this template when generating recon reports. Fill in each section based on f
 
 ### State Fixtures
 
-| Fixture | Status | Notes |
-|---------|--------|-------|
-| **Account A** (role: [role]) | [Ready/Blocked] | [Username, role details] |
-| **Account B** (role: [role]) | [Ready/Blocked] | [Username, role details] |
-| **OAST Collector** | [Ready/Not set up] | [Collaborator URL or interactsh ID] |
-| **Pending invite** | [Created/N/A] | [Details] |
-| **Downgraded account** | [Created/N/A] | [Was premium, now free] |
-| **API tokens** | [Ready/N/A] | [Token A (role), Token B (role)] |
+| State ID | Role | Ready | Enter Via | Exit Via | Artifacts to Reuse | Notes |
+|----------|------|-------|-----------|----------|-------------------|-------|
+| **Account A** (active) | [role] | [Ready/Blocked] | — | — | session, API token | [Username, details] |
+| **Account B** (active) | [role] | [Ready/Blocked] | — | — | session, API token | [Username, details] |
+| `downgraded_from_paid` | free | [✅/❌/N/A] | [endpoint] | upgrade | old session, refresh token, export IDs, signed URLs | [details] |
+| `pending_invite` | invited | [✅/❌/N/A] | [endpoint] | accept/revoke | invite token, accept URL | [details] |
+| `suspended` | member | [✅/❌/N/A] | [endpoint] | restore | session cookie, API token, websocket | [details] |
+| `expired_trial` | free | [✅/❌/N/A] | time/billing | upgrade | trial-only artifact IDs | [details] |
+| `pending_approval` | user | [✅/❌/N/A] | [endpoint] | approve/reject | approval ID, linked resource | [details] |
+| **OAST Collector** | — | [Ready/Not set up] | — | — | — | [Collaborator URL or interactsh ID] |
+| **API Token Pair** | — | [Ready/N/A] | — | — | — | [Token A (role), Token B (role)] |
 
-### Role-Endpoint Matrix
+### Transition Endpoints
+
+| Transition | Endpoint | Method | Notes |
+|-----------|----------|--------|-------|
+| Downgrade | [e.g. PUT /api/billing/subscription] | PUT | [Plan change details] |
+| Suspend | [e.g. POST /api/admin/users/:id/suspend] | POST | [Admin action] |
+| Revoke invite | [e.g. DELETE /api/invites/:id] | DELETE | [Invite lifecycle] |
+| Cancel approval | [e.g. POST /api/approvals/:id/cancel] | POST | [Approval workflow] |
+| Rotate API key | [e.g. POST /api/keys/rotate] | POST | [Credential lifecycle] |
+
+### Role-Endpoint Matrix (Baseline = active state)
 
 | Endpoint | Method | Free | Paid | Admin | Notes |
 |----------|--------|------|------|-------|-------|
@@ -125,6 +138,18 @@ Use this template when generating recon reports. Fill in each section based on f
 | /api/[path] | PUT | ✗ | ✓ | ✓ | [Test target: privilege escalation] |
 
 **Test targets:** [count] ✗ cells identified for auth bypass testing
+
+### Role × State × Endpoint Delta Matrix
+
+Only rows where state SHOULD change access — sparse overlay on the baseline matrix above:
+
+| Card | Role | State | Endpoint | Method | Active Baseline | Expected In State | First Probe |
+|------|------|-------|----------|--------|-----------------|-------------------|-------------|
+| TC-01 | free | `downgraded_from_paid` | /api/exports/:id/download | GET | paid-only | deny | reuse pre-downgrade export ID with stale + fresh token |
+| TC-02 | invited | `pending_invite` | /api/invites/:id/accept | POST | single-use | deny after revoke | replay invite token after admin revokes |
+| TC-03 | member | `suspended` | /api/projects/:id | GET | ✓ own | deny all | retry existing session cookie after suspension |
+| TC-04 | free | `expired_trial` | /api/ai/generate | POST | trial-only | deny | retry with expired-trial session |
+| ... | ... | ... | ... | ... | ... | ... | ... |
 
 ### Tenant Boundary Map (if multi-tenant)
 
@@ -135,13 +160,35 @@ Use this template when generating recon reports. Fill in each section based on f
 
 ---
 
-## First 10 Test Cases
+## Proof-First Test Cards
 
-| # | Target | Test | Expected Vuln | Route To |
-|---|--------|------|--------------|----------|
-| 1 | [endpoint] | [what to do] | [vulnerable response] | [skill] |
-| 2 | [endpoint] | [what to do] | [vulnerable response] | [skill] |
+Summary table (all 10), then expanded cards for top 3:
+
+| # | Tuple (Role + State + Endpoint) | Bug Class | Payout Range | Source Matrix |
+|---|--------------------------------|-----------|-------------|---------------|
+| 1 | [role + state + endpoint] | [BOLA/BFLA/state-transition/etc.] | [$range] | [R×E / R×S×E / Tenant] |
+| 2 | [role + state + endpoint] | [bug class] | [$range] | [source] |
 | ... | ... | ... | ... | ... |
+
+### Test Card TC-01: [Name]
+- **Tuple:** [role + state + endpoint + method]
+- **Boundary:** [What trust boundary is crossed]
+- **Proof Type:** [before/after state, two-account comparison, cross-tenant]
+- **Setup / Transition:** [What state to create and how]
+- **Baseline:** [Expected safe behavior — capture this first]
+- **Attack:** [Exact request modification]
+- **Verify:** [What confirms the bug — specific response field, status code, data]
+- **FP Check:** [What would make this a false positive — caching, intentional behavior, public data]
+- **Evidence:** [What to capture — screenshots, response bodies, timestamps, two-account comparison]
+- **Pivot If Hit:** [What to test next — sibling endpoints, escalation paths]
+- **Pivot If Blocked:** [Alternative approach if initial probe fails]
+- **Route To:** [auth-testing, business-logic, api-security, etc.]
+
+### Test Card TC-02: [Name]
+[Same format as TC-01]
+
+### Test Card TC-03: [Name]
+[Same format as TC-01]
 
 ---
 

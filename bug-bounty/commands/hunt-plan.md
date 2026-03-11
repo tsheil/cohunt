@@ -95,28 +95,29 @@ Tell me what you know: "I want to hunt on Shopify. I'm good at API bugs and XSS.
 
 ### Setup & State Fixtures (REQUIRED before testing)
 
-| Fixture | Status | Notes |
-|---------|--------|-------|
-| 2+ accounts (different roles) | □ | [e.g., free + paid, user + admin] |
-| Webhook receiver | □ | [Burp Collaborator / interactsh / webhook.site] |
-| Multi-tenant accounts | □ / N/A | [accounts in 2+ tenants if applicable] |
-| Pending invite (not accepted) | □ | |
-| Downgraded plan (premium→free) | □ | [check retained access] |
-| API token pair (2 users) | □ | |
-| Tools ready (Burp/proxy) | □ | |
+| State ID | Role | Ready | Enter Via | Artifacts to Reuse |
+|----------|------|-------|-----------|-------------------|
+| Account A (active) | [role] | □ | — | session, API token |
+| Account B (active) | [role] | □ | — | session, API token |
+| downgraded_from_paid | free | □/N/A | [endpoint] | old session, export IDs, signed URLs |
+| pending_invite | invited | □/N/A | [endpoint] | invite token, accept URL |
+| suspended | member | □/N/A | [endpoint] | session cookie, websocket |
+| OAST Collector | — | □ | — | [Collaborator URL] |
+| Multi-tenant accounts | — | □/N/A | — | [tenant A + B tokens] |
+| Tools ready (Burp/proxy) | — | □ | — | — |
 
 **Blockers:** [List anything the hunter can't set up — adjust plan accordingly]
 
 ---
 
-### Role-Endpoint Matrix
+### Role-Endpoint Matrix (Baseline = active state)
 
 | Endpoint | Unauth | Free | Paid | Admin |
 |----------|--------|------|------|-------|
 | [endpoint 1] | [✓/✗] | [✓/✗] | [✓/✗] | [✓/✗] |
 | [endpoint 2] | [✓/✗] | [✓/✗] | [✓/✗] | [✓/✗] |
 
-Every ✗ cell is a test target — can the blocked role actually access it?
+Every ✗ cell is a test target. Then overlay state: for each fixture above, which monetized endpoints should deny access post-transition?
 
 ---
 
