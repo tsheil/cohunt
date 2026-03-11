@@ -45,9 +45,18 @@ Side-channel techniques that infer cross-origin state without directly reading t
 
 WebSockets maintain persistent bidirectional connections and often skip standard browser security controls.
 
+> **Deep dive on realtime frameworks:** For Socket.IO, SignalR, GraphQL subscriptions, SSE, and transport parity testing, see [api-security/reference/realtime-protocols.md](../../api-security/reference/realtime-protocols.md).
+
 ### Cross-Site WebSocket Hijacking (CSWSH)
 
 WebSocket handshakes are regular HTTP upgrades — browsers attach cookies automatically. If the server doesn't validate `Origin`, an attacker page can hijack the connection.
+
+### Key CVEs
+
+| CVE | Product | Impact |
+|-----|---------|--------|
+| CVE-2026-25253 | OpenClaw (Moltbot) | CSWSH → auth token exfil → disable approvals → container escape → host RCE (CVSS 8.8) |
+| CVE-2026-22689 | Mailpit | CSWSH → real-time email interception; `CheckOrigin` hardcoded to `return true` (CVSS 7.5) |
 
 ### Testing Procedure
 
@@ -61,10 +70,13 @@ WebSocket handshakes are regular HTTP upgrades — browsers attach cookies autom
    If the connection succeeds with the victim's session, CSWSH is confirmed
 4. **Check for sensitive data in URL** — `wss://target.com/ws?token=SECRET` leaks token in logs, Referer headers
 5. **Test message injection** — Send unexpected message types. Does the server validate message structure/commands?
+6. **Test localhost CSWSH** — For developer tools (Mailpit, debug servers, AI agents): connect from attacker page to `ws://localhost:PORT` — browser sends cookies and the server often skips Origin validation on local interfaces
+
+**Note:** Token-in-first-message auth (not cookie-based) is immune to CSWSH — the attacker page can open the WS connection but can't provide the auth token. Only cookie-based WS auth is vulnerable.
 
 | CWE | Severity | Notes |
 |-----|----------|-------|
-| CWE-1385, CWE-346 | High | CSWSH leading to data exfil or actions-on-behalf is High-Critical |
+| CWE-1385, CWE-346 | High | CSWSH leading to data exfil or actions-on-behalf is High-Critical; CSWSH → RCE chain (OpenClaw) is Critical |
 
 ---
 

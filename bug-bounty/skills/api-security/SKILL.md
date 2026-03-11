@@ -192,28 +192,50 @@ GraphQL CSRF works when the endpoint uses **cookie-based auth** (not Bearer toke
 
 ---
 
-## WebSocket Patterns
+## WebSocket & Realtime Protocol Patterns
 
-WebSocket connections maintain persistent state, creating unique testing opportunities.
+WebSocket connections maintain persistent state, creating unique testing opportunities. Realtime protocols (Socket.IO, SignalR, GraphQL subscriptions, SSE) add framework-specific attack surface on top of raw WebSockets.
+
+> **Deep dive:** [reference/realtime-protocols.md](reference/realtime-protocols.md) for Socket.IO namespace/transport attacks, SignalR hub method auth gaps, GraphQL subscription auth bypass, SSE event injection, STOMP/ActionCable/Phoenix patterns, transport parity testing methodology, and token lifecycle in long-lived connections.
+
+### Key CVEs
+
+| CVE | Product | Type | CVSS |
+|-----|---------|------|------|
+| CVE-2026-1731 | BeyondTrust RS/PRA | WS handshake → OS cmd injection | 9.9 |
+| CVE-2026-25253 | OpenClaw | WS token exfil → RCE | 8.8 |
+| CVE-2026-22689 | Mailpit | CSWSH → email interception | 6.5 |
+| CVE-2026-30241 | Mercurius (Fastify) | Subscription depth bypass | — |
 
 ### Connection-Level Issues
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
 | 1 | Auth on connect only | Authenticate, then invalidate token/session | Messages still accepted after auth revoked |
-| 2 | Cross-origin WebSocket | Connect from different origin | Missing origin validation |
+| 2 | Cross-origin WebSocket (CSWSH) | Connect from different origin with `Origin: https://evil.com` | Missing origin validation — CVE-2026-25253 (OpenClaw), CVE-2026-22689 (Mailpit) |
 | 3 | Protocol downgrade | Force `ws://` instead of `wss://` | Unencrypted WebSocket accepted |
 | 4 | Connection hijacking | Steal WebSocket URL + ticket from another user | Access to their real-time data stream |
+| 5 | Transport parity gap | Test same security control over HTTP vs WS vs SSE | Auth/rate-limit enforced on HTTP but not WS — CVE-2026-30241 pattern |
 
 ### Message-Level Issues
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
 | 1 | Channel subscription | Subscribe to channels for other users/rooms | Cross-user data access |
-| 2 | Message injection | Send crafted messages to server | XSS in other clients, command injection |
+| 2 | Message injection → execution | Send crafted messages with injection payloads | XSS in other clients, command injection on server (CVE-2026-1731 pattern) |
 | 3 | Message tampering | Modify message IDs/types mid-stream | Bypass message-type authorization |
 | 4 | Rate limit absence | Flood messages rapidly | No rate limiting on WebSocket (common) |
 | 5 | State manipulation | Send out-of-order messages | Skip workflow steps, bypass validation |
+
+### Framework Detection
+
+| Signal in Recon | Framework | Route To |
+|----------------|-----------|----------|
+| `/socket.io/?EIO=4&transport=` | Socket.IO | realtime-protocols.md §Socket.IO |
+| `/hub/negotiate`, `\x1e` separator | SignalR | realtime-protocols.md §SignalR |
+| `Sec-WebSocket-Protocol: graphql-transport-ws` | GraphQL Subscriptions | realtime-protocols.md §GraphQL Subscriptions |
+| `Content-Type: text/event-stream` | SSE | realtime-protocols.md §SSE |
+| `STOMP` frames, `/app/`, `/topic/` | Spring STOMP | realtime-protocols.md §STOMP |
 
 ---
 
@@ -361,6 +383,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 | File | Contents | Lines |
 |------|----------|-------|
 | [reference/api-patterns.md](reference/api-patterns.md) | GraphQL federation, mass assignment, JWT bypass, rate limit evasion, webhook SSRF, API gateway misconfigs, microservice patterns | ~283 |
+| [reference/realtime-protocols.md](reference/realtime-protocols.md) | Socket.IO namespace/transport attacks, SignalR hub auth gaps, GraphQL subscription auth bypass, SSE event injection, STOMP/ActionCable/Phoenix patterns, transport parity matrix, token lifecycle, WS→RCE patterns | ~413 |
 
 **Quick search** — find specific patterns without loading the full file:
 ```
@@ -371,6 +394,12 @@ grep -n "rate limit\|distributed\|evasion" ${CLAUDE_SKILL_DIR}/reference/api-pat
 grep -n "webhook\|callback\|SSRF" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 grep -n "gateway\|Kong\|Cloudflare\|AWS API Gateway\|service mesh" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
 grep -n "edge\|serverless\|encoded-slash\|SSE\|transport" ${CLAUDE_SKILL_DIR}/reference/api-patterns.md
+grep -n "Socket.IO\|namespace\|transport\|EIO" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "SignalR\|hub\|negotiate\|connectionToken" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "subscription\|graphql-ws\|graphql-transport-ws" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "SSE\|EventSource\|text/event-stream" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "STOMP\|ActionCable\|Phoenix\|Channel" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "transport parity\|token lifecycle\|long-lived" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
 ```
 
 ---
