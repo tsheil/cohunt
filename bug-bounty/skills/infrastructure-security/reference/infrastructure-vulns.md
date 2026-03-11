@@ -491,9 +491,9 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE. See http-desync skill |
 | CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied embeddings. Pattern: AI inference deser |
 | CVE-2026-28514 | Rocket.Chat | 9.3 | Missing `await` on `bcrypt.compare()` → any password accepted. Async auth bypass |
-| CVE-2019-17571 | SAP FS-QUO (Log4j) | 9.8 | Unauthenticated RCE via deserialization in Log4j 1.2 SocketServer. March 2026 SAP Patch Day |
-| CVE-2026-27685 | SAP NetWeaver Portal | 9.1 | Malicious content upload + deserialization RCE. March 2026 SAP Patch Day |
+| CVE-2019-17571 / CVE-2026-27685 | SAP (FS-QUO, NetWeaver) | 9.8/9.1 | Log4j 1.2 SocketServer deser RCE + upload deser RCE. March 2026 SAP Patch Day |
+| CVE-2026-25177 | Windows AD DS | 8.8 | Unicode SPN/UPN collision EoP — crafted Unicode chars create duplicate SPNs bypassing AD name checks. CWE-641. Auth required, network. March 2026 Patch Tuesday |
 | CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE (3rd bypass). CISA KEV March 2026 |
 | CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite — supply chain vector. Fixed 0.14.2 |
 | CVE-2026-22719 | VMware Aria | 8.1 | Unauth command injection. CISA KEV March 2026. Active exploitation |
-| CVE-2026-30903 | Zoom Workplace (Win) | 9.6 | Mail feature path control → arbitrary file write → DLL hijack → EoP. Unauth, network, no interaction. < v6.6.0. Pattern: desktop mail/attachment handlers with file path control |
+| CVE-2026-30903 | Zoom Workplace (Win) | 9.6 | Mail feature path control → arbitrary file write → DLL hijack → EoP. Network, requires user interaction (UI:R). < v6.6.0. Pattern: desktop mail/attachment handlers with file path control |

@@ -464,8 +464,7 @@ Update the checklist as each step completes. This gives the hunter clear visibil
 
 **Edge Cases:**
 
-- **No disclosures**: adjust duplicate risk down. **No bounty program**: suggest VDP. **High activity** (97+ researchers): focus on logic bugs + chains. **New program** (<6 months): opportunity, but verify response times
-- **Strong WAF/CSP**: weight toward logic bugs. **Web + mobile in scope**: prioritize shared API backends (one vuln, broader impact)
+- **No disclosures**: adjust duplicate risk down. **No bounty program**: suggest VDP. **High activity** (97+ researchers): focus on logic bugs + chains. **New program** (<6 months): opportunity, but verify response times. **Strong WAF/CSP**: weight toward logic bugs. **Web + mobile in scope**: prioritize shared API backends (one vuln, broader impact)
 
 *AI/Agent-Specific:*
 When the target has AI/LLM features, apply the ai-hunting skill's reference files for detailed test procedures. Key routing:
@@ -497,5 +496,4 @@ When the target has AI/LLM features, apply the ai-hunting skill's reference file
 | Enterprise management platforms | Management-plane auth bypass patterns: magic number auth (Ivanti CVE-2026-1603), triple deser bypass chains (SolarWinds CVE-2025-26399), bash arithmetic expansion (Ivanti EPMM), hardcoded creds | infrastructure-security/reference/infrastructure-vulns.md |
 | Cloud AI services (SageMaker, Vertex, Bedrock, Azure OpenAI) | API parity testing (sync vs streaming vs OpenAI-compat), backing-store exposure (S3/GCS training data, vector DBs, prompt logs), execution identity overreach, model selection IDOR (`TargetModel`, `SessionId`), **execution identity credential theft via MCP/connector SSRF** (CVE-2026-26118 pattern — URL param injection steals execution identity tokens; test Azure managed identity, AWS execution role, GCP service account paths) | cloud-security/reference/cloud-ai-ml.md, ai-hunting/reference/mcp-playbooks.md |
 | Multi-cloud / federation | Workload identity federation abuse (missing subject/audience checks), cross-cloud credential chains (AWS→GCP, GCP→Azure), Terraform state exposure, stale/circular federation trusts | cloud-security/reference/multi-cloud-pivots.md |
-
 *Hunter-Level:* Time budget → strict prioritization. Specialization mentioned → weight plan accordingly. Return visit → reference previous findings, focus on untested areas + new features.
