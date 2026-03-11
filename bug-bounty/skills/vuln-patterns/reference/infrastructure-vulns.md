@@ -368,23 +368,25 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 ## March 2026 Patch Tuesday Cluster (Microsoft)
 
-**What it is:** Microsoft's March 2026 Patch Tuesday addressed 79-83 CVEs (BleepingComputer: 79 flaws; Tenable: 83 including Edge/Chromium) with 2 publicly disclosed zero-days and 3 Critical vulnerabilities. Follows February's unprecedented 6 zero-days.
+**What it is:** Microsoft's March 10, 2026 Patch Tuesday addressed 84 CVEs (ZDI count including Edge/Chromium) with 2 publicly disclosed zero-days and 8 Critical vulnerabilities. Follows February's unprecedented 6 zero-days. None actively exploited at disclosure time — rare defensive window.
 
 **Key CVEs:**
 
 | CVE | CVSS | Component | Type |
 |-----|------|-----------|------|
+| CVE-2026-21536 | 9.8 | Devices Pricing Program | Unauth RCE — highest CVSS in release, no user interaction |
 | CVE-2026-21262 | Critical | SQL Server | Privilege escalation to sysadmin (zero-day, publicly disclosed) |
 | CVE-2026-26144 | Critical | Microsoft Excel | Info disclosure **exploitable via Copilot Agent mode** |
-| CVE-2026-26113 | Critical | Microsoft Office | Remote code execution |
-| CVE-2026-24983 | 7.8 | Win32 Kernel | EoP → SYSTEM (actively exploited) |
-| CVE-2026-24985 | 6.8 | FAT File System | RCE via VHD files (actively exploited) |
-| CVE-2026-24993 | 7.8 | MMC | RCE via .msc files (actively exploited) |
+| CVE-2026-26113 | Critical | Microsoft Office | Remote code execution via Preview Pane |
+| CVE-2026-26110 | Critical | Microsoft Office | Remote code execution via Preview Pane |
+| CVE-2026-26111 | Critical | Windows RRAS | Unauth RCE → SYSTEM on RRAS servers |
+| CVE-2026-24983/24985/24993 | 6.8–7.8 | Win32 Kernel, FAT, MMC | EoP→SYSTEM, VHD RCE, .msc RCE (all actively exploited) |
+| CVE-2026-23669 | Critical | Print Spooler | RCE — PrintNightmare-adjacent pattern |
 | CVE-2026-26114 | 8.8 | SharePoint Server | Deserialization RCE (on-prem SP 2016/2019/SE) |
 
-**Test patterns:** Craft malicious VHD files for FAT heap overflow; deliver .msc files via email/web for MMC RCE; test SQL Server for sysadmin privilege escalation; **SharePoint deser: send crafted serialized payloads to on-prem instances (2016/2019/SE) — classic .NET deser pattern**; **test Excel info disclosure via Copilot Agent mode — first CVE where AI assistant feature is the exploitation vector**. All actively-exploited CVEs added to CISA KEV with 21-day deadline.
+**Test patterns:** **RRAS RCE (CVE-2026-26111)** enables unauth SYSTEM on exposed RRAS; **Office Preview Pane** (CVE-2026-26110/26113) — exploitation requires only file preview; **Print Spooler** (CVE-2026-23669) echoes PrintNightmare; **SharePoint deser** (CVE-2026-26114): .NET deser on on-prem SP 2016/2019/SE; **Excel via Copilot** (CVE-2026-26144) — first Critical where AI assistant is exploitation vector. **Variant analysis:** ZDI noted CVE-2026-23668 combined two separate GDI locking issues — GDI lock/release variant hunting is productive.
 
-**Severity Guidance:** 4+ active zero-days in one month (following 6 in Feb) indicates active campaigns. CVE-2026-26114 SharePoint deser follows the well-established .NET deser chain pattern (ToolShell, CVE-2025-53770). CVE-2026-26144 is the first Critical CVE exploitable through an AI assistant feature.
+**Severity Guidance:** 8 Critical CVEs, 2 unauth RCE. Preview Pane is a recurring Office attack vector. CVE-2026-26144 Copilot Agent exfil represents a new pattern class.
 
 ---
 
