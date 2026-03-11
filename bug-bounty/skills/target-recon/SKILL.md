@@ -230,6 +230,39 @@ Discover hidden virtual hosts on the same IP:
 
 **Why:** Virtual hosts on the same IP often share the same server but have different access controls. Internal vhosts may lack authentication entirely.
 
+### Method-Aware Route Discovery
+
+Standard recon uses GET exclusively. Many routes only respond to POST/PUT/DELETE/PATCH and are invisible to GET-based crawling.
+
+**Step 1: Discover methods from docs and JS (safe, no side effects):**
+```
+1. Extract methods from OpenAPI/Swagger spec (definitive source)
+2. Grep JS bundles for fetch/axios calls with method: "POST"/"PUT"/"DELETE"
+3. Check for X-HTTP-Method-Override or _method patterns in JS source
+```
+
+**Step 2: Probe with OPTIONS (safe, read-only):**
+```
+curl -sI -X OPTIONS https://[target]/api/[endpoint] → Check Allow header
+Note: Allow header is often generic (framework/proxy default) — treat as hint, not proof
+```
+
+**Step 3: Test mutating methods safely (only against owned test data):**
+```
+Use YOUR OWN account's objects (IDs you created) or clearly non-existent IDs:
+1. curl -s -X POST https://[target]/api/[path] -d '{}' -H 'Content-Type: application/json'
+2. curl -s -X PUT https://[target]/api/[path]/[YOUR-ID] -d '{}' -H 'Content-Type: application/json'
+3. curl -s -X DELETE https://[target]/api/[path]/[YOUR-ID]
+Compare: 405 (method not allowed) vs 200/403 (route exists) reveals real routing
+```
+
+**High-value signals:**
+- POST/PUT accepted but not exposed in UI → undocumented write endpoints
+- Different response schema between GET and POST on same path → hidden create functionality
+- PATCH accepted where PUT returns 405 → framework-specific routing gaps
+
+**Why:** Hidden write endpoints behind GET-only routes are where BOLA/BFLA and mass assignment bugs live. Automated scanners are overwhelmingly GET-centric.
+
 ### ASN & CIDR Enumeration
 
 ```
