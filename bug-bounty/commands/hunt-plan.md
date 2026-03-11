@@ -137,13 +137,15 @@ Every ✗ cell is a test target — can the blocked role actually access it?
 
 ### Prioritized Hunt Targets
 
-Ranked by: (Reward Potential × Vulnerability Likelihood) ÷ Competition Level
+Ranked by: (Reward × Likelihood) ÷ (Automation Pressure × Duplicate Risk)
 
-| Priority | Target | Vuln Type | Reward | Likelihood | Competition | Rationale |
-|----------|--------|-----------|--------|------------|-------------|-----------|
-| 1 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [Why this first] |
-| 2 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [Why] |
-| 3 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [Why] |
+| Priority | Target | Vuln Type | Reward | Likelihood | Auto Pressure | Dup Risk | Rationale |
+|----------|--------|-----------|--------|------------|---------------|----------|-----------|
+| 1 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [H/M/L] | [Why this first] |
+| 2 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [H/M/L] | [Why] |
+| 3 | [endpoint/feature] | [vuln class] | [$range] | [H/M/L] | [H/M/L] | [H/M/L] | [Why] |
+
+**Automation Pressure key:** HIGH = XBOW/Shannon/Codex Security can find this; MEDIUM = partially automatable; LOW = requires business context, multi-step chains, or human judgment. Deprioritize HIGH automation pressure targets — focus where human hunters have the edge.
 
 ---
 

@@ -75,7 +75,7 @@ Based on your situation, I'll send you to the best workflow:
 Best bet: `/quick-test <vuln type> <target>` on a specific endpoint you already know. One focused test, one potential finding.
 
 ### "I have 2-4 hours"
-Start with `/recon <target>`, then `/hunt-plan` to prioritize, then `/quick-test` on the top 2-3 targets. Use `/triage-findings` at the end to decide what to report.
+Start with `/recon <target>` (includes authenticated recon + fixture setup), then `/hunt-plan` to prioritize, then `/quick-test` on the top 2-3 targets. **Set up 2+ accounts before testing** — most payable bugs require two-account proof. Use `/triage-findings` at the end to decide what to report.
 
 ### "I have a full day"
 Use the `hunt-session` agent for an end-to-end guided session. It handles recon, prioritization, testing, and report preparation across a full hunting session.

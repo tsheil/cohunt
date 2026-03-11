@@ -21,15 +21,18 @@ Produces a structured, step-by-step testing checklist tailored to the target's t
 
 ```
 Step 0: What changed? — Check for recent target changes (new features, patches, scope, API versions)
-Step 1: Gather context — recon data, tech stack, program scope (use existing data or run quick recon)
-Step 2: Identify applicable vulnerability classes based on tech stack
-Step 3: Prioritize by (reward potential × likelihood) ÷ competition
-Step 4: Generate concrete test cases for each vulnerability class
-Step 5: Organize into a phased testing plan
-Step 6: Add tool recommendations for each phase
+Step 1: State fixtures — Verify accounts, roles, and proof infrastructure are ready (MANDATORY)
+Step 2: Gather context — recon data, tech stack, program scope (use existing data or run quick recon)
+Step 3: Identify applicable vulnerability classes based on tech stack
+Step 4: Prioritize by (reward potential × likelihood) ÷ (automation pressure × competition)
+Step 5: Generate concrete test cases for each vulnerability class
+Step 6: Organize into a phased testing plan
+Step 7: Add tool recommendations for each phase
 ```
 
 > **Step 0 is mandatory.** Fresh changes have the lowest duplicate risk. Before generating a testing checklist, always check: program changelogs, release notes, blog posts, git activity, Wayback Machine diffs. If something changed recently, prioritize testing the changed surface first.
+
+> **Step 1 is mandatory.** Most payable bugs require two-account proof (IDOR, authz bypass, tenant isolation). Without state fixtures, you'll find bugs you can't prove. If any fixture is missing, the methodology output MUST flag it as a blocker.
 
 ## Output Format
 
@@ -43,6 +46,34 @@ Step 6: Add tool recommendations for each phase
 
 ---
 
+## Phase 0: State Fixtures & Proof Setup (MANDATORY — before any testing)
+
+### Fixture Checklist
+- [ ] **2+ accounts** at different privilege levels (free + paid, user + admin, tenant-A + tenant-B)
+- [ ] **Role inventory** — every user role the app supports documented
+- [ ] **OAST collector** — blind XSS/SSRF callback receiver (Burp Collaborator, interactsh, or self-hosted)
+- [ ] **Disposable email** — for password reset, invite, and notification testing
+- [ ] **Webhook receiver** — endpoint to capture outgoing webhook data
+- [ ] **Pending invite** — outstanding invitation token ready for testing
+- [ ] **Pending approval** — item in approval queue (if target has approval workflows)
+- [ ] **Downgraded plan** — account recently downgraded from premium (if target has tiers)
+- [ ] **API token pair** — tokens for both test accounts
+
+> **BLOCKER:** If you cannot set up 2+ accounts at different privilege levels, you cannot prove most access control bugs. Flag this as a blocker and resolve before proceeding. Options: free trial, demo account, social engineering an invite, or contact the program for test credentials.
+
+### Proof-Type Matrix
+| Bug Class | Required Proof | Fixtures Needed |
+|-----------|---------------|-----------------|
+| IDOR / BOLA | Two-account: request with A's token returns B's data | 2 accounts |
+| BFLA / Privilege escalation | Low-role performs high-role action | 2 accounts (different roles) |
+| Tenant isolation | Tenant-A accesses Tenant-B data | 2 tenant accounts |
+| Business logic (payments) | Before/after showing state change | 1+ account + payment flow |
+| Race condition | Multiple concurrent requests showing double-spend | 1+ account + single-use resource |
+| Blind XSS / SSRF | Callback from target to OAST receiver | OAST collector URL |
+| Stored XSS | Payload stored by A triggers in B's browser | 2 accounts |
+
+---
+
 ## Phase 1: Reconnaissance & Mapping (Time: X hours)
 
 ### 1.1 Application Mapping
@@ -52,6 +83,7 @@ Step 6: Add tool recommendations for each phase
 - [ ] Note file upload points
 - [ ] Identify payment/transaction flows
 - [ ] Map user roles and permission levels
+- [ ] Build role-endpoint matrix (which roles access which endpoints)
 
 ### 1.2 Technology Fingerprinting
 - [ ] Confirm server technology and version

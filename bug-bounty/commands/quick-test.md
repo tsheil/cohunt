@@ -19,8 +19,19 @@ Rapid, focused vulnerability check. Give a target and vulnerability class — ge
 
 When invoked, produce a **focused test plan** with:
 
-### 1. Setup Requirements
-What accounts, tokens, or access you need before testing. Keep it minimal.
+### 1. Minimum Proof Setup
+What accounts, tokens, or proof infrastructure you need before testing. **Match the proof to the bug class** — without the right setup, you'll find bugs you can't prove.
+
+| Bug Class | Minimum Setup |
+|-----------|--------------|
+| IDOR / BOLA | 2 accounts (Account A's token + Account B's ID) |
+| BFLA / Privilege escalation | 2 accounts at different roles (user + admin) |
+| Blind XSS / SSRF | OAST collector URL (Burp Collaborator, interactsh) |
+| Stored XSS | 2 accounts (inject with A, trigger in B's context) |
+| Race condition | Single-use resource + parallel request tool |
+| Business logic | Account with relevant state (pending invite, downgraded plan, etc.) |
+
+**If you lack the setup, resolve it first.** A test without proof infrastructure is a waste of time.
 
 ### 2. Test Requests
 Exact HTTP requests (curl commands) ready to copy-paste. Include:
