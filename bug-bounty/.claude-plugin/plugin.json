@@ -1,6 +1,6 @@
 {
   "name": "bug-bounty",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities. Includes AI-assisted hunting, business logic testing, file processing chain exploitation, client-side security, supply chain testing, and LLM vulnerability patterns.",
   "author": {
     "name": "Thomas Sheil",
@@ -22,8 +22,5 @@
     "hackerone",
     "bugcrowd",
     "owasp"
-  ],
-  "commands": "./commands/",
-  "agents": "./agents/",
-  "skills": "./skills/"
+  ]
 }
