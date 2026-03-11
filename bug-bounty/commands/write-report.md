@@ -114,7 +114,7 @@ Missing fields from the Finding Card should be flagged as questions, not guessed
 4. Determine severity tier — include both scores; note which the platform uses
    - HackerOne: uses CVSS 3.1 with their own severity mapping
    - Bugcrowd: uses VRT (maps loosely to CVSS)
-   - Intigriti: uses CVSS V4 for all new submissions (since 2026)
+   - Intigriti: supports CVSS 4.0 calculator but defaults to CVSS 3.0 unless the company opts in
    - When in doubt, include both 3.1 and 4.0 — lead with whichever the platform uses
 5. Cross-reference with program's reward table (if known from program-research)
 6. Assess duplicate risk (if program-research data available)

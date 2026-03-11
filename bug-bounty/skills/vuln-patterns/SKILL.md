@@ -388,7 +388,7 @@ Quick checks when you find an AI-powered feature:
 | 9 | Code generator injection | If target uses OpenAPI code generators, test `x-enumDescriptions` with JSDoc closer `*/` + code (CVE-2026-23947, Orval) | High-Critical |
 | 10 | Agentic Collapse | If target has AI chatbot/agent with tool access, deliver traditional web payloads (SSRF, file read, SQLi) via natural language prompts — AI invokes vulnerable backend tool, can evade HTTP/WAF-centric controls (CVE-2026-22200, osTicket) | High-Critical |
 
-If any of these hit: switch to the `ai-hunting` skill for deep testing (76 MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains, agentic collapse methodology).
+If any of these hit: switch to the `ai-hunting` skill for deep testing (77 MCP test procedures, OWASP Agentic Top 10, encoding bypasses, memory poisoning, tool abuse chains, agentic collapse methodology).
 
 > **Full AI/LLM patterns + MCP + agentic attacks:** See [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) or use the `ai-hunting` skill directly
 

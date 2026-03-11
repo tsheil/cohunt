@@ -131,7 +131,7 @@ MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60
 **After finding a patched MCP vuln:** Run `/variant-hunt` (Strategy 6: AI/MCP Component Variants) — test sibling servers, other tool endpoints on the same server, and all transports. Each confirmed variant on a different component is a **separate report**.
 
 > **New to MCP hunting?** Start with [reference/mcp-first-contact.md](reference/mcp-first-contact.md) — 10-minute triage workflow.
-> **76 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
+> **77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
 > **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
 ### Agent Skill Supply Chain
@@ -337,7 +337,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 |------|----------|-------|
 | [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), Sage ADR, security MCP servers, red teaming frameworks, Pynt/Noma research | ~497 |
 | [reference/mcp-first-contact.md](reference/mcp-first-contact.md) | **Start here for MCP.** 10-minute triage: transport discovery, capability enumeration, risk scoring, top 5 tests, evidence checklist, false positive guide | ~170 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 76 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~499 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~499 |
 | [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, Phantom TAE jailbreak, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~500 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~333 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, Phantom/Sage ADR/SACR UADP, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~495 |

@@ -439,7 +439,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **DeepKeep** for AI agent attack surface discovery across multi-framework environments (March 2026)
 - **NVIDIA Garak** for systematic LLM vulnerability scanning (~100 attack vectors)
 - **Augustus** (Praetorian) for broad adversarial LLM testing (210+ attacks, 28 providers)
-- **Semgrep AI-Powered Detection** (2026) — multimodal AppSec engine combining deterministic SAST analysis with LLM reasoning; detects business logic flaws (IDORs, broken authorization) beyond traditional pattern matching; AI noise filtering removes 1 in 5 false positives at 95% user alignment; "AI-Powered Memories" re-analyzes backlogs when new patterns are added
+- **Semgrep AI-Powered Detection** (2026, private beta) — hybrid SAST+LLM engine detecting business logic flaws (IDORs, broken authorization) beyond pattern matching; **1.9x better IDOR recall** vs standalone AI assistants (Claude Code); **80% of alpha customers found critical/severe IDOR**; AI noise filtering removes 1 in 5 false positives at 95% user alignment. **Hunter implication:** IDOR detection is being automated — differentiate with cross-tenant chains and business context
 - **RunSybil** for AI-driven pentesting with coordinated autonomous agents (map, probe, chain exploits); built by OpenAI/Bishop Fox/Rapid7/CrowdStrike alumni; free tier + Pro at $99/mo
 - **Shift** (Caido AI plugin) for AI-augmented proxy workflows — English-command control, context-aware wordlists, Shift Agents micro-agent framework
 - **Aikido Infinite** for self-securing software — autonomous agents pentest every code change (found 7 CVEs in Coolify including RCE as root)

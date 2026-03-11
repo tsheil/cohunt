@@ -1,18 +1,17 @@
 # MCP Security Playbooks — Test Procedures & Vulnerability Patterns
 
-76 test procedures for MCP vulnerabilities: OWASP MCP Top 10, CoSAI threat taxonomy, OAuth attacks, SDK flaws, sampling abuse, and MCP-specific tooling. **MCP attack surface milestone:** 50+ CVEs by March 2026 (30 filed in 60 days); 38% of 500+ scanned servers lack auth entirely; 43% vulnerable to command execution (Adversa AI/PracticalDevSecOps). **Endor Labs confirmed:** 82% of 2,614 MCP implementations vulnerable to CWE-22 (path traversal); classical AppSec vulnerabilities (CWE-22, CWE-77) concentrate in MCP layer at scale.
+77 test procedures for MCP vulnerabilities. **50+ CVEs by March 2026** (30 in 60 days: 43% exec/shell, 20% tooling layer, 13% auth bypass, 10% path traversal, 7% new classes); 38% of 500+ servers lack auth; 43% vulnerable to command execution; 82% of 2,614 implementations vulnerable to CWE-22 (Endor Labs).
 
-> **New to MCP hunting?** Start with [mcp-first-contact.md](mcp-first-contact.md) — 10-minute triage workflow before diving into these 76 procedures.
+> **New to MCP hunting?** Start with [mcp-first-contact.md](mcp-first-contact.md) — 10-minute triage workflow before diving into these 77 procedures.
 > **Related:** [agent-attack-patterns.md](agent-attack-patterns.md) for agent attack techniques | [ai-case-studies.md](ai-case-studies.md) for MCP incidents
 
 ---
 
 ## Table of Contents
 
-- [CoSAI MCP Threat Routing](#cosai-mcp-threat-routing-matrix) | [MCP Vulnerability Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026)
-- [76 Test Procedures](#76-mcp-test-procedures) | [OAuth Account Takeover](#mcp-oauth-account-takeover) | [Attack Examples](#mcp-real-world-attack-examples)
-- [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
-- [Security MCP Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [MCP Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox Benchmark](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
+- [CoSAI Routing](#cosai-mcp-threat-routing-matrix) | [Vuln Classes](#mcp-vulnerability-classes) | [OWASP MCP Top 10](#owasp-mcp-top-10-2026) | [77 Test Procedures](#76-mcp-test-procedures)
+- [OAuth ATO](#mcp-oauth-account-takeover) | [Denial-of-Wallet](#denial-of-wallet-via-mcp-overthinking-loops) | [Schema Drift](#schema-drift-silent-mcp-attack-surface-expansion) | [Context Pivoting](#context-pivoting-lateral-movement-via-shared-agent-context)
+- [Security Servers](#security-mcp-servers-for-bug-bounty-workflows) | [Scanning Tools](#mcp-security-scanning-tools) | [Sampling Attacks](#mcp-sampling-attack-vectors-unit-42-march-2026) | [MCPTox](#mcptox-benchmark-quantified-tool-poisoning-risk-arxiv250814925)
 
 ---
 
@@ -305,9 +304,7 @@ Attack class (arXiv:2602.14798) exploiting MCP tools to amplify token consumptio
 
 ## Cursor Rogue MCP Browser Takeover
 
-Rogue MCP server injects JavaScript into Cursor's embedded browser, replacing login pages with phishing interfaces while URLs remain unchanged (CSO Online, 2026). Unlike VS Code, Cursor does not perform integrity checks on its own files. Propagates automatically with each new tab.
-
-**Testing:** Test if MCP server can modify Cursor's browser behavior; check for file integrity validation; test JavaScript persistence across tabs; compare with VS Code's integrity checks.
+Rogue MCP server injects JS into Cursor's embedded browser, replacing login pages with phishing while URLs look correct. Cursor lacks VS Code's file integrity checks. **Test:** verify if MCP server can modify browser behavior; check JS persistence across tabs.
 
 ---
 
@@ -497,3 +494,7 @@ Anthropic's official `mcp-server-git` had 3 CVEs disclosed Jan 20, 2026: `git_in
 Critical ATO vulns in MCP clients (Gemini-CLI, Cherry Studio, VS Code, Windsurf, Smithery.ai, Lutra.ai, Glue.ai) via insecure OAuth authorization flow handling — `open()` without URL sanitization enables RCE on client, plus CSRF-style attacks where malicious MCP server acting as both authz server and client steals auth codes. Test: 1) Craft MCP server with malicious OAuth redirect; 2) Verify if client sanitizes authorization URLs; 3) Test for auth code injection via cross-origin redirect; 4) Check if client validates `state` parameter in OAuth callback. 4 CVEs assigned, all fixed by Sept 2025 — but test newer/unaudited MCP clients for same pattern.
 
 **Maps to:** MCP01 + CWE-601/CWE-352 + CoSAI T1/T6
+**Test Procedure (#77): SaaS Connector File Download Path Traversal** (CVE-2026-27825 MCPwnfluence, CVSS 9.1)
+mcp-atlassian (4M+ downloads) — `download_attachment` accepts user-supplied path without directory confinement. MCP HTTP transport often on 0.0.0.0 without auth → attacker overwrites `~/.bashrc`/`~/.ssh/authorized_keys` for RCE. Plus `X-Atlassian-*-Url` headers forwarded unvalidated → SSRF (CVE-2026-27826 CVSS 8.2). **Test:** 1) File-download tool with `../../.bashrc` path; 2) Inject `X-*-Url: http://169.254.169.254/` headers; 3) Check 0.0.0.0 binding without auth. **Generalizes to:** all SaaS-bridging MCP connectors with file download (Google Drive, Notion, GitHub, Slack). Fixed v0.17.0.
+
+**Maps to:** MCP01 + CWE-22/CWE-918 + CoSAI T5/T4
