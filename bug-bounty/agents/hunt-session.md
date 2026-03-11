@@ -97,7 +97,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    | **LOW** (AI tools cover <40%) | Business logic, payment flows, multi-step chains, auth-gated workflows, tenant isolation, **patch-bypass variants** (test alternate gadget chains on patched deser endpoints), **auth alternate paths** (CWE-288 — magic values/undocumented endpoints that bypass auth) | **INVEST** — this is where bounties pay |
 
    Key competitive context (see `ai-hunting/reference/tools-landscape.md` for full landscape):
-   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high, 132 resolved, 303 triaged), 80x faster than humans, $75M Series B ($117M total); pivoting to pre-production scanning — reduces externally-available attack surface; requires human review for all submissions (Level 3-4 autonomy)
+   - **XBOW**: #1 HackerOne globally (1,060 submissions: 54 critical, 242 high), GPT-5 integration **doubled real-world performance**, executes **48-step exploit chains**, matches 40-hour pentests in 28 minutes; pivoting to pre-production scanning; requires human review (Level 3-4 autonomy)
    - **MAPTA**: Open-source multi-agent pentesting (76.9% XBOW benchmark at $3.67/scan) — commoditizes pattern-matching further; sub-$5 autonomous scans mean simple vulns will be found by tools first; focus on chains and business logic
    - **Codex Security + Claude Code Security + GitHub Taskflow + Aikido Infinite + Terra Portal**: Pattern-matching and IDOR scanning are AI territory; business logic had only 25% confirmed rate — human edge; continuous pentesting (Aikido) and human-governed agentic (Terra) expanding automated coverage
    - AI agents solve 9/10 directed challenges but **degrade in undirected scenarios** (Wiz Cyber Model Arena)
@@ -270,7 +270,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 | **AI feature as attack vector** | CVE-2026-26144: Excel info disclosure exploitable via Copilot Agent mode — first Critical CVE where AI assistant is the exploitation mechanism; test targets' AI copilot/assistant features for info disclosure, SSRF, and action abuse | vuln-patterns/reference/infrastructure-vulns.md |
 
 Avoid competing directly with autonomous tools on:
-- Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these; Big Sleep finds memory-safety bugs in OSS)
+- Simple XSS/SQLi/SSRF scanning (XBOW handles 75-85% of these with 48-step chain depth; Big Sleep finds memory-safety bugs in OSS)
 - Subdomain enumeration (AI tools are faster and more thorough)
 - Commodity CVE scanning — version detection → known exploit (automated scanners excel here). **Exception:** patch-bypass variants and auth alternate-path discovery (CWE-288) are LOW automation pressure — AI tools can't reason about incomplete fixes or undocumented auth paths
 - Standard prompt injection on chatbots (high duplicate risk — 540% jump in reports)
