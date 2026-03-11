@@ -38,8 +38,9 @@ For deep dives, route to the specialized skill or reference file:
 | **Business logic, payment flows, state machines** | [business-logic](../business-logic/SKILL.md) |
 | **Race conditions (single-packet, HTTP/2 multiplex)** | [http-desync](../http-desync/SKILL.md) |
 | **AI/LLM/MCP/agent patterns** | [ai-hunting](../ai-hunting/SKILL.md) + [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) |
-| **GraphQL, JWT format, OAuth format, workflow automation** | [reference/web-vulns.md](reference/web-vulns.md) |
-| **Infrastructure, MotW, SSRF chains, MDM, remote desktop** | [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) |
+| **GraphQL, JWT format, OAuth format** | [reference/web-vulns.md](reference/web-vulns.md) |
+| **Workflow automation (n8n, Airflow, Temporal)** | [infrastructure-security](../infrastructure-security/SKILL.md) |
+| **Infrastructure, MotW, SSRF chains, MDM, remote desktop, firewalls, backup appliances** | [infrastructure-security](../infrastructure-security/SKILL.md) + [reference/infrastructure-vulns.md](../infrastructure-security/reference/infrastructure-vulns.md) |
 | **DOM XSS, prototype pollution, PostMessage, CSP/CORS** | [client-side-security](../client-side-security/SKILL.md) |
 | **CI/CD, GitHub Actions, dependency confusion, supply chain** | [supply-chain-security](../supply-chain-security/SKILL.md) |
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
@@ -445,6 +446,6 @@ When you know the target's technology, focus your testing:
 | [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns, LPCI, OWASP MCP Top 10 |
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, workflow automation, React RSC |
-| [reference/infrastructure-vulns.md](reference/infrastructure-vulns.md) | SSRF chains, MDM, MotW bypass, critical infra, remote desktop, webmail RCE |
+| [infrastructure-security skill](../infrastructure-security/SKILL.md) | SSRF chains, MDM, MotW bypass, critical infra, remote desktop, webmail RCE, firewalls, backup appliances |
 
 **Quick search:** `grep -n "KEYWORD" ${CLAUDE_SKILL_DIR}/reference/<file>.md` | **Related:** target-recon, program-research, report-writing, ai-hunting

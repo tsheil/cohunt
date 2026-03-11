@@ -7,9 +7,10 @@ This is a **file-based Claude Code plugin** with no code or infrastructure. All 
 ```
 bug-bounty/
 ├── .claude-plugin/plugin.json    # Plugin metadata and version
-├── skills/                        # 15 domain knowledge modules (SKILL.md files)
+├── skills/                        # 16 domain knowledge modules (SKILL.md files)
 │   ├── ai-hunting/               # AI-assisted hunting + LLM vuln patterns (progressive disclosure)
 │   ├── vuln-patterns/            # Testing patterns for 50+ vuln classes
+│   ├── infrastructure-security/  # Network appliances, firewalls, MDM, backup, workflow automation
 │   ├── business-logic/           # Payment flows, state machines, subscription bypass (#1 bounty class)
 │   ├── program-research/         # Bug bounty program intelligence
 │   ├── target-recon/             # Web target reconnaissance
