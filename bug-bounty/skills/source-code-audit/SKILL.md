@@ -149,6 +149,13 @@ For each user input source:
 - WebSocket messages
 - Environment variables from user-controlled sources
 - Database values that originated from user input
+- Webhook payloads and callback URLs
+- Queue/worker job arguments (Sidekiq, Celery, BullMQ)
+- Cron job inputs and email-embedded links/tokens
+- GraphQL resolver arguments (including nested/batched)
+- Object storage metadata and signed URL parameters
+- Backup/export request parameters
+- Cache keys derived from user input
 
 **Dangerous sinks:**
 
@@ -158,7 +165,7 @@ For each user input source:
 | Command execution | `exec()`, `system()`, backticks, `child_process` | Command injection |
 | File operations | `open()`, `readFile()`, path construction | Path traversal, LFI |
 | Template rendering | `render()` with user data, `v-html`, `dangerouslySetInnerHTML` | XSS, SSTI |
-| Deserialization | `pickle.loads()`, `unserialize()`, `JSON.parse()` with reviver | RCE, object injection |
+| Deserialization | `pickle.loads()`, `unserialize()`, `ObjectInputStream`, YAML parsers, `serialize-javascript` | RCE, object injection |
 | URL construction | Redirects, SSRF-prone fetches, `href` attributes | Open redirect, SSRF |
 | Crypto operations | Key generation, encryption, hashing, token creation | Weak crypto, token prediction |
 
@@ -185,6 +192,26 @@ Review:
 | Password in logs | Logging request bodies that contain passwords |
 | Session fixation | No session regeneration after login |
 | Missing `await` on async auth | Un-awaited `bcrypt.compare()` returns Promise (truthy) → any password accepted (CVE-2026-28514 Rocket.Chat, CVSS 9.3; discovered by GitHub Taskflow Agent) |
+
+### Step 4b: Map Business Invariants
+
+Source/sink analysis catches injection. It misses business logic bugs — the #1 paying class. For each feature, define what *should never happen*, then search for code paths that violate it:
+
+```
+For each business feature:
+1. Identify actors (unauth, low-priv, alt-tenant, guest, invited, suspended, support-impersonation)
+2. Identify objects (orders, credits, invites, exports, billing records, API keys)
+3. Define state transitions (pending→approved→fulfilled) and which actors can trigger each
+4. Identify server-owned fields (price, role, tenant_id, plan_tier) — these must NEVER come from client
+5. Check: does ANY code path allow an actor to skip a state, cross a tenant boundary, or mutate a server-owned field?
+```
+
+**What to grep for:**
+- `tenant_id`, `org_id`, `team_id` set from request params instead of session/JWT
+- State transitions without checking current state (`order.status = 'fulfilled'` without verifying `status == 'approved'`)
+- Price/quantity/discount fields accepted from client without server-side recalculation
+- Invite/share/export endpoints missing ownership validation on the target resource
+- Approval workflows where the approver check uses a client-supplied role
 
 ### Step 5: Check for Framework-Specific Issues
 
@@ -230,16 +257,70 @@ Look for:
 - `.env` file not in `.gitignore`
 - Sensitive values in `docker-compose.yml` or CI configs
 
-### Step 8: Synthesize Findings
+### Step 7b: Mine Variant Surfaces
+
+Don't just review the code in front of you — actively mine for hidden endpoints and partially-fixed siblings:
 
 ```
-1. Rank findings by severity and exploitability
-2. Map findings to CWE identifiers
-3. Provide concrete exploitation paths
-4. Write fix recommendations with code examples
-5. Identify systemic patterns (recurring anti-patterns)
-6. Recommend hardening priorities
+1. Git history mining — search for "fix", "security", "patch", "vuln", "authz", "IDOR" in commit messages;
+   read the diffs to understand what was fixed, then grep sibling handlers for the same pattern unfixed
+2. Sibling handler analysis — if POST /api/users/:id has an authz check, do PUT, DELETE, PATCH on the same
+   route? Do /api/users/:id/export, /api/users/:id/avatar, /api/users/:id/settings?
+3. Test/fixture extraction — test files reveal expected behavior and valid object states;
+   fixtures contain valid IDs, tokens, and role configurations usable for dynamic validation
+4. Frontend/API schema extraction — search JS bundles, OpenAPI/Swagger specs, and GraphQL introspection
+   for endpoints not covered by auth middleware; diff middleware route coverage vs full route list
+5. Middleware coverage diff — list all registered routes; list all routes protected by auth middleware;
+   the difference is your attack surface
 ```
+
+### Step 7c: Dynamic Validation (Code→Exploit Loop)
+
+**Critical step.** A code finding is not a vulnerability until you prove it's exploitable at runtime. This is the methodology XBOW uses to merge static and dynamic testing — and it's how they found 1,060 vulnerabilities in 90 days.
+
+For each finding from steps 3-7b:
+
+```
+1. IDENTIFY — Pinpoint the vulnerable code path (file:line, function, route)
+2. CONSTRUCT — Build the exact HTTP request/WebSocket message/GraphQL query that reaches the vulnerable sink
+   Include: method, path, headers, auth token, body with the specific parameter that triggers the bug
+3. BASELINE — Send a normal (non-malicious) version of the request; capture the expected response
+4. EXPLOIT — Send the crafted payload; compare response to baseline
+   If blocked: read the code to understand WHY (WAF? validation? middleware?), then bypass
+5. PROVE IMPACT — Demonstrate actual harm: data from another user returned, state changed without authz,
+   command output in response, file contents leaked
+6. GATE — Only keep findings that end in one of:
+   ✓ Validated exploit with impact proof → report
+   ✓ Exploitable but needs precondition you can document → report with precondition
+   ✗ Theoretical only (can't reach sink at runtime, dead code, test-only path) → discard
+```
+
+**Identity matrix** — Test every validated finding against all identity levels:
+
+| Identity | How to test |
+|----------|------------|
+| Unauthenticated | Strip all cookies/tokens |
+| Low-privilege user | Regular user account token |
+| Alt-tenant user | User from different org/tenant |
+| Guest/invited user | Limited-access invitation token |
+| Suspended/deactivated | Account marked inactive |
+| Support-impersonation | Support role acting as user |
+
+**Why this matters:** Many endpoints block cross-user access but allow anonymous access entirely (XBOW found this in Spree Commerce CVE-2026-22588/22589). Test every identity level — don't assume one failure means the endpoint is secure.
+
+### Step 8: Synthesize and Gate Findings
+
+```
+1. Apply reportability gate — discard findings without runtime proof (Step 7c)
+2. Rank validated findings by severity and exploitability
+3. Map findings to CWE identifiers
+4. Include the exact request/response pair that proves exploitation (from Step 7c)
+5. Write fix recommendations with code examples
+6. Identify systemic patterns — if one handler is missing authz, check ALL handlers in the same module
+7. Recommend hardening priorities
+```
+
+**Reportability check:** Before including any finding, verify: "Could I submit this to a bug bounty program with the evidence I have right now?" If not, either go back to Step 7c or discard.
 
 ---
 
@@ -318,7 +399,7 @@ A two-stage methodology proven to find more business logic and auth bugs than si
 
 **Stage 2 — Audit:** With fresh context, validate each hypothesis against the actual source code. Apply strict criteria: only confirm findings with clear evidence (source → sink trace, missing check, or exploitable pattern). Discard speculative findings without code evidence.
 
-**Why it works:** GitHub Security Lab's Taskflow Agent found 80+ vulnerabilities across 40 repositories using this pattern — highest confirmed rate in business logic (25%) and largest absolute count in IDOR/access control (38 confirmed findings). Key AI-discovered CVEs:
+**Why it works:** GitHub Security Lab's Taskflow Agent evaluated 80+ vulnerability hypotheses across 40 repositories using this pattern — highest confirmed rate in business logic (25%) and 38 IDOR/access-control issues in the evaluation bucket (19 impactful results kept after manual review). Key AI-discovered CVEs:
 - **CVE-2026-28514** (Rocket.Chat, CVSS 9.3): Missing `await` on `bcrypt.compare()` — suggest-stage flagged async auth pattern, audit-stage confirmed any-password bypass
 - **CVE-2026-25758** (Spree Commerce): Sequential ID enumeration in address endpoints — unauthenticated address data exposure via ID increment
 - **WooCommerce**: Authenticated users could view all guest orders including PII via predictable order identifiers
@@ -333,7 +414,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/framework-patterns.md](reference/framework-patterns.md) | Language-specific anti-patterns (10 languages/frameworks), AI/LLM integration audit patterns, MCP server audit patterns | ~246 |
+| [reference/framework-patterns.md](reference/framework-patterns.md) | Language-specific anti-patterns (10 languages/frameworks), AI/LLM integration audit patterns, MCP server audit patterns | ~288 |
 
 **Quick search** — find language/framework-specific patterns:
 ```
@@ -348,8 +429,10 @@ grep -n "type erasure\|Content-Type\|deserialization" ${CLAUDE_SKILL_DIR}/refere
 
 ## Pairing with Other Skills
 
-- **target-recon** — Recon the running instance, then audit the source to confirm findings
+- **target-recon** — Recon the running instance first, then audit source to explain and confirm findings
 - **vuln-patterns** — Get testing patterns for vulnerability classes found in code review
+- **auth-testing** — Deep-dive BOLA/BFLA testing after Step 4b identifies missing authz in code
+- **business-logic** — State machine testing after code audit reveals workflow skip paths
 - **report-writing** — Write up code-level findings with source references and fix suggestions
 - **program-research** — Check if source code auditing is rewarded by the program
 - **ai-hunting** — For AI/LLM-specific vulnerability patterns beyond code review (prompt injection testing, MCP test procedures)

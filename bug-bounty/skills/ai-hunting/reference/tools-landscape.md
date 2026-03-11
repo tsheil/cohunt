@@ -134,15 +134,13 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **Shannon (Autonomous AI Pentester):**
 - Fully autonomous white-box AI pentester for web apps and APIs by Keygraph; **powered by Claude Agent SDK**
-- Four-phase multi-agent pipeline: reconnaissance, parallel vulnerability analysis, exploitation, and reporting
-- Analyzes source code to guide attack strategy, then validates with live browser and CLI-based exploits
-- Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark using **Code Property Graphs (CPG)** for semantic understanding of code structure and data flows
+- **Two-stage pipeline**: (1) agentic SAST via Code Property Graphs → (2) autonomous DAST pentesting; replaces separate SAST, SCA, secrets scanning, and pentesting tools
+- **Claude Code integration** (2026): Shannon AI + Claude Code for combined security research workflows — automates recon while hunters focus on business logic and complex chains
+- Scored **96.15% (100/104 exploits)** on a hint-free variant of the XBOW benchmark; **10,000+ GitHub stars** in early 2026
 - **Full-loop capability**: discover → validate → exploit — handles the entire vulnerability lifecycle autonomously
-- Discovered 20+ critical vulns in OWASP Juice Shop in a single automated run, including full auth bypass and complete DB exfiltration
-- Automates reconnaissance (Subfinder, Amass, WhatWeb), vulnerability scanning (Nuclei, ffuf), exploit generation, and report writing
-- Handles 2FA logins and browser-based attacks without human input; runs via Docker containers
-- **Pricing**: subscription-based — Free ($0, 80K daily tokens), Starter ($3.14/mo), Plus ($5.99/mo), Pro ($49.99/mo, 10M daily tokens), Enterprise (custom). Previously characterized as ~$50/run, but actual model is subscription with token limits
-- Rapidly growing: GitHub's fastest-rising security project in early 2026
+- Handles 2FA logins and browser-based attacks without human input; runs via Docker; supports CI/CD integration
+- **Pricing**: subscription-based — Free ($0, 80K daily tokens), Starter ($3.14/mo), Plus ($5.99/mo), Pro ($49.99/mo, 10M daily tokens), Enterprise (custom)
+- **Scan economics**: medium-complexity web app takes 1-1.5 hours, costs ~$40-55 in API credits
 - GitHub: `KeygraphHQ/shannon`
 
 **AISLE (AI-Driven Vulnerability Discovery):**
@@ -275,10 +273,9 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Builds on PortSwigger's existing scanning engine with AI-driven exploration
 - Best for: enhancing manual pentesting with AI-suggested attack vectors; automated exploitation of scanner findings
 
-**OWASP ZAP with MCP Integration (ZAP 2.17.0, December 2025):**
-- OWASP ZAP integrating with Model Context Protocol for AI-powered web security testing
-- AI enhancement for bug bounty hunting workflows — LLMs can drive ZAP scanning and analysis
-- ZAP 2.17.0 released December 2025 with foundational MCP support
+**OWASP ZAP with MCP (Community Integration):**
+- Community-built MCP servers enable LLMs to drive ZAP scanning and analysis
+- AI enhancement for bug bounty hunting workflows — natural language → automated scan orchestration
 - Best for: free/open-source AI-augmented web app security testing via MCP
 
 **DeepKeep (AI Agent Attack Surface Scanner, March 2026):**
@@ -356,7 +353,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **XBOW Public API** launched February 1, 2026 in Public Preview — programmatic access to start, pause, resume, cancel pentests and retrieve findings; enables running dozens of pentests in parallel; pricing starts at $6K
 - Appointed Databricks CRO to board; expanding APAC presence through customer deployments and partnerships in 2026
 - A fully local pentesting agent achieved **~78% on XBOW benchmarks** via feedback-driven iteration — demonstrates locally-run agents can approach XBOW-level capability without cloud infrastructure
-- **HackerOne leaderboard split** (March 2026): HackerOne responded by **splitting leaderboards** into individual researchers vs AI-powered collectives. New transparency framework distinguishes human vs machine contributions — reflects industry acknowledgment that autonomous agents compete at a fundamentally different scale
+- **HackerOne leaderboard split** (August 2025): HackerOne responded by **splitting leaderboards** into individual researchers vs AI-powered collectives. Transparency framework distinguishes human vs machine contributions — reflects industry acknowledgment that autonomous agents compete at a fundamentally different scale
 - **HackerOne Hai Insight Agent** (March 2026): launched to combat AI hallucination in hackbot reports — addresses "more false or hallucinated vulnerabilities" that appear legitimate because LLMs generate them. Positions validation as core platform capability. Implication: programs using Hai Insight may auto-filter low-quality AI submissions
 - Joel Noguera & Diego Jurado (XBOW founders) presented at DEF CON 2025 showing agents exploiting real-world XSS, JWT, and CSRF bugs autonomously
 - **XBOW mission completed** (March 2026): declared HackerOne mission "has reached its conclusion" — pivoting to **pre-production scanning** where customers run XBOW before changes are exposed externally. Now working with large banks and tech firms; product is generally available. Implication: XBOW reduces program-level competition but enterprise pre-production contracts reduce surface available to external hunters
@@ -484,7 +481,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **Semgrep Secure 2026** (February 25, 2026) — first multimodal AppSec engine combining deterministic SAST analysis with LLM reasoning for zero false positives; marks shift from rule-only to hybrid static analysis
 - **MintMCP Gateway** (2026) — first SOC 2 Type II certified MCP platform; enterprise-grade MCP server management with compliance-ready audit trails
 - **Lasso Security MCP Gateway** (2026) — open-source MCP gateway focused on prompt injection defense, credential theft prevention, and tool poisoning detection
-- **GitHub Taskflow Agent** (March 6, 2026) — open-source structured security audit framework using LLMs; found **80+ vulnerabilities** in 40 open-source repos (~20 publicly disclosed) including WooCommerce CVE-2025-15033 and **CVE-2026-28514** (Rocket.Chat, CVSS 9.3: missing `await` on async `bcrypt.compare()` → any password accepted for any user with bcrypt hash); excels at auth bypasses, IDORs, token leaks; requires GitHub Copilot license. **Hunter implication:** validates structured multi-step audit approach — Taskflow found a critical auth bypass by tracing async control flow across microservice boundaries; async/await bugs in auth paths are an under-tested class
+- **GitHub Taskflow Agent** (March 6, 2026) — open-source structured security audit framework using LLMs; evaluated **80+ vulnerability hypotheses** across 40 open-source repos (38 IDOR/access-control in eval bucket, 19 impactful results kept after manual review, ~20 publicly disclosed) including WooCommerce CVE-2025-15033 and **CVE-2026-28514** (Rocket.Chat, CVSS 9.3: missing `await` on async `bcrypt.compare()` → any password accepted); requires GitHub Copilot license. **Hunter implication:** validates structured suggest→audit approach — async/await bugs in auth paths are an under-tested class
 - **ZeroPath** (RSAC 2026 Innovation Sandbox finalist, $5M) — AI-native SAST replacing traditional SAST stacks; detects **business logic flaws and chained vulnerabilities** that rule-based tools miss; founded by 100K+ earned bug bounty hunter. **Hunter implication:** business logic detection tools entering market — hunt complex multi-step chains that even AI SAST can't model
 - **AgentShield Benchmark** (March 2026) — first open comparison of 6 commercial AI agent security tools across **537 test cases**; scores ranged 39-98; **critical finding: tools catching 95%+ prompt injections miss most unauthorized tool calls**; uses Ed25519 signed Trustless Benchmark Protocol. **Hunter implication:** tool abuse and unauthorized tool execution are under-defended — focus MCP and agent testing on tool misuse, not just prompt injection
 - **Anthropic Code Review** (March 9, 2026) — agentic multi-step reasoning loop for automated security research via Claude Code; uses Claude Opus 4.6 with advanced tool chaining (avg 21.2 independent tool calls without human intervention); enterprise-grade code review that chains file reads, terminal commands, and directory navigation. **Hunter implication:** pattern-matching vulns and common logic errors are now AI territory — differentiate with cross-service chains and business context
