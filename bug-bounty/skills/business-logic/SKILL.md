@@ -1,11 +1,20 @@
 ---
 name: business-logic
-description: Tests business logic vulnerabilities — the #1 bounty-paying class (45% of all awards) and the human hunter's strongest edge over autonomous tools. Covers payment flow exploitation, state machine mapping, subscription bypass, multi-step workflow abuse, race conditions with financial impact, referral system gaming, B2B SaaS workflows (SCIM, invites, shared links, connectors, real-time collaboration), and multi-tenant isolation. Activates when testing e-commerce checkout, pricing, subscriptions, approvals, invite flows, shared link abuse, SaaS connector integrations, or any application-specific workflow that autonomous scanners can't reason about. Trigger on "business logic", "payment bypass", "checkout flow", "subscription bypass", "race condition money", "coupon abuse", "price manipulation", "workflow skip", "state machine", "referral abuse", "feature toggle", "paywall bypass", "approval workflow", "trial extension", "shared link", "invite flow", "connector abuse", "webhook replay", "seat limit", "B2B SaaS". For auth/access control bugs (BOLA, BFLA, JWT, OAuth), use auth-testing. For technical vuln classes (XSS, SQLi, SSRF), use vuln-patterns. For race condition protocol details, use http-desync.
+description: Tests business logic vulnerabilities — the #1 bounty-paying class (45% of all awards) and the human hunter's strongest edge over autonomous tools. Covers payment processor integration testing (Stripe webhook forgery, PayPal IPN bypass, client-side amount manipulation), AI/LLM billing abuse (token metering, model tier confusion, denial of wallet), state machine mapping, subscription bypass, multi-step workflow abuse, race conditions with financial impact, referral system gaming, B2B SaaS workflows (SCIM, invites, shared links, connectors, real-time collaboration), and multi-tenant isolation. Activates when testing e-commerce checkout, pricing, subscriptions, approvals, invite flows, shared link abuse, SaaS connector integrations, AI API billing, payment webhooks, or any application-specific workflow that autonomous scanners can't reason about. Trigger on "business logic", "payment bypass", "checkout flow", "subscription bypass", "race condition money", "coupon abuse", "price manipulation", "workflow skip", "state machine", "referral abuse", "feature toggle", "paywall bypass", "approval workflow", "trial extension", "shared link", "invite flow", "connector abuse", "webhook replay", "webhook forgery", "Stripe", "PayPal", "seat limit", "B2B SaaS", "AI billing", "token metering", "denial of wallet". For auth/access control bugs (BOLA, BFLA, JWT, OAuth), use auth-testing. For technical vuln classes (XSS, SQLi, SSRF), use vuln-patterns. For race condition protocol details, use http-desync.
 ---
 
 # Business Logic Vulnerability Testing
 
 The #1 bounty-paying class (45% of all awards, Intigriti 2026) and the area where human hunters have the strongest edge over autonomous tools. Business logic bugs require understanding what the application is *supposed* to do, then finding where implementation diverges from intent.
+
+## Reference Files
+
+| File | When to read |
+|------|-------------|
+| [business-logic-examples.md](reference/business-logic-examples.md) | Need worked examples with full request/response, payment processor integration patterns (Stripe, PayPal), or AI/LLM billing abuse patterns |
+| [b2b-saas-playbook.md](reference/b2b-saas-playbook.md) | Testing B2B SaaS: SCIM, SSO/JIT, invitations, connectors, shared links, real-time collab |
+
+---
 
 ## Quick Start — First 5 Minutes
 
@@ -33,19 +42,28 @@ Autonomous tools (XBOW, Shannon, Codex Security) scan for technical patterns —
 
 **Severity guidance:** Business logic bugs often score Medium-High on CVSS but pay High-Critical bounties because programs weight financial and business impact beyond the CVSS formula.
 
+**Market data (2025-2026):** Logic bugs represent ~15% of total bounty payouts (Bugcrowd). IDOR/access control rewards grew +23% YoY with +29% valid reports (HackerOne 9th Annual). 58% of researchers say AI tools miss business logic (HackerOne survey). Stripe webhook forgery and race conditions are the fastest-growing payment bug patterns — 3 CVEs in 2026 alone for missing signature verification.
+
 ### CVE-Grounded Patterns — Variant-Hunt These
 
 Every category below has real-world CVEs. Use these as variant-hunting templates: find the same pattern class in your target.
 
 | CVE | CVSS | Product | Pattern | Variant-Hunt Target |
 |-----|------|---------|---------|---------------------|
-| CVE-2026-30823 | 8.8 | Flowise (AI workflow) | IDOR on `PUT /api/v1/loginmethod` — any low-priv user overwrites SSO config of any org, enables Enterprise-only features without license, redirects auth flow → ATO | Any SaaS with org-scoped settings: test plan/feature/SSO endpoints with cross-org IDs |
-| CVE-2026-30956 | 9.9 | OneUptime (monitoring) | Client-supplied `is-multi-tenant-query` + `projectid` headers bypass all tenant isolation — server trusts headers over auth context → cross-tenant data exposure + password reset token leak → ATO | Any multi-tenant SaaS: look for internal-only headers (`X-Tenant-Id`, `X-Org-Id`) that skip permission checks when forged |
-| CVE-2025-56426 | — | Bagisto CMS (e-commerce) | Cart price manipulation via `unit_price` parameter accepted without server-side validation | Any e-commerce checkout: modify price/quantity/discount fields in intercepted requests |
-| CVE-2024-58248 | — | nopCommerce (e-commerce) | No locking on order placement → race condition allows duplicate gift card redemption | Any single-use action (coupons, credits, gift cards): HTTP/2 single-packet parallel requests |
-| CVE-2025-3530 | 7.5 | WP Simple Shopping Cart | External control of assumed-immutable web parameter — client-submitted price accepted as authoritative | Any checkout where price/fee/tax fields transit in the request body |
+| CVE-2026-30823 | 8.8 | Flowise (AI workflow) | IDOR on `PUT /api/v1/loginmethod` — low-priv user overwrites SSO config of any org | Any SaaS with org-scoped settings: test plan/feature/SSO endpoints with cross-org IDs |
+| CVE-2026-30956 | 9.9 | OneUptime (monitoring) | Client-supplied `is-multi-tenant-query` + `projectid` headers bypass all tenant isolation | Any multi-tenant SaaS: look for internal-only headers that skip permission checks |
+| CVE-2026-25741 | 7.1 | Zulip | Non-billing member can create card update session → Stripe webhook changes org's payment method | Any SaaS billing: check if payment method update requires billing-specific authorization |
+| CVE-2026-1461 | 6.5 | Simple Membership (WP) | Stripe webhook signature secret empty by default → forged webhooks reactivate memberships | Any Stripe integration: POST forged webhook without `Stripe-Signature` header |
+| CVE-2026-21894 | 6.5 | n8n | Stripe Trigger node never verifies `Stripe-Signature` despite storing signing secret | Workflow automation: test all webhook triggers for signature verification bypass |
+| CVE-2025-56426 | — | Bagisto CMS | Cart price manipulation via `unit_price` parameter without server-side validation | Any e-commerce checkout: modify price/quantity/discount fields |
+| CVE-2025-3530 | 7.5 | WP Simple Shopping Cart | Client-submitted price accepted as authoritative | Any checkout where price/fee/tax fields transit in the request body |
+| CVE-2026-27128 | 3.1 | Craft CMS | TOCTOU race on impersonation token usage count → single-use token used multiple times | Any single-use token: race parallel requests before "mark as used" write |
+| CVE-2025-41115 | 10.0 | Grafana Enterprise | SCIM `externalId` mapped to internal UID → numeric externalId=1 becomes admin | Any SCIM implementation: provision user with numeric externalId matching admin UID |
+| CVE-2024-58248 | — | nopCommerce | No locking on order placement → race condition duplicate gift card redemption | Any single-use action: HTTP/2 single-packet parallel requests |
 
-**Key insight:** Business logic CVEs cluster in three areas: (1) feature/plan bypass via IDOR on settings endpoints, (2) multi-tenant header trust violations, and (3) client-side price authority. Test all three on every SaaS target.
+**Key insight:** Business logic CVEs cluster in four areas: (1) payment processor webhook trust (3 CVEs — Stripe signature verification routinely skipped), (2) feature/plan bypass via IDOR on settings endpoints, (3) multi-tenant header trust violations, and (4) client-side price authority. Test all four on every target.
+
+**Webhook trust is systemic:** CVE-2026-1461, CVE-2026-21894, and the "Knock-to-Unlock" 3DS pattern show Stripe webhook signature verification is routinely skipped. Stripe's docs present verification as optional guidance. Always test webhook endpoints for signature bypass first — it's the highest-reward-to-effort ratio in payment logic testing.
 
 ---
 
@@ -309,6 +327,42 @@ Price manipulation blocked? → Test state machine skips (jump step 1→3)
 ```
 
 Each pivot targets a different defensive layer. Most apps secure one well but miss others.
+
+---
+
+## Payment Processor Integration Testing
+
+Most targets use Stripe, PayPal, or similar processors. Integration bugs bypass server-side pricing entirely.
+
+> **Full test procedures with request/response examples:** Read `reference/business-logic-examples.md`
+
+| # | Test | Target | What to look for |
+|---|------|--------|-----------------|
+| 1 | Client-side amount | Stripe PaymentIntent / Checkout Session | Server uses client-supplied price instead of database lookup or Stripe Price ID |
+| 2 | Webhook signature bypass | `/webhooks/stripe` or IPN handler | App processes forged webhook without verifying `Stripe-Signature` or PayPal IPN verification |
+| 3 | Customer Portal IDOR | Stripe billing portal session | Client-supplied `customer_id` → access another customer's billing |
+| 4 | IPN amount mismatch | PayPal IPN handler | App checks `payment_status` but not `mc_gross` (payment amount) |
+| 5 | Idempotency key replay | Stripe Payment | Replay key from successful payment with modified amount; app trusts request body over Stripe response |
+| 6 | Payment callback race | Any processor callback | Hit "confirm order" + payment webhook simultaneously → duplicate order, single payment |
+
+**Quick test:** Intercept the request that initiates payment. If it contains `amount`, `price`, or `total` fields — modify them. If the payment session is created at the modified amount, the app trusts client-side pricing.
+
+---
+
+## AI / LLM Billing Abuse
+
+AI SaaS products meter by usage (tokens, API calls, compute time) — creating unique business logic surfaces.
+
+> **Full patterns:** Read `reference/business-logic-examples.md` → AI / LLM Billing Abuse section
+
+| # | Test | What to look for |
+|---|------|-----------------|
+| 1 | Model tier confusion | Specify cheap model in request to expensive-model endpoint → premium results at cheap pricing |
+| 2 | Premium model on free tier | Free plan restricts models; call API with premium model_id → auth validated but entitlement not checked |
+| 3 | Token billing gap | Streaming vs non-streaming returns different token counts; system prompts cached and not re-billed |
+| 4 | Quota race condition | Parallel requests when 1 quota slot remains → multiple operations succeed |
+| 5 | Batch API abuse | Batch endpoints accept single requests → single requests at bulk discount pricing |
+| 6 | Credit purchase manipulation | Buy token credits; modify credit amount client-side (same as price manipulation) |
 
 ---
 

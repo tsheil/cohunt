@@ -444,7 +444,7 @@ When you know the target's technology, focus your testing:
 
 | File | Contents |
 |------|----------|
-| [business-logic skill](../business-logic/SKILL.md) | Payment flows, state machines, subscriptions, multi-tenant isolation |
+| [business-logic skill](../business-logic/SKILL.md) | Payment flows, Stripe/PayPal integration, AI/LLM billing, state machines, subscriptions, multi-tenant isolation |
 | [reference/ai-mcp-vulns.md](reference/ai-mcp-vulns.md) | 63 MCP test patterns, AI/LLM attack patterns, LPCI, OWASP MCP Top 10 |
 | [reference/web-vulns.md](reference/web-vulns.md) | GraphQL, JWT, OAuth/OIDC, rate limiting, workflow automation, React RSC |
 | [infrastructure-security skill](../infrastructure-security/SKILL.md) | SSRF chains, MDM, MotW bypass, critical infra, remote desktop, webmail RCE, firewalls, backup appliances |
