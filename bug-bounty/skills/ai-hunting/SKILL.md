@@ -132,7 +132,7 @@ MCP is AI's fastest-growing attack surface: **50+ CVEs by March 2026** (30 in 60
 
 > **New to MCP hunting?** Start with [reference/mcp-first-contact.md](reference/mcp-first-contact.md) — 10-minute triage workflow.
 > **77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, and vulnerability stats:** See [reference/mcp-playbooks.md](reference/mcp-playbooks.md)
-> **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
+> **Real-world MCP incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md) | **Monthly digests and hunting heuristics:** See [reference/recent-intelligence.md](reference/recent-intelligence.md)
 
 ### Agent Skill Supply Chain
 
@@ -161,7 +161,7 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 > **OWASP Agentic Top 10 (19 test procedures), agent supply chain, agentic browsers:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
 > **Novel attack techniques (LPCI, ZombieAgent, Policy Puppetry, 24 total):** See [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md)
 > **IDEsaster (28+ CVEs), Claude DXT, AI-as-C2, Google Antigravity:** See [reference/ide-supply-chain.md](reference/ide-supply-chain.md)
-> **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
+> **60+ real-world incidents:** See [reference/ai-case-studies.md](reference/ai-case-studies.md) | **March 2026 digest + hunting heuristics:** See [reference/recent-intelligence.md](reference/recent-intelligence.md)
 
 ### Agentic Collapse: Legacy Vulns Exploitable via AI Agents
 
@@ -336,15 +336,16 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), Sage ADR, security MCP servers, red teaming frameworks, Pynt/Noma research | ~497 |
-| [reference/mcp-first-contact.md](reference/mcp-first-contact.md) | **Start here for MCP.** 10-minute triage: transport discovery, capability enumeration, risk scoring, top 5 tests, evidence checklist, false positive guide | ~170 |
-| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~499 |
-| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, A2A protocol, Promptware Kill Chain, Full Schema Poisoning, Phantom TAE jailbreak, AI-as-Exfiltration-Channel | ~285 |
-| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~333 |
-| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, Phantom/Sage ADR/SACR UADP, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~495 |
+| [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), Sage ADR, security MCP servers, red teaming frameworks, Pynt/Noma research | ~495 |
+| [reference/mcp-first-contact.md](reference/mcp-first-contact.md) | **Start here for MCP.** 10-minute triage: transport discovery, capability enumeration, risk scoring, top 5 tests, evidence checklist, false positive guide | ~178 |
+| [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~498 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, A2A protocol, Promptware Kill Chain, Full Schema Poisoning, Phantom TAE jailbreak, AI-as-Exfiltration-Channel | ~284 |
+| [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection, inherited Chromium vulns in AI IDEs | ~352 |
+| [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards, AI slop warning | ~349 |
+| [reference/recent-intelligence.md](reference/recent-intelligence.md) | Temporal intelligence: MCP ecosystem risk quantification, platform/infrastructure incident analysis, March 2026 incident digest with hunting heuristics | ~167 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~364 |
 | [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md) | 24 attack techniques: LPCI, ForcedLeak, ZombieAgent, SOUL.md poisoning, SpAIware, GRP-Obliteration, Policy Puppetry, H-CoT, image-based PI, autonomous jailbreak agents (97.14%), encoding/multilingual bypasses, semantic chaining, hybrid XSS+PI | ~404 |
-| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (160+ data points), Prompt Security MCP scoring, Cyata ASPM, Cloudflare AI Playground XSS, agentic AI deployment gap | ~422 |
+| [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (160+ data points), Prompt Security MCP scoring, Cyata ASPM, Cloudflare AI Playground XSS, agentic AI deployment gap | ~479 |
 
 **Quick search** — find specific content without loading full files:
 ```
@@ -354,6 +355,7 @@ grep -n "XBOW\|Shannon\|Codex Security\|ZeroPath\|Ghost Security" ${CLAUDE_SKILL
 grep -n "IDEsaster\|DXT\|Cursor\|Copilot\|VS Code" ${CLAUDE_SKILL_DIR}/reference/ide-supply-chain.md
 grep -n "prompt injection\|jailbreak\|system prompt\|indirect injection" ${CLAUDE_SKILL_DIR}/reference/llm-testing.md
 grep -n "CVE-\|CVSS\|incident\|breach\|exploit" ${CLAUDE_SKILL_DIR}/reference/ai-case-studies.md
+grep -n "Hunting heuristic\|SSRF\|RCE\|auth bypass" ${CLAUDE_SKILL_DIR}/reference/recent-intelligence.md
 ```
 
 ---
