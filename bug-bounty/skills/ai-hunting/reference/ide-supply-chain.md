@@ -331,3 +331,22 @@ Zenity Labs disclosed critical vulnerabilities in agentic browsers (Perplexity C
 4. Test CDP/WebSocket endpoints — many agentic browsers expose unauthenticated debugging ports
 
 **Severity Guidance:** Critical — zero-click credential theft via calendar invite. New attack surface class: any AI tool that processes external content and has local system access.
+
+---
+
+## Inherited Chromium Vulnerabilities in AI IDEs
+
+AI IDEs built on Electron/Chromium inherit all upstream vulnerabilities. OX Security (March 2026) found **94 n-day Chromium CVEs** affecting Cursor and Windsurf — both running Chromium from March 2025 (over 12 months stale).
+
+**Proof of Concept:** OX weaponized CVE-2025-7656 (V8 Maglev JIT compiler integer overflow via ~40,000 function arguments) against current versions of both IDEs. **1.8 million developers** exposed.
+
+**Vendor Response:** Cursor marked the report as "out of scope." Windsurf did not respond.
+
+**Testing Approach:**
+1. Check Chromium version in any Electron-based AI IDE target: `Help > About` or navigate to `chrome://version` in the embedded browser
+2. Compare against latest stable Chromium release — any gap > 3 months is reportable
+3. Cross-reference stale version against NVD for known V8, Blink, or Skia CVEs
+4. For PoC: test known Chromium exploits against the IDE's embedded browser or WebView
+5. **Extension marketplace supply chain:** Cursor, Windsurf, and Google Antigravity inherited VS Code configs referencing non-existent extension names on OpenVSX; attackers could register those names and get automatic installs with full system access (researchers' placeholder extension got 500+ installs from IDE recommendations alone)
+
+**Severity Guidance:** High-Critical — inherited Chromium RCE in an IDE that runs with full developer filesystem and credential access. Report as "inherited n-day" with exact CVE, stale Chromium version, and affected user count.
