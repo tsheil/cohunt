@@ -28,7 +28,7 @@ Each managed K8s platform has different security defaults and attack surfaces. T
 
 | # | Pattern | Test | What to Look For |
 |---|---------|------|-----------------|
-| 1 | IMDS credential theft | From compromised pod: `curl http://169.254.169.254/latest/meta-data/iam/security-credentials/` | Node IAM role creds — even with IMDSv2, hop limit >1 allows pod access |
+| 1 | IMDS credential theft | From compromised pod: first try IMDSv2 `TOKEN=$(curl -sX PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600") && curl -sH "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/iam/security-credentials/`. If PUT succeeds → hop limit >1. If PUT fails but plain GET works → IMDSv1 enabled (worse). | Node IAM role creds via either path |
 | 2 | Pod Identity vs IRSA | Check if pods use `eks.amazonaws.com/role-arn` annotation or EKS Pod Identity | IRSA with overprivileged roles; Pod Identity misconfigured trust policy |
 | 3 | aws-auth ConfigMap | `kubectl get configmap aws-auth -n kube-system -o yaml` | Overprivileged IAM role mappings, wildcard principals |
 | 4 | EKS public endpoint | Check if API server endpoint is public (`endpointPublicAccess: true`) | Exposed API server without CIDR restrictions |
@@ -47,7 +47,7 @@ Each managed K8s platform has different security defaults and attack surfaces. T
 | 4 | Binary Authorization | Check if container image verification is enforced | Unsigned/untrusted images can be deployed |
 | 5 | Fleet/Hub membership | Multi-cluster fleet with shared config | Cross-cluster access via fleet identity |
 
-**Critical GKE pattern:** Default compute service account may have `project/editor` role (orgs created before May 3, 2024; newer orgs enforce `iam.automaticIamGrantsForDefaultServiceAccounts` constraint). Pods without Workload Identity inherit this SA — any SSRF or RCE in a pod → GCP project compromise. Always check the SA's actual IAM bindings.
+**Critical GKE pattern:** Default compute SA may have `project/editor` role on orgs created before May 3, 2024 (newer orgs enforce `iam.automaticIamGrantsForDefaultServiceAccounts` org policy, blocking automatic `Editor` grant). Pods without Workload Identity inherit the node SA — always verify its actual IAM bindings via `gcloud iam service-accounts get-iam-policy` rather than assuming `editor`.
 
 ### Azure AKS
 
@@ -78,6 +78,8 @@ Kubernetes RBAC misconfigurations are the most common privilege escalation path.
 | 9 | Node/proxy | `can-i create nodes/proxy` | Direct kubelet API access via API server proxy |
 | 10 | PV create | `can-i create persistentvolumes` | Mount arbitrary host paths via PV definitions |
 
+**Key subresources to check:** `pods/exec`, `pods/attach`, `pods/portforward`, `pods/ephemeralcontainers`, `pods/log`, `nodes/proxy`, `serviceaccounts/token`, `certificatesigningrequests/approval`. Any of these can be escalation primitives.
+
 **Escalation chain:** `create pods` → privileged pod with `hostPID` + `hostNetwork` → `nsenter -t 1 -m -u -i -n -p -- bash` → root on node → access all pod secrets + IMDS creds.
 
 ---
@@ -88,10 +90,10 @@ Ingress controllers are the most exposed K8s components — they process untrust
 
 ### IngressNightmare (CVE-2025-1974, CVSS 9.8)
 
-The most significant K8s vulnerability of 2025. Affected ~43% of cloud environments running ingress-nginx.
+The most significant K8s vulnerability of 2025. ~43% of cloud environments ran vulnerable ingress-nginx (Wiz Research, March 2025).
 
 **Attack chain:**
-1. Attacker has pod network access (another compromised pod, or ingress-nginx admission webhook is exposed)
+1. Attacker has pod network access (another compromised pod, or admission webhook exposed externally — over 6,500 clusters had this)
 2. Send crafted AdmissionReview request to the admission controller (port 8443)
 3. Inject NGINX configuration directives via unsanitized annotations (`auth-url`, `auth-tls-match-cn`, `mirror-target`)
 4. Configuration injection → arbitrary code execution in the ingress-nginx controller pod
@@ -103,7 +105,7 @@ The most significant K8s vulnerability of 2025. Affected ~43% of cloud environme
    curl -k https://{ingress-nginx-pod-ip}:8443/
 2. Check ingress-nginx version:
    kubectl get pods -n ingress-nginx -o jsonpath='{.items[0].spec.containers[0].image}'
-3. Vulnerable: < v1.11.5 or < v1.12.1
+3. Vulnerable: v1.11.0-v1.11.4 and v1.12.0; fixed in v1.11.5 and v1.12.1
 4. Check if admission controller validating webhook has network exposure:
    kubectl get validatingwebhookconfigurations
 ```
@@ -136,6 +138,8 @@ When you have code execution inside a container, test these escape paths.
 | 6 | SYS_ADMIN capability | `capabilities: add: [SYS_ADMIN]` | cgroup escape: write to `release_agent` |
 | 7 | SYS_PTRACE capability | `capabilities: add: [SYS_PTRACE]` | Process injection on host via `ptrace` |
 | 8 | Service account token | `/var/run/secrets/kubernetes.io/serviceaccount/token` | `kubectl --token=$(cat /var/run/secrets/...) auth can-i --list` |
+| 9 | runC maskedPaths escape (CVE-2025-31133) | Replace `/dev/null` with symlink to host `/proc` file before mount | Container escape via host procfs write (affects runC < 1.2.8/1.3.3/1.4.0-rc.3) |
+| 10 | runC console hijack (CVE-2025-52565) | Replace `/dev/pts/$n` with symlink during console bind-mount | Arbitrary host file bind-mount (runC < 1.2.8/1.3.3/1.4.0-rc.3) |
 
 **Quick check from inside a container:**
 ```bash
@@ -159,23 +163,24 @@ K8s built-in admission controller replacing PodSecurityPolicy (removed in v1.25)
 | Level | What It Blocks | Bypass Test |
 |-------|---------------|-------------|
 | **Privileged** | Nothing — allows everything | N/A (no restrictions) |
-| **Baseline** | Known privilege escalations (hostNetwork, hostPID, privileged) | Test: `hostIPC`, some capabilities, ephemeral containers |
+| **Baseline** | Known privilege escalations (hostNetwork, hostPID, privileged) | Test: `hostIPC`, some capabilities not in the restricted set |
 | **Restricted** | Most host access, must run as non-root, drop ALL capabilities | Test: `seccompProfile` misconfig, init container gaps |
 
 **Common gaps:**
-- PSA `enforce` mode only rejects at the Pod level; `audit` and `warn` also check workload resources (Deployments, Jobs) but don't block them — mutations after admission can bypass enforce
-- Namespace labels can be modified: `pod-security.kubernetes.io/enforce: privileged` → remove all restrictions
+- PSA validates all Pod objects including those created by controllers (Deployments, Jobs). The real gaps: `audit`/`warn` modes log but don't block, and mutations after admission (e.g., by webhooks) can bypass enforce
+- Namespace labels can be modified if RBAC allows: `pod-security.kubernetes.io/enforce: privileged` → remove all restrictions
 - Exempt users/namespaces (kube-system is often exempt)
+- RBAC pattern: `update pods/ephemeralcontainers` gives code execution in existing pods (ephemeral containers are subject to PSA checks, but the RBAC permission itself is often overlooked)
 
 ### Policy Engine Bypass (Kyverno, OPA/Gatekeeper)
 
 | # | Pattern | Test | Impact |
 |---|---------|------|--------|
-| 1 | Kyverno apiCall namespace escape (CVE-2026-22039, CVSS 10.0) | Create namespaced Policy with `context.apiCall` using variable substitution in `urlPath` | Hijack Kyverno SA to read secrets/ConfigMaps cross-namespace |
+| 1 | Kyverno apiCall namespace escape (CVE-2026-22039, CVSS 10.0; fixed in 1.15.2/1.14.7/1.13.7) | Create namespaced Policy with `context.apiCall` using variable substitution in `urlPath` | Hijack Kyverno SA to read secrets/ConfigMaps cross-namespace |
 | 2 | OPA constraint template injection | Inject Rego code via resource labels/annotations processed by OPA | Policy bypass or information disclosure |
 | 3 | Webhook timeout bypass | Send requests that cause admission webhook to timeout (default 10s, max 30s) | `failurePolicy: Ignore` → bypassed policy |
-| 4 | Dry-run mode gap | `kubectl apply --dry-run=server` may not trigger admission webhooks | Test if policies are enforced on dry-run |
-| 5 | Ephemeral container gap | Create ephemeral debug containers — often exempt from pod security policies | Privileged container in restricted namespace |
+| 4 | Dry-run sideEffects gap | Webhooks with `sideEffects: NoneOnDryRun` participate in dry-run; those without are skipped by API server | Policy enforcement gap during dry-run if webhook hasn't declared sideEffects correctly |
+| 5 | Webhook config write | `can-i update mutatingwebhookconfigurations` or `validatingwebhookconfigurations` | Disable or redirect policy webhooks — full cluster policy bypass |
 
 ---
 
@@ -187,8 +192,8 @@ K8s built-in admission controller replacing PodSecurityPolicy (removed in v1.25)
 |---|---------|------|--------|
 | 1 | AuthorizationPolicy bypass | Send request to sidecar directly (port 15006 inbound) vs through mesh (port 15001) | Policy applied on one path but not the other |
 | 2 | mTLS permissive mode | Check PeerAuthentication — `PERMISSIVE` allows plaintext bypass | Skip mTLS entirely, bypass identity-based auth |
-| 3 | TLS null byte bypass (CVE-2025-66220, CVSS 8.1) | Certificate with OTHERNAME SAN containing null byte | Impersonate matched identity, bypass TLS auth |
-| 4 | Request smuggling (CVE-2025-64763) | Early data after CONNECT upgrade in WebSocket traffic | Request smuggling via Envoy proxy |
+| 3 | TLS OTHERNAME SAN null byte (CVE-2025-66220; Istio CVSS 8.1, Envoy CVSS 5.0; Istio 1.26.0-1.26.6/1.27.0-1.27.3/1.28.0) | Certificate with OTHERNAME SAN containing null byte — only affects deployments using OTHERNAME SAN matching | Identity impersonation in mTLS policies |
+| 4 | Request smuggling (CVE-2025-64763; Envoy CVSS 3.7) | Early data after CONNECT upgrade in WebSocket traffic | Request smuggling via Envoy proxy |
 | 5 | External authorization bypass | Envoy `ext_authz` filter ordering — request modification after authz check | Bypass external authorization service |
 | 6 | Sidecar injection skip | Label namespace `istio-injection: disabled` or use `sidecar.istio.io/inject: "false"` | Deploy pods without sidecar → bypass mesh policies |
 | 7 | Headless service direct access | Direct pod IP access bypasses VirtualService routing and AuthorizationPolicy | Access backend services without mesh enforcement |
@@ -227,7 +232,7 @@ K8s built-in admission controller replacing PodSecurityPolicy (removed in v1.25)
 |---|---------|------|--------|
 | 1 | Default SA token auto-mount | Pods automatically mount SA token at `/var/run/secrets/kubernetes.io/serviceaccount/` | Token may have cluster-wide read access |
 | 2 | Secrets in environment vars | `kubectl get pods -o jsonpath='{.spec.containers[*].env}'` | Secrets visible in `kubectl describe pod`, process listing, core dumps |
-| 3 | etcd plaintext | Check if etcd encryption at rest is enabled | Secrets stored in plaintext in etcd |
+| 3 | etcd exposure | Probe `/version` (gRPC or HTTP), then `etcdctl endpoint status`. etcd v2 API (`/v2/keys/`) disabled since etcd 3.4; modern clusters use v3 gRPC | All cluster secrets in plaintext if encryption at rest is disabled |
 | 4 | Secret enumeration | `kubectl get secrets --all-namespaces` (if RBAC allows) | All cluster secrets exposed including TLS certs, docker configs |
 | 5 | ConfigMap with credentials | `kubectl get configmaps --all-namespaces -o yaml \| grep -i password` | Database passwords, API keys in ConfigMaps |
 | 6 | External Secrets Operator | Check `ExternalSecret` and `SecretStore` resources | Overprivileged access to vault/secrets manager |
@@ -263,8 +268,8 @@ K8s built-in admission controller replacing PodSecurityPolicy (removed in v1.25)
 
 | # | Pattern | Test | Impact |
 |---|---------|------|--------|
-| 1 | Argo CD credential exposure (CVE-2025-55190, CVSS 10.0) | GET `/api/v1/projects/{project}/detailed` with project-level API token | Plain-text repository credentials leaked |
-| 2 | Argo CD XSS (CVE-2025-47933) | Inject script in repository URL on repositories page | Arbitrary API actions as victim user |
+| 1 | Argo CD credential exposure (CVE-2025-55190, CVSS 9.8; >=2.2.0-rc1, fixed 2.13.9/2.14.16/3.0.14/3.1.2) | GET `/api/v1/projects/{project}/detailed` with any token that has project read permission | Plain-text repository credentials leaked |
+| 2 | Argo CD XSS (CVE-2025-47933; >=2.10.0-rc3, fixed 2.10.17/2.11.14/2.12.10/2.13.1) | Inject script in repository URL on repositories page | Arbitrary API actions as victim user |
 | 3 | Flux source-controller SSRF | Flux GitRepository/HelmRepository with attacker-controlled URL | Internal network scanning, metadata access |
 | 4 | Git credential exposure | Check Argo CD/Flux secrets for stored Git credentials | Repository access via leaked creds |
 | 5 | Manifest injection | PR with malicious K8s manifests triggers auto-sync | Arbitrary workload deployment |
@@ -292,11 +297,13 @@ iam/
 
 ### Step 2 — Check IMDSv2 enforcement
 
+If Step 1 returned data, IMDSv1 is enabled (no token needed = worst case). To check IMDSv2 hop limit:
+
 ```http
 GET /api/proxy?url=http://169.254.169.254/latest/meta-data/iam/security-credentials/ HTTP/1.1
 Host: app.target.com
 
-Response (IMDSv1 accessible — hop limit > 1):
+Response (IMDSv1 accessible — hop limit > 1 or IMDSv2 not enforced):
 eks-node-role
 ```
 
@@ -350,7 +357,7 @@ aws ecr list-images --repository-name app
 
 ## Worked Example: IngressNightmare Exploitation
 
-**Scenario:** Target uses ingress-nginx (version < 1.12.1). Attacker has access from a compromised pod.
+**Scenario:** Target uses ingress-nginx (v1.11.0-v1.11.4 or v1.12.0). Attacker has access from a compromised pod.
 
 ### Step 1 — Verify admission webhook accessibility
 
@@ -406,7 +413,7 @@ cat /etc/ingress-controller/ssl/*.pem
 ### Evidence checklist
 
 ```
-□ Ingress-nginx version confirmation (vulnerable < v1.11.5 / v1.12.1)
+□ Ingress-nginx version confirmation (vulnerable: v1.11.0-v1.11.4 or v1.12.0)
 □ Admission webhook accessibility proof
 □ Configuration injection via annotation (crafted Ingress resource)
 □ Code execution proof (command output from controller pod)
@@ -420,14 +427,14 @@ cat /etc/ingress-controller/ssl/*.pem
 
 ## CVE Reference Table
 
-| CVE | Component | CVSS | Description | Bug Bounty Relevance |
-|-----|-----------|------|-------------|---------------------|
-| CVE-2025-1974 | ingress-nginx | 9.8 | IngressNightmare — unauthenticated RCE via admission webhook, config injection | ~43% of cloud K8s environments affected |
-| CVE-2025-1097 | ingress-nginx | 8.8 | auth-tls-match-cn annotation injection → config injection → RCE | Part of IngressNightmare chain |
-| CVE-2025-1098 | ingress-nginx | 8.8 | mirror-target/mirror-host annotation injection → RCE | Part of IngressNightmare chain |
-| CVE-2025-24514 | ingress-nginx | 8.8 | auth-url annotation injection → config injection → RCE | Part of IngressNightmare chain |
-| CVE-2026-22039 | Kyverno | 10.0 | Namespaced Policy apiCall namespace escape via urlPath variable substitution | Hijack Kyverno SA for cross-namespace access |
-| CVE-2025-55190 | Argo CD | 10.0 | Project API token exposes plain-text repository credentials via /detailed endpoint | Critical for GitOps deployments |
-| CVE-2025-47933 | Argo CD | 9.0 (CNA) | XSS on repositories page via URL protocol injection | Arbitrary API actions as victim |
-| CVE-2025-66220 | Istio/Envoy | 8.1 | TLS OTHERNAME SAN null byte bypass → identity impersonation | Bypass mTLS-based authorization |
-| CVE-2025-64763 | Istio/Envoy | 5.3 | Request smuggling via early data after CONNECT upgrade (WebSocket) | HTTP smuggling through service mesh |
+| CVE | Component | CVSS | Fixed In | Description | Bounty Relevance |
+|-----|-----------|------|---------|-------------|-----------------|
+| CVE-2025-1974 | ingress-nginx | 9.8 | v1.11.5, v1.12.1 | IngressNightmare — RCE via admission webhook config injection (requires pod network access; Wiz Research, March 2025: ~43% cloud K8s) | Highest-impact K8s vuln of 2025 |
+| CVE-2025-1097/1098/24514 | ingress-nginx | 8.8 | v1.11.5, v1.12.1 | Annotation injection primitives (auth-tls-match-cn, mirror-target, auth-url) enabling config injection | Part of IngressNightmare chain |
+| CVE-2026-22039 | Kyverno | 10.0 | 1.15.2, 1.14.7, 1.13.7 | Namespaced Policy apiCall namespace escape via urlPath variable substitution | Hijack Kyverno SA for cross-namespace access |
+| CVE-2025-55190 | Argo CD | 9.8 | 2.13.9, 2.14.16, 3.0.14, 3.1.2 | Any token with project read permission exposes plain-text repo credentials via /detailed | Critical for GitOps deployments |
+| CVE-2025-47933 | Argo CD | 9.0 | 2.10.17, 2.11.14, 2.12.10, 2.13.1 | XSS on repositories page via URL protocol injection | Arbitrary API actions as victim |
+| CVE-2025-66220 | Istio/Envoy | 8.1/5.0 | Istio 1.26.7/1.27.4/1.28.1 | TLS OTHERNAME SAN null byte → identity impersonation (only OTHERNAME SAN matching) | Bypass mTLS-based authorization |
+| CVE-2025-31133 | runC | 7.4 | runC 1.2.8, 1.3.3, 1.4.0-rc.3 | maskedPaths symlink → host /proc write → container escape | Affects Docker, K8s, containerd |
+| CVE-2025-52565 | runC | 7.3 | runC 1.2.8, 1.3.3, 1.4.0-rc.3 | /dev/console mount symlink → arbitrary host bind-mount | Container escape via console hijack |
+| CVE-2026-23990 | Flux Operator | 6.5 | Flux Operator 0.16.0 | Impersonation bypass when OIDC provider omits `groups` claim | Escalate to flux-operator SA permissions |

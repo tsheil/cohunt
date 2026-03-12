@@ -246,11 +246,11 @@ When the target runs on Kubernetes (EKS, GKE, AKS), this is a deep attack surfac
 
 | # | Pattern | Test |
 |---|---------|------|
-| 1 | Exposed API server | `curl -k https://{ip}:6443/api` — anonymous auth often enabled on older clusters |
+| 1 | Exposed API server | `curl -k https://{ip}:6443/api` — check if `system:anonymous` has non-discovery permissions (mere reachability is not a finding) |
 | 2 | Kubelet API | `curl -k https://{node-ip}:10250/pods` — returns running pod details |
-| 3 | etcd exposure | `curl http://{ip}:2379/v2/keys/` — contains all cluster state including secrets |
+| 3 | etcd exposure | Probe `/version`, then use `etcdctl`/gRPC (v2 API `/v2/keys/` disabled since etcd 3.4) — contains all cluster secrets |
 | 4 | Dashboard exposure | Unauthenticated Kubernetes Dashboard — full cluster control |
-| 5 | Ingress controller version | Check for ingress-nginx < v1.12.1 (IngressNightmare CVE-2025-1974, CVSS 9.8) |
+| 5 | Ingress controller version | Check for ingress-nginx v1.11.0-v1.11.4 or v1.12.0 (IngressNightmare CVE-2025-1974, CVSS 9.8; Wiz Research March 2025) |
 
 ### Managed K8s Provider-Specific Tests
 
@@ -259,7 +259,7 @@ When the target runs on Kubernetes (EKS, GKE, AKS), this is a deep attack surfac
 | **EKS** | 1 | IMDS hop limit > 1 | Pods reach node IMDS even with IMDSv2 — extract node IAM role creds |
 | | 2 | aws-auth ConfigMap | Overprivileged IAM role mappings, wildcard principals |
 | | 3 | IRSA/Pod Identity overreach | Pod SA with excessive AWS permissions (s3:*, secretsmanager:*) |
-| **GKE** | 1 | Default compute SA | Pods without Workload Identity may inherit SA with `editor` role (pre-May 2024 orgs) |
+| **GKE** | 1 | Default compute SA | Pods without Workload Identity inherit node SA — may have `editor` role (pre-May 2024 orgs); always verify actual IAM bindings |
 | | 2 | Metadata concealment disabled | `curl metadata.google.internal` from pod → node-level metadata |
 | | 3 | Autopilot mutation bypass | Standard mode allows privileged pods; test Autopilot enforcement |
 | **AKS** | 1 | Legacy AAD Pod Identity v1 | Known IMDS spoofing bypass in deprecated pod identity |
@@ -270,10 +270,10 @@ When the target runs on Kubernetes (EKS, GKE, AKS), this is a deep attack surfac
 
 | CVE | Component | CVSS | Description |
 |-----|-----------|------|-------------|
-| CVE-2025-1974 | ingress-nginx | 9.8 | IngressNightmare — unauthenticated RCE via admission webhook config injection (~43% cloud K8s affected) |
-| CVE-2026-22039 | Kyverno | 10.0 | Namespaced Policy apiCall namespace escape — hijack Kyverno SA for cross-namespace reads/writes |
-| CVE-2025-55190 | Argo CD | 10.0 | Project API token exposes plain-text repository credentials via /detailed endpoint |
-| CVE-2025-66220 | Istio/Envoy | 8.1 | TLS OTHERNAME SAN null byte → identity impersonation, bypass mTLS authorization |
+| CVE-2025-1974 | ingress-nginx | 9.8 | IngressNightmare — RCE via admission webhook config injection (requires pod network access; ~43% cloud K8s, Wiz March 2025) |
+| CVE-2026-22039 | Kyverno | 10.0 | apiCall namespace escape via urlPath substitution (fixed 1.15.2/1.14.7/1.13.7) |
+| CVE-2025-55190 | Argo CD | 9.8 | Any token with project read exposes plain-text repo credentials via /detailed (fixed 2.13.9/2.14.16/3.0.14/3.1.2) |
+| CVE-2025-66220 | Istio | 8.1 | TLS OTHERNAME SAN null byte → identity impersonation (only affects OTHERNAME SAN matching; Istio 1.26.0-1.28.0) |
 
 ### What to Test From Inside a Pod
 
@@ -286,7 +286,7 @@ When the target runs on Kubernetes (EKS, GKE, AKS), this is a deep attack surfac
 | 5 | Secret enumeration | `kubectl get secrets --all-namespaces` — TLS certs, docker configs, API keys |
 | 6 | Policy engine bypass | Webhook timeout → `failurePolicy: Ignore` bypasses Kyverno/OPA |
 
-**Market context:** IngressNightmare (March 2025) affected ~43% of cloud environments. K8s misconfigs are consistently in the top 5 cloud bounty findings — RBAC escalation, IMDS credential theft, and exposed dashboards/APIs are the highest-paying patterns.
+**Market context:** IngressNightmare (Wiz Research, March 2025) affected ~43% of cloud environments. K8s misconfigs are consistently in the top 5 cloud bounty findings — RBAC escalation, IMDS credential theft, and exposed dashboards/APIs are the highest-paying patterns.
 
 ---
 
