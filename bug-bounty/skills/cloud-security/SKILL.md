@@ -14,6 +14,7 @@ Cloud misconfigs are consistently rewarded in bug bounties — storage exposure,
 3. **IAM keys** — Search JS, `.env`, CI configs, Terraform state for `AKIA*` (AWS), JSON key files (GCP), `?sv=` SAS tokens (Azure).
 4. **Serverless** — Find Lambda/Function URLs. Test `?code=` key exposure, anonymous invoke, event injection.
 5. **AI services** — Target uses SageMaker/Vertex/Bedrock/Azure OpenAI? Test API parity, backing-store exposure, execution identity overreach. See [reference/cloud-ai-ml.md](reference/cloud-ai-ml.md).
+6. **Parser differential SSRF** — If target accepts URLs (image upload, media fetch) and uses different libraries for validation vs. fetching, test for parsing disagreements. See [reference/cloud-ai-ml.md § URL Validation Parser Differential](reference/cloud-ai-ml.md#url-validation-parser-differential).
 
 If you find something, run `/scope-check` first (cloud assets are often vendor-owned), then `/reportability-check` before `/write-report`.
 

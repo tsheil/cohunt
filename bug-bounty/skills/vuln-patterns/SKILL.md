@@ -156,6 +156,8 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 - **CVE-2026-27127** (Craft CMS, CVSS 3.1→High chain): DNS rebinding TOCTOU in GraphQL Asset mutation; separate DNS resolve from HTTP fetch → race window. **Variant-hunt:** any endpoint that resolves DNS then makes HTTP request in separate steps
 - **March 2026 SSRF cluster**: 5 SSRFs in one week (Soft Serve Git, Ghostfolio, Wallos, Plane, PinchTab) — same root cause: validators block `127.0.0.1` but not `10.x.x.x`/`172.16.x.x`/`192.168.x.x`. Test all webhook/notification/import-via-URL endpoints for private IP SSRF
 
+**Parser differential SSRF:** When validation and execution use different URL parsing libraries, parsing disagreements can bypass SSRF protections. CVE-2026-25960 (vLLM: urllib3 validates, aiohttp/yarl fetches — backslash-`@` differential). See [cloud-security reference/cloud-ai-ml.md](../cloud-security/reference/cloud-ai-ml.md#url-validation-parser-differential) for bypass payloads and documented vulnerable pairs.
+
 **Also check:** Unauthenticated backup/export endpoints (not SSRF but commonly adjacent) — see [infrastructure-security](../infrastructure-security/SKILL.md) for CVE-2026-27944 (Nginx UI CVSS 9.8, CWE-306) and backup appliance patterns.
 
 ---

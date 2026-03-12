@@ -15,6 +15,7 @@ Attack patterns for AI/ML services deployed on major cloud platforms. These serv
 - [Connector and Tool Abuse](#connector-and-tool-abuse)
 - [AI-Adjacent Surfaces](#ai-adjacent-surfaces)
 - [Data/Control Plane Separation](#datacontrol-plane-separation)
+- [URL Validation Parser Differential](#url-validation-parser-differential)
 - [Cloud AI Service Patterns by Provider](#cloud-ai-service-patterns-by-provider)
 
 ---
@@ -183,6 +184,73 @@ For AI cloud services, clearly separate findings into data plane (can invoke mod
 6. **Impact:** Unauthenticated streaming → session IDOR → SSRF → credential extraction → training data with 50K customer records
 
 **Severity:** Critical (CVSS 9.8). Three separate findings: auth bypass on streaming, session IDOR, IAM overreach. Report as chain with individual severity per component.
+
+---
+
+## URL Validation Parser Differential
+
+AI/ML services frequently use one library to validate URLs (e.g., block private IPs for SSRF protection) and a different library to make the actual HTTP request. Discrepancies between the two parsers create SSRF bypasses that evade server-side protections.
+
+**Why this matters:** This is a candidate vulnerability class to test whenever a service validates URLs before fetching. Using different libraries for validation and execution is a risk factor — a vulnerability exists when the two parsers disagree on attacker-controlled URL components (host, authority, path).
+
+### CVE-2026-25960: vLLM MediaConnector Parser Differential (CVSS 7.1 NVD / 5.4 GitHub — scores dispute as of March 2026)
+
+**Affected:** vLLM >= 0.15.1, < 0.17.0 (AI inference engine, widely deployed for enterprise LLM serving)
+
+**Root cause:** vLLM's SSRF fix (for CVE-2026-24779) validates URLs with `urllib3.util.parse_url()` but makes HTTP requests via `aiohttp` (which uses `yarl` internally). The specific differential is backslash-`@` parsing: `urllib3` treats backslash as a path separator (extracting a benign-looking host), while `yarl` treats it differently, allowing the actual HTTP request to reach a different host than the one validated.
+
+**Attack path:**
+1. User submits crafted URL to `load_from_url_async` (image/media in LLM prompt)
+2. `urllib3` parses URL → extracts hostname that appears allowed
+3. `aiohttp`/`yarl` parses same URL → resolves to a different host (potentially internal services)
+4. Attacker gains read access to internal HTTP endpoints reachable from the vLLM deployment
+
+**Fixed:** v0.17.0 (URL normalized before network execution)
+
+### Generalized Test Procedure: Parser Differential SSRF
+
+This pattern applies to any AI/ML service (or any web service) that validates URLs before fetching content:
+
+| Step | Action | What to look for |
+|------|--------|-----------------|
+| 1 | Identify URL input points | Image/media URLs in prompts, webhook URLs, callback URLs, connector config URLs, file import URLs |
+| 2 | Determine validation library | Check error messages, response timing, or source code for which URL parser is used for validation |
+| 3 | Determine execution library | Which HTTP client makes the actual request? (requests, aiohttp, httpx, urllib3, curl) |
+| 4 | Test parser-specific bypass payloads | See payload table below |
+| 5 | Verify internal access | Did the request reach `169.254.169.254`, `localhost`, or internal services? |
+
+**Documented bypass payload (CVE-2026-25960):**
+
+The specific differential exploited in vLLM is backslash-`@` handling: `urllib3.util.parse_url` treats `\` as a path separator, while `yarl` (used by `aiohttp`) treats it differently, causing host extraction to disagree. Example: a URL like `http://allowed-host\@internal-host/path` passes validation (urllib3 sees `allowed-host`) but the HTTP request goes to `internal-host`.
+
+**Generic SSRF normalization payloads** (not parser-pair-specific — test all of these against any SSRF filter):
+
+| Payload | Technique | Why Filters Miss It |
+|---------|-----------|-------------------|
+| `http://[::ffff:169.254.169.254]/` | IPv6-mapped IPv4 | Filters checking decimal only |
+| `http://0xA9.0xFE.0xA9.0xFE/` | Hex octets | Filters expecting dotted-quad decimal |
+| `http://2852039166/` | Decimal IP notation | Filters expecting dotted-quad |
+| `http://169.254.169.254\t.public.com/` | Tab in hostname | Some parsers treat as part of host, others split |
+| `http://169.254.169.254:80@public.com/` | Port/userinfo ambiguity | Parser disagrees on which part is host vs userinfo |
+| `http://public.com@169.254.169.254/` | Userinfo prefix | Some validators extract userinfo as host |
+
+**Known CVE-backed vulnerable library pairs:**
+
+| Validation Library | Execution Library | Documented Differential | CVE |
+|-------------------|-------------------|------------------------|-----|
+| `urllib3.util.parse_url` | `aiohttp` (yarl) | Backslash-`@` host/userinfo parsing | CVE-2026-25960 |
+
+**Potential anti-patterns** (theoretical risk — not backed by specific CVEs, but worth testing when identified in targets):
+
+| Validation Library | Execution Library | Potential Differential |
+|-------------------|-------------------|-----------------------|
+| `urllib.parse.urlparse` | `requests` | Backslash handling, authority extraction |
+| Custom regex | `httpx` / `aiohttp` | Incomplete IP format or encoding coverage |
+| `java.net.URL` | `java.net.URI` → HttpClient | Authority parsing, DNS resolution differences |
+
+**Where to hunt:** Any service accepting user-provided URLs where you can identify that validation and execution use different URL parsing libraries. AI/ML services are particularly prone because they frequently accept media URLs in prompts. Also applies to: webhook handlers, OAuth redirect validation, image proxy services, PDF/document import, any "fetch from URL" feature.
+
+**Stop conditions:** If server returns the same error for all bypass variants and you can't determine the validation/execution library pair, move on. Different libraries are a risk factor, not a guarantee of vulnerability — a vuln exists only when the two parsers disagree on attacker-controlled URL components.
 
 ---
 
