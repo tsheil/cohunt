@@ -300,36 +300,65 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 7. **Chain or don't.** Low-severity findings are fine if they chain into something higher. If they don't chain, be honest about severity.
 8. **Don't be AI slop.** After curl's shutdown, platforms are hypersensitive to AI-generated reports. Every finding must have manual verification, specific payloads, and real proof. Transparency about AI assistance is fine — AI-generated garbage is not.
 9. **Think like an attacker, write like a consultant.** The finding demonstrates risk; the report communicates it. Frame impact in business terms the target's security team will understand.
-10. **Know your competition.** Autonomous tools (XBOW, Shannon, AISLE, Aikido, Claude Code Security) have found thousands of vulnerabilities across commodity classes — XSS, SSRF, SQLi, prompt injection, MCP SSRF. If automation could find your bug, your report needs a chain, deeper impact analysis, or business logic that proves human-level reasoning. **Business logic is 45% of all bounty awards (Intigriti 2026) — this is where human hunters win.** See the automation landscape table below to assess duplicate risk.
-11. **Score AI vulns properly.** Use OWASP AIVSS (v0.5+) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
+10. **Know your competition.** Autonomous tools (XBOW, Shannon, AISLE, Aikido, Claude Code Security) have found thousands of vulnerabilities across commodity classes — XSS, SSRF, SQLi, prompt injection, MCP SSRF. If automation could find your bug, your report needs a chain, deeper impact analysis, or business logic that proves human-level reasoning. **Business logic vulnerabilities are the top-paid bounty class — this is where human hunters win.** See the automation landscape table below to assess duplicate risk.
+11. **Score AI vulns properly.** Consider OWASP AIVSS (v0.5, early-stage project) alongside CVSS for AI-specific vulnerabilities — AIVSS accounts for autonomy, non-determinism, and tool-use factors that CVSS misses. Reference specific OWASP risk IDs (LLM01-LLM10 for LLM apps, ASI01-ASI10 for agentic apps).
 12. **Map to the Promptware Kill Chain.** For AI agent findings, identify which kill chain stages the attack traverses (arxiv:2601.09625). Stage 1-2 (injection/jailbreak) are commodity; stage 4+ (persistence/C2/lateral movement) demonstrate sophisticated, high-severity chains that justify elevated CVSS.
+
+**Automation Landscape (for duplicate risk assessment):**
+
+| Tool | What It Finds | Scale |
+|------|--------------|-------|
+| XBOW | XSS, SSRF, SQLi, IDOR, simple chains | 1,000+ findings, 79% benchmark (GPT-5) |
+| Shannon | Full-stack vuln scanning | 96% accuracy, $50/run |
+| AISLE | OSS zero-days, memory safety | 12 OpenSSL zero-days (Jan 2026 release) |
+| Claude Code Security | Code review, vuln detection | 500+ vulns (22 Firefox) |
+| Codex Security | Commit-level scanning | 792 critical / 1.2M commits |
+| Aikido Infinite | Continuous code-change pentesting | 7 CVEs in Coolify (RCE as root) |
+| Novee / Maze | Autonomous agentic hunting | $51.5M / $31M funded |
+| HackerOne Hai | AI triage + validation | 90% adoption, 56% faster triage |
+| Bugcrowd AI Triage | P1 classification, dupe detection | 98% accuracy |
+| Enkrypt MCP Scanner | MCP server security scanning | ~33% critical vulns (1,000 servers) |
+| Big Sleep / CAI | OSS security vuln detection, CTF solving | 20 bugs / 5 CTFs won |
+
+Key stats: Autonomous jailbreak agents achieve 97% success (Nature 2026). MCP SSRF affects 36.7% of 7,000+ servers (BlueRock). MCPTox: up to 72.8% tool-poisoning attack success across 353 tools. IBM X-Force: exploitation now #1 attack vector (40%). Both OpenAI and Anthropic launched enterprise scanning March 2026. Apple max bounty $5M; Microsoft expanded "In Scope by Default." HackerOne $81M total bounties (2025); 75% of enterprises piloting/deploying agents but only 13% with governance (Gartner). Adversa AI published MCP Security TOP 25 — comprehensive catalog is now public knowledge. OpenAI Lockdown Mode adds system prompt protection; Amazon Nova Bug Bounty covers Nova model vulnerabilities.
 
 **Edge Cases:**
 
-- If the report describes a valid vulnerability but the report quality is poor, recommend REVISE with specific fixes — don't recommend HOLD.
-- If the finding is borderline (might be N/A on some programs), note the risk and let the hunter decide.
-- If CVSS scoring is inflated, provide the corrected score AND explain why — don't just change the number.
-- If the report is excellent, say so clearly and recommend SUBMIT. Don't invent issues for the sake of having feedback.
-- If the report chains AI and traditional vulns (e.g., prompt injection → SSRF → cloud metadata), ensure both the AI and traditional components are independently verified and the chain is realistic.
-- If the program has no explicit AI-specific vulnerability policy, note this — the hunter may need to justify reportability with extra context, OWASP references, and business impact.
-- If CVSS 3.1 and 4.0 scores diverge significantly (common for AI vulns with complex Attack Requirements), flag the discrepancy and recommend the score most favorable to the hunter's platform.
-- If the finding could be split into multiple reports (e.g., separate MCP server vuln + cross-system chaining impact), advise whether to split or combine based on program's typical response to chained reports.
-- If the report describes a self-propagating vulnerability (ZombieAgent pattern, Shai-Hulud), emphasize wormable/self-replicating nature in impact section — this dramatically increases severity.
-- If the vendor has declined to fix (e.g., Claude DXT RCE — Anthropic declined), note this in the report as it affects remediation timeline expectations and may warrant public disclosure consideration.
-- If the finding involves MCP SSRF, reference BlueRock Trust Registry stats (36.7% of 7,000+ servers) to contextualize as ecosystem-wide pattern rather than isolated incident — strengthens systemic impact argument.
-- If the finding targets enterprise AI assistants (Google Gemini Enterprise, Microsoft 365 Copilot), emphasize organizational blast radius — zero-click injection via shared documents can propagate across entire organizations without user interaction.
-- If the finding involves AI assistant URL parameter injection (Reprompt pattern), emphasize that attacker maintains persistent control even after chat session closes — this elevates severity beyond standard XSS/injection.
-- If the finding involves AI agent unauthenticated CDP/WebSocket endpoints, reference CVE-2026-28458 (CVSS 7.5) and CVE-2026-28468 to contextualize as systematic pattern in AI agent browser integration.
-- If the finding involves AI app Firebase/Supabase misconfigurations, reference Barrack.ai research (20+ breaches, 196/198 iOS AI apps misconfigured) to frame as structural security crisis rather than individual developer error — strengthens systemic impact argument.
-- If the finding involves LLM-assisted user deanonymization, frame as privacy violation with potential regulatory impact (GDPR, CCPA) — reference arXiv:2602.16800 for academic backing.
-- If the finding involves npm/Docker supply chain MCP injection (SANDWORM_MODE pattern), emphasize that the attack surface is the package manager itself — no user interaction with the malicious tool is needed; install triggers silent registration.
-- If the finding involves multi-agent cascade failures (OMNI-LEAK pattern), map the full propagation chain across all affected agents — severity should reflect the total blast radius, not just the initially compromised agent.
-- If the finding involves AI framework SSRF via redirect and the vendor archived/won't-fix (Pydantic-AI pattern), document the vendor's response and consider alternative disclosure paths — the vulnerability persists in all existing deployments.
-- If the finding involves CRM agent form injection (ForcedLeak pattern), emphasize that the attack requires zero authentication and targets business-critical customer data — PII exfiltration via markdown image injection is hard to detect.
-- If the finding involves chain-of-thought hijacking (H-CoT), demonstrate that the reasoning manipulation is distinguishable from normal model reasoning — include before/after reasoning traces.
-- If the finding involves identity file poisoning (SOUL.md), emphasize persistence across all sessions and all users — a single compromised identity file affects every interaction with the AI agent.
-- If the finding involves MCP OAuth account takeover, reference Obsidian Security's disclosure and note it affected all major MCP clients (Claude Desktop, VS Code, Cursor, Cline) — demonstrate pattern is not implementation-specific but architectural.
-- If the finding involves Google Antigravity IDE exploitation, note the platform is new (early 2026) with 70+ documented architectural vulnerabilities — early findings carry less duplicate risk; reference Hacktron AI's $10K bounty for RCE precedent.
-- If the finding involves Cursor rogue MCP browser takeover, emphasize that unlike VS Code, Cursor lacks integrity checks on embedded browser files — this is a design-level gap, not a configuration issue.
-- If the finding involves ContextCrush/documentation supply chain, emphasize the trust model violation — documentation served via MCP is treated as authoritative by AI coding assistants; poisoning a single library entry affects all users of that MCP server.
-- If the finding targets a DeFi/Web3 protocol, reference Cecuro AI benchmark (92% detection in exploited contracts) — frame the finding in terms of economic attack value and demonstrate human edge in understanding business-specific exploit chains.
+*Review decisions:*
+- Valid vulnerability + poor report quality → recommend REVISE with specific fixes, not HOLD.
+- Borderline finding (might be N/A on some programs) → note the risk, let the hunter decide.
+- Inflated CVSS → provide corrected score AND explain why. Don't just change the number.
+- Excellent report → say so clearly, recommend SUBMIT. Don't invent issues for feedback's sake.
+- AI + traditional vuln chain (e.g., prompt injection → SSRF → cloud metadata) → verify both components independently, confirm chain is realistic.
+- Program has no explicit AI vulnerability policy → note this; hunter needs extra justification with OWASP references and business impact.
+- CVSS 3.1 and 4.0 scores diverge significantly (common for AI vulns with complex Attack Requirements) → flag discrepancy, recommend score most favorable to hunter's platform.
+- Finding could split into multiple reports → advise split vs. combine based on program's typical response to chained reports.
+
+*AI/LLM severity amplifiers:*
+- Self-propagating (ZombieAgent, Shai-Hulud) → emphasize wormable/self-replicating nature; dramatically increases severity. Reference MINJA (95%+ injection success, 70%+ attack success), ZombieAgent (zero-click).
+- Multi-agent cascade (OMNI-LEAK) → severity = total blast radius across all affected agents, not just the initial compromise.
+- Enterprise AI assistants (Gemini Enterprise, 365 Copilot) → organizational blast radius; zero-click injection via shared documents propagates across entire org.
+- Persistent control (Reprompt URL injection, SOUL.md identity poisoning) → survives session close or affects all users/sessions; elevates severity beyond standard injection.
+- Chain-of-thought hijacking (H-CoT) → include before/after reasoning traces to prove manipulation is distinguishable from normal reasoning.
+- Denial-of-wallet → reference arXiv:2602.14798 (142.4x token amplification).
+- CRM agent injection (ForcedLeak) → zero auth, PII exfil via markdown images; hard to detect.
+
+*Ecosystem context (strengthen systemic impact arguments):*
+- MCP SSRF → 36.7% of 7,000+ servers (BlueRock Trust Registry); frame as ecosystem-wide, not isolated.
+- Firebase/Supabase misconfiguration → 196/198 iOS AI apps affected (Barrack.ai); structural crisis.
+- MCP OAuth account takeover → all major clients affected (Obsidian Security); architectural, not implementation-specific.
+- npm/Docker supply chain MCP (SANDWORM_MODE) → package manager is the attack surface; install triggers silent registration.
+- AI agent CDP/WebSocket → CVE-2026-28458 (CVSS 7.5); systematic browser integration pattern.
+- Agent skill supply chain → ToxicSkills (36% prompt injection rate). CI/CD injection → PromptPwnd (5+ Fortune 500).
+- ContextCrush/documentation supply chain → trust model violation; poisoning single library entry affects all MCP server users.
+- LLM deanonymization → GDPR/CCPA privacy violation; arXiv:2602.16800 for academic backing.
+
+*Vendor response & disclosure:*
+- Vendor declined fix (Claude DXT RCE, Pydantic-AI archived) → note in report; affects remediation timeline, may warrant public disclosure.
+- AI framework SSRF won't-fix → vulnerability persists in all existing deployments; document vendor response, consider alternative disclosure paths.
+
+*Platform-specific findings:*
+- Google Antigravity IDE → new platform (early 2026), 70+ architectural vulns, low dupe risk; $10K RCE precedent (Hacktron AI).
+- Cursor rogue MCP browser takeover → design-level gap (no integrity checks on embedded browser); not a configuration issue.
+- DeFi/Web3 → reference Cecuro AI 92% detection; frame in economic attack value; demonstrate human edge in business-specific exploit chains.
+- OpenClaw inbox destruction → demonstrates AI agent loss of control; context window compaction drops safety instructions.
