@@ -7,17 +7,20 @@ description: Desktop application and browser extension security testing — Elec
 
 Desktop apps built with web technologies (Electron, Tauri, CEF, NW.js) and browser extensions share a critical property: **web content sits adjacent to privileged bridges and system APIs**. XSS in a web page is Medium severity; the same XSS in an Electron app with a wide preload bridge is Critical RCE. Browser extensions with broad permissions create similar escalation paths — a misconfigured bridge turns a web vuln into a system vuln.
 
+> **Worked examples:** For complete CVE-grounded exploitation walkthroughs (Electron XSS-to-RCE, Tauri iFrame bypass, extension escalation, auto-updater MITM), see [reference/exploitation-walkthroughs.md](reference/exploitation-walkthroughs.md).
+
 ### Key CVEs & Real-World Examples
 
 | CVE | Product | Type | CVSS |
 |-----|---------|------|------|
-| CVE-2026-0628 | Google Chrome | Insufficient policy enforcement in WebView tag — malicious extension injects into privileged page (requires user install) | 8.8 |
-| CVE-2023-29198 | Electron (< 22.3.6, 23.x < 23.2.3, 24.x, 25.x) | Context isolation bypass via nested unserializable return value — requires `contextIsolation` + `contextBridge` | 6.0 |
-| CVE-2018-1000136 | Electron (< 1.7.13, < 1.8.4, < 2.0.0-beta.4) | `nodeIntegration` re-enabled through `webview` tag when `nativeWindowOpen` + specific conditions met | 8.1 |
-| CVE-2022-29247 | Electron | Compromised child renderer obtains IPC access without `nodeIntegrationInSubFrames` — exploitable if IPC handlers lack `senderFrame` validation | 5.5 |
-| CVE-2026-28417 | Vim netrw plugin (< 9.2.0073) | OS command injection via crafted `scp://` URL in bundled netrw plugin | 4.4 |
-| GHSA-57fm-592m-34r7 | Tauri (CVE-2024-35222) | Remote-origin iFrames access parent window's IPC endpoints without explicit capability grant (requires script exec in iframe) | 5.9 |
-| CVE-2025-31477 | tauri-plugin-shell (< 2.2.1) | Improper protocol validation in `open` endpoint — allows `file://`, `smb://`, `nfs://` URLs | 9.8 |
+| CVE-2026-0628 | Google Chrome (< 143.0.7499.192) | Insufficient policy enforcement in WebView tag — malicious extension injects scripts/HTML into privileged page (requires user install) | 8.8 (CISA-ADP) |
+| CVE-2025-67744 | DeepChat (< 0.5.3) | Mermaid XSS + exposed IPC → MCP server registration → system RCE | 9.6 |
+| CVE-2023-29198 | Electron (< 22.3.6, < 23.2.3, < 24.0.1, < 25.0.0-alpha.2) | Context isolation bypass via nested unserializable return value — requires `contextIsolation` + `contextBridge` | 6.0 |
+| CVE-2018-1000136 | Electron (< 1.7.13, < 1.8.4, < 2.0.0-beta.4/beta.5 — sources disagree on exact fix) | `nodeIntegration` re-enabled through `webview` tag in apps that disable Node, don't set `webviewTag: false`, and don't enable `nativeWindowOpen` | 8.1 |
+| CVE-2022-29247 | Electron (< 15.5.5, < 16.2.6, < 17.2.0, < 18.0.0-beta.6) | Renderer with `nodeIntegrationInSubFrames` enabled gets IPC access to a compromised child — exploitable if IPC handlers lack `senderFrame` validation | 2.2 (GitHub/OSV) |
+| CVE-2026-28417 | Vim netrw plugin (< 9.2.0073) | OS command injection via crafted `scp://` URL in bundled netrw plugin | 4.4 (CNA) / 7.8 (NVD) |
+| GHSA-57fm-592m-34r7 | Tauri v1 ≤ 1.6.6, v2 < 2.0.0-beta.20 (CVE-2024-35222) | Subframe IPC initialization bypass — script-enabled iFrames access parent's IPC endpoints without explicit capability grant | 5.9 |
+| CVE-2025-31477 | tauri-plugin-shell (< 2.2.1) | Improper protocol validation in `open` endpoint — allows `file://`, `smb://`, `nfs://` URLs (not affected if `open` explicitly constrained) | 9.3 (CNA v4) |
 
 ### What Pays
 
@@ -279,3 +282,13 @@ Before writing the report, check these desktop-specific false positives:
 | **Process Monitor** (Windows) / **dtrace** (macOS) | Trace protocol handler registrations and file access |
 | **Frida** | Runtime hooking for desktop app API interception |
 | **mitmproxy** | Intercept auto-updater traffic and protocol handler requests |
+
+---
+
+## Related Skills & References
+
+- [reference/exploitation-walkthroughs.md](reference/exploitation-walkthroughs.md) — CVE-grounded worked examples (DeepChat RCE, Tauri chain, extension escalation, auto-updater MITM)
+- [ai-hunting/reference/ide-supply-chain.md](../ai-hunting/reference/ide-supply-chain.md) — AI IDE-specific attacks (Claude Code, Cursor, Copilot, VS Code)
+- [client-side-security](../client-side-security/SKILL.md) — Web-page browser security (DOM XSS, CSP, CORS, postMessage)
+- [mobile-security](../mobile-security/SKILL.md) — Mobile deep links, app transport security
+- `/quick-test electron` or `/quick-test tauri` — Rapid single-endpoint testing for desktop apps
