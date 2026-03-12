@@ -267,9 +267,9 @@ Step 3: ❌ Assumes [condition] — need to explain how to reach this state
 
 **huntr (Protect AI):** AI/ML-specific platform for open-source repos. Bounties up to $50,000. 50.5% fix rate — expect slower resolution. Reports get CVEs assigned and go public on day 90. Focus on demonstrating real-world impact beyond lab conditions. LangChain awarded its maximum-ever $4,000 bounty through huntr (LangGrinch, CVE-2025-68664).
 
-**Amazon Nova Bug Bounty:** Covers Nova model vulnerabilities. Submit through AWS vulnerability disclosure program. Focus on model-specific behaviors — jailbreaks, safety bypasses, and novel attack vectors specific to Nova architecture.
+**AWS/Amazon AI:** AI model issues (Nova, Bedrock, SageMaker) route through the Amazon Vulnerability Research Program unless a service-specific bounty page says otherwise. Focus on model-specific behaviors with demonstrated security impact — jailbreaks alone are low-value without cross-user harm or unauthorized state change.
 
-**Google AI VRP:** Dedicated AI vulnerability reward program covering Search, Gemini Apps, and Workspace core apps. Up to $30K per report with novelty bonuses. $430K+ already paid for AI bugs. Prompt injections and jailbreaks excluded from main scope but encouraged as research contributions. Focus on demonstrating real-world impact beyond known AI limitations.
+**Google AI VRP:** Dedicated AI vulnerability reward program covering Search, Gemini Apps, and Workspace core apps. Up to $30K per report with novelty bonuses. $430K+ already paid for AI bugs. Direct jailbreaks without security impact are low-value/out of scope, but prompt attacks that are invisible to the victim and cause unauthorized state change or data exposure remain reportable. Focus on cross-user impact and real-world exploitability.
 
 ## Chain Assessment (if applicable)
 

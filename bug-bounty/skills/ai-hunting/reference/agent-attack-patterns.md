@@ -2,7 +2,7 @@
 
 Architectural attack patterns targeting AI agents, coding assistants, multi-agent systems, and agentic browsers. Covers OWASP Agentic Top 10, supply chain attacks, IDE exploitation, and autonomous agent threats. For individual jailbreak/injection techniques (LPCI, ZombieAgent, Policy Puppetry, etc.), see [llm-attack-techniques.md](llm-attack-techniques.md).
 
-> **Related files:** [llm-attack-techniques.md](llm-attack-techniques.md) for 18 novel attack techniques with test procedures | [mcp-playbooks.md](mcp-playbooks.md) for MCP-specific test procedures | [ai-case-studies.md](ai-case-studies.md) for real-world incident case studies
+> **Related files:** [llm-attack-techniques.md](llm-attack-techniques.md) for 24 attack techniques with test procedures | [mcp-playbooks.md](mcp-playbooks.md) for MCP-specific test procedures | [ai-case-studies.md](ai-case-studies.md) for real-world incident case studies
 
 ---
 
@@ -15,7 +15,7 @@ Architectural attack patterns targeting AI agents, coding assistants, multi-agen
 - [Multi-Agent System Attacks](#multi-agent-system-attacks)
 - [Agent-to-Agent (A2A) Protocol Attack Surface](#agent-to-agent-a2a-protocol-attack-surface)
 - [Promptware Kill Chain](#promptware-kill-chain)
-- [Novel Attack Techniques (routing)](#novel-attack-techniques)
+- [Novel Attack Techniques](#novel-attack-techniques)
 - [Full Schema Poisoning (FSP)](#full-schema-poisoning-fsp)
 - [Supply Chain Worm: Shai-Hulud](#supply-chain-worm-shai-hulud)
 - [Phantom: Template-Based Agent Hijacking](#phantom-template-based-agent-hijacking)
@@ -31,10 +31,10 @@ A new separate list from the LLM Top 10 (December 2025), with input from 100+ se
 |------|------|-------------|
 | ASI01 | Agent Goal Hijack | Prompt injection causing agent to pursue attacker's goals instead of user's |
 | ASI02 | Tool Misuse | Agent calls tools with attacker-controlled parameters |
-| ASI03 | Privilege Escalation | Agents inheriting high-privilege credentials beyond what tasks require |
+| ASI03 | Identity & Privilege Abuse | Agents inheriting high-privilege credentials beyond what tasks require |
 | ASI04 | Agentic Supply Chain | Compromised plugins, tools, or dependencies in agent pipelines |
-| ASI05 | Excessive Agency | Agents taking actions beyond intended scope without confirmation |
-| ASI06 | Memory Poisoning | Corrupting agent's persistent memory to alter future behavior |
+| ASI05 | Unexpected Code Execution | Agents executing code or taking actions beyond intended scope without confirmation |
+| ASI06 | Memory & Context Poisoning | Corrupting agent's persistent memory or context to alter future behavior |
 | ASI07 | Insecure Inter-Agent Communication | Unvalidated messages between agents in multi-agent systems |
 | ASI08 | Cascading Failures | Single agent failure propagating through interconnected agent systems |
 | ASI09 | Human-Agent Trust Exploitation | Agents exploiting user trust to bypass confirmation checks |
@@ -46,10 +46,10 @@ A new separate list from the LLM Top 10 (December 2025), with input from 100+ se
 |---|----------|---------------|
 | T1 | ASI01: Goal Hijack | Inject "Ignore prior instructions" in content agent retrieves (docs, emails, issues, wiki, GitHub issues) |
 | T2 | ASI02: Tool Misuse | Shell metacharacters/SQLi in tool params; inject extra API params ("Also set admin=true") |
-| T3 | ASI03: Privilege Escalation | Map agent credentials; attempt cross-scope/cross-system actions beyond granted token scope |
+| T3 | ASI03: Identity & Privilege Abuse | Map agent credentials; attempt cross-scope/cross-system actions beyond granted token scope |
 | T4 | ASI04: Supply Chain | Audit plugins for known vulns; check auto-install from untrusted sources; rug pull detection |
-| T5 | ASI05: Excessive Agency | Request destructive actions; verify confirmation gates; observe unrequested scope creep |
-| T6 | ASI06: Memory Poisoning | Inject persistent instructions → new session activation; test cross-user shared memory/RAG |
+| T5 | ASI05: Unexpected Code Execution | Request destructive actions; verify confirmation gates; observe unrequested scope creep |
+| T6 | ASI06: Memory & Context Poisoning | Inject persistent instructions → new session activation; test cross-user shared memory/RAG |
 | T7 | ASI07: Inter-Agent Comms | Cross-agent instruction injection; forge messages from trusted agents; check identity validation |
 | T8 | ASI08-10: Cascade/Trust/Rogue | Error propagation; confirmation fatigue; self-directed behavior; audit log discrepancies |
 
@@ -73,8 +73,7 @@ A major new attack surface emerging in early 2026 targeting AI agent skill/plugi
 
 **ToxicSkills Study (Snyk, February 2026):**
 - First comprehensive security audit of AI agent skills ecosystem (3,984 skills from ClawHub and skills.sh)
-- **36% contain prompt injection**; **1,467 malicious payloads** found across **76 confirmed malicious skills**
-- 13.4% (534 skills) contain critical-level issues
+- **1,467 skills** (36.8%) contain any security issue; **534** (13.4%) contain critical-level issues; **76 confirmed malicious** with active payloads
 - 100% of confirmed malicious skills contain malicious code patterns; 91% simultaneously employ prompt injection
 - 2.9% of skills dynamically fetch and execute content from external endpoints at runtime — attackers can modify behavior at any time
 - SKILL.md to shell access achievable in **three lines of markdown**
@@ -109,7 +108,7 @@ A major new attack surface emerging in early 2026 targeting AI agent skill/plugi
 
 > **Full coverage (28+ CVEs, IDEsaster, Claude DXT RCE, AI-as-C2 proxy, Google Antigravity):** See [ide-supply-chain.md](ide-supply-chain.md)
 
-Key patterns: workspace trust bypass (Cursor), rules file backdoor (invisible Unicode), RoguePilot (GitHub issue → symlink + $schema exfil → repo takeover), CVE-2026-29783 (Copilot CLI bash parameter expansion RCE), PromptPwnd (CI/CD pipeline injection), CamoLeak (CVE-2025-59145 CVSS 9.6 — zero-click private code exfil via Camo proxy), extension namespace squatting, Claude DXT zero-click RCE (CVSS 10.0), AI web-browsing as C2 channel.
+Key patterns: workspace trust bypass (Cursor), rules file backdoor (invisible Unicode), RoguePilot (GitHub issue → symlink + $schema exfil → repo takeover), CVE-2026-29783 (Copilot CLI bash parameter expansion RCE), PromptPwnd (CI/CD pipeline injection), CamoLeak (zero-click private code exfil via Camo proxy, Legit Security), extension namespace squatting, Claude DXT zero-click RCE (CVSS 10.0), AI web-browsing as C2 channel.
 
 ---
 
@@ -218,7 +217,7 @@ Published in arxiv:2601.09625 (January 2026), featured in a Black Hat webinar (F
 
 ## Novel Attack Techniques
 
-> **Full coverage (18 techniques with testing procedures):** See [llm-attack-techniques.md](llm-attack-techniques.md)
+> **Full coverage (24 techniques with testing procedures):** See [llm-attack-techniques.md](llm-attack-techniques.md)
 
 Key patterns: LPCI (persistent memory-store payloads surviving across sessions), ForcedLeak (CRM agent form injection, CVSS 9.4), ZombieAgent (zero-click self-propagating memory corruption), SOUL.md identity file poisoning, GRP-Obliteration (single-prompt safety alignment removal across 15 models), Policy Puppetry (universal jailbreak across all frontier models — also bypasses detection guardrails), H-CoT (chain-of-thought hijacking dropping refusal from 99% to 2%), image-based prompt injection (64% ASR under stealth constraints), autonomous jailbreak agents (97.14% multi-turn success).
 

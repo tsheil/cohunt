@@ -216,6 +216,21 @@ Webhooks create a reverse attack surface — the target sends requests to URLs y
 | 4 | Event enumeration | Subscribe to all event types, observe data | Webhooks may contain more data than API responses |
 | 5 | Retry abuse | Webhook fails → server retries → time-based SSRF | Multiple internal requests from single registration |
 | 6 | Callback URL SSRF | OAuth/payment callback URLs pointing to internal services | Server-side request to attacker-controlled URL |
+| 7 | Cloud notification confirmation SSRF | Forge SNS/EventGrid/PubSub `SubscribeURL` confirmation messages to webhook endpoint | Server fetches attacker URL to "confirm subscription" |
+| 8 | Webhook destination validation bypass | Register webhook URL → server validates on creation → DNS rebind to internal IP before first delivery | Server delivers to internal service |
+
+**Cloud notification confirmation SSRF (high-value pattern):**
+
+Applications that accept cloud notification webhooks (AWS SNS, Azure Event Grid, GCP Pub/Sub) often auto-fetch a `SubscribeURL` to confirm the subscription. Attackers forge confirmation messages pointing to internal resources.
+
+**Test procedure:**
+1. Find endpoints accepting webhook registrations or cloud notification subscriptions
+2. Send a forged SNS `SubscriptionConfirmation` message with `SubscribeURL` pointing to `http://169.254.169.254/latest/meta-data/iam/security-credentials/`
+3. Check if the server fetches the URL without verifying the SNS message signature
+4. Also test: Azure Event Grid validation events, GCP Pub/Sub push confirmation
+5. **Key check:** Does the server verify the cloud provider's cryptographic signature before fetching the confirmation URL?
+
+**Severity:** High-Critical when confirmation URL fetch hits cloud metadata or internal services. GHSA-xpqg-p8mp-7g44 (Plunk) demonstrates this exact pattern — unauthenticated SSRF via unvalidated SNS `SubscribeURL`. **Remediation:** Verify provider signature first, strict-allowlist the provider host, never server-side fetch arbitrary confirmation URLs.
 
 ---
 
