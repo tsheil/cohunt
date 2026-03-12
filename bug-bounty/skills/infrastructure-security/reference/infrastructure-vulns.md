@@ -445,11 +445,11 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **What it is:** Vendors patch a known deserialization RCE but the fix is incomplete — the same deserialization endpoint accepts different gadget chains or object types not covered by the original patch.
 
-**Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk <= 12.8.7 Hotfix 1, CVSS 9.8) — unauthenticated Java deserialization RCE that is the **3rd bypass** in a chain (CVE-2024-28986 → CVE-2024-28988 → CVE-2025-26399). Added to CISA KEV March 9, 2026; actively exploited by Warlock ransomware crew. The original fix sanitized `params`/`fixups` fields in JSON payloads but only when the request URI contained the string "/ajax/". **Bypass technique:** altering the request path to remove "/ajax/" bypassed sanitization entirely, reaching the same AjaxProxy deserialization endpoint without the filter. Post-exploitation: QEMU VMs for SSH backdoors, Cloudflare tunnels for C2.
+**Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk 12.8.7 and all previous versions; fixed in 12.8.7 HF1, CVSS 9.8) — unauthenticated Java deserialization RCE that is the **3rd bypass** in a chain (CVE-2024-28986 → CVE-2024-28988 → CVE-2025-26399). Added to CISA KEV March 9, 2026; actively exploited (Microsoft, exact CVE attribution across 26399/40551/40536 unconfirmed). The original fix checked `request.uri().contains("ajax")` in `checkSuspeciousPayload` before sanitizing `params`/`fixups` in JSON payloads. Subsequent bypass (CVE-2025-40553) used JSON-key obfuscation (`p\x61rams`, `java\x43lass`) to evade key name checks. Post-exploitation observed on WHD instances: ManageEngine RMM deployment, reverse SSH/RDP, QEMU VMs, DLL sideloading, DCSync.
 
 **Where to look:** Any product previously patched for deser — SolarWinds WHD, Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware.
 
-**Test patterns:** (1) Alternative gadget chains → test CommonsCollections, Spring, ROME, BeanUtils on patched endpoints; (2) Endpoint reachability → verify deser endpoint still accepts objects post-patch; (3) **Path-based filter bypass** → access patched endpoint via alternate URL paths, without filtered path segments (e.g., remove "/ajax/"), or via path traversal; (4) Version-specific bypass → test if hotfix processes serialized input via different chain.
+**Test patterns:** (1) Alternative gadget chains → test CommonsCollections, Spring, ROME, BeanUtils on patched endpoints; (2) Endpoint reachability → verify deser endpoint still accepts objects post-patch; (3) **URI-gated filter bypass** → if patch checks URI content (e.g., `contains("ajax")`), access endpoint via alternate path; (4) **JSON-key obfuscation** → use Unicode escapes in JSON keys (`p\x61rams` for `params`) to evade key name checks; (5) Version-specific bypass → test if hotfix processes serialized input via different chain.
 
 **Severity Guidance:** Critical (CVSS 9.8). Patch bypass variants are high-value — demonstrate incomplete fixes. Use `/variant-hunt`.
 
@@ -488,8 +488,8 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 | CVE | Product | CVSS | Key Detail |
 |-----|---------|------|------------|
 | CVE-2025-53770 | SharePoint | Critical | Unauth deser RCE. Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV |
-| CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
-| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via malformed header + "magic number" integer 64 → Credential Vault → Domain Admin hashes. CISA KEV March 9, 2026. See Enterprise Management Platform RCE section |
+| CVE-2025-10035 | GoAnywhere MFT | Critical | License Servlet deser RCE. Requires forged license response signature + admin console exposure. Fingerprint: `/goanywhere/` |
+| CVE-2026-1603 | Ivanti EPM | 8.6/7.5 | Auth bypass via alternate weak auth path (`AuthHelper`, ZDI-26-080) before 2024 SU5 → stored credential leakage. CISA KEV March 9, 2026 |
 | CVE-2026-21902 | Juniper Junos OS Evolved | 9.3 | Pre-auth RCE as root on PTX routers. Incorrectly exposed internal service |
 | CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE. See http-desync skill |
 | CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied embeddings. Pattern: AI inference deser |
