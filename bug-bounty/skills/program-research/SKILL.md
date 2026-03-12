@@ -36,6 +36,8 @@ Get complete intelligence on any bug bounty program before you start hunting usi
 | **Safe Harbor** | [Yes / Partial / No] |
 | **Disclosure** | [Allowed / Case-by-case / Not allowed] |
 | **Managed** | [Yes (triaged by platform) / No (triaged by company)] |
+| **Access** | [Public / Private / Invite-only / Application-only] |
+| **Requirements** | [Test accounts? Paid product? VPN? KYC/ID? NDA? Region limits?] |
 
 ---
 
@@ -127,24 +129,31 @@ Get complete intelligence on any bug bounty program before you start hunting usi
 
 ## Hunt Readiness Assessment
 
-### Go / No-Go: [GO / CAUTION / NO-GO]
+### Hard Vetoes (Any = NO-GO)
+- [ ] Invite-only with no application path
+- [ ] No safe harbor and no VDP
+- [ ] No matching asset class for your skills
+- [ ] High-friction access (KYC, paid product, NDA) without proportional rewards
+- [ ] Trust history: pattern of N/A on valid bugs, non-payment, or slow resolution (>90 days)
 
-**Rationale:**
-- [Key factor 1]
-- [Key factor 2]
-- [Key factor 3]
+### Go / No-Go Scorecard
 
-### Strengths
-- [Why this program is attractive]
+| Factor | Score (1-5) | Weight | Notes |
+|--------|------------|--------|-------|
+| Reward potential | _ | 3x | Critical payout ÷ your time estimate |
+| Asset match | _ | 3x | Your skills vs. scope assets |
+| Competition density | _ | 2x | Active researchers, duplicate risk |
+| AI competition risk | _ | 2x | XBOW-dominated vuln classes in scope? |
+| Response quality | _ | 2x | Time to triage, payment consistency |
+| Scope freshness | _ | 1x | New assets, recent feature launches |
 
-### Concerns
-- [Potential issues — competition, low payouts, slow triage]
+**Score ≥50 = GO, 35-49 = CAUTION (timebox to 4hrs), <35 = NO-GO**
 
 ### Recommended Approach
 - **Focus areas:** [Where to look based on disclosed reports and scope]
-- **Vuln types to target:** [Most likely to pay based on history]
-- **Time investment:** [Estimated effort vs. expected return]
-- **Competition level:** [High / Medium / Low — based on program age, payouts, hunter activity]
+- **Vuln types to target:** [Highest-ROI classes — see Competitive Calibration]
+- **Time investment:** [Stop-loss timebox: 4hrs for CAUTION, 8hrs for GO before reassessing]
+- **Competition level:** [High / Medium / Low — based on program age, payouts, researcher count]
 
 ---
 
@@ -212,7 +221,7 @@ Check for AI-specific program features:
 
 For full AI market context and statistics, see [reference/market-context.md](reference/market-context.md).
 
-### Step 7: Synthesize
+### Step 5: Synthesize
 
 ```
 1. Combine all sources
@@ -247,13 +256,59 @@ For full market statistics, reward benchmarks, notable programs, competition lan
 
 Key highlights for quick program evaluation:
 - **Market size**: $2.06B (2026), projected $7.74B by 2035
-- **HackerOne payouts**: $81M annual, $300M+ all-time
-- **AI programs**: 1,121 with AI in scope (270% YoY increase), prompt injection reports up 540%
+- **HackerOne payouts**: $81M annual (+13% YoY), $300M+ all-time; top 10 programs = $21.6M
+- **AI programs**: 1,121 with AI in scope (270% YoY increase), 560+ valid AI agent reports, 339% jump in AI bounties
 - **Top bounties**: Apple $2M base (up to $5M+ with bonuses), Microsoft $5M pool (Zero Day Quest), Google $250K Chrome
-- **Competition**: XBOW declared mission completed (March 2026, pivoting to pre-production scanning); 82% of hunters use AI tools
-- **New programs**: Nvidia on Intigriti (AI assets), IBM Granite ($100K), Amazon Nova; HackerOne IBB controversy signals trust risks in intermediary programs
-- **Fastest-growing attack surface**: MCP (30+ CVEs in 60 days), AI coding tools (IDEsaster: 30+ vulns)
-- **Shifting vuln rewards**: authorization flaws rising, XSS/SQLi declining
+- **Competition**: XBOW #1 on HackerOne (1,060 submissions, 41% acceptance rate, 28-min turnaround); 82% of hunters use AI tools
+- **Best ROI vuln classes**: IDOR/BOLA (+29% YoY), business logic (45% of awards), auth bypass (HackerOne #2) — low AI competition, highest payouts
+- **Avoid**: commodity XSS/SQLi (XBOW-dominated, declining payouts)
+- **Fastest-growing attack surface**: MCP (50+ CVEs by March 2026), AI coding tools (IDEsaster: 30+ vulns), React RSC
+- **New programs**: Cloudflare public launch, Nvidia on Intigriti, IBM Granite ($100K), NEAR Intents bridge, Ethereum $1M max
+
+---
+
+## Competitive Calibration (XBOW Era)
+
+XBOW reached #1 on HackerOne with 1,060 submissions. Understanding its strengths and weaknesses informs where to hunt.
+
+### Where AI Dominates (Avoid Head-to-Head)
+
+| Vuln Class | XBOW Capability | Human Strategy |
+|-----------|----------------|---------------|
+| SQLi | 28-min turnaround, automated payload generation | Don't hunt basic SQLi; focus on second-order or blind SQLi in complex workflows |
+| XSS (reflected) | Mass-scanned at scale, 0% FP with headless browser validation | Only hunt stored XSS → account takeover chains |
+| RCE (direct) | 48-step exploit chains, Python script generation | Focus on RCE via business logic (e.g., template injection, deserialization in custom code) |
+
+### Where Humans Win (Target These)
+
+| Vuln Class | Why AI Struggles | Payout Trend |
+|-----------|-----------------|-------------|
+| **IDOR/BOLA** | Requires understanding business objects, tenant boundaries, role hierarchies | ↑↑ +29% YoY, $4M+ IAC awards |
+| **Business Logic** | State machines, payment flows, subscription bypass, race conditions | 45% of all bounty awards (Intigriti) |
+| **Auth Bypass** | SSO chains, MFA bypass, session fixation across domains | HackerOne #2 vuln type |
+| **Multi-tenant isolation** | Cross-tenant data access requires understanding data models | Highest per-report payouts in SaaS programs |
+| **AI/LLM vulns** | Prompt injection impact assessment, agent abuse chains | ↑↑↑ 270% YoY programs in scope |
+
+### XBOW Outcome Data (Calibration)
+
+XBOW's 1,060 HackerOne submissions broke down as:
+- **12% resolved** (130) — programs confirmed and fixed
+- **29% triaged** (303) — mostly VDP, acknowledged but not bounty-eligible
+- **20% duplicate** (208) — even AI with SimHash dedup hits duplicates at scale
+- **20% informative** (209) — finding was real but impact insufficient for bounty
+- **3% N/A** (36) — rejected outright
+- **15% pending** (158) — still in review
+
+**Takeaways:** (1) Impact articulation matters — 20% informative means the bug was real but the report didn't demonstrate sufficient business impact. Always chain findings to show real-world harm. (2) Duplicate risk is real even for AI — target programs with fewer researchers (avg 56 vs 97 for higher-impact submissions). (3) VDP programs accept but don't pay — focus on paid programs unless building reputation.
+
+### Go/No-Go AI Competition Check
+
+Add to Step 5 (Synthesize):
+1. **Is this program in XBOW's target list?** Programs with high-volume, low-complexity scope (public web apps with standard auth) are XBOW territory
+2. **Does the program have AI/LLM features?** If yes, human advantage — XBOW doesn't hunt prompt injection or agent abuse
+3. **Does the program reward business logic?** If top disclosed reports are IDOR/auth/logic bugs, human hunters have the edge
+4. **How many researchers?** Programs with <60 active researchers have higher per-report impact
+5. **What's the duplicate rate?** Check disclosed reports — if 50%+ of recent reports are XSS/SQLi, AI competition is saturating those classes
 
 ---
 
@@ -283,6 +338,11 @@ Before submitting, check:
 - Find the same bug class in a new scope area (different subdomain, API version)
 - Provide variant analysis: if you find bug X, search for the same pattern in related endpoints, other API versions, mobile APIs, and internal tools
 
+**Platform AI Submission Rules (2026):**
+- **HackerOne:** all automated/AI findings require human expert review before submission; fully autonomous submission prohibited; hackbot policy requires operating within published VDP + Code of Conduct; AI Research Safe Harbor opt-in available
+- **Bugcrowd:** AI tools permitted as research aids; no prohibition on AI-assisted submissions; policy prohibits third-party AI training on researcher data
+- **Intigriti:** CVSS V4 for all new submissions; enhanced bonuses for quality/variant research; hourly payout model available on some programs
+
 ---
 
 ## Tips for Better Research
@@ -300,7 +360,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/market-context.md](reference/market-context.md) | Market metrics, AI automation data, MCP attack surface stats, platform statistics, notable programs, disclosed vulnerabilities, competition landscape, autonomous pentesting tools, industry trends (140+ data points) | ~459 |
+| [reference/market-context.md](reference/market-context.md) | Market metrics, vuln class ROI matrix, AI automation data, MCP attack surface stats, platform statistics, notable programs, disclosed vulnerabilities, competition landscape, autonomous pentesting tools, industry trends (150+ data points) | ~367 |
 
 **Quick search** — find specific market data without loading the full file:
 ```

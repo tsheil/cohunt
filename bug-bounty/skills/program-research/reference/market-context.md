@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v1.3.0)*
+*Last updated: March 2026 (v1.4.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
@@ -114,10 +114,10 @@ Notable new programs and expansions (2025-2026):
 - **0din** (Mozilla): GenAI-focused bug bounty covering GPT-4, Gemini, LLaMa, Claude. Bounties $500-$15,000. Launched **Agent 0DIN** gamified CTF for prompt injection/jailbreaking training
 - **OpenAI Codex Security** launched publicly March 6, 2026 (formerly Aardvark) — 14 CVEs discovered across OpenSSH, GnuTLS, GOGS, Chromium; available to ChatGPT Enterprise/Business/Edu
 - **Amazon Nova** — Private AI bug bounty; prompt injection, jailbreaks, exploitable model behavior; $55K+ paid, 30+ validated findings (Amazon Science, early 2026)
-- **Microsoft Copilot added moderate payouts** — up to $5K (previously $0 for moderate). Range now $250-$30K. Expanded to Copilot for Telegram, WhatsApp. 2026 Research Challenge and Live Hacking Event announced
+- **Microsoft Copilot added moderate payouts** — up to $5K (previously $0 for moderate). Range now $250-$30K. Note: Copilot left WhatsApp and other messaging apps on January 15, 2026 (Microsoft blog). 2026 Research Challenge and Live Hacking Event announced
 - **Microsoft "In Scope by Default" expansion**: All online services now in scope; new services auto-included on launch; **third-party and open source code** impacting Microsoft services now eligible for bounties; any critical vulnerability with demonstrable impact qualifies regardless of code origin; $17M+ paid to 344 researchers in 2025
-- **Cloudflare public bug bounty launch** (2026): Cloudflare launched its paid public bug bounty program after years of operating a private program — high-value target covering CDN, DNS, Workers, R2, and zero trust products
-- **Ethereum Foundation** (March 11, 2026): maximum bounty quadrupled from $250K to **$1M** for critical bugs fundamental to blockchain integrity
+- **Cloudflare public bug bounty** (launched March 2021, expanded 2026): paid public program covering CDN, DNS, Workers, R2, and zero trust products — high-value target with expanding scope. Note: the public paid launch was 2021, not 2026 (Cloudflare blog)
+- **Ethereum Foundation** (March 2026, reported by The Market Periodical): reported maximum bounty increase to $1M; however, official ethereum.org/bug-bounty page still shows $250K max as of March 12 — **verify before relying on $1M figure**
 - **NEAR Intents bridge bug bounty** (March 3, 2026): covers critical cross-chain infrastructure including MPC network for chain signatures and bridge protocols; cross-chain bridges are historically high-value targets (Wormhole $10M, Ronin $600M incident)
 - **Bugcrowd FedRAMP Authorization**: FedRAMP Moderate Authorization sponsored by CISA — federal agencies can now deploy Bugcrowd at scale
 - **Salesforce Bug Bounty 10th Anniversary** (March 4, 2026): $30.4M invested since 2015
@@ -253,6 +253,11 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-21262 (SQL Server, CVSS 8.8, March 11): publicly disclosed zero-day; authenticated user → SQL administrator privilege escalation
 - MCP offensive infrastructure in the wild (Cyberwarzone, March 11 2026): exposed server hosting AI-assisted intrusion infrastructure using MCP to connect LLMs to attack environments; over 1,000 files including credential dumps; **43% command-execution vulnerability rate** across scanned MCP servers; confirms MCP servers deployed in production without basic security controls
 - EU Cyber Resilience Act enforcement (September 11, 2026): mandatory vulnerability reporting for all products with digital elements sold in EU; actively exploited vulnerabilities must be reported to ENISA within 24 hours; manufacturers must implement coordinated vulnerability disclosure processes
+- CVE-2026-23674 (MapUrlToZone bypass, March 2026 Patch Tuesday): security zone bypass via improper path resolution — attacker reaches resources protected by MapUrlToZone without credentials. **Pattern:** URL parsing/zone classification bypasses are systematic — test any application using URL-based trust decisions (CSP, CORS origin checks, redirect validators, OAuth redirect_uri parsers)
+- CVE-2026-23669 (Print Spooler RCE, March 2026 Patch Tuesday, ZDI): Print Nightmare-class vulnerability similar to CVE-2021-34527. **Pattern:** Print Spooler variants continue emerging — test Windows infrastructure targets for driver installation and spooler service abuse
+- CVE-2026-23864 (React Server Components RCE, Meta Bug Bounty, Lachlan Davidson): follow-up to CVE-2025-55182 December DoS. **Pattern:** React Server Components/Flight protocol continues yielding critical findings — CVE-2025-55182 was most exploited CVE on HackerOne; React RSC is a sustained high-value attack surface for any Next.js/React application
+- CVE-2026-23654 (Microsoft AI Research Repo RCE, CVSS 8.0+, March 2026 Patch Tuesday): high-severity RCE in AI research repository component. **Pattern:** AI/ML infrastructure code (model registries, experiment trackers, dataset pipelines) has weaker security review than production services — test AI research endpoints
+- Adobe March 2026 Patch Tuesday: 80 CVEs across 8 products; Experience Manager largest with 33 CVEs; Acrobat Reader had 2 Critical-rated bugs. **Pattern:** Adobe Experience Manager is consistently high-CVE-count — enterprise CMS with large attack surface for programs that include AEM
 
 ---
 
@@ -300,6 +305,30 @@ Competition awareness:
 - **Hacktron AI**: $10K bounty for Google Antigravity RCE; also hacked Cursor, Windsurf, Perplexity Comet, OpenAI Atlas — emerging AI bug bounty research team
 - **Google completes $32B Wiz acquisition** (March 11, 2026): largest acquisition in Google's history; Wiz maintains multi-cloud stance (AWS, Azure, OCI, GCP); integration seams between Wiz and Google Cloud are potential attack surface during merge; Google bounty scope may expand to Wiz-integrated products
 - **F5 BIG-IP v21.1 MCP traffic security** (March 11, 2026): first network appliance vendor with MCP-specific session persistence, traffic inspection, and security protections; NGINX expanded to inspect AI agent traffic; creates new attack surface for MCP WAF bypass and parsing differentials between F5 inspection and actual MCP servers
+- **XBOW submission outcome breakdown** (March 2026, XBOW blog): of 1,060 submissions — 130 resolved (12%), 303 triaged (29%, mostly VDP), 208 duplicates (20%), 209 informative (20%), 36 N/A (3%), 33 new + 125 pending (15%). **Calibration:** ~41% acceptance rate; 20% duplicate rate even with SimHash dedup; 20% informative rate shows impact articulation matters as much as finding the bug. Primary finding types: SQL injection, XSS, RCE — avoid competing head-to-head on these commodity classes
+- **XBOW architecture details** (XBOW blog, March 2026): SimHash for content-level domain deduplication + imagehash for visual similarity grouping; headless browsers for client-side testing/validation; InteractSH for out-of-band callback verification; Python script generation for multi-payload testing; 48-step exploit chains demonstrated; completed seasoned pentester's 40-hour assessment in 28 minutes. **Adopt:** scope prioritization (fingerprint → deduplicate → rank by reward potential) and deterministic validation; compete on business logic, multi-tenant isolation, and chains requiring domain context
+- **HackerOne AI training controversy** (Feb-March 2026): researchers suspected HackerOne uses vulnerability reports to train AI; CEO Kara Sprague confirmed reports are NOT used for AI training (Feb 2026); Bugcrowd policy prohibits third-party AI training on researcher data. **Signal:** trust dynamics between platforms and researchers are shifting; platform AI policies are now a program evaluation factor
+
+---
+
+## Vuln Class ROI Matrix
+
+Strategic target selection based on payout data, competition intensity, and AI displacement risk (March 2026):
+
+| Vuln Class | Avg Payout | Trend | AI Threat | Human Edge | ROI |
+|-----------|-----------|-------|----------|-----------|-----|
+| IDOR/BOLA | $$$$ | ↑↑ (+29% YoY) | Low | Business context, multi-tenant logic | **Best** |
+| Business Logic | $$$$ | ↑ (45% of awards) | Very Low | Domain reasoning, state machines | **Best** |
+| Auth Bypass | $$$ | ↑ (HackerOne #2) | Medium | SSO chains, MFA bypass, session logic | **High** |
+| AI/LLM Vulns | $$-$$$ | ↑↑↑ (+270% YoY) | Low (niche) | Prompt injection impact, agent abuse | **High** |
+| Privilege Escalation | $$$ | ↑ | Medium | Role logic, tenant isolation | **High** |
+| SSRF | $$$ | Stable | Medium | Cloud metadata chains, SSRF→RCE pivots | **High** |
+| Code Injection/RCE | $$$$ | Stable | **High (XBOW)** | Low — commodity, AI finds faster | Medium |
+| SQLi | $$$ | ↓ | **Very High** | Very Low — AI's bread and butter | Low |
+| XSS | $$ | ↓ | **Very High** | Very Low — automated at scale | Low |
+| CSRF | $ | ↓ | Medium | Low — often downgraded | Low |
+
+**Key insight:** maximize ROI by targeting IDOR/BOLA, business logic, and auth bypass where AI competition is lowest and payouts highest. Avoid pure XSS/SQLi where XBOW has 28-minute turnaround and 0% FP rate.
 
 ---
 
@@ -334,3 +363,5 @@ Key program-relevant trends:
 - **XBOW CVE-2026-21536 first AI-attributed Microsoft CVE**: CVSS 9.8 RCE in Microsoft Devices Pricing Program (exclusively hosted cloud service, already mitigated server-side); fully autonomous discovery without source code access; milestone for AI agent vulnerability discovery
 - **Winlogon EoP CVE-2026-25187** (March 10 Patch Tuesday): discovered by Google Project Zero; CVSS 7.8; exploitation more likely; Winlogon is high-value persistence target
 - **IDOR prevalence by industry** (HackerOne 2021 "Rise of IDOR"): government 18%, medical technology 36%, professional services 31%, retail/ecommerce 15% of total bounty spend — access control remains the highest-paying bug class across regulated industries; 2025-2026 data shows +18-29% YoY growth in valid IDOR/IAC reports
+- **HackerOne Top 10 by volume** (2025 Annual Report): (1) XSS, (2) improper authentication, (3) information disclosure, (4) privilege escalation, (5) SQL injection, (6) code injection, (7) SSRF, (8) IDOR, (9) improper access control, (10) CSRF. Note: volume ranking differs from payout ranking — access control (#8-9 by volume) pays highest per report while XSS (#1 volume) is declining in per-report value
+- **"Bionic hacker" model** (HackerOne/Bugcrowd 2025-2026): human researchers using agentic AI as "accelerated, supervised staff member" is the winning model — not autonomous operation. HackerOne: 560+ valid AI agent reports; 339% jump in AI bounties paid; 210% increase in valid AI vuln reports. **Strategy:** use AI for recon automation, scope scanning, and payload generation; apply human judgment for business logic, access control reasoning, and impact assessment
