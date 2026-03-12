@@ -285,7 +285,7 @@ HTTP/1.1 200 OK
 
 **Root cause:** Check-then-act without database-level locking. Fix requires an atomic `UPDATE ... WHERE used = false` with row-count check.
 
-**Real-world grounding:** Stripe HackerOne #1849626 ($5K payout) — researcher raced `/ajax/accept_fee_discount_offer` 30 times via Turbo Intruder, applying $600K in fee-free transactions. Stripe's first fix was also bypassed via the same race window. Also: HackerOne #1717650 (Stripe promo code race), HackerOne #759247 (Reverb.com coupon race), GHSA-67jg-m6f3-473g (alf.io promo code race).
+**Real-world grounding:** Stripe HackerOne #1849626 ($5K payout) — researcher raced `/ajax/accept_fee_discount_offer` 30 times via Turbo Intruder, applying $600K in fee-free transactions. Stripe's first fix was also bypassed via the same race window. Also: HackerOne #1717650 (Stripe promo code race), HackerOne #759247 (Reverb.com gift-card redemption race), GHSA-67jg-m6f3-473g (alf.io promo code race).
 
 ---
 
@@ -396,7 +396,7 @@ user_id,email,last_login,role,actions_count
 | **Payment Intents** | Amount in PaymentIntent comes from frontend, not server-side cart calculation |
 
 ```
-□ Client-side amount — Modify amount/price in the create-session request. Secure: server uses Price IDs
+□ Client-side amount — Modify amount/price in the create-session request. Secure: server computes line items server-side using stored Price IDs or server-generated price_data
 □ Webhook signature bypass — POST forged checkout.session.completed without Stripe-Signature header → orders fulfilled without payment. CVE-2026-1461 (empty by default), CVE-2026-21894 (n8n never verifies). Enumerate: /api/webhooks/stripe, /api/stripe/webhook, /webhook/stripe, /stripe/webhook, /payment/callback
 □ 3DS Knock-to-Unlock — App adds 3DS but doesn't update webhook logic: customer.subscription.created fires before payment confirmation. Check subscription status attribute (must be "active"), not just event type
 □ Metadata trust — Checkout Session metadata trusted by fulfillment handler without re-validation → attacker-controlled metadata drives order fulfillment
@@ -455,7 +455,7 @@ AI SaaS products (API providers, AI-powered tools) have unique billing surfaces 
 □ Budget cap bypass — OX Security (Dec 2025): Cursor deeplink chain injects prompt → opens billing modal → edits spend cap to $1M+ without admin perms → infinite request loop drains budget. Test: Can non-admins modify team spending limits via API?
 □ Streaming billing black hole — Client sends prompt with early stop word + time-consuming task, disconnects after stop word. Upstream completes computation but gateway never receives final usage metrics. Affects intermediate gateways/proxies, not first-party billing
 □ Usage info suppression — OpenAI's include_usage defaults to off during streaming. Gateway billing based on this field → zero token counts
-□ API key scope bypass — OpenAI: user API keys bill to org, bypassing project-level budget limits. No mechanism to force project-scoped keys. Test: org-level keys vs project-level budget enforcement
+□ API key scope gap — OpenAI supports project-scoped keys, but personal keys can still bill to org with only soft budget alerts (not enforced caps). Test: are project-scoped keys enforced, or do personal/org-default keys bypass project budgets?
 □ Completion callback spoofing — Forge async AI completion callback with manipulated results; check callback authentication
 □ Credit purchase manipulation — Buy token credits via payment flow; modify credit amount client-side (same as price manipulation)
 ```

@@ -55,9 +55,9 @@ Every category below has real-world CVEs. Use these as variant-hunting templates
 | CVE-2026-25741 | 7.1 | Zulip | Non-billing member can create card update session → Stripe webhook changes org's payment method | Any SaaS billing: check if payment method update requires billing-specific authorization |
 | CVE-2026-1461 | 6.5 | Simple Membership (WP) | Stripe webhook signature secret empty by default → forged webhooks reactivate memberships | Any Stripe integration: POST forged webhook without `Stripe-Signature` header |
 | CVE-2026-21894 | 6.5 | n8n | Stripe Trigger node never verifies `Stripe-Signature` despite storing signing secret | Workflow automation: test all webhook triggers for signature verification bypass |
-| CVE-2025-56426 | — | Bagisto CMS | Cart price manipulation via `unit_price` parameter without server-side validation | Any e-commerce checkout: modify price/quantity/discount fields |
-| CVE-2025-3530 | 7.5 | WP Simple Shopping Cart | Client-submitted price accepted as authoritative | Any checkout where price/fee/tax fields transit in the request body |
-| CVE-2026-27128 | 3.1 | Craft CMS | TOCTOU race on impersonation token usage count → single-use token used multiple times | Any single-use token: race parallel requests before "mark as used" write |
+| CVE-2025-56426 | — | Bagisto CMS | Improper quantity validation — negative quantities in Cart/Checkout API reduce order total to $0 | Any e-commerce checkout: modify quantity to 0, -1, or decimal values |
+| CVE-2025-3530 | 7.5 | WP Simple Shopping Cart | Parameter confusion — `product_tmp_two` used for anti-tamper hash, `wspsc_product` for display → substitute cheaper product details | Any checkout with separate display and validation parameters |
+| CVE-2026-27128 | 4.8 | Craft CMS | TOCTOU race on impersonation token usage count → single-use token used multiple times | Any single-use token: race parallel requests before "mark as used" write |
 | CVE-2025-41115 | 10.0 | Grafana Enterprise | SCIM `externalId` mapped to internal UID → numeric externalId=1 becomes admin | Any SCIM implementation: provision user with numeric externalId matching admin UID |
 | CVE-2024-58248 | — | nopCommerce | No locking on order placement → race condition duplicate gift card redemption | Any single-use action: HTTP/2 single-packet parallel requests |
 
