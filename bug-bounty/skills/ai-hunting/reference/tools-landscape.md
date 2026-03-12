@@ -163,7 +163,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - Best for: continuous monitoring of large codebases; major competitive threat to human hunters on pattern-matching vulns
 
 **Anthropic Claude Code Security:**
-- **Launched March 6, 2026** with Mozilla partnership as limited research preview
+- **Launched February 20, 2026** as limited research preview; Mozilla partnership results announced March 6
 - Claude Opus 4.6 found **500+ vulnerabilities** in production open-source codebases — bugs that had gone undetected for decades despite expert review
 - **Mozilla partnership**: scanned ~6,000 C++ files and submitted 112 unique bug reports; found **22 vulnerabilities in Firefox** (14 high-severity, 7 moderate, 1 low) over two weeks — representing almost a fifth of all high-severity bugs patched in Firefox in 2025; fixes shipped in Firefox 148 (Feb 24, 2026). First AI-authored working browser engine exploit: CVE-2026-2796 (CVSS 9.8, JIT miscompilation in WebAssembly — optimization placed wasm function from Module B into Module A's import record without type checking). After just 20 minutes of exploration, identified Use After Free in JavaScript engine
 - Worked in a virtual machine with access to standard utilities and fuzzers; no specific instructions or specialized knowledge — "out-of-the-box" capability
@@ -225,7 +225,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 
 **Promptfoo (Acquired by OpenAI, March 9, 2026):**
 - Open-source CLI/library for LLM evaluation and red-teaming; 50+ vulnerability types; CI/CD integration
-- 125,000+ developers, 30+ Fortune 500 companies; pledged to remain open-source post-acquisition
+- 350,000+ developers, 130K active monthly, 25%+ Fortune 500 companies; pledged to remain open-source post-acquisition
 - Agent tracing, compliance mapping (OWASP, NIST, MITRE ATLAS, EU AI Act), MCP testing
 - Automated adversarial agent with deep reconnaissance, strategic planning, adaptive execution, persistent memory
 - Best for: continuous red-teaming of AI features during development; CI/CD security gates
@@ -425,7 +425,7 @@ Comprehensive catalog of AI-powered security tools for bug bounty hunting. Refer
 - **BlacksmithAI** for multi-agent pentesting lifecycle management (open-source, March 2026)
 - **Zen-AI-Pentest** for autonomous agents + standard security utilities (open-source, Feb 2026)
 - **Codex Security** (OpenAI, formerly Aardvark) for GPT-5-powered autonomous security research — **launched March 6, 2026** as research preview; discovered **10+ CVEs** in open-source projects (OpenSSH, GnuTLS, GOGS, Chromium, libssh, PHP); **84% noise reduction** on repeated scans, **90%+ severity over-reporting reduction**; 1.2M commits scanned in 30 days, **792 critical + 10,561 high-severity findings**; 50%+ FP reduction via project-specific threat models and sandboxed validation; free for Enterprise/Business/Edu first month; $10M API credits for OSS security
-- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched March 6, 2026** with Mozilla; 500+ vulns found, 22 Firefox vulns in 2 weeks
+- **Claude Code Security** (Anthropic) for deep codebase analysis and variant finding — **launched February 20, 2026**; Mozilla results March 6; 500+ vulns found, 22 Firefox vulns in 2 weeks
 - **Synack Sara** (Synack Autonomous Red Agent) for multi-agent PTaaS — hundreds of specialized AI agents for recon, attack, and verification; all findings require human review by 1,500+ SRT researchers; reduces exposure window from months to days; signaling PTaaS incumbents adopting agentic AI
 - **Terra Security** ($30M Series A from Felicis, March 10 2026) — launched **Terra Portal**: agentic desktop app for human-governed AI pentesting in live production environments; two agent types: **Ambient AI** (autonomous recon, code review, test generation, exploitation, documentation) and **Copilot AI** (human-directed for high-risk operations); targets Fortune 100
 - **AWS Security Agent** for multi-agent automated pentesting — specialized agents for recon, vulnerability analysis, and exploit validation; now supports shared VPC and GitHub Enterprise Cloud (Feb 2026 updates)

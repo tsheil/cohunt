@@ -86,7 +86,7 @@ A major new attack surface emerging in early 2026 targeting AI agent skill/plugi
 
 **ToxicSkills Study (Snyk, February 2026):**
 - First comprehensive security audit of AI agent skills ecosystem (3,984 skills from ClawHub and skills.sh)
-- **36% contain prompt injection**; **1,467 contain malicious payloads**
+- **36% contain prompt injection**; **1,467 malicious payloads** found across **76 confirmed malicious skills**
 - 13.4% (534 skills) contain critical-level issues
 - 100% of confirmed malicious skills contain malicious code patterns; 91% simultaneously employ prompt injection
 - 2.9% of skills dynamically fetch and execute content from external endpoints at runtime — attackers can modify behavior at any time

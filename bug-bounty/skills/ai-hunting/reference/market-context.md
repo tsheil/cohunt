@@ -172,7 +172,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 
 ## Threat Landscape & CVE Trends
 
-- **21,500+ CVEs** disclosed in H1 2026 alone — 16-18% increase over 2024
+- **21,500+ CVEs** disclosed in H1 2025 alone — 16-18% increase over 2024
 - **28.96% of vulnerabilities** now exploited on or before CVE disclosure day (VulnCheck State of Exploitation 2026; up from 23.6% in 2024)
 - **IBM X-Force 2026**: vulnerability exploitation now **#1 initial attack vector at 40%** (up from 26% prior year); validates that exploitation speed is outpacing patch cycles — hunters should prioritize recently-patched CVEs in programs where patch lag is visible
 - **884 KEVs** identified in 2025; exploitation was #1 cause of incidents at 40% (IBM X-Force)
@@ -315,7 +315,7 @@ Market statistics, program developments, industry metrics, and competitive intel
 - **Chrome CVE-2026-2441**: CSS zero-day (@property + paint() worklet use-after-free) actively exploited; patched February 13
 - **Shannon Lite 96.15%**: hit 100/104 on hint-free, source-aware XBOW benchmark variant using Code Property Graphs; subscription model ($0–$49.99/mo)
 - **Anthropic + Mozilla partnership** (March 6, 2026): Claude Opus 4.6 found 22 Firefox CVEs (14 high-severity) in 2 weeks scanning ~6,000 C++ files; 112 bug reports filed; fixes shipped in Firefox 148; PoC exploit generation cost ~$4,000 in API credits, succeeded in only 2 cases
-- **OpenAI acquires Promptfoo** (March 9, 2026): open-source LLM red-teaming CLI (125K+ devs, 30+ Fortune 500, 50+ vuln types); pledged to remain open-source; signals AI red-teaming consolidation under frontier labs; 97.14% autonomous jailbreak success rate reported separately (Nature Communications)
+- **OpenAI acquires Promptfoo** (March 9, 2026): open-source LLM red-teaming CLI (350K+ devs, 130K active/mo, 25%+ Fortune 500, 50+ vuln types); pledged to remain open-source; signals AI red-teaming consolidation under frontier labs; 97.14% autonomous jailbreak success rate reported separately (Nature Communications)
 - **VulnCheck 2026 VEIR**: 14,400+ exploits tracked for 10,000+ unique CVE-2025 vulns (16.5% YoY increase); AI-generated fake PoCs on the rise — validate any public exploit code before using
 - **Bionic hacker dominance**: 67% of HackerOne researchers use AI tools; hackbots submitted 560 valid reports (primarily surface-level XSS); human + AI collaboration is the winning model
 - **Barracuda agentic AI threat study**: identified 43 agent framework components with embedded supply chain vulnerabilities; AI offense compresses attack lifecycle — recon, exploitation, lateral movement run continuously in parallel

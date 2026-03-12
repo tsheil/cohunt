@@ -324,6 +324,39 @@ For each finding from steps 3-7b:
 
 ---
 
+## Validation Gate — Is This Submittable?
+
+Before including any finding in your report, pass it through these checks. Source-code-only findings without runtime proof are the #1 cause of N/A verdicts in code-audit-originated reports.
+
+### Common False Positives
+
+| Looks Like a Bug | Why It Usually Isn't |
+|---|---|
+| `eval()` / `exec()` with user input | Check if input is actually user-controlled at runtime — may be admin-only config, build-time constant, or test helper |
+| SQL query with string concatenation | Verify the concatenated value reaches production — may be an ORM-generated query, parameterized at a higher layer, or test-only code |
+| Hardcoded secret in source | Verify it's a real production secret, not a placeholder, test fixture, or revoked key — check git history for rotation |
+| Missing CSRF protection on endpoint | Many SPAs use token-based auth (Bearer/JWT) which is inherently CSRF-proof — only report if session cookies are used |
+| Missing rate limiting | Informational in most programs unless you can demonstrate account takeover, financial loss, or DoS |
+| Unsafe deserialization call | Confirm untrusted input reaches the deserializer — internal-only RPC, admin tools, and test fixtures are not exploitable |
+| Path traversal in file operation | Verify the path component comes from user input, not from a database lookup, config file, or hardcoded constant |
+| Debug endpoint / admin panel | Only a finding if reachable in production — check middleware, deployment configs, and environment guards |
+| Deprecated crypto (MD5/SHA1) | Only reportable if used for security-sensitive purposes (password hashing, token generation) — not checksums or cache keys |
+
+### Proof Checklist (Every Finding Must Pass)
+
+```
+□ Runtime proof — You have a request/response pair showing exploitation, not just a code snippet
+□ User-controlled input — The source of the vulnerability is actually attacker-controllable
+□ Production-reachable — The code path runs in production, not just tests/dev/admin-only
+□ Cross-boundary harm — Someone other than yourself is harmed (data leak, privilege escalation, state corruption)
+□ Not already mitigated — No WAF, middleware, or upstream validation blocks the attack
+□ Reproducible — Steps work on a clean setup, not dependent on stale state or race conditions
+```
+
+If any check fails, either go back to Step 7c to gather more evidence, or discard the finding. **A plausible code path is not a vulnerability — a proven exploit is.**
+
+---
+
 ## Audit Variations
 
 ### Quick Review
