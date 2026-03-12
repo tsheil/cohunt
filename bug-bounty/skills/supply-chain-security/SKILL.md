@@ -178,7 +178,15 @@ Even scoped packages (`@company/pkg`) are vulnerable if:
 - **Cline CLI NPM compromise** (Feb 17): stolen publish token → postinstall script installing OpenClaw agent on developer machines; affected AI coding tool ecosystem
 - **Claude Code CVE-2026-21852** (Jan 2026, CVSS 5.3): information disclosure in project-load flow — malicious repository exfiltrates data including API keys; fixed in v2.0.65. Pattern: AI coding tools loading untrusted project configs
 
-**Group-IB 2026**: 68% of severe incidents now linked to supply chain compromise — nearly double from prior years. **Snyk ToxicSkills**: 36% of 3,984 AI agent skills audited contain security flaws; 100% of malicious skills use dual-vector attack (code malware + prompt injection simultaneously).
+**Group-IB 2026**: 68% of severe incidents now linked to supply chain compromise — nearly double from prior years.
+
+**Snyk ToxicSkills (Feb 2026)**: Audit of 3,984 AI agent skills from ClawHub/skills.sh revealed:
+- **36% contain prompt injection** (1,467 confirmed malicious payloads)
+- 13.4% (534 skills) have critical-level issues including malware distribution
+- **91% of malicious skills use dual-vector** — code malware + prompt injection simultaneously, bypassing both AI safety and endpoint security
+- 2.9% dynamically fetch external payloads at runtime — skill appears benign during review but attacker updates hosted content
+- Daily skill submissions jumped 50→500+ in 3 weeks; first coordinated campaign used 30+ malicious skills
+- **Pattern for hunters**: If target uses AI agent marketplace (ClawHub, skills.sh), audit installed skills for dual-vector payloads. Report to platform AND to the target org
 
 ---
 

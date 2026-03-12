@@ -158,7 +158,7 @@ Infrastructure targets cluster into categories with distinct attack patterns. Id
 
 **Primary attack patterns:**
 - **Hardcoded credentials** — Plaintext creds in config files (`tomcat-users.xml`, `application.yml`)
-- **Unauthenticated backup endpoints** — `/api/backup`, `/export`, `/download` accessible without auth, sometimes with encryption keys in response headers
+- **Unauthenticated backup endpoints** — `/api/backup`, `/export`, `/download` accessible without auth, encryption keys leaked in response headers (CVE-2026-27944 Nginx UI CVSS 9.8: `/api/backup` returns full server backup + AES key in `X-Backup-Security` header → creds, SSL keys, configs). Affects all Nginx UI < 2.3.3
 - **Ephemeral lateral movement** — "Ghost NICs" (ephemeral virtual interfaces) for stealthy network pivoting (CVE-2026-22769 Dell RecoverPoint CVSS 10.0)
 
 **Test procedure:**
