@@ -20,6 +20,8 @@ Turn known vulnerabilities into new findings. When a bug is disclosed or patched
 
 Starting variant hunt from: $ARGUMENTS
 
+**Lineage tracking:** When a variant finding is confirmed, set the Finding Card's `Variant Of` field to the parent CVE ID or report URL (e.g., "CVE-2026-XXXXX" or "HackerOne #12345"). Use stable identifiers, not free-text titles. This helps triagers distinguish variants from duplicates.
+
 ---
 
 ## Variant Hunting Strategies
@@ -128,7 +130,8 @@ Hunt for:
 1. Check target's tech stack (via recon) for affected component
 2. Check version (headers, JS bundles, package.json, /api/version)
 3. If vulnerable version detected:
-   □ Reproduce the CVE PoC against the target
+   □ Start with non-destructive validation (version fingerprint, error-based detection, safe canary)
+   □ Only run full PoC if non-destructive check confirms and program policy permits
    □ Check if WAF/custom code blocks the specific PoC
    □ Try bypass variants if blocked
 4. If patched version detected:
@@ -176,7 +179,7 @@ Hunt for:
 1. Identify the root cause class (injection sink, missing validation, transport gap)
 2. Enumerate all components that share the same pattern (same SDK, same developer, same architecture)
 3. Test each systematically — AI/MCP ecosystems are young and fixes are often applied to one component but not siblings
-4. Each confirmed variant on a different component is a separate report
+4. Each confirmed variant on a different component is typically a separate report (some programs merge by root cause — check program policy)
 
 ---
 
@@ -222,7 +225,7 @@ Based on [source], these variants are likely to exist:
 ...
 
 ## Reporting Notes
-- Each confirmed variant is a separate report (unless they share the exact same root cause fix)
+- Each confirmed variant is typically a separate report (unless the program merges by root cause or remediation — check program policy first)
 - Reference the original CVE/report to help the triager understand the pattern
 - Emphasize that this is a *new* finding, not a duplicate of the original
 ```
@@ -231,7 +234,7 @@ Based on [source], these variants are likely to exist:
 
 ## Tips
 
-1. **Variants are NOT duplicates** — A bug on endpoint A and the same class of bug on endpoint B are separate findings, each worth a bounty
+1. **Variants are NOT duplicates** — A bug on endpoint A and the same class of bug on endpoint B are separate findings (though some programs merge by root cause — check disclosed report history for how the program handles variants)
 2. **Read the patch** — Understanding exactly what was fixed tells you exactly what wasn't
 3. **Check all API versions** — v1 and v2 often coexist, and only the latest gets patched
 4. **Time it right** — Hunt variants immediately after a disclosure, before other hunters catch on

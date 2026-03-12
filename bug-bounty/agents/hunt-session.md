@@ -212,7 +212,7 @@ Pass: Log as Finding Card (see /session-notes format) → continue testing
 Fail: Note what's missing → either fix it or move to next target
 ```
 
-When a finding passes the gate, capture it using the **canonical Finding Card format** (defined in `/session-notes`). This format feeds directly into `/write-report` and `/reportability-check`.
+When a finding passes the gate, capture it using the **canonical Finding Card format** (defined in `/session-notes`). This format feeds directly into `/write-report` and `/reportability-check`. **Always populate the forensic fields:** `Observed On` (ISO 8601 UTC of first successful confirmation), `Last Retest` (ISO 8601 UTC of last verification — use `N/A (one-shot)` for state-consuming bugs), `Variant Of` (parent CVE/report URL if applicable — blank if standalone), and `Lead Source` (optional — recon/variant-hunt/code-review/disclosed-report/changelog-diff). These fields prevent stale reports and enable variant lineage tracking.
 
 **Prioritization Framework:**
 

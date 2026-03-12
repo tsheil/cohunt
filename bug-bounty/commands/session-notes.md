@@ -76,7 +76,7 @@ Add observations, findings, or ideas to the running session log.
 
 **Finding Card (use when logging confirmed or likely findings):**
 
-When a note is a confirmed or likely finding, prompt for and use this format. Every field exists because it determines whether the finding pays out:
+When a note is a confirmed or likely finding, prompt for and use this format. The first 16 fields are payout-critical (they determine whether the finding gets accepted and what it pays). The last 4 are workflow fields that prevent stale reports and track hunting effectiveness:
 
 ```markdown
 ### Finding Card: [Short Name]
@@ -96,6 +96,10 @@ When a note is a confirmed or likely finding, prompt for and use this format. Ev
 - **Stronger Variant:** [What would elevate severity? Read→write? Single-user→all-users?]
 - **Severity Estimate:** [Critical/High/Medium/Low]
 - **Status:** [Ready to report / Needs more work / Needs chain]
+- **Observed On:** [ISO 8601 UTC timestamp of first successful confirmation — e.g., 2026-03-12T14:30Z. Not first suspicion — first verified exploit]
+- **Last Retest:** [ISO 8601 UTC timestamp of last verification. Defaults to Observed On for new finds. Use `N/A (one-shot)` for state-consuming bugs (races, invite flows, coupon abuse) with reason]
+- **Variant Of:** [CVE ID, report URL, or internal finding ID if this is a variant — e.g., "CVE-2026-XXXXX" or "HackerOne #12345". Blank if standalone]
+- **Lead Source:** [Optional — recon / variant-hunt / code-review / disclosed-report / changelog-diff / program-update]
 ```
 
 **This is the canonical Finding Card format** — used by `/session-notes`, the `hunt-session` agent, `/write-report`, `/triage-findings`, and `/reportability-check`. All handoffs use this schema.
@@ -105,6 +109,9 @@ When a note is a confirmed or likely finding, prompt for and use this format. Ev
 - `Proof Type` + `Evidence` → guides what evidence to capture; most auth bugs get N/A without two-account demonstration
 - `Scope Status` + `Duplicate Risk` → prevents wasted report-writing time
 - `Chain Dependency` + `Stronger Variant` → guides next testing steps
+- `Observed On` + `Last Retest` → temporal tracking prevents reporting stale (patched) findings; retest before reporting per freshness gate (24h SaaS / 72h standard / 7d on-prem)
+- `Variant Of` → enables systematic variant tracking via stable IDs; feeds into `/variant-hunt` lineage and helps triagers distinguish variants from duplicates
+- `Lead Source` → optional workflow field; tracks which hunting approaches are most productive; helps optimize future sessions
 
 **Categorization:**
 

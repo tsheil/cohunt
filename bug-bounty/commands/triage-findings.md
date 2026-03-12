@@ -122,9 +122,9 @@ I found three things on example.com:
 
 ---
 
-## 5-Gate Quick Triage (do this FIRST — 2 minutes per finding)
+## 6-Gate Quick Triage (do this FIRST — 2 minutes per finding)
 
-Run every finding through these 5 gates before the detailed assessment. If any gate fails, fix it before proceeding.
+Run every finding through these 6 gates before the detailed assessment. If any gate fails, fix it before proceeding.
 
 | Gate | Question | FAIL Action |
 |------|----------|-------------|
@@ -133,8 +133,9 @@ Run every finding through these 5 gates before the detailed assessment. If any g
 | 3. IMPACT | Is real-world harm concrete and specific? (whose data? how many users? what dollar amount?) | Replace vague impact with specifics. |
 | 4. SCOPE | Is this asset + vuln type explicitly in scope? | Do not report. Check program policy. |
 | 5. EVIDENCE | Is there proof beyond "I tested and it works"? (screenshots, HTTP req/res, two-account proof) | Capture evidence before reporting. |
+| 6. FRESHNESS | Is `Last Retest` recent enough for this target type? | Retest before reporting. Guideline: 24h for rolling-deploy SaaS; 72h for standard web apps; 7d or version-based for on-prem/appliance. One-shot bugs (races, invite flows) may be exempt — note `N/A (one-shot)` with reason. |
 
-**All 5 pass → proceed to detailed triage below. Any fail → fix the failing gate first.**
+**All 6 pass → proceed to detailed triage below. Any fail → fix the failing gate first.**
 
 ---
 
@@ -144,7 +145,7 @@ Run every finding through these 5 gates before the detailed assessment. If any g
 
 | Level | Meaning | Criteria |
 |-------|---------|----------|
-| **Ready** | Submit now | All 5 gates pass, working PoC, clear impact, in-scope, strong repro steps |
+| **Ready** | Submit now | All 6 gates pass, working PoC, clear impact, in-scope, strong repro steps |
 | **Needs Work** | Strengthen first | Partial PoC, unclear impact, needs second account test, or chaining required |
 | **Weak** | Consider skipping | Self-only impact, theoretical, likely duplicate, or borderline out-of-scope |
 
