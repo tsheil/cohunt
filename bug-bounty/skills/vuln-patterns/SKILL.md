@@ -47,7 +47,7 @@ For deep dives, route to the specialized skill or reference file:
 | **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
-| **File upload, import, preview, archive extraction, parser abuse** | [file-processing](../file-processing/SKILL.md) |
+| **File upload, import, preview, archive extraction, parser abuse, AI file injection** | [file-processing](../file-processing/SKILL.md) |
 | **Parser differentials, Unicode normalization, canonicalization** | [reference/parser-differentials.md](reference/parser-differentials.md) |
 | **Error-based blind SSTI, SSTI polyglots (PortSwigger #1)** | [reference/web-vulns.md](reference/web-vulns.md#error-based-blind-ssti-detection-portswigger-1-2025) |
 | **ORM leaking via search/filter (PortSwigger #2)** | [reference/web-vulns.md](reference/web-vulns.md#orm-leaking-via-search--filter-portswigger-2-2025) |
@@ -321,7 +321,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 ### File Upload & Processing
 
-> **Full coverage:** Use the dedicated [file-processing](../file-processing/SKILL.md) skill for the complete file processing chain — upload validation bypass, archive extraction (Zip Slip), server-side parser abuse (ImageMagick, ffmpeg, wkhtmltopdf), import-from-URL SSRF, signed URL manipulation, and cross-tenant file access. Quick tests: extension bypass (`.php.jpg`, U+200B), SVG/HTML XSS, import-from-URL SSRF, Zip Slip path traversal.
+> **Full coverage:** Use the dedicated [file-processing](../file-processing/SKILL.md) skill for the complete file processing chain — upload validation bypass, archive extraction (Zip Slip), server-side parser abuse (ImageMagick, ffmpeg, wkhtmltopdf), import-from-URL SSRF, signed URL manipulation, cross-tenant file access, and AI/LLM file-based prompt injection (RAG poisoning, EXIF injection, multimodal vision injection). Quick tests: extension bypass (`.php.jpg`, U+200B), SVG/HTML XSS, import-from-URL SSRF, Zip Slip path traversal, hidden text in PDF/DOCX for AI injection.
 
 ---
 
