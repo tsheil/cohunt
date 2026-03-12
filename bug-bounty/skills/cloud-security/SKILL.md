@@ -240,18 +240,53 @@ When you find SSRF, cloud metadata endpoints are the highest-impact targets. See
 
 ## Kubernetes / Container Security
 
-When the target runs on Kubernetes (EKS, GKE, AKS):
+When the target runs on Kubernetes (EKS, GKE, AKS), this is a deep attack surface. For full patterns, see [reference/kubernetes-security.md](reference/kubernetes-security.md).
+
+### Quick External Checks
 
 | # | Pattern | Test |
 |---|---------|------|
-| 1 | Exposed API server | `curl -k https://{ip}:6443/api` |
-| 2 | Kubelet API | `curl -k https://{node-ip}:10250/pods` |
-| 3 | etcd exposure | `curl http://{ip}:2379/v2/keys/` |
-| 4 | Service account token | `/var/run/secrets/kubernetes.io/serviceaccount/token` |
-| 5 | Dashboard exposure | Unauthenticated Kubernetes Dashboard |
-| 6 | Container escape | Privileged containers, mounted Docker socket |
-| 7 | RBAC misconfiguration | ClusterRoleBinding with `cluster-admin` to default SA |
-| 8 | Network policy gaps | Pod-to-pod communication without restriction |
+| 1 | Exposed API server | `curl -k https://{ip}:6443/api` — anonymous auth often enabled on older clusters |
+| 2 | Kubelet API | `curl -k https://{node-ip}:10250/pods` — returns running pod details |
+| 3 | etcd exposure | `curl http://{ip}:2379/v2/keys/` — contains all cluster state including secrets |
+| 4 | Dashboard exposure | Unauthenticated Kubernetes Dashboard — full cluster control |
+| 5 | Ingress controller version | Check for ingress-nginx < v1.12.1 (IngressNightmare CVE-2025-1974, CVSS 9.8) |
+
+### Managed K8s Provider-Specific Tests
+
+| Provider | # | Critical Pattern | What to Look For |
+|----------|---|-----------------|-----------------|
+| **EKS** | 1 | IMDS hop limit > 1 | Pods reach node IMDS even with IMDSv2 — extract node IAM role creds |
+| | 2 | aws-auth ConfigMap | Overprivileged IAM role mappings, wildcard principals |
+| | 3 | IRSA/Pod Identity overreach | Pod SA with excessive AWS permissions (s3:*, secretsmanager:*) |
+| **GKE** | 1 | Default compute SA | Pods without Workload Identity may inherit SA with `editor` role (pre-May 2024 orgs) |
+| | 2 | Metadata concealment disabled | `curl metadata.google.internal` from pod → node-level metadata |
+| | 3 | Autopilot mutation bypass | Standard mode allows privileged pods; test Autopilot enforcement |
+| **AKS** | 1 | Legacy AAD Pod Identity v1 | Known IMDS spoofing bypass in deprecated pod identity |
+| | 2 | RBAC mode mismatch | Azure RBAC vs K8s RBAC gaps leaving authorization holes |
+| | 3 | Key Vault CSI driver | SecretProviderClass misconfiguration, overprivileged managed identity |
+
+### K8s CVE Table
+
+| CVE | Component | CVSS | Description |
+|-----|-----------|------|-------------|
+| CVE-2025-1974 | ingress-nginx | 9.8 | IngressNightmare — unauthenticated RCE via admission webhook config injection (~43% cloud K8s affected) |
+| CVE-2026-22039 | Kyverno | 10.0 | Namespaced Policy apiCall namespace escape — hijack Kyverno SA for cross-namespace reads/writes |
+| CVE-2025-55190 | Argo CD | 10.0 | Project API token exposes plain-text repository credentials via /detailed endpoint |
+| CVE-2025-66220 | Istio/Envoy | 8.1 | TLS OTHERNAME SAN null byte → identity impersonation, bypass mTLS authorization |
+
+### What to Test From Inside a Pod
+
+| # | Pattern | Test |
+|---|---------|------|
+| 1 | Service account token | `cat /var/run/secrets/kubernetes.io/serviceaccount/token` → `kubectl auth can-i --list` |
+| 2 | RBAC escalation | Can you `create pods`, `bind clusterroles`, `get secrets`, or `impersonate users`? |
+| 3 | Container escape | Privileged? hostPID? Docker socket mounted? SYS_ADMIN capability? |
+| 4 | Network policy gaps | Can pod reach IMDS (169.254.169.254), other namespaces, external internet? |
+| 5 | Secret enumeration | `kubectl get secrets --all-namespaces` — TLS certs, docker configs, API keys |
+| 6 | Policy engine bypass | Webhook timeout → `failurePolicy: Ignore` bypasses Kyverno/OPA |
+
+**Market context:** IngressNightmare (March 2025) affected ~43% of cloud environments. K8s misconfigs are consistently in the top 5 cloud bounty findings — RBAC escalation, IMDS credential theft, and exposed dashboards/APIs are the highest-paying patterns.
 
 ---
 
@@ -310,6 +345,9 @@ Nine cross-tenant vulnerabilities in Google Looker Studio across multiple distin
 | Terraform state in public bucket | Critical | Contains secrets, full infra map |
 | Cross-cloud federation trust abuse | High-Critical | Lateral movement across providers |
 | Exposed Kubernetes Dashboard | High-Critical | Cluster compromise |
+| RBAC escalation (create pods, impersonate) | Critical | Node-level access via privileged pod |
+| Ingress controller RCE (IngressNightmare) | Critical | All cluster TLS secrets exposed |
+| Policy engine namespace escape (Kyverno) | Critical | Cross-namespace secret/ConfigMap reads |
 | Cross-tenant analytics connector abuse | High-Critical | Arbitrary SQL on victim's databases (LeakyLooker pattern) |
 
 ---
@@ -318,6 +356,7 @@ Nine cross-tenant vulnerabilities in Google Looker Studio across multiple distin
 
 | File | Contents |
 |------|----------|
+| [reference/kubernetes-security.md](reference/kubernetes-security.md) | K8s deep dive — managed K8s provider specifics (EKS/GKE/AKS), RBAC escalation (10 patterns), ingress controller exploitation (IngressNightmare worked example), container escape, admission controller bypass (Kyverno/OPA), service mesh auth (Istio/Linkerd), container registry testing, Helm/GitOps security (Argo CD CVEs), worked examples with full commands |
 | [reference/cloud-ai-ml.md](reference/cloud-ai-ml.md) | AI/ML cloud service attack patterns — SageMaker, Vertex AI, Bedrock, Azure OpenAI, API parity testing, backing-store exposure, execution identity overreach |
 | [reference/multi-cloud-pivots.md](reference/multi-cloud-pivots.md) | Workload identity federation, cross-cloud lateral movement, multi-cloud credential chains |
 

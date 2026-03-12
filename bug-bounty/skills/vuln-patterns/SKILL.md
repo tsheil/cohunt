@@ -44,7 +44,7 @@ For deep dives, route to the specialized skill or reference file:
 | **Electron, Tauri, browser extensions, protocol handlers, desktop app security** | [browser-desktop-security](../browser-desktop-security/SKILL.md) |
 | **DOM XSS, prototype pollution, PostMessage, CSP/CORS** | [client-side-security](../client-side-security/SKILL.md) |
 | **CI/CD, GitHub Actions, dependency confusion, supply chain** | [supply-chain-security](../supply-chain-security/SKILL.md) |
-| **Cloud misconfigurations (AWS/GCP/Azure)** | [cloud-security](../cloud-security/SKILL.md) |
+| **Cloud misconfigurations (AWS/GCP/Azure), K8s/container security, ingress controllers** | [cloud-security](../cloud-security/SKILL.md) |
 | **Mobile app testing (iOS/Android)** | [mobile-security](../mobile-security/SKILL.md) |
 | **HTTP smuggling, cache poisoning, race conditions** | [http-desync](../http-desync/SKILL.md) |
 | **File upload, import, preview, archive extraction, parser abuse, AI file injection** | [file-processing](../file-processing/SKILL.md) |
