@@ -192,7 +192,7 @@ Even scoped packages (`@company/pkg`) are vulnerable if:
 **CVE references**: ua-parser-js hijack (CVE-2021-43831, 8M weekly downloads compromised), event-stream incident (CVE-2018-16492), colors.js sabotage.
 
 **Feb-March 2026 supply chain wave:**
-- **Xygeni Action compromise** (March 3-10): stolen GitHub App key → C2 reverse shell injected via mutable `v5` tag → 137+ repos affected for 7 days. Pattern: even maintained, official Actions are vulnerable if App keys have broad permissions
+- **Xygeni Action compromise** (March 3-10): compromised maintainer credentials → C2 reverse shell injected via mutable `v5` tag → 137+ repos used the Action during 7-day window. Pattern: even maintained, official Actions are vulnerable if maintainer credentials are compromised
 - **hackerbot-claw campaign** (Feb 21-28): Claude Opus 4.5 bot systematically exploited GitHub Actions across Microsoft, DataDog, CNCF, Aqua Security. Achieved RCE in multiple targets (sources vary: 4-5 of 7). In the Trivy case, releases were deleted and a malicious OpenVSX artifact was published (source code integrity and package-manager distributions stayed intact). First documented AI-on-AI attack (attempted CLAUDE.md prompt injection against Claude Code — detected and refused)
 - **StripeApi.Net** (Feb 16): NuGet typosquat of legitimate Stripe.net package — targets .NET payment integrations
 - **Cline CLI NPM compromise** (Feb 17): stolen publish token → postinstall script installing OpenClaw agent on developer machines
