@@ -259,8 +259,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Severity Guidance:** Critical. Sandbox escapes enable full system compromise. Also test ICS/OT targets: CVE-2026-3630 (Delta Electronics COMMGR2, CVSS 9.8, stack buffer overflow in industrial gateway).
 
-**Node.js `vm` Sandbox Escape via Host Object Exposure:**
-**Key CVE:** CVE-2026-30957 (OneUptime Synthetic Monitors, CVSS 9.9) — user-defined monitoring scripts run in Node.js `vm` context that inadvertently exposes live Playwright `browser`/`page` objects. Attacker invokes Playwright APIs to spawn arbitrary executables on the probe server. **Pattern:** Any platform using `vm`/`vm2`/`isolated-vm` that passes capability-bearing host objects (Playwright, Puppeteer, `child_process`, database clients) into the sandbox. Also: CVE-2026-25049 (n8n, CVSS 9.4) — JavaScript `with` statement escapes expression sandbox; CVE-2026-30887 (OneUptime Probe, unsandboxed code execution). **Where to look:** Monitoring platforms, workflow automation, CI/CD custom script runners, serverless function sandboxes, low-code platforms with custom code blocks.
+**Node.js `vm` Sandbox Escape via Host Object Exposure:** CVE-2026-30957 (OneUptime, CVSS 9.9) — `vm` context exposes Playwright `browser`/`page` objects → attacker spawns executables. Also: CVE-2026-25049 (n8n, CVSS 9.4) — crafted workflow expressions enable command execution via expression sandbox escape. **Pattern:** any `vm`/`vm2`/`isolated-vm` passing capability-bearing host objects (Playwright, Puppeteer, `child_process`, DB clients) into sandbox. **Where to look:** monitoring platforms, workflow automation, CI/CD script runners, low-code custom code blocks.
 
 ---
 
@@ -347,20 +346,22 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 **What it is:** Authentication bypass in network management planes — SD-WAN controllers, EoL routers, VPN gateways — enabling unauthenticated administrative access to devices managing entire network fabrics.
 
 **Key CVEs (Feb-March 2026):**
-- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): improper authentication in peering mechanism allows unauthenticated remote attacker to bypass auth and gain high-privilege internal access. Exploited by UAT-8616 **since 2023** — chained with CVE-2022-20775 (CVSS 7.8 privilege escalation) for root via software downgrade-then-restore. CISA KEV + Emergency Directive ED 26-03, 24-hour patch mandate. Largest attack spike **March 4, 2026**. Post-exploitation: version downgrade → old privesc → restore
-- **CVE-2026-20128/20122** (Cisco Catalyst SD-WAN Manager, actively exploited March 2026): credential file exposure (20128) + authenticated API file overwrite (20122). Activity spike March 4 coincided with 20127; ACSC + CISA advisories. Post-exploitation: **web shell deployment confirmed**, lateral movement between SD-WAN deployments
-- **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` — unauthenticated DNS modification on EoL devices. Exploited since November 2025. **No patch** — devices EoL since 2020
+- **CVE-2026-23813** (HPE Aruba AOS-CX, CVSS 9.8): unauthenticated auth bypass in web-based management interface that, in some cases, enables admin password reset. Reported via HPE bug bounty, published March 11 2026 (HPESBNW05027). Low-complexity remote attack
+- **CVE-2026-20127** (Cisco Catalyst SD-WAN, CVSS 10.0): peering auth bypass. Exploited by UAT-8616 **since 2023** — chained with CVE-2022-20775 for root via software downgrade. CISA KEV + Emergency Directive ED 26-03. Post-exploitation: version downgrade → old privesc → restore
+- **CVE-2026-20128/20122** (Cisco Catalyst SD-WAN Manager, observed March 2026): credential file exposure (20128) + API file overwrite (20122). Possible post-exploitation: web shell deployment, lateral movement
+- **CVE-2026-0625** (D-Link DSL routers, CVSS 9.3): command injection in `dnscfg.cgi` — unauthenticated DNS modification on EoL devices. **No patch** — EoL since 2020
 
-**Where to look:** Cisco SD-WAN (vSmart/vManage), EoL routers still in production, Fortinet/Ivanti VPN gateways. Shodan: `Cisco SD-WAN`, `vManage`, `D-Link DSL`.
+**Where to look:** HPE Aruba switches (AOS-CX), Cisco SD-WAN (vSmart/vManage), EoL routers, Fortinet/Ivanti VPN gateways. Shodan: `ArubaOS-CX`, `Cisco SD-WAN`, `vManage`, `D-Link DSL`.
 
 **Test patterns:**
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Peering auth bypass | Send crafted requests to SD-WAN peering endpoints | Administrative access without credentials |
-| 2 | NETCONF config push | After auth bypass, test NETCONF for fabric-wide config changes | Routing modification, unauthorized peer connections |
-| 3 | DNS settings injection | Probe `dnscfg.cgi` or similar DNS config endpoints on consumer routers | Command injection via DNS server parameters |
-| 4 | Software downgrade chain | Check version management endpoints for downgrade capability | CVE chain: auth bypass → downgrade → privesc → restore |
+| 1 | Web mgmt reset workflow | Probe password reset/recovery routes on admin UI without prior auth — check for token issuance or missing auth, do NOT execute reset on live targets | Reset endpoint reachable without auth (CVE-2026-23813) |
+| 2 | Peering auth bypass | Send crafted requests to SD-WAN peering endpoints | Administrative access without credentials |
+| 3 | NETCONF config push | After auth bypass, test NETCONF for fabric-wide config changes | Routing modification, unauthorized peer connections |
+| 4 | DNS settings injection | Probe `dnscfg.cgi` or similar DNS config endpoints on consumer routers | Command injection via DNS server parameters |
+| 5 | Software downgrade chain | Check version management endpoints for downgrade capability | CVE chain: auth bypass → downgrade → privesc → restore |
 
 **Severity Guidance:** Critical. SD-WAN controllers manage entire network fabrics — compromising one yields fabric-wide access. EoL devices with no patch represent permanent risk. The UAT-8616 downgrade technique is a novel chaining pattern: bypass auth → downgrade software → exploit old privesc → restore to original version.
 

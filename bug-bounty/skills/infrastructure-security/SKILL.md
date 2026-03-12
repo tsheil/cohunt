@@ -69,6 +69,7 @@ Infrastructure targets cluster into categories with distinct attack patterns. Id
 
 **Primary attack patterns:**
 - **Peering/federation auth bypass** — Controllers that peer with each other may trust peer connections without full auth (CVE-2026-20127 Cisco SD-WAN CVSS 10.0)
+- **Web management interface auth bypass** — Unauthenticated auth bypass in web-based management UI that, in some cases, enables admin password reset (CVE-2026-23813 HPE Aruba AOS-CX CVSS 9.8, reported via HPE bug bounty, published March 11 2026)
 - **Post-auth credential exposure** — Management API endpoints that leak credential files to authenticated users (CVE-2026-20128, requires vManage credentials; CVE-2026-20122 CVSS 5.4, requires read-only API credentials)
 - **Software downgrade chains** — Auth bypass → downgrade to vulnerable version → exploit old privesc → restore (UAT-8616 technique, active since 2023)
 - **EoL device auth bypass** — Devices past end-of-life with improper access control (CVE-2026-0625 D-Link DNS config, no fix ever)
@@ -78,10 +79,11 @@ Infrastructure targets cluster into categories with distinct attack patterns. Id
 | # | Test | What to do | Signal |
 |---|------|-----------|--------|
 | 1 | Peering endpoint auth | Probe peering/clustering APIs without credentials | Admin access without auth |
-| 2 | Credential file access | Request `/api/config`, `/backup`, credential management endpoints | Credential files returned |
-| 3 | NETCONF config push | After any auth bypass, test NETCONF for fabric-wide config changes | Routing modification capability |
-| 4 | Version management | Check for downgrade capability via version management endpoints | Ability to install older, vulnerable firmware |
-| 5 | EoL version detection | Fingerprint version; check if past vendor EoL date | No patch available = permanent risk |
+| 2 | Web mgmt reset workflow | Probe password reset/recovery routes without prior auth — check for token issuance or missing auth on reset flow, do NOT execute reset on live targets (CVE-2026-23813 pattern) | Reset endpoint reachable without auth |
+| 3 | Credential file access | Request `/api/config`, `/backup`, credential management endpoints | Credential files returned |
+| 4 | NETCONF config push | After any auth bypass, test NETCONF for fabric-wide config changes | Routing modification capability |
+| 5 | Version management | Check for downgrade capability via version management endpoints | Ability to install older, vulnerable firmware |
+| 6 | EoL version detection | Fingerprint version; check if past vendor EoL date | No patch available = permanent risk |
 
 **Decision logic:** If target is a network controller managing 10+ devices, invest heavily — the reward-to-effort ratio is extreme. If it's a single standalone device, probe quickly (15 min max) then move on.
 
@@ -237,18 +239,59 @@ MotW (Mark-of-the-Web) bypasses are a recurring high-value pattern. Three separa
 
 ---
 
-## Deserialization Variant Hunting
+## Stack-Matched Variant Hunting
 
-Deserialization patch bypasses are one of the most reliable variant hunting patterns. Vendors patch one gadget chain but leave the deserialization endpoint accessible with alternative payloads.
+Infrastructure vendors ship the same bug patterns across product families. Every published CVE has potential siblings in related products, adjacent endpoints, or incomplete patches. This is the highest-ROI activity in infrastructure testing — you start with a known vulnerability and systematically discover new findings.
 
-**Methodology:**
+### The Variant Hunting Table
+
+Before probing, build a stack-matched table for your target. Fill in each column from recon + CVE research:
+
+| Component | Version Evidence | Advisory/CVE | Why Applicable | First Probe |
+|-----------|-----------------|--------------|----------------|-------------|
+| AOS-CX 10.13.1100 | `Server: ArubaOS-CX` header | CVE-2026-23813 (CVSS 9.8) | Same web mgmt interface, unpatched version | Password reset endpoint without auth |
+| Cisco FMC 7.2 | Port 8305, `Firepower` in title | CVE-2026-20131 (CVSS 10.0) | Java deser on management API | ysoserial Commons Collections payload |
+| SolarWinds WHD 12.8.7 | `/helpdesk/` path, version header | CVE-2025-26399 (3rd bypass) | AjaxProxy deser still reachable | Alternative gadget chains on patched endpoint |
+| Ivanti EPMM 12.3 | `/mifs/` path, `MobileIron` header | CVE-2026-1281 (CVSS 9.8) | Bash arithmetic expansion in URL params | `$((command))` in GET parameters |
+
+**How to populate:** (1) Fingerprint product + version from recon. (2) Check vendor security advisories and GHSA first (NVD often has minimal enrichment for fresh CVEs). (3) Check CISA KEV for active exploitation. (4) Use NVD for normalization (CVSS, CWE). (5) For each CVE, assess why the same root cause might exist on your specific instance. (6) Design a non-destructive first probe — one request that confirms or rules out the vulnerability without modifying target state.
+
+### Variant Hunting Strategies
+
+**Confirmed patterns** (documented CVE-to-CVE chains):
+
+| Strategy | What to Try | Why It Works | Confirmed Example |
+|----------|-------------|--------------|-------------------|
+| **Patch bypass** | Alternative gadget chains on a patched endpoint | Vendors block the specific exploit but not the root cause | SolarWinds WHD: 3 deser CVEs on the same AjaxProxy endpoint |
+| **Adjacent endpoint** | Same root cause on a different API path or feature | Developers repeat patterns across endpoints | Ivanti EPMM: `/mifs/c/appstore/fob/` (CVE-2026-1281) + `/mifs/c/aftstore/fob/` (CVE-2026-1340) |
+| **Version regression** | Check for downgrade capability + old vuln (do NOT downgrade live targets without authorization) | Downgrade capability + old vuln = chain | UAT-8616: auth bypass → software downgrade → exploit old privesc → restore |
+
+**Hunting heuristics** (reasonable but unconfirmed — test carefully):
+
+| Strategy | What to Try | Rationale |
+|----------|-------------|-----------|
+| **Sibling product** | Same CWE on a related product from the same vendor family | Vendors reuse code — but check vendor advisory for actual scope first |
+| **Transport parity** | Same flaw via a different protocol (HTTP vs NETCONF vs SNMP) | Fixes may apply to one transport only |
+| **Deployment mode** | Test standalone vs clustered vs cloud-managed variants | Patches may not cover all deployment modes |
+
+### Deserialization Variant Hunting (Specific Pattern)
+
+Deserialization patch bypasses are the most reliable variant pattern. Vendors block one gadget chain but leave the deser endpoint accessible.
+
 1. Find a previously patched deser CVE for the target product
 2. Verify the deser endpoint is still accessible post-patch
 3. Test alternative gadget chains (Commons Collections, Spring, ROME, BeanUtils)
-4. If the endpoint now validates object types, test chain variants that use allowed types
+4. If the fix validates object types, test chain variants using allowed types
 5. Check if the fix was ported to all deployment modes (standalone, clustered, cloud)
 
-**High-value targets for variant hunting:** SolarWinds WHD (3 bypass CVEs and counting), Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware products, SAP NetWeaver.
+**High-value deser targets:** SolarWinds WHD (3 bypass CVEs), Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware products, SAP NetWeaver.
+
+### When to Stop Variant Hunting
+
+- All versions in the stack-matched table are patched AND you've tested alternative transports/endpoints
+- The target product doesn't match any recent CVE + you've exhausted sibling/adjacent probes (spend 30 min max)
+- **Next probe would be destructive** — requires password reset, firmware change, service restart, or cross-device impact → document the finding and request explicit authorization before proceeding
+- You find a confirmed variant → stop hunting, start reporting. Run `/reportability-check` then `/write-report`
 
 ---
 
