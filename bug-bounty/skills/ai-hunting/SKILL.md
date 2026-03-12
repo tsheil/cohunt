@@ -158,7 +158,8 @@ Zero-click agent hijacking via calendar invites/emails/documents. File system ex
 
 **OMNI-LEAK**: single injection cascades through orchestrator → 82.4% of LLMs compromised via inter-agent trust. **CORBA**: 79-100% of agents blocked within 1.6 turns. **ZombieAgent**: zero-click self-propagating memory corruption via email.
 
-> **OWASP Agentic Top 10 (19 test procedures), agent supply chain, agentic browsers, novel techniques:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **OWASP Agentic Top 10 (19 test procedures), agent supply chain, agentic browsers:** See [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md)
+> **Novel attack techniques (LPCI, ZombieAgent, Policy Puppetry, 18 total):** See [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md)
 > **IDEsaster (28+ CVEs), Claude DXT, AI-as-C2, Google Antigravity:** See [reference/ide-supply-chain.md](reference/ide-supply-chain.md)
 > **50+ real-world incidents and case studies:** See [reference/ai-case-studies.md](reference/ai-case-studies.md)
 
@@ -338,11 +339,11 @@ This skill uses progressive disclosure. Detailed reference material is available
 | [reference/tools-landscape.md](reference/tools-landscape.md) | Full AI security tools catalog (40+ tools), Promptfoo (OpenAI acquisition), Sage ADR, security MCP servers, red teaming frameworks, Pynt/Noma research | ~497 |
 | [reference/mcp-first-contact.md](reference/mcp-first-contact.md) | **Start here for MCP.** 10-minute triage: transport discovery, capability enumeration, risk scoring, top 5 tests, evidence checklist, false positive guide | ~170 |
 | [reference/mcp-playbooks.md](reference/mcp-playbooks.md) | 77 MCP test procedures, OWASP MCP Top 10, Checkmarx 11 risks, Pynt quantified risk model, Enkrypt scanner findings, OAuth attacks, SDK flaws, Schema Drift, Context Pivoting, Sampling attacks, MCP client OAuth ATO | ~499 |
-| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, Full Schema Poisoning, Phantom TAE jailbreak, novel techniques (LPCI, salami slicing, H-CoT, ZombieAgent, GRP-Obliteration) | ~500 |
+| [reference/agent-attack-patterns.md](reference/agent-attack-patterns.md) | OWASP Agentic Top 10 + 19 test procedures, agent supply chain, agentic browsers, multi-agent attacks, A2A protocol, Promptware Kill Chain, Full Schema Poisoning, Phantom TAE jailbreak, AI-as-Exfiltration-Channel | ~285 |
 | [reference/ide-supply-chain.md](reference/ide-supply-chain.md) | IDEsaster CVE table (28+ CVEs), Claude DXT zero-click RCE (Feb 2026), AI-as-C2 proxy, Google Antigravity IDE, CI/CD pipeline injection | ~333 |
 | [reference/ai-case-studies.md](reference/ai-case-studies.md) | 60+ real-world incidents, Phantom/Sage ADR/SACR UADP, MCP ecosystem risk quantification, Microsoft AI as Tradecraft, platform AI policy updates, red teaming tools, AI bug bounty platforms, NIST standards | ~495 |
 | [reference/llm-testing.md](reference/llm-testing.md) | OWASP LLM Top 10 testing patterns, system prompt extraction, indirect injection workflows, data exfiltration tests | ~364 |
-| [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md) | Advanced jailbreak techniques: JBF, TAO-Attack, autonomous jailbreak agents (97.14%), Unit42 IDPI catalog, encoding/multilingual/visual bypasses, semantic chaining, hybrid XSS+PI | ~189 |
+| [reference/llm-attack-techniques.md](reference/llm-attack-techniques.md) | 18 novel attack techniques: LPCI, ForcedLeak, ZombieAgent, SOUL.md poisoning, SpAIware, GRP-Obliteration, Policy Puppetry, H-CoT, image-based PI, autonomous jailbreak agents (97.14%), encoding/multilingual bypasses, semantic chaining, hybrid XSS+PI | ~404 |
 | [reference/market-context.md](reference/market-context.md) | Full market statistics, program developments, industry metrics, competitive intelligence (160+ data points), Prompt Security MCP scoring, Cyata ASPM, Cloudflare AI Playground XSS, agentic AI deployment gap | ~422 |
 
 **Quick search** — find specific content without loading full files:
