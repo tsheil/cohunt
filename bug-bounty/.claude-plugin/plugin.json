@@ -1,6 +1,6 @@
 {
   "name": "bug-bounty",
-  "version": "1.38.0",
+  "version": "1.39.0",
   "description": "Hunt bugs, research targets, and plan engagements faster. Recon attack surfaces, research program scope and rewards, and build hunting plans that find real vulnerabilities. Includes AI-assisted hunting, infrastructure security testing, browser and desktop app security (Electron, Tauri, extensions), business logic testing, file processing chain exploitation, client-side security, supply chain testing, and LLM vulnerability patterns.",
   "author": {
     "name": "Thomas Sheil",
