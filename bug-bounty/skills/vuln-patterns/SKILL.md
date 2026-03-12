@@ -156,6 +156,8 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 - **CVE-2026-27127** (Craft CMS, CVSS 3.1→High chain): DNS rebinding TOCTOU in GraphQL Asset mutation; separate DNS resolve from HTTP fetch → race window. **Variant-hunt:** any endpoint that resolves DNS then makes HTTP request in separate steps
 - **March 2026 SSRF cluster**: 5 SSRFs in one week (Soft Serve Git, Ghostfolio, Wallos, Plane, PinchTab) — same root cause: validators block `127.0.0.1` but not `10.x.x.x`/`172.16.x.x`/`192.168.x.x`. Test all webhook/notification/import-via-URL endpoints for private IP SSRF
 
+**Cloud notification confirmation SSRF:** Applications accepting AWS SNS, Azure Event Grid, or GCP Pub/Sub webhooks often auto-fetch a `SubscribeURL` to confirm subscriptions without verifying the provider's cryptographic signature. Forge confirmation messages with attacker-controlled URLs → server fetches internal resources. GHSA-xpqg-p8mp-7g44 (Plunk) demonstrates unauthenticated SSRF via this exact pattern. See [api-security/reference/api-patterns.md](../api-security/reference/api-patterns.md#webhook-and-callback-patterns) for full test procedure.
+
 **Parser differential SSRF:** When validation and execution use different URL parsing libraries, parsing disagreements can bypass SSRF protections. CVE-2026-25960 (vLLM: urllib3 validates, aiohttp/yarl fetches — backslash-`@` differential). See [cloud-security reference/cloud-ai-ml.md](../cloud-security/reference/cloud-ai-ml.md#url-validation-parser-differential) for bypass payloads and documented vulnerable pairs.
 
 **Also check:** Unauthenticated backup/export endpoints (not SSRF but commonly adjacent) — see [infrastructure-security](../infrastructure-security/SKILL.md) for CVE-2026-27944 (Nginx UI CVSS 9.8, CWE-306) and backup appliance patterns.
@@ -194,7 +196,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 
 **→ Use [auth-testing](../auth-testing/SKILL.md) for full auth/session testing.** Auth-testing owns BOLA, BFLA, JWT, OAuth, MFA bypass, session management, SSO, and SAML patterns with CVE-grounded worked examples.
 
-**Quick screen (30 seconds):** Skip 2FA step → call post-auth endpoint directly. Send Host header pointing to attacker domain in password reset. Check JWT for `alg: none`. Try `admin:admin` and manufacturer defaults. If any hit → switch to auth-testing for deep exploitation.
+**Quick screen (30 seconds):** Skip 2FA step → call post-auth endpoint directly. Send Host header pointing to attacker domain in password reset. Check JWT for `alg: none`. Test OAuth `redirect_uri` manipulation. Check session fixation on login. If any hit → switch to auth-testing for deep exploitation. *(For default credentials on self-hosted/infrastructure targets, use [infrastructure-security](../infrastructure-security/SKILL.md).)*
 
 **2026 patterns:** Missing `await` on async auth (CVE-2026-28514, Rocket.Chat CVSS 9.3 — un-awaited `bcrypt.compare()` = any password accepted). Cross-app JWT acceptance with shared signing keys (Parse Server < 8.6.10). OAuth silent redirect abuse via `prompt=none` (ConsentFix first-party trust). JWE-wrapped PlainJWT (CVE-2026-29000 CVSS 10.0).
 
@@ -267,7 +269,7 @@ Not all vulnerability classes are equal. Autonomous tools (XBOW, Shannon, Codex 
 | 5 | Method override | `_method=POST` in GET request to bypass CSRF on POST-only | Action via GET (no CSRF needed) |
 | 6 | Subdomain abuse | If cookies set for `.example.com`, host payload on any subdomain | Cookies auto-included |
 | 7 | Token in cookie | Double-submit cookie without server validation, inject via subdomain | Attacker controls both values |
-| 8 | Flash/PDF redirect | SWF or PDF issuing cross-origin POST with custom headers | Legacy browser bypass |
+| 8 | Fetch-based CSRF | `fetch()` with `mode: 'no-cors'` sending `text/plain` POST with JSON body | Modern browser CSRF for JSON APIs |
 
 **Severity:** Email/password change = High ($1K-$5K). Admin actions = High-Critical. Non-sensitive actions = Low/Informational. CWE-352, #3 on 2025 MITRE Top 25.
 
