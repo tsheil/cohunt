@@ -1,6 +1,6 @@
 # Market Context (2025-2026)
 
-*Last updated: March 2026 (v1.2.0)*
+*Last updated: March 2026 (v1.3.0)*
 
 Reference data for program evaluation. Loaded on demand when program-research needs market statistics, reward benchmarks, notable programs, competition landscape, or disclosed vulnerability examples.
 
@@ -117,6 +117,7 @@ Notable new programs and expansions (2025-2026):
 - **Microsoft Copilot added moderate payouts** — up to $5K (previously $0 for moderate). Range now $250-$30K. Expanded to Copilot for Telegram, WhatsApp. 2026 Research Challenge and Live Hacking Event announced
 - **Microsoft "In Scope by Default" expansion**: All online services now in scope; new services auto-included on launch; **third-party and open source code** impacting Microsoft services now eligible for bounties; any critical vulnerability with demonstrable impact qualifies regardless of code origin; $17M+ paid to 344 researchers in 2025
 - **Cloudflare public bug bounty launch** (2026): Cloudflare launched its paid public bug bounty program after years of operating a private program — high-value target covering CDN, DNS, Workers, R2, and zero trust products
+- **Ethereum Foundation** (March 11, 2026): maximum bounty quadrupled from $250K to **$1M** for critical bugs fundamental to blockchain integrity
 - **NEAR Intents bridge bug bounty** (March 3, 2026): covers critical cross-chain infrastructure including MPC network for chain signatures and bridge protocols; cross-chain bridges are historically high-value targets (Wormhole $10M, Ronin $600M incident)
 - **Bugcrowd FedRAMP Authorization**: FedRAMP Moderate Authorization sponsored by CISA — federal agencies can now deploy Bugcrowd at scale
 - **Salesforce Bug Bounty 10th Anniversary** (March 4, 2026): $30.4M invested since 2015
@@ -240,8 +241,13 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-27826 (mcp-atlassian SSRF): high-severity SSRF via header-controlled Atlassian base URLs; companion to RCE CVE-2026-27825
 - CVE-2026-24457 (OpenMQ, CVSS 9.1): arbitrary file read + potential RCE via unsafe parsing in OpenMQ Broker; message broker as file system access vector
 - Endor Labs "classic vulns meet AI infra" (March 2026): MCP servers inherit CWE-22/CWE-77 at scale; 82% of 2,614 implementations vulnerable to path traversal; root cause is architectural assumption that LLM inputs are trusted
-- VDP as compliance requirement (March 2026): NIST CSF 2.0, ISO 27001, EU CRA all reference coordinated vulnerability disclosure; not having VDP now equivalent to missing privacy policy
+- VDP as compliance driver (March 2026): EU CRA creates reporting obligations for in-scope manufacturers from September 2026; ISO/IEC 29147 and 30111 are the direct coordinated vulnerability disclosure standards; NIST CSF 2.0 maps to vulnerability disclosure handling but does not itself mandate a public VDP
 - CVE-2026-28514 (Rocket.Chat, CVSS 9.3): critical authentication bypass — missing `await` on async `bcrypt.compare()` in microservices account-service; un-awaited Promise evaluates truthy → any password accepted for any user with bcrypt hash set; discovered by GitHub Security Lab Taskflow Agent. Pattern: async/await bugs in auth paths
+- CVE-2026-3783 (curl, March 11 2026): OAuth2 bearer token leak via `.netrc` redirect — `machine` or `default` entries bypass `Curl_auth_allowed_to_host()` check; affects curl 7.33.0 through 8.18.0; curl bug bounty already ended but report came through HackerOne
+- CVE-2026-1603 (Ivanti EPM, CISA KEV March 9 2026): authentication bypass before 2024 SU5 allowing unauthenticated attacker to leak stored credential data; CVSS 8.6; Horizon3.ai research details a crafted HTTP request with specific header manipulation reaching protected endpoints (Horizon3.ai)
+- CVE-2026-24858 (Fortinet FortiOS SSO, CVSS 9.4): FortiCloud SSO authentication bypass — attacker with a FortiCloud account and registered device can log into other users' devices when FortiCloud SSO is enabled; affects FortiOS/FortiManager/FortiWeb/FortiProxy/FortiAnalyzer; actively exploited since January 2026; Arctic Wolf observed automated attack cluster creating generic accounts and exfiltrating firewall configs
+- CVE-2025-26399 (SolarWinds WHD, CVSS 9.8): unauthenticated RCE via insecure deserialization in jabsorb library AjaxProxy; patch bypass of two prior CVEs (CVE-2024-28988, CVE-2024-28986) — triple-CVE bypass chain; must chain with CVE-2025-40536 for CSRF bypass; Huntress observed active exploitation with LSASS credential theft and ransomware
+- CVE-2026-25177 (AD Domain Services, March Patch Tuesday): Unicode character manipulation creates duplicate SPNs/UPNs bypassing AD security checks — only requires standard SPN write permissions; novel privilege escalation technique
 - EU Cyber Resilience Act enforcement (September 11, 2026): mandatory vulnerability reporting for all products with digital elements sold in EU; actively exploited vulnerabilities must be reported to ENISA within 24 hours; manufacturers must implement coordinated vulnerability disclosure processes
 
 ---
@@ -264,7 +270,7 @@ Hacker demographics (Bugcrowd Inside the Mind of a Hacker 2026, 2,000+ surveyed)
 ## Competition Landscape
 
 Competition awareness:
-- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ vulnerability findings, running 80x faster than manual teams; raised **$117M total** ($75M Series B led by Altimeter/Sequoia); pivoting to pre-production scanning in 2026
+- XBOW reached #1 on both US and global HackerOne leaderboards with 1,400+ vulnerability findings, running 80x faster than manual teams; raised **$117M total** ($75M Series B led by Altimeter/Sequoia); pivoting to pre-production scanning in 2026; **CVE-2026-21536** (CVSS 9.8) — AI-discovered critical RCE in Microsoft Devices Pricing Program, one of the first CVEs attributed to an AI agent against a Microsoft cloud service; demonstrated fully autonomous vulnerability discovery without source code access
 - XBOW benchmark: **75% of standard web security challenges** solved autonomously, **85% of custom-built challenges** — uses automated "validator" peer reviewers to confirm each finding
 - HackerOne **split leaderboards** to separate individuals from companies/agents like XBOW
 - XBOW launched **Pentest On-Demand** — fully automated pentest service delivering results within 5 business days

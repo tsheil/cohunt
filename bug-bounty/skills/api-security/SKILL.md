@@ -310,35 +310,19 @@ Common API vulnerability chains that elevate severity:
 
 ## Framework-Specific Patterns
 
-### Express.js / Node.js
-- Prototype pollution via `__proto__` in JSON body
-- Route parameter pollution with array values
-- Path traversal in `express.static` with encoded dots
+> **Deep dive:** [reference/framework-security-patterns.md](reference/framework-security-patterns.md) for CVE-grounded test procedures, worked examples, detection heuristics, and version-specific notes for each framework.
 
-### Django REST Framework
-- Filter backend injection: `?ordering=password`
-- Viewset action authorization gaps
-- Serializer field exposure through `?fields=` or `?expand=`
+| Framework | Detection Signal | Top Attack Surface | Key CVEs |
+|-----------|-----------------|-------------------|----------|
+| **Express.js** | `X-Powered-By: Express`, `connect.sid` | Prototype pollution via `req.body`, direct body-to-DB mass assignment | CVE-2022-24999 (qs) |
+| **Django REST** | `csrftoken` cookie, `?format=api` | Filter injection (`?ordering=password`), serializer `__all__` exposure | CVE-2026-30244 (Plane IDOR) |
+| **Spring Boot** | `Whitelabel Error Page`, `/actuator/health` | Actuator heapdump (credentials in plaintext), SpEL injection | CVE-2025-22235 (matcher bypass) |
+| **Laravel** | `laravel_session` cookie, `/_ignition/` | Debug RCE via Ignition, mass assignment (`$guarded=[]`) | CVE-2021-3129 (Ignition RCE) |
+| **FastAPI** | `/docs` Swagger, `/openapi.json` | Auto-docs in production, Pydantic type coercion (v1+v2 default), auth dependency gaps | CVE-2026-23996 (timing oracle) |
+| **Rails** | `_<app>_session` cookie, `X-Runtime` | Strong params nested attribute bypass, Active Storage transform RCE | CVE-2025-24293 (CVSS 9.2 RCE) |
+| **Next.js** | `__NEXT_DATA__`, `Next-Action` header | RSC deserialization RCE, middleware auth bypass, `/_next/data/` leak | CVE-2025-66478 (CVSS 10.0 RCE) |
 
-### Spring Boot
-- Actuator endpoints: `/actuator/env`, `/actuator/heapdump`
-- SpEL injection in error handling
-- Request mapping ambiguity between controllers
-
-### Laravel / PHP
-- Debug mode: `/_ignition/execute-solution`
-- Mass assignment through fillable/guarded misconfiguration
-- Route model binding IDOR
-
-### FastAPI / Python
-- Auto-generated docs at `/docs` and `/redoc`
-- Pydantic validation bypass with coerced types
-- Dependency injection authorization gaps
-
-### Ruby on Rails
-- Strong parameters bypass through nested attributes
-- `render` file disclosure
-- ActiveRecord injection through `where` hash conditions
+**Quick test:** Identify the framework during recon (detection signals above), then load the reference file for that framework's specific test procedures.
 
 ---
 
@@ -383,7 +367,8 @@ This skill uses progressive disclosure. Detailed reference material is available
 | File | Contents | Lines |
 |------|----------|-------|
 | [reference/api-patterns.md](reference/api-patterns.md) | GraphQL federation, mass assignment, JWT bypass, rate limit evasion, webhook SSRF, API gateway misconfigs, microservice patterns | ~283 |
-| [reference/realtime-protocols.md](reference/realtime-protocols.md) | Socket.IO namespace/transport attacks, SignalR hub auth gaps, GraphQL subscription auth bypass, SSE event injection, STOMP/ActionCable/Phoenix patterns, transport parity matrix, token lifecycle, WS→RCE patterns | ~413 |
+| [reference/realtime-protocols.md](reference/realtime-protocols.md) | Socket.IO namespace/transport attacks, SignalR hub auth gaps, GraphQL subscription auth bypass, SSE event injection, STOMP/ActionCable/Phoenix patterns, transport parity matrix, token lifecycle, WS→RCE patterns | ~414 |
+| [reference/framework-security-patterns.md](reference/framework-security-patterns.md) | Express.js prototype pollution, Django REST filter injection, Spring Boot actuator exploitation, Laravel Ignition RCE, FastAPI auth gaps, Rails Active Storage RCE, Next.js RSC deserialization — CVE-grounded with worked examples | ~465 |
 
 **Quick search** — find specific patterns without loading the full file:
 ```
@@ -400,6 +385,13 @@ grep -n "subscription\|graphql-ws\|graphql-transport-ws" ${CLAUDE_SKILL_DIR}/ref
 grep -n "SSE\|EventSource\|text/event-stream" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
 grep -n "STOMP\|ActionCable\|Phoenix\|Channel" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
 grep -n "transport parity\|token lifecycle\|long-lived" ${CLAUDE_SKILL_DIR}/reference/realtime-protocols.md
+grep -n "Express\|prototype pollution\|req.body\|qs" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "Django\|serializer\|filter.*injection\|ViewSet" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "Spring\|actuator\|heapdump\|SpEL" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "Laravel\|Ignition\|fillable\|guarded" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "FastAPI\|Pydantic\|Depends\|openapi" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "Rails\|strong.*param\|Active.*Storage\|mini_magick" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
+grep -n "Next.js\|RSC\|Server.*Component\|Next-Action" ${CLAUDE_SKILL_DIR}/reference/framework-security-patterns.md
 ```
 
 ---
