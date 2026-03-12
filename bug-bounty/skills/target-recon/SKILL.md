@@ -318,6 +318,35 @@ Combine all sources (fingerprint + auth recon + external recon). Map tech stack,
 
 ---
 
+## Validation Gate — Is This Recon Complete?
+
+Before delivering recon output or starting hunting, verify completeness and accuracy:
+
+| Check | Required? | Details |
+|-------|-----------|---------|
+| **Scope confirmed** | Yes | Every target asset verified against program scope; out-of-scope assets excluded |
+| **Two+ accounts** | Yes (for auth recon) | Different privilege levels created and tested; single-account testing flagged as gap |
+| **R×E matrix populated** | Yes (for auth recon) | Every role tested against every endpoint; ✗ cells documented |
+| **State fixtures recorded** | Yes (for auth recon) | Transition endpoints identified; artifacts saved for post-transition testing |
+| **Subdomain ownership verified** | Yes (for takeover) | CNAME actually points to unclaimed service; not just dangling DNS |
+| **Origin IP verified** | Yes (for WAF bypass) | Confirmed responses differ from CDN; not just a different IP serving same CDN |
+| **Test cards sourced from matrices** | Yes | Cards derive from R×E ✗ cells, R×S×E delta rows, or tenant boundary map — not guesses |
+
+### Common Recon Mistakes
+
+| Mistake | Why It Wastes Time |
+|---------|-------------------|
+| Reporting subdomain takeover without proving claimability | Unproven — must safely demonstrate control in a program-allowed way (some accept fingerprint + claimability proof without full hosting) |
+| Enumerating subdomains without checking scope | Most programs scope specific assets; out-of-scope findings get N/A'd |
+| Listing "missing security headers" as findings | CSP/HSTS absence alone is Informational on most programs — chain with exploit |
+| WAF bypass to origin without exploitable vuln behind it | Origin access alone is Low; must chain with actual vulnerability behind WAF |
+| Spending >30% of time on external vs authenticated recon | Most high-severity bounties are behind auth — flip the ratio |
+| Reporting exposed API docs or GraphQL introspection | Informational unless chained with actual unauthorized access |
+
+**When to stop recon and start hunting:** When you have enough R×E matrix ✗ cells and R×S×E delta rows to generate multiple proof-first test cards, OR you've found a high-signal indicator (exposed admin endpoint, IDOR candidate, state-transition gap). Recon that doesn't generate test cards is wasted effort.
+
+---
+
 ## Reference Files
 
 - [reference/javascript-analysis.md](reference/javascript-analysis.md) — JS bundle analysis, source maps, secret patterns, SPA route extraction (~266 lines)
