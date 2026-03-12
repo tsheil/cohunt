@@ -11,12 +11,17 @@ Protocol-level and timing-based vulnerability classes that consistently pay high
 
 | CVE | Product | Type | Impact |
 |-----|---------|------|--------|
-| CVE-2023-25690 | Apache mod_proxy | CL.TE smuggling | Request splitting → cache poisoning (CVSS 9.8) |
+| CVE-2023-25690 | Apache mod_proxy | Request splitting | Rewrite/proxy rule injection → smuggling (CVSS 9.8) |
 | CVE-2023-44487 | HTTP/2 (widespread) | Rapid Reset DoS | Stream cancellation abuse across all HTTP/2 implementations |
-| CVE-2023-46809 | Node.js | HTTP pipeline desync | Smuggling via malformed Transfer-Encoding in undici |
-| CVE-2024-24795 | Apache HTTP Server | HTTP response splitting | CRLF injection via multiple Content-Type headers |
-| CVE-2025-32681 | Envoy Proxy | HTTP/1 codec | Request smuggling via chunked encoding edge case |
-| CVE-2025-55315 | ASP.NET Core Kestrel | Chunked TE smuggling | **CVSS 9.9** — highest-ever ASP.NET severity; lone `\n` in chunk extension treated as continuation by Kestrel but as line terminator by proxies; enables auth bypass, CSRF bypass, injection; affects ASP.NET Core 2.x-10.x; $10K bounty (Praetorian); fix added `InsecureChunkedParsing` compat flag; apps behind reverse proxies that strip smuggled requests may be protected |
+| CVE-2025-55315 | ASP.NET Core Kestrel | Chunked TE smuggling | **CVSS 9.9** — lone `\n` in chunk extension; $10K bounty (Praetorian) |
+| CVE-2025-32094 | Akamai CDN | HTTP/1.x Expect/obs-fold | $9K direct + $221K in 74 duplicates across Akamai customers |
+| CVE-2025-54142 | Akamai Ghost | OPTIONS body smuggling | Origin doesn't consume OPTIONS body → smuggled bytes in persistent connection |
+| CVE-2025-66373 | Akamai Ghost | Chunked size mismatch | Invalid chunk size → superfluous bytes forwarded to origin |
+| CVE-2025-8671 | HTTP/2 (widespread) | MadeYouReset DoS | Server-sent RST_STREAM bypasses 100-concurrent-request limit → OOM (CVSS 7.5) |
+| CVE-2026-2835 | Cloudflare Pingora | TE.CL in HTTP/1.0 | **CVSS 9.3** — `init_until_close()` default + only exact `chunked` match |
+| CVE-2026-2833 | Cloudflare Pingora | Premature Upgrade | **CVSS 9.3** — bytes after `Upgrade` header forwarded before 101 response |
+| CVE-2026-2836 | Cloudflare Pingora | Cache key confusion | URI path only (no host/scheme) in cache key → cross-host poisoning |
+| CVE-2026-26365 | Akamai Ghost | Connection hop-by-hop | `Connection: Transfer-Encoding` strips TE header → invalid framing |
 | CVE-2026-27127 | Craft CMS | DNS rebinding SSRF | TOCTOU in SSRF validation → metadata access |
 | CVE-2026-23864 | React Server Components | DoS via RSC payloads | Server crash/OOM via malformed Server Function args (CVSS 7.5) |
 
@@ -60,6 +65,23 @@ Smuggling only works when there's a proxy or load balancer in front of the origi
 | 7 | Capture other users' requests | Smuggle a request that stores the next request's headers (via reflected parameter) | See another user's cookies/headers |
 | 8 | Bypass front-end controls | Smuggle request to admin endpoint that the proxy blocks | Access to restricted paths |
 | 9 | Chunk extension `\n` injection (CVE-2025-55315) | Send chunked body with lone `\n` (no `\r`) in chunk extension — Kestrel continues parsing, most proxies terminate | Desync between proxy and ASP.NET Core Kestrel; enables auth bypass and request manipulation |
+
+### 0.CL + Expect Header Desyncs (Kettle 2025 — $350K+ in bounties)
+
+New attack class from James Kettle's "HTTP/1.1 Must Die" research. The `Expect: 100-continue` header creates desync opportunities because proxies and origins handle the early response differently.
+
+| Variant | How It Works | Where to Test |
+|---------|-------------|---------------|
+| **0.CL vanilla Expect** | Front-end ignores CL when `Expect: 100-continue` present; back-end reads body | Any HTTP/1.1 proxy chain (T-Mobile: $12K) |
+| **0.CL obfuscated Expect** | `Expect: y 100-continue` — front-end doesn't recognize it, back-end does | GitLab: $7K via this variant |
+| **CL.0 vanilla Expect** | Back-end stops reading body when sending 100 Continue response | Netlify: CL.0 via vanilla Expect |
+| **CL.0 obfuscated Expect** | Obfuscated Expect triggers CL.0 on back-ends that normally consume bodies | Akamai customers (LastPass: $5K) |
+| **Double-desync conversion** | Chain 0.CL into CL.0 via poisoned connection (two-stage attack) | When 0.CL alone isn't exploitable |
+| **Response queue poisoning** | Desync causes responses to shift — users get other users' responses | Highest impact: credential theft at scale |
+
+**Early-response gadgets** (needed for 0.CL): IIS reserved filenames (`/con`, `/nul`, `/aux`) trigger early responses before body consumption. Other servers may have similar "respond early" endpoints.
+
+**Key test:** Add `Expect: 100-continue` or `Expect: y 100-continue` to any smuggling probe — it may unlock 0.CL on targets where CL.TE/TE.CL fails.
 
 ### Safe Testing Tips
 
@@ -135,7 +157,7 @@ Next.js App Router uses an internal in-memory cache (`fetch()` cache, Full Route
 | 1 | Unauthenticated revalidation | `GET /api/revalidate?tag=homepage` — does it invalidate cache without auth? |
 | 2 | Fetch cache poisoning | Identify Server Component `fetch()` calls — can you poison the upstream data source? |
 | 3 | ISR timing attack | For `revalidate: 60` pages, serve poisoned response during revalidation window |
-| 4 | Route handler cache | `GET` route handlers in App Router are cached by default — test for unkeyed inputs |
+| 4 | Route handler cache | `GET` route handlers may be cached when explicitly opted in — test for unkeyed inputs |
 
 #### HTTP/2 CONNECT Tunnel Abuse (PortSwigger Top 10 2025 #9)
 
@@ -405,6 +427,24 @@ Before writing the report, check these desync-specific false positives:
 - Not providing timing evidence (request timestamps, response correlation) for race findings
 
 **Severity calibration:** CL/TE differential alone = Informational. Smuggling → response poisoning = High-Critical. Cache poisoning → stored XSS = Critical. Race → double-spend = High-Critical. Race → limit bypass = Medium-High.
+
+---
+
+## Reference Files
+
+This skill uses progressive disclosure. Detailed worked examples with raw HTTP requests and responses are available on demand:
+
+| File | Contents | Lines |
+|------|----------|-------|
+| [reference/desync-worked-examples.md](reference/desync-worked-examples.md) | 7 worked examples (CL.TE detection + exploitation, cache poisoning, cache deception PII exfil, race condition double-spend, H2.CL smuggling, CL.0 desync), proxy fingerprinting matrix, tool commands (Burp + CLI), false positive checklist | ~310 |
+
+**Quick search** — find specific attack patterns:
+```
+grep -n "CL.TE\|TE.CL\|H2.CL\|CL.0" ${CLAUDE_SKILL_DIR}/reference/desync-worked-examples.md
+grep -n "cache poisoning\|cache deception\|X-Forwarded" ${CLAUDE_SKILL_DIR}/reference/desync-worked-examples.md
+grep -n "race condition\|single-packet\|double-spend" ${CLAUDE_SKILL_DIR}/reference/desync-worked-examples.md
+grep -n "fingerprint\|curl\|Burp\|Turbo" ${CLAUDE_SKILL_DIR}/reference/desync-worked-examples.md
+```
 
 ---
 

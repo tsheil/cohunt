@@ -86,6 +86,70 @@ The most common high-severity bug class in API-heavy targets.
 - **Numerical overflow** — Negative IDs, MAX_INT, zero
 - **Drop all cookies (unauthenticated)** — When cross-user swap returns 403, strip ALL session cookies and retry as unauthenticated. Endpoints may block cross-user access but allow anonymous access entirely — a common auth logic gap where the check is "is this YOUR resource?" rather than "is this user authenticated?" (XBOW found 2 IDORs in Spree eCommerce v5.2.5 using this: authenticated user got 403, unauthenticated request returned 200 with pre-populated shipping details)
 
+### Worked Example: BOLA on User Profile API
+
+**Scenario:** SaaS app with `/api/v2/users/{id}/profile` endpoint. You have two test accounts.
+
+**Step 1 — Capture your own request:**
+
+```
+GET /api/v2/users/4821/profile HTTP/2
+Host: app.target.com
+Authorization: Bearer eyJhbG...USER_A_TOKEN
+```
+
+Response: `200 OK` with your profile data (name, email, billing info).
+
+**Step 2 — Swap the ID to User B's:**
+
+```
+GET /api/v2/users/4822/profile HTTP/2
+Host: app.target.com
+Authorization: Bearer eyJhbG...USER_A_TOKEN
+```
+
+Response (if vulnerable):
+
+```json
+{"id": 4822, "name": "Jane Smith", "email": "jane@company.com",
+ "phone": "+1-555-9876", "plan": "enterprise", "billing_address": "..."}
+```
+
+**Conclusion:** User A's token returns User B's full profile — confirmed BOLA. No ownership check on the `id` parameter.
+
+**Step 3 — Escalate to write (if read works):**
+
+```
+PUT /api/v2/users/4822/profile HTTP/2
+Host: app.target.com
+Authorization: Bearer eyJhbG...USER_A_TOKEN
+Content-Type: application/json
+
+{"email": "attacker@evil.com"}
+```
+
+If `200 OK` — you can modify other users' data. If the email change triggers a password reset flow, this chains to full account takeover.
+
+**Step 4 — Estimate scope:**
+
+```
+GET /api/v2/users/1/profile → 200 (first user)
+GET /api/v2/users/99999/profile → 404 (beyond range)
+```
+
+Sequential IDs from 1 to ~99K = upper bound of ~99,000 IDs in the space (actual user count may be lower — measure density with a few random samples). Include the estimated scope in the report.
+
+**Evidence checklist:**
+- Two distinct browser sessions / API clients (different IPs ideal)
+- Screenshots showing different auth tokens accessing each other's data
+- Proof that the data is genuinely private (not public profile)
+- Write/delete proof if possible (escalates severity)
+
+**What kills this report:**
+- Data was already public (check unauthenticated access)
+- Response is `200` but body is empty or your own data (soft-200)
+- ID is a UUID and you only tested your own (need cross-account proof)
+
 ### Impact Escalation
 
 Don't just read — demonstrate write/delete:
@@ -96,9 +160,11 @@ Don't just read — demonstrate write/delete:
 
 ### Recent IDOR Incidents (2025-2026)
 
-- **Flowise IDOR** (2026): PUT `/api/v1/loginmethod` — any low-priv user overwrites SSO config of any org; no ownership validation on `organizationId`. Pattern: AI/ML platform admin endpoints lack tenant isolation
-- **HackerOne Report #3000510** ($25K): `.json` endpoint leaking reporter emails, OTP codes, phone numbers, graphql_secret_token — HackerOne's own platform
-- **Trend**: #1 vuln for government (18%), medtech (36%), professional services (31%) programs (HackerOne 2025)
+- **Flowise IDOR** (2026): PUT `/api/v1/loginmethod` — any low-priv user overwrites SSO config of any org; no ownership validation on `organizationId`
+- **HackerOne Report #3000510** ($25K): `.json` endpoint leaking reporter emails, OTP codes, phone numbers
+- **McDonald's** (July 2025): PUT endpoint with no object-level auth on `lead_id` exposed 64M job applications
+- **ZeroPath thesis**: IDOR/access control now 53% of critical vulns; traditional SAST finds ~0% (authorization is application-specific)
+- **OpenAI** (March 2025): Doubled IDOR payouts to $400-$13K range, max $100K — signals access control is their biggest exposure
 
 ---
 
@@ -163,7 +229,12 @@ Higher severity than BOLA — accessing admin or privileged functions, not just 
 | **DPoP** | Proof replay + missing binding | jti not checked; access token works without DPoP proof |
 | **Token Exchange** | Subject impersonation + audience bypass | Exchange low-priv token for high-priv; audience not validated |
 | **JWT (cross-app)** | Cross-application JWT acceptance | JWT from App A accepted by App B sharing signing key (Parse Server < 8.6.10) |
-| **Async auth** | Missing `await` on async password validation (CVE-2026-28514, CVSS 9.3) | Rocket.Chat: un-awaited `bcrypt.compare()` returns Promise (truthy) → any password accepted; AI-discovered by GitHub Taskflow Agent |
+| **Async auth** | Missing `await` on async password validation (CVE-2026-28514, CVSS 9.3) | Rocket.Chat: un-awaited `bcrypt.compare()` returns Promise (truthy) → any password accepted |
+| **OAuth callback injection** | Forged profile params in callback URL (CVE-2026-29792, FeathersJS Critical) | `GET /oauth/google/callback?profile[email]=admin@target.com` → signed JWT for admin |
+| **JWT audience skip** | Missing audience validation (CVE-2026-30863, Parse Server) | Google/Apple/Facebook OAuth tokens accepted for wrong audience when Parse `audience` config unset |
+| **URL decoding bypass** | `%2F` inconsistency between router and `serveStatic` (CVE-2026-29045, Hono) | `decodeURI` vs `decodeURIComponent` → encoded slashes bypass route-based auth middleware when `serveStatic` is used |
+| **WebSocket auth presence** | Token existence checked but never validated (CVE-2026-28472, OpenClaw Critical) | `auth.token=anything` in handshake bypasses all device identity checks |
+| **Email-token unbinding** | OAuth token from attacker + victim's email (CVE-2026-0953, Tutor LMS) | Supply own valid OAuth token with victim's email → login as victim |
 
 > **Deep dive on OAuth/JWT format-level bugs:** See vuln-patterns [reference/web-vulns.md](../vuln-patterns/reference/web-vulns.md)
 > **Modern identity protocols (Passkeys, SCIM, DPoP, Token Exchange, JIT):** See [reference/auth-mechanisms.md](reference/auth-mechanisms.md#modern-identity-protocols)
@@ -210,7 +281,7 @@ Enterprise targets with SSO are high-value — SAML bypasses often mean access t
 □ Signature removal — Strip signature; check if IdP response accepted unsigned
 □ Signature wrapping — Move signed assertion, insert attacker assertion in unsigned position
 □ NameID injection — comment injection: user<!---->admin@corp.com parsed differently by IdP vs SP
-□ XML entity injection — XXE in SAML response parsing (CVE-2024-45409, Ruby SAML CVSS 10.0)
+□ Signature validation bypass — REXML/ruby-saml signature wrapping (CVE-2024-45409, Ruby SAML CVSS 10.0)
 □ Assertion replay — Capture valid SAML assertion, replay after session expires
 □ Audience restriction bypass — Modify Audience field to different SP
 □ Recipient manipulation — Change AssertionConsumerServiceURL to attacker-controlled
@@ -228,8 +299,6 @@ Enterprise targets with SSO are high-value — SAML bypasses often mean access t
 | CVE-2025-27773 | SimpleSAMLphp | Signature confusion via namespace manipulation |
 | CVE-2025-29775/29774 | xml-crypto (SAMLStorm) | Multiple SignedInfo elements bypass signature without IdP key |
 | CVE-2026-24858 | FortiNet SAML SSO | Cross-device login bypass via SAML assertion manipulation |
-| CVE-2023-22515 | Atlassian Confluence | Broken access control → admin account creation |
-| CVE-2026-1868 | GitLab AI Gateway | Auth bypass via JWT validation flaw |
 
 > **Deep dive on void canonicalization and XML parser differentials:** See [parser-differentials.md](../vuln-patterns/reference/parser-differentials.md#void-canonicalization--new-attack-class-2025)
 
@@ -398,24 +467,19 @@ BOLA swap fails? → Try BFLA (admin endpoints with user token)
 
 ## 9. Credential-Based Attacks — "Log In, Don't Break In"
 
-**Cloudflare 2026 data:** 63% of all logins involve previously compromised credentials; 94% of login attempts originate from bots. Attackers are shifting from exploitation to credential abuse — and many applications lack adequate defenses.
-
-### Testing Checklist
+**Cloudflare 2026 data:** 63% of logins involve compromised credentials; 94% of login attempts from bots.
 
 ```
-□ Credential stuffing resistance — High-volume login with known-breached creds detected/blocked?
-□ Breached password detection — Registration/password-change checks against HIBP or similar?
-□ Bot detection bypass — Login endpoint works without browser headers, JS execution, or CAPTCHA?
+□ Credential stuffing resistance — High-volume login with breached creds detected/blocked?
+□ Bot detection bypass — Login works without browser headers, JS execution, or CAPTCHA?
 □ Rate limiting scope — Per IP only (bypassable via rotation) or also per username/account?
-□ Account lockout info leak — Does lockout reveal valid usernames (different response for valid vs invalid)?
 □ Credential enumeration — Different error messages for "user not found" vs "wrong password"?
 □ MFA enforcement gaps — MFA on web but not API/mobile/SSO/SAML paths?
-□ Session token entropy — Sequential or predictable patterns in session tokens?
-□ Password spray window — Can you try 1 password across 1000 accounts without triggering lockout?
-□ OAuth/social auth bypass — Can you authenticate via social login even if password MFA is enforced?
+□ Password spray window — 1 password across 1000 accounts without triggering lockout?
+□ OAuth/social auth bypass — Social login bypasses password MFA enforcement?
 ```
 
-**Severity Guidance:** Credential stuffing → mass ATO is Critical. Missing breached-password detection is Medium. Credential enumeration alone is Low-Medium but chains with stuffing for higher impact. Password spray bypassing lockout is High.
+**Severity:** Credential stuffing → mass ATO = Critical. Password spray bypassing lockout = High. Credential enumeration alone = Low-Medium (chains with stuffing).
 
 ---
 
