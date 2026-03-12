@@ -494,8 +494,7 @@ This skill uses progressive disclosure. Detailed reference material is available
 
 **Quick search** — find specific auth mechanism patterns:
 ```
-grep -n "OAuth\|redirect_uri\|ConsentFix\|silent redirect" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
-grep -n "JWT\|JWE\|algorithm\|PlainJWT\|CVE-2026-29000" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
+grep -n "OAuth\|redirect_uri\|ConsentFix\|JWT\|JWE\|PlainJWT\|algorithm" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
 grep -n "SAML\|SSO\|SCIM\|Passkey\|WebAuthn\|DPoP" ${CLAUDE_SKILL_DIR}/reference/auth-mechanisms.md
 grep -n "WordPress\|Salesforce\|Drupal\|ServiceNow\|Aura" ${CLAUDE_SKILL_DIR}/reference/platform-auth-patterns.md
 ```

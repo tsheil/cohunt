@@ -248,6 +248,10 @@ Notable disclosed vulnerabilities (2025-2026):
 - CVE-2026-24858 (Fortinet FortiOS SSO, CVSS 9.4): FortiCloud SSO authentication bypass — attacker with a FortiCloud account and registered device can log into other users' devices when FortiCloud SSO is enabled; affects FortiOS/FortiManager/FortiWeb/FortiProxy/FortiAnalyzer; actively exploited since January 2026; Arctic Wolf observed automated attack cluster creating generic accounts and exfiltrating firewall configs
 - CVE-2025-26399 (SolarWinds WHD, CVSS 9.8): unauthenticated RCE via insecure deserialization in jabsorb library AjaxProxy; patch bypass of two prior CVEs (CVE-2024-28988, CVE-2024-28986) — triple-CVE bypass chain; must chain with CVE-2025-40536 for CSRF bypass; Huntress observed active exploitation with LSASS credential theft and ransomware
 - CVE-2026-25177 (AD Domain Services, March Patch Tuesday): Unicode character manipulation creates duplicate SPNs/UPNs bypassing AD security checks — only requires standard SPN write permissions; novel privilege escalation technique
+- CVE-2026-26110 + CVE-2026-26113 (Microsoft Office, CVSS 8.4 each, March 11 Patch Tuesday): RCE via Preview Pane — untrusted pointer dereference and type confusion; no user click required beyond previewing a document. Pattern: any target rendering user-uploaded documents server-side
+- CVE-2026-26125 (Microsoft Payment Orchestrator, CVSS 8.6, March 11): missing authentication on payment service endpoint — elevation of privilege; template for business-logic testing on fintech payment endpoints
+- CVE-2026-21262 (SQL Server, CVSS 8.8, March 11): publicly disclosed zero-day; authenticated user → SQL administrator privilege escalation
+- MCP offensive infrastructure in the wild (Cyberwarzone, March 11 2026): exposed server hosting AI-assisted intrusion infrastructure using MCP to connect LLMs to attack environments; over 1,000 files including credential dumps; **43% command-execution vulnerability rate** across scanned MCP servers; confirms MCP servers deployed in production without basic security controls
 - EU Cyber Resilience Act enforcement (September 11, 2026): mandatory vulnerability reporting for all products with digital elements sold in EU; actively exploited vulnerabilities must be reported to ENISA within 24 hours; manufacturers must implement coordinated vulnerability disclosure processes
 
 ---
@@ -294,6 +298,8 @@ Competition awareness:
 - **OpenAI Codex Security**: 1.2M commits scanned, 792 critical findings; 84% noise reduction; discovered 14 CVEs across OpenSSH, GnuTLS, GOGS, Chromium, PHP, libssh
 - **Claude + Mozilla Firefox**: 14 high-severity bugs, 22 CVEs; fixes in Firefox 148 (Feb 24, 2026); 500+ total across OSS codebases
 - **Hacktron AI**: $10K bounty for Google Antigravity RCE; also hacked Cursor, Windsurf, Perplexity Comet, OpenAI Atlas — emerging AI bug bounty research team
+- **Google completes $32B Wiz acquisition** (March 11, 2026): largest acquisition in Google's history; Wiz maintains multi-cloud stance (AWS, Azure, OCI, GCP); integration seams between Wiz and Google Cloud are potential attack surface during merge; Google bounty scope may expand to Wiz-integrated products
+- **F5 BIG-IP v21.1 MCP traffic security** (March 11, 2026): first network appliance vendor with MCP-specific session persistence, traffic inspection, and security protections; NGINX expanded to inspect AI agent traffic; creates new attack surface for MCP WAF bypass and parsing differentials between F5 inspection and actual MCP servers
 
 ---
 
@@ -321,3 +327,10 @@ Key program-relevant trends:
 - **OWASP Red Teaming Vendor Eval v1.0** (March 6): first standard for evaluating AI red teaming providers
 - **ShinyHunters Salesforce Aura** (March 8-10): UNC6240 breached ~400 orgs via Experience Cloud guest user misconfig; $6.2M Salesforce bounties in 2025; no CVE — misconfiguration class
 - **SiYuan auth-vs-authz pattern** (CVE-2026-30926): systemic — CheckAuth present but CheckRole missing across 4+ endpoints; applies broadly to self-hosted apps with role-based access
+- **XBOW deterministic validators** (March 2026): key methodology behind #1 HackerOne ranking — uses headless browsers for XSS verification, automated two-request diff for IDOR, OAST callbacks for SSRF/RCE; 0% false positive rate on confirmed submissions; deterministic (non-LLM) validation is the differentiator vs other AI tools with ~25% N/A rates
+- **HackerOne hackbot policy** (March 2026): all automated/AI findings require human expert review before submission; hackbots must operate within published VDP + HackerOne Code of Conduct; fully autonomous submission prohibited; HackerOne does NOT train AI on researcher submissions (CEO confirmation Feb 2026)
+- **HackerOne AI Research Safe Harbor** (Jan 2026): opt-in safe harbor for AI system testing; Gold Standard Safe Harbor enabled by default for new programs; AI-specific protections for good-faith security research
+- **March 2026 Patch Tuesday** (March 11): 83 CVEs, 8 critical; **55% privilege escalation bugs**; SharePoint RCE (CVE-2026-26106), Windows Kernel EoP (CVE-2026-24289 exploitation more likely), .NET DoS (CVE-2026-26127), ASP.NET DoS (CVE-2026-26130), ACI Confidential Container EoP (CVE-2026-23651/26124); zero-day debate (2 publicly disclosed, none confirmed exploited)
+- **XBOW CVE-2026-21536 first Windows AI-discovered CVE**: CVSS 9.8 RCE in Microsoft Devices Pricing Program; fully autonomous discovery without source code access; milestone for AI agent vulnerability discovery
+- **Winlogon EoP CVE-2026-25187** (March 11): discovered by Google Project Zero; CVSS 7.8; exploitation more likely; Winlogon is high-value persistence target
+- **IDOR prevalence by industry** (Bugcrowd 2026): government 18%, medical technology 36%, professional services 31%, retail/ecommerce 15% of total bounty spend — highest-paying bug class across regulated industries

