@@ -185,11 +185,12 @@ Before investing time on any potential finding, force it through these 6 checks.
 │      (Data leak, financial loss, account takeover, RCE)      │
 │      If "informational": chain or STOP                       │
 │ □ 6. DETERMINISTIC VERIFY — Confirm with non-LLM check:   │
+│      (Common classes below; adapt pattern to vuln type)    │
 │      ┌──────────────┬──────────────────────────────────┐   │
 │      │ XSS          │ Headless browser: JS executes on │   │
 │      │              │ target origin? (not just reflect) │   │
 │      │ IDOR/BOLA    │ Two-account diff: acct B's data  │   │
-│      │              │ returned in acct A's session?     │   │
+│      │              │ returned/modified in A's session? │   │
 │      │ SQLi         │ Time-based: ≥5s consistent delta │   │
 │      │              │ UNION: known DB value in response │   │
 │      │ SSRF         │ OAST callback from target IP? OR │   │
@@ -288,7 +289,7 @@ Prioritize areas where the hunter has an advantage over autonomous tools. For de
 
 **Avoid competing** where AI tools have >80% coverage: simple XSS/SQLi/SSRF (XBOW 75-85%), subdomain enum, commodity CVE scanning, standard chatbot injection (540% duplicate surge), basic MCP SSRF (36.7% mapped), pattern-matching code vulns (Codex/Claude Code Review). **Exceptions still LOW automation pressure:** patch-bypass variants (CWE-288), MCP variant hunting (transport-parity/schema mutations), auth alternate paths. GPT-5.4 native computer use (75% OSWorld) erodes GUI-only testing barriers.
 
-**March 2026 Competition Update:** HackerOne requires human review of all hackbot submissions (Code of Conduct + Disclosure Guidelines), split human/AI leaderboards, launched Hai Insight to filter hallucinated reports. OpenAI acquired Promptfoo ($86M). XBOW uses **deterministic validators** (headless browsers, automated diff) — 0% false positive on confirmed submissions. Programs auto-triage AI-generated reports — differentiate with chains, business context, two-account proof, state-transition testing.
+**March 2026 Competition Update:** HackerOne requires human review of all hackbot submissions (Code of Conduct + Disclosure Guidelines), split human/AI leaderboards, launched Hai Insight to filter hallucinated reports. OpenAI acquiring Promptfoo (valued at $86M, terms undisclosed). XBOW uses **deterministic validators** (headless browsers, automated diff) — 0% false positive on confirmed submissions. Programs auto-triage AI-generated reports — differentiate with chains, business context, two-account proof, state-transition testing.
 
 **Session Brief Format:**
 
@@ -446,6 +447,7 @@ At the top of every response during the hunt session, output a markdown checklis
 Update each step as it completes. Mark skipped steps with `~` and a note (e.g., `- [~] Program research — no public program, using VDP`).
 
 **Quality Standards:**
+- Every recommendation must be tied to specific recon or research data — no generic advice
 - Test cases must be concrete (specific URLs, parameters, payloads) not generic
 - Duplicate risk must reference actual disclosed reports; chain opportunities must reference specific recon findings
 - **Time-boxing:** Phase 1 in 15-20 min (at 20 min, deliver brief even if incomplete). Phase 2 runs until time budget spent. Prioritize: 1 executed Finding Card beats a perfect brief with no execution
