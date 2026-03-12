@@ -138,6 +138,9 @@ Use this taxonomy when categorizing agentic browser vulnerabilities in reports �
 **Adaptive Prompt Injection (March 2026):**
 Research demonstrates adaptive attacks bypass 12 recent prompt injection defenses with **90%+ success** using gradient descent, RL, random search, and human-guided exploration. Techniques: cross-modal attacks (hidden instructions in images accompanying benign text), context poisoning (gradual manipulation of conversation history for delayed activation), steganographic injection (invisible text in metadata fields). Implication: any defense relying on static filtering or pattern matching will be bypassed.
 
+**AgenticBlabbering (Guard.io Labs, March 11, 2026):**
+GAN-style feedback loop generates scam flows optimized against the AI agent's reasoning. Adversary iterates phishing payloads until the agent's guardrails degrade — credential theft in under 4 minutes. One successful scam works against all users of that model. **Distinct from PleaseFix:** PleaseFix exploits trust boundaries (calendar → file system); AgenticBlabbering is adversarial ML against the reasoning model itself. Two attack classes: (1) trust boundary violations and (2) adversarial reasoning manipulation.
+
 **Testing Approach:**
 1. Identify if target has agentic browsing features (autonomous web access, scheduled browsing)
 2. Plant indirect prompt injection in content the agent will process (calendar, email, search results)
