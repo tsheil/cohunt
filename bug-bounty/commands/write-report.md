@@ -102,8 +102,14 @@ If anything critical is missing → ASK before writing.
 | `Stronger Variant` | Note in "Additional Testing" section if not yet pursued |
 | `Severity Estimate` | Starting point for CVSS calculation |
 | `Status` | Only write if Status=Ready; if Needs Chain, chain first |
+| `Observed On` | Reproduction timeline anchor — include as "first confirmed" date in report |
+| `Last Retest` | **Freshness gate:** if stale (>24h rolling SaaS / >72h standard / >7d or version-based on-prem), retest before writing. One-shot bugs: `N/A (one-shot)` with reason is acceptable |
+| `Variant Of` | Add "Prior Art" section referencing parent CVE/report; show your finding requires a separate fix |
+| `Lead Source` | Omit from report (internal workflow field) |
 
 Missing fields from the Finding Card should be flagged as questions, not guessed.
+
+**Freshness check:** If `Last Retest` is older than the target's deployment cadence (24h rolling-deploy SaaS, 72h standard, 7d or version-based on-prem), prompt the hunter to retest before writing. One-shot bugs (races, invite flows, coupon abuse) are exempt — note `N/A (one-shot)` with reason. Stale findings waste report-writing time.
 
 ### Step 2: Classify and Score
 

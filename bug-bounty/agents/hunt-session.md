@@ -60,7 +60,7 @@ You are a bug bounty hunt session orchestrator. Your job is to run a complete, e
    │   (free, paid, admin, support, API-only, service account)      │
    │ □ OAST COLLECTOR: Blind XSS / blind SSRF callback receiver    │
    │   (Burp Collaborator, interactsh, or self-hosted XSS Hunter)  │
-   │   Inject payloads in profile fields, support tickets, feedback │
+   │   Inject in profile fields (staff-facing sinks if policy permits)        │
    │ □ EMAIL INBOX: Disposable inbox for password reset, invite,    │
    │   and notification testing (mailinator, guerrillamail)         │
    │ □ WEBHOOK RECEIVER: Set up for callback testing                │
@@ -160,14 +160,14 @@ Before investing time on any potential finding, force it through these 6 checks.
 │      │                  │ tenant isolation               │   │
 │      │ unauth           │ RCE, auth bypass, SSRF to      │   │
 │      │                  │ metadata, default creds, SQLi   │   │
-│      │ direct (browser) │ reflected/stored XSS, CSRF,    │   │
+│      │ direct           │ reflected/stored XSS, CSRF,    │   │
 │      │                  │ CORS, clickjacking, info leak,  │   │
 │      │                  │ business logic, payment bypass  │   │
-│      │ OAST/callback    │ blind XSS, blind SSRF, blind   │   │
+│      │ OAST             │ blind XSS, blind SSRF, blind   │   │
 │      │                  │ XXE, DNS rebinding, OOB exfil   │   │
-│      │ race/timing      │ race conditions, TOCTOU, HTTP/2 │   │
+│      │ race             │ race conditions, TOCTOU, HTTP/2 │   │
 │      │                  │ single-packet, limit bypass     │   │
-│      │ cache/desync     │ request smuggling, cache poison,│   │
+│      │ cache-desync     │ request smuggling, cache poison,│   │
 │      │                  │ response queue desync           │   │
 │      │ code-path        │ code review findings, deser,    │   │
 │      │                  │ SSTI, path traversal            │   │

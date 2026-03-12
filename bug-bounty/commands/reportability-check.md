@@ -24,7 +24,7 @@ Checking reportability: $ARGUMENTS
 
 ## Assessment Framework
 
-Evaluate the finding against these 5 gates. ALL must pass for a Go verdict.
+Evaluate the finding against these 6 gates. ALL must pass for a Go verdict.
 
 ### Gate 1: Trust Boundary Crossing
 
@@ -111,6 +111,21 @@ Evaluate the finding against these 5 gates. ALL must pass for a Go verdict.
 | Full chain completion (not just first step) | Yes for chain-dependent findings |
 | Video or step-by-step screenshots | Strongly recommended |
 | Impact quantification with real numbers | Recommended for business logic |
+
+### Gate 6: Freshness
+
+**Question:** Is this finding still exploitable right now?
+
+| Check | Verdict |
+|-------|---------|
+| Retested within 24h (rolling-deploy SaaS) | PASS |
+| Retested within 72h (standard web app) | PASS |
+| Retested within 7d or version-confirmed (on-prem / appliance) | PASS |
+| One-shot bug (race, invite flow, coupon abuse) | PASS — note `N/A (one-shot)` with reason |
+| Last verified days/weeks ago | FAIL — retest before reporting |
+| Never retested after initial discovery | FAIL — verify it still works |
+
+**Why this matters:** SaaS targets deploy continuously. A finding from 48 hours ago may already be patched. Reporting a fixed vulnerability wastes your time and the triager's — and may damage your signal-to-noise reputation.
 
 ---
 

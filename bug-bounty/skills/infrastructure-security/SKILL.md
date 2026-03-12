@@ -109,28 +109,32 @@ Infrastructure targets cluster into categories with distinct attack patterns. Id
 
 **Decision logic:** If Shodan shows the management port is internet-exposed, this is highest priority. Firewall management consoles should never be internet-facing — if they are, the org likely has poor security hygiene and multiple issues.
 
-### 3. MDM & Enterprise Device Management
+### 3. MDM, Endpoint & Enterprise Management
 
-**What:** Mobile Device Management (Ivanti EPMM, ManageEngine, VMware Workspace ONE, Microsoft Intune) and IT management platforms (SolarWinds, VMware Aria, ServiceNow).
+**What:** Mobile Device Management (Ivanti EPMM, ManageEngine, VMware Workspace ONE, Microsoft Intune), endpoint management (Ivanti EPM, SCCM), and IT management platforms (SolarWinds WHD, VMware Aria, ServiceNow).
 
-**Why high-value:** MDM servers control thousands of devices — push configs, install apps, wipe devices. Compromised MDM = full mobile fleet control. Enterprise management platforms control device fleets and often have SYSTEM-level access.
+**Why high-value:** MDM servers control thousands of devices — push configs, install apps, wipe devices. Endpoint managers control desktop/server fleets with SYSTEM-level access. Compromising either = full fleet control. Enterprise management platforms often store credentials for their entire managed environment.
 
 **Primary attack patterns:**
-- **Bash arithmetic expansion** — HTTP parameters processed by shell scripts with `$((...))` evaluation (CVE-2026-1281/1340 Ivanti EPMM CVSS 9.8)
+- **Bash code injection in RewriteMap handlers** — Specific EPMM URL rewrite-map handlers pass user input through Bash variable/array handling, enabling command substitution via arithmetic evaluation (CVE-2026-1281/1340, on-prem EPMM 12.5.x/12.6.x/12.7.0.0, CVSS 9.8). Targets: `/mifs/c/appstore/fob/` and `/mifs/c/aftstore/fob/` paths — not generic parameter injection
+- **Alternate auth path bypass** — Management APIs with inconsistent auth enforcement across endpoints. CVE-2026-1603 (Ivanti EPM CVSS 8.6 vendor / 7.5 NVD, CISA KEV March 9 2026): auth bypass via alternate weak authentication path (ZDI-26-080: `AuthHelper` flaw) in EPM before 2024 SU5 allows unauthenticated leakage of stored credential data. **Generalized test:** probe management API endpoints for inconsistent auth — some paths may enforce auth while others serving the same data do not
+- **Deser filter bypass via URI-gated or key-obfuscation techniques** — Vendors patch deserialization by filtering input conditionally (e.g., URI-based gates, key name checks), but alternate routes or obfuscation bypass the filter. CVE-2025-26399 (SolarWinds WHD ≤12.8.7, CVSS 9.8, CISA KEV March 9 2026): 3rd bypass in chain (CVE-2024-28986 → CVE-2024-28988 → CVE-2025-26399) — patch checked `request.uri().contains("ajax")` in `checkSuspeciousPayload` before sanitizing `params`/`fixups` in JSON payloads; subsequent bypass (CVE-2025-40553) used JSON-key obfuscation (`p\x61rams`, `java\x43lass`) to evade the filter. Post-exploitation observed on WHD instances (Microsoft, exact CVE attribution unconfirmed): ManageEngine RMM deployment, reverse SSH/RDP, QEMU VMs, DLL sideloading, DCSync. **Generalized test:** for any patched deser endpoint, look for URI-gated filtering (e.g., `contains("ajax")`), JSON-key obfuscation, alternate URL paths, or encoding tricks to bypass the filter
 - **Unauthenticated API endpoints** — Management APIs that skip auth on specific paths
-- **Migration/upgrade command injection** — Privileged operations with reduced validation (CVE-2026-22719 VMware Aria CVSS 8.1)
+- **Migration/upgrade command injection** — Privileged operations with reduced validation during support-assisted migration (CVE-2026-22719 VMware Aria CVSS 8.1, exploitable while support-assisted product migration is in progress)
 
 **Test procedure:**
 
 | # | Test | What to do | Signal |
 |---|------|-----------|--------|
-| 1 | Bash arithmetic injection | Send payloads with `$((command))` in HTTP parameters to management endpoints | OS command execution via arithmetic evaluation |
+| 1 | Bash code injection | Target specific RewriteMap handler paths (e.g., `/mifs/c/appstore/fob/`, `/mifs/c/aftstore/fob/`) with command substitution in URL parameters | OS command execution via Bash variable/arithmetic evaluation |
 | 2 | Pre-auth endpoint scan | Enumerate `/mifs/`, `/api/`, `/admin/` paths without credentials | Admin functions accessible pre-auth |
 | 3 | Migration endpoint injection | Test upgrade/migration endpoints for command injection | Command execution during privileged operations |
 | 4 | Device enrollment abuse | Use enrollment endpoints to upload arbitrary files | Web shell deployment via enrollment flow |
 | 5 | API version mismatch | Test `/v1/` alongside `/v2/` — older APIs may lack auth checks | Older API version accessible without auth |
+| 6 | Alternate auth path probe | Test management API endpoints for inconsistent auth enforcement — some paths may bypass auth controls that protect others (CVE-2026-1603 pattern) | Stored credential data returned without authentication |
+| 7 | Deser filter bypass | Test patched deser endpoints with URI-gated filter evasion (e.g., alternate paths bypassing `contains("ajax")` checks) or JSON-key obfuscation (`p\x61rams`) | Deserialization processed despite vendor patch (CVE-2025-26399/40553) |
 
-**Decision logic:** CISA KEV additions for MDM CVEs indicate mass exploitation is already happening. If you find an unpatched MDM, it's almost certainly already compromised — but the bug report is still valid and highly rewarded.
+**Decision logic:** CISA KEV additions for MDM/EPM CVEs indicate mass exploitation is already happening. Internet-exposed or unpatched MDM/EPM systems are high risk and may already be compromised — the bug report is still valid and highly rewarded.
 
 ### 4. Remote Access & Desktop Tools
 
@@ -276,13 +280,14 @@ Before probing, build a stack-matched table for your target. Fill in each column
 
 ### Deserialization Variant Hunting (Specific Pattern)
 
-Deserialization patch bypasses are the most reliable variant pattern. Vendors block one gadget chain but leave the deser endpoint accessible.
+Deserialization patch bypasses are the most reliable variant pattern. Vendors block one gadget chain but leave the deser endpoint accessible — or filter by URL path but miss alternate routes.
 
 1. Find a previously patched deser CVE for the target product
 2. Verify the deser endpoint is still accessible post-patch
 3. Test alternative gadget chains (Commons Collections, Spring, ROME, BeanUtils)
 4. If the fix validates object types, test chain variants using allowed types
-5. Check if the fix was ported to all deployment modes (standalone, clustered, cloud)
+5. **Test URI-gated and key-obfuscation filter bypass** — if the patch filters by URI content (e.g., `request.uri().contains("ajax")`), access the same endpoint via an alternate path or use JSON-key obfuscation to evade key name checks (SolarWinds WHD chain: CVE-2025-26399 bypassed URI gate; CVE-2025-40553 used `p\x61rams` key obfuscation)
+6. Check if the fix was ported to all deployment modes (standalone, clustered, cloud)
 
 **High-value deser targets:** SolarWinds WHD (3 bypass CVEs), Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware products, SAP NetWeaver.
 

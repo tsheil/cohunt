@@ -19,7 +19,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 - [MSHTML Mark-of-the-Web Bypass Chain](#mshtml-mark-of-the-web-bypass-chain)
 - [Cloud SSO Trust Model Abuse](#cloud-sso-trust-model-abuse)
 - [Workflow Automation Platform RCE](#workflow-automation-platform-rce)
-- [Enterprise Management Platform RCE](#enterprise-management-platform-rce)
+- [Enterprise Management Platform Auth Bypass & RCE](#enterprise-management-platform-auth-bypass--rce)
 - [Appliance Hardcoded Credentials](#appliance-hardcoded-credentials)
 - [Network Infrastructure Auth Bypass](#network-infrastructure-auth-bypass)
 - [March 2026 Zero-Day Cluster (Microsoft)](#march-2026-zero-day-cluster-microsoft)
@@ -195,7 +195,7 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **What it is:** Auth bypass and Java deserialization RCE in network management interfaces — often CVSS 10.0 with root access.
 
-**Recent examples:** CVE-2026-20079/20131 (Cisco FMC, CVSS 10.0 pair: boot-time auth bypass + Java deser RCE → root), CVE-2026-22719 (VMware Aria, CVSS 8.1, CISA KEV, actively exploited), CVE-2026-20128/20122 (Cisco SD-WAN, actively exploited March 2026), CVE-2026-24512 (K8s ingress-nginx, CVSS 8.8, project retiring — no future patches for 50% of clusters), CVE-2026-20965 (Azure WAC, SSO pivot tenant-wide).
+**Recent examples:** CVE-2026-20079/20131 (Cisco FMC, CVSS 10.0 pair: boot-time auth bypass + Java deser RCE → root), CVE-2026-22719 (VMware Aria, CVSS 8.1, unauth cmd injection during support-assisted migration — Broadcom aware of reports of potential exploitation, unconfirmed), CVE-2026-20128/20122 (Cisco SD-WAN, actively exploited March 2026), CVE-2026-24512 (K8s ingress-nginx, CVSS 8.8, project retiring — no future patches for 50% of clusters), CVE-2026-20965 (Azure WAC, SSO pivot tenant-wide).
 
 **Where to look:** Network management consoles, Java-based management APIs, migration/upgrade workflows, boot-time service processes.
 
@@ -305,22 +305,24 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **Severity Guidance:** Critical — workflow platforms run arbitrary code by design. Any auth bypass = immediate RCE. n8n's 100K+ instances make this a high-volume target.
 
-## Enterprise Management Platform RCE
+## Enterprise Management Platform Auth Bypass & RCE
 
-**What it is:** Unauthenticated RCE in IT management platforms that control large device fleets.
+**What it is:** Authentication bypass and RCE in IT management and endpoint management platforms that control large device fleets and store privileged credentials.
 
 **Key CVEs:**
-- **CVE-2025-40551** (SolarWinds WHD, CVSS 9.8): unauthenticated RCE → lateral movement via Zoho Meetings + Cloudflare tunnels + Velociraptor C2; state-level exploitation
-- **CVE-2026-22719** (VMware Aria, CVSS 8.1): command injection during migration; CISA KEV March 2026
+- **CVE-2026-1603** (Ivanti EPM, CVSS 8.6 vendor / 7.5 NVD, CISA KEV March 9 2026): auth bypass via alternate weak authentication path (ZDI-26-080: `AuthHelper` flaw) in EPM before 2024 SU5 → unauthenticated leakage of stored credential data
+- **CVE-2025-40551** (SolarWinds WHD, CVSS 9.8): unauthenticated RCE → post-exploitation observed (Microsoft, exact CVE attribution unconfirmed): ManageEngine RMM deployment, reverse SSH/RDP, QEMU VMs, DLL sideloading, DCSync
+- **CVE-2026-22719** (VMware Aria, CVSS 8.1): unauth command injection exploitable while support-assisted product migration is in progress; Broadcom aware of reports of potential exploitation (unconfirmed)
 
-**Where to look:** SolarWinds WHD, VMware Aria/vRealize, ServiceNow, ManageEngine. Shodan: ports 8443, 8787, 443.
+**Where to look:** Ivanti EPM, SolarWinds WHD, VMware Aria/vRealize, ServiceNow, ManageEngine. Shodan: ports 8443, 8787, 443.
 
 | # | Test | What to do | What to look for |
 |---|------|-----------|-----------------|
-| 1 | Unauthenticated RCE | Probe management API endpoints without credentials | Command execution or internal path disclosure |
-| 2 | Migration path exploitation | Test upgrade/migration endpoints (CVE-2026-22719 pattern) | Reduced auth on migration services |
+| 1 | Alternate auth path probe | Test management API endpoints for inconsistent auth enforcement — probe for weak alternate auth paths (CVE-2026-1603 `AuthHelper` pattern) | Stored credential data returned without authentication |
+| 2 | Unauthenticated RCE | Probe management API endpoints without credentials | Command execution or internal path disclosure |
+| 3 | Migration path exploitation | Test upgrade/migration endpoints (CVE-2026-22719 pattern) | Reduced auth on migration services |
 
-**Severity Guidance:** Critical — management platforms control device fleets.
+**Severity Guidance:** Critical — management platforms control device fleets and store privileged creds.
 
 ---
 
@@ -443,11 +445,11 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 
 **What it is:** Vendors patch a known deserialization RCE but the fix is incomplete — the same deserialization endpoint accepts different gadget chains or object types not covered by the original patch.
 
-**Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk <= 12.8.7 Hotfix 1, CVSS 9.8) — unauthenticated Java deserialization RCE that **bypasses the patch for CVE-2024-28988** (the original deser RCE). Added to CISA KEV March 9, 2026; actively exploited. The original fix blocked specific gadget chains but left the deserialization endpoint accessible with alternative payloads.
+**Key CVE:** CVE-2025-26399 (SolarWinds Web Help Desk <= 12.8.7 Hotfix 1, CVSS 9.8) — unauthenticated Java deserialization RCE that is the **3rd bypass** in a chain (CVE-2024-28986 → CVE-2024-28988 → CVE-2025-26399). Added to CISA KEV March 9, 2026; actively exploited by Warlock ransomware crew. The original fix sanitized `params`/`fixups` fields in JSON payloads but only when the request URI contained the string "/ajax/". **Bypass technique:** altering the request path to remove "/ajax/" bypassed sanitization entirely, reaching the same AjaxProxy deserialization endpoint without the filter. Post-exploitation: QEMU VMs for SSH backdoors, Cloudflare tunnels for C2.
 
 **Where to look:** Any product previously patched for deser — SolarWinds WHD, Atlassian Confluence, Fortra GoAnywhere MFT, Apache OFBiz, VMware.
 
-**Test patterns:** (1) Alternative gadget chains → test CommonsCollections, Spring, ROME, BeanUtils on patched endpoints; (2) Endpoint reachability → verify deser endpoint still accepts objects post-patch; (3) Version-specific bypass → test if hotfix processes serialized input via different chain.
+**Test patterns:** (1) Alternative gadget chains → test CommonsCollections, Spring, ROME, BeanUtils on patched endpoints; (2) Endpoint reachability → verify deser endpoint still accepts objects post-patch; (3) **Path-based filter bypass** → access patched endpoint via alternate URL paths, without filtered path segments (e.g., remove "/ajax/"), or via path traversal; (4) Version-specific bypass → test if hotfix processes serialized input via different chain.
 
 **Severity Guidance:** Critical (CVSS 9.8). Patch bypass variants are high-value — demonstrate incomplete fixes. Use `/variant-hunt`.
 
@@ -487,14 +489,12 @@ Attack patterns targeting infrastructure components: browser exploits, Node.js s
 |-----|---------|------|------------|
 | CVE-2025-53770 | SharePoint | Critical | Unauth deser RCE. Fingerprint: `/_vti_pvt/service.cnf`. CISA KEV |
 | CVE-2025-10035 | GoAnywhere MFT | Critical | Deser RCE. Storm-1175/Medusa ransomware. Fingerprint: `/goanywhere/` |
-| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via "magic number" + cred disclosure. CISA KEV March 9, 2026 |
+| CVE-2026-1603 | Ivanti EPM | 8.6 | Auth bypass via malformed header + "magic number" integer 64 → Credential Vault → Domain Admin hashes. CISA KEV March 9, 2026. See Enterprise Management Platform RCE section |
 | CVE-2026-21902 | Juniper Junos OS Evolved | 9.3 | Pre-auth RCE as root on PTX routers. Incorrectly exposed internal service |
 | CVE-2025-55315 | ASP.NET Core Kestrel | 9.9 | HTTP request smuggling via chunked TE. See http-desync skill |
 | CVE-2025-62164 | vLLM | Critical | RCE via `torch.load()` on user-supplied embeddings. Pattern: AI inference deser |
 | CVE-2026-28514 | Rocket.Chat | 9.3 | Missing `await` on `bcrypt.compare()` → any password accepted. Async auth bypass |
 | CVE-2019-17571 / CVE-2026-27685 | SAP (FS-QUO, NetWeaver) | 9.8/9.1 | Log4j 1.2 SocketServer deser RCE + upload deser RCE. March 2026 SAP Patch Day |
 | CVE-2026-25177 | Windows AD DS | 8.8 | Unicode SPN/UPN collision EoP — crafted Unicode chars create duplicate SPNs bypassing AD name checks. CWE-641. Auth required, network. March 2026 Patch Tuesday |
-| CVE-2025-26399 | SolarWinds WHD | 9.8 | AjaxProxy deser RCE (3rd bypass). CISA KEV March 2026 |
 | CVE-2026-25921 | Gogs | 9.3 | Cross-repo LFS object overwrite — supply chain vector. Fixed 0.14.2 |
-| CVE-2026-22719 | VMware Aria | 8.1 | Unauth command injection. CISA KEV March 2026. Active exploitation |
-| CVE-2026-30903 | Zoom Workplace (Win) | 9.6 | Mail feature path control → arbitrary file write → DLL hijack → EoP. Network, requires user interaction (UI:R). < v6.6.0. Pattern: desktop mail/attachment handlers with file path control |
+| CVE-2026-30903 | Zoom Workplace (Win) | 9.6 | Mail path control → file write → DLL hijack → EoP. < v6.6.0. Desktop mail/attachment handler pattern |

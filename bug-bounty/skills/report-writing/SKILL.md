@@ -9,7 +9,7 @@ Write bug bounty reports that get triaged fast, avoid N/A, and maximize payout. 
 
 ## What I Need From You
 
-**Best input: a Finding Card** from `/session-notes` — all 15 fields map directly to report sections. The `Boundary Crossed`, `Proof Type`, `Who Is Harmed`, `Scope Status`, and `Duplicate Risk` fields are critical for report quality and often determine whether a report gets paid.
+**Best input: a Finding Card** from `/session-notes` — 16 payout-critical fields map directly to report sections, plus 4 workflow fields (`Observed On`, `Last Retest`, `Variant Of`, `Lead Source`). The `Boundary Crossed`, `Proof Type`, `Who Is Harmed`, `Scope Status`, and `Duplicate Risk` fields are critical for report quality and often determine whether a report gets paid.
 
 **Minimum:** What vulnerability you found and how to reproduce it.
 
@@ -129,7 +129,7 @@ curl -X POST https://api.example.com/endpoint \
 
 ### Step 1: Gather Finding Details
 
-**If Finding Card provided:** Map all 15 fields directly — `Vulnerability`→CWE+title, `Boundary Crossed`→impact framing, `Proof Type`→evidence structure, `Who Is Harmed`→affected scope, `Evidence`→proof section, `Duplicate Risk`→prior art section, `Chain Dependency`→chain documentation, `Stronger Variant`→additional testing notes. Only write if `Status=Ready`.
+**If Finding Card provided:** Map all 20 fields — `Vulnerability`→CWE+title, `Boundary Crossed`→impact framing, `Proof Type`→evidence structure, `Who Is Harmed`→affected scope, `Evidence`→proof section, `Duplicate Risk`→prior art section, `Chain Dependency`→chain documentation, `Stronger Variant`→additional testing notes, `Observed On`→timeline anchor, `Last Retest`→freshness gate, `Variant Of`→prior art reference. Only write if `Status=Ready`. Check `Last Retest` freshness before writing.
 
 **If no Finding Card:** Collect minimum: vulnerability type, location (URL/endpoint/parameter), reproduction steps, observed behavior, target program. If incomplete, ask specifically — don't guess reproduction steps.
 
